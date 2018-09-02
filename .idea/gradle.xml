@@ -9,6 +9,10 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/autolayout" />
+            <option value="$PROJECT_DIR$/badge" />
+            <option value="$PROJECT_DIR$/mobshare" />
+            <option value="$PROJECT_DIR$/swipback" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
