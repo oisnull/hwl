@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HWL1.0</string>
+
+    <!--Login-->
+    <string name="login_activity_title">HWL 登录</string>
+    <string name="login_activity_account_hint">手机/邮箱</string>
+    <string name="login_activity_password_hint">输入密码</string>
+    <string name="login_activity_login_button_text">登   录</string>
+    <string name="login_activity_login_button_text2">登 录 中...</string>
+    <string name="login_activity_register_link_text">注册</string>
+    <string name="login_activity_forgetpwd_link_text">忘记密码？</string>
+    <string name="login_activity_wechat_login_text">WeChat登录后期开放....</string>
+    <string name="login_activity_sina_login_text">SINA微博登录后期开放....</string>
+    <string name="login_activity_qq_login_text">QQ登录后期开放....</string>
+    <string name="login_activity_account_error_tip">手机号或邮箱不能为空</string>
+    <string name="login_activity_mobile_error_tip">手机号格式不正确</string>
+    <string name="login_activity_code_error_tip">验证码不能为空</string>
+    <string name="login_activity_email_error_tip">邮箱格式不正确</string>
+    <string name="login_activity_password_error_tip">密码不能为空</string>
+    <string name="login_activity_passwordok_error_tip">密码确认不能为空</string>
+    <string name="login_activity_passwordok2_error_tip">两次密码输入不一样</string>
+</resources>
