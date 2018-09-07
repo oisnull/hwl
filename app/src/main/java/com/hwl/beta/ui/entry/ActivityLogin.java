@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
+import main.java.com.hwl.beta.ui.entry.logic.LoginHandle;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.ActivityLoginBinding;
@@ -25,23 +26,17 @@ public class ActivityLogin extends FragmentActivity {
 
     Activity activity;
     ActivityLoginBinding binding;
-    LoginBean loginBean;
+    LoginHandle loginHandle;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = this;
+        loginHandle = new LoginHandle();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
-        loginBean = new LoginBean();
-        loginBean.setAccount(UserSP.getAccount());
-        loginBean.setPassword("123456");
-        binding.setLoginBean(loginBean);
+        binding.setLoginBean(loginHandle.getLoginBean());
         binding.setAction(new LoginListener());
-
-        binding.tbTitle
-                .setTitle("HWL登录")
-                .setImageLeftHide()
-                .setImageRightHide();
+        binding.tbTitle.setTitle(R.string.login_activity_title).setImageLeftHide().setImageRightHide();
     }
 
     private class LoginListener implements ILoginListener {
@@ -61,30 +56,13 @@ public class ActivityLogin extends FragmentActivity {
                 return;
             }
 
-            String email = "";
-            String mobile = "";
-            if (loginBean.getIsEmail()) {
-                email = loginBean.getAccount();
-            } else {
-                mobile = loginBean.getAccount();
-            }
-
-            UserService.userLogin(email, mobile, loginBean.getMd5Password())
-                    .subscribe(new NetDefaultObserver<UserLoginResponse>() {
-                        @Override
-                        protected void onSuccess(UserLoginResponse response) {
-                            UserSP.setUserInfo(response.getUserInfo());
-//                            UITransfer.toWelcomeActivity(activity);
-                            finish();
-                        }
-
-                        @Override
-                        protected void onError(String resultMessage) {
-                            super.onError(resultMessage);
-                            isRuning = false;
-                            binding.btnLogin.setText("登   录");
-                        }
-                    });
+            loginHandle.userLogin(loginBean, () -> {
+                UITransfer.toWelcomeActivity(activity);
+                finish();
+            }, (msg)->{
+                isRuning = false;
+                binding.btnLogin.setText("登   录");
+            });
         }
 
         @Override
@@ -94,12 +72,12 @@ public class ActivityLogin extends FragmentActivity {
 
         @Override
         public void onRegisterClick() {
-            //UITransfer.toRegisterActivity(activity);
+            // UITransfer.toRegisterActivity(activity);
         }
 
         @Override
         public void onGetpwdClick() {
-            //UITransfer.toGetpwdActivity(activity);
+            // UITransfer.toGetpwdActivity(activity);
         }
 
         @Override
@@ -115,7 +93,7 @@ public class ActivityLogin extends FragmentActivity {
         @Override
         public void onSinaClick() {
             Toast.makeText(activity, "SINA微博登录后期开放...", Toast.LENGTH_SHORT).show();
-//            SinaAction.login();
+            // SinaAction.login();
         }
     }
 }
