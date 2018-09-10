@@ -1,23 +1,22 @@
-//package com.hwl.beta.ui.common;
-//
-//import android.app.Activity;
-//import android.content.ComponentName;
-//import android.content.Context;
-//import android.content.Intent;
-//import android.net.Uri;
-//import android.os.Build;
-//import android.os.Bundle;
-//import android.provider.MediaStore;
-//import android.support.v4.app.FragmentActivity;
-//import android.view.View;
-//
-//import com.hwl.beta.db.DaoUtils;
-//import com.hwl.beta.db.ext.CircleExt;
-//import com.hwl.beta.db.ext.NearCircleExt;
-//import com.hwl.beta.mq.receive.MessageReceive;
-//import com.hwl.beta.sp.UserPosSP;
-//import com.hwl.beta.sp.UserSP;
-//import com.hwl.beta.ui.TestActivity;
+package com.hwl.beta.ui.common;
+
+import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.v4.app.FragmentActivity;
+import android.view.View;
+
+import com.hwl.beta.db.DaoUtils;
+import com.hwl.beta.db.ext.CircleExt;
+import com.hwl.beta.db.ext.NearCircleExt;
+import com.hwl.beta.sp.UserPosSP;
+import com.hwl.beta.sp.UserSP;
+import com.hwl.beta.ui.TestActivity;
 //import com.hwl.beta.ui.chat.ActivityChatGroup;
 //import com.hwl.beta.ui.chat.ActivityChatGroupSetting;
 //import com.hwl.beta.ui.chat.ActivityChatGroupSettingEdit;
@@ -31,10 +30,10 @@
 //import com.hwl.beta.ui.circle.ActivityCircleUserIndex;
 //import com.hwl.beta.ui.dialog.ReloginDialogFragment;
 //import com.hwl.beta.ui.entry.ActivityGetpwd;
-//import com.hwl.beta.ui.entry.ActivityLogin;
 //import com.hwl.beta.ui.entry.ActivityMain;
 //import com.hwl.beta.ui.entry.ActivityQRCode;
-//import com.hwl.beta.ui.entry.ActivityRegister;
+import com.hwl.beta.ui.entry.ActivityLogin;
+import com.hwl.beta.ui.entry.ActivityRegister;
 //import com.hwl.beta.ui.entry.ActivityWelcome;
 //import com.hwl.beta.ui.group.ActivityGroup;
 //import com.hwl.beta.ui.group.ActivityGroupAdd;
@@ -55,38 +54,38 @@
 //import com.hwl.beta.ui.user.ActivityUserSetting;
 //import com.hwl.beta.ui.video.ActivityVideoPlay;
 //import com.hwl.beta.ui.video.ActivityVideoSelect;
-//import com.hwl.beta.utils.StorageUtils;
-//import com.hwl.beta.utils.StringUtils;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-///**
-// * Created by Administrator on 2018/3/27.
-// */
-//
-//public class UITransfer {
-//
-//    public static void toTestActivity(Activity context) {
-//        Intent intent = new Intent(context, TestActivity.class);
-//        context.startActivity(intent);
-//    }
-//
+import com.hwl.beta.utils.StorageUtils;
+import com.hwl.beta.utils.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Administrator on 2018/3/27.
+ */
+
+public class UITransfer {
+
+    public static void toTestActivity(Activity context) {
+        Intent intent = new Intent(context, TestActivity.class);
+        context.startActivity(intent);
+    }
+
 //    public static void toQRCodeActivity(Activity context) {
 //        Intent intent = new Intent(context, ActivityQRCode.class);
 //        context.startActivity(intent);
 //    }
-//
-//    public static void toLoginActivity(Activity context) {
-//        Intent intent = new Intent(context, ActivityLogin.class);
-//        context.startActivity(intent);
-//    }
-//
-//    public static void toRegisterActivity(Activity context) {
-//        Intent intent = new Intent(context, ActivityRegister.class);
-//        context.startActivity(intent);
-//    }
-//
+
+    public static void toLoginActivity(Activity context) {
+        Intent intent = new Intent(context, ActivityLogin.class);
+        context.startActivity(intent);
+    }
+
+    public static void toRegisterActivity(Activity context) {
+        Intent intent = new Intent(context, ActivityRegister.class);
+        context.startActivity(intent);
+    }
+
 //    public static void toGetpwdActivity(Activity context) {
 //        Intent intent = new Intent(context, ActivityGetpwd.class);
 //        context.startActivity(intent);
@@ -96,7 +95,7 @@
 //        Intent intent = new Intent(context, ActivityWelcome.class);
 //        context.startActivity(intent);
 //    }
-//
+
 //    public static void toLogout(Activity context) {
 //        String userAccount = UserSP.getAccount();
 //        UserSP.clearUserInfo();
@@ -220,12 +219,12 @@
 //        intent.putStringArrayListExtra("imageurls", (ArrayList<String>) imageUrls);
 //        context.startActivity(intent);
 //    }
-//
+
 //    public static void toChatUserActivity(Activity context, long userId, String userName, String
 //            userImage) {
 //        toChatUserActivity(context, userId, userName, userImage, 0);
 //    }
-//
+
 //    public static void toChatUserActivity(Activity context, long userId, String userName, String
 //            userImage, long recordId) {
 //        Intent intent = new Intent(context, ActivityChatUser.class);
@@ -428,24 +427,24 @@
 //        intent.putExtra("userimage", userImage);
 //        context.startActivity(intent);
 //    }
-//
-//    /**
-//     * 调用第三方浏览器打开
-//     *
-//     * @param context
-//     * @param url     要浏览的资源地址
-//     */
-//    public static void toBrowser(Activity context, String url) {
-//        final Intent intent = new Intent();
-//        intent.setAction(Intent.ACTION_VIEW);
-//        intent.setData(Uri.parse(url));
-//        // 注意此处的判断intent.resolveActivity()可以返回显示该Intent的Activity对应的组件名
-//        // 官方解释 : Name of the component implementing an activity that can display the intent
-//        if (intent.resolveActivity(context.getPackageManager()) != null) {
-//            final ComponentName componentName = intent.resolveActivity(context.getPackageManager());
-//            // 打印Log   ComponentName到底是什么
-////            L.d("componentName = " + componentName.getClassName());
-//            context.startActivity(Intent.createChooser(intent, "请选择浏览器"));
-//        }
-//    }
-//}
+
+    /**
+     * 调用第三方浏览器打开
+     *
+     * @param context
+     * @param url     要浏览的资源地址
+     */
+    public static void toBrowser(Activity context, String url) {
+        final Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        // 注意此处的判断intent.resolveActivity()可以返回显示该Intent的Activity对应的组件名
+        // 官方解释 : Name of the component implementing an activity that can display the intent
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            final ComponentName componentName = intent.resolveActivity(context.getPackageManager());
+            // 打印Log   ComponentName到底是什么
+//            L.d("componentName = " + componentName.getClassName());
+            context.startActivity(Intent.createChooser(intent, "请选择浏览器"));
+        }
+    }
+}

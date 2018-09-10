@@ -1,4 +1,4 @@
-package main.java.com.hwl.beta.ui.entry.logic;
+package com.hwl.beta.ui.entry.logic;
 
 /**
  * RegisterHandle

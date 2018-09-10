@@ -1,13 +1,12 @@
-package main.java.com.hwl.beta.ui.entry.standard;
+package com.hwl.beta.ui.entry.standard;
 
-import java.util.function.Consumer;
-
-import com.hwl.beta.ui.entry.action.ILoginListener;
+import com.hwl.beta.ui.common.rxext.DefaultAction;
+import com.hwl.beta.ui.common.rxext.DefaultConsumer;
 import com.hwl.beta.ui.entry.bean.LoginBean;
 
 public interface LoginStandard {
 
     LoginBean getLoginBean();
 
-    void userLogin(LoginBean loginBean,Runnable succCallback,Consumer<String> errorCallback);
+    void userLogin(LoginBean loginBean, DefaultAction succCallback, DefaultConsumer<String> errorCallback);
 }

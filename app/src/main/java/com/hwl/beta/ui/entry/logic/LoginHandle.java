@@ -1,10 +1,14 @@
-package main.java.com.hwl.beta.ui.entry.logic;
+package com.hwl.beta.ui.entry.logic;
 
-import java.util.function.Consumer;
-
+import com.hwl.beta.net.user.UserService;
+import com.hwl.beta.net.user.body.UserLoginResponse;
+import com.hwl.beta.sp.UserSP;
+import com.hwl.beta.ui.common.rxext.DefaultAction;
+import com.hwl.beta.ui.common.rxext.DefaultConsumer;
+import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.entry.bean.LoginBean;
 
-import main.java.com.hwl.beta.ui.entry.standard.LoginStandard;
+import com.hwl.beta.ui.entry.standard.LoginStandard;
 
 public class LoginHandle implements LoginStandard {
 
@@ -17,7 +21,7 @@ public class LoginHandle implements LoginStandard {
     }
 
     @Override
-    public void userLogin(LoginBean loginBean, Runnable succCallback, Consumer<String> errorCallback) {
+    public void userLogin(LoginBean loginBean, final DefaultAction succCallback, final DefaultConsumer<String> errorCallback) {
         if (loginBean == null) {
             errorCallback.accept("login param is empty");
             return;

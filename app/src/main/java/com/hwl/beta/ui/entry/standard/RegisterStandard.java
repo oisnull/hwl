@@ -1,7 +1,7 @@
-package main.java.com.hwl.beta.ui.entry.standard;
+package com.hwl.beta.ui.entry.standard;
 
-import java.util.function.Consumer;
-
+import com.hwl.beta.ui.common.rxext.DefaultAction;
+import com.hwl.beta.ui.common.rxext.DefaultConsumer;
 import com.hwl.beta.ui.entry.bean.RegisterBean;
 
 /**
@@ -11,7 +11,7 @@ public interface RegisterStandard {
 
     RegisterBean getRegisterBean();
 
-    void userRegister(RegisterBean registerBean,Runnable succCallback,Consumer<String> errorCallback);
+    void userRegister(RegisterBean registerBean, DefaultAction succCallback, DefaultConsumer<String> errorCallback);
 
-    void sendCode(RegisterBean registerBean,Runnable succCallback,Consumer<String> errorCallback);
+    void sendCode(RegisterBean registerBean,DefaultAction succCallback,DefaultConsumer<String> errorCallback);
 }

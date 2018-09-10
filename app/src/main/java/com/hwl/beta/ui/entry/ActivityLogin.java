@@ -6,15 +6,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
-import main.java.com.hwl.beta.ui.entry.logic.LoginHandle;
+
+import com.hwl.beta.ui.common.UITransfer;
+import com.hwl.beta.ui.common.rxext.DefaultAction;
+import com.hwl.beta.ui.common.rxext.DefaultConsumer;
+import com.hwl.beta.ui.entry.logic.LoginHandle;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.ActivityLoginBinding;
-import com.hwl.beta.net.user.UserService;
-import com.hwl.beta.net.user.body.UserLoginResponse;
-import com.hwl.beta.sp.UserSP;
-//import com.hwl.beta.ui.common.UITransfer;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.entry.action.ILoginListener;
 import com.hwl.beta.ui.entry.bean.LoginBean;
 
@@ -36,11 +35,13 @@ public class ActivityLogin extends FragmentActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         binding.setLoginBean(loginHandle.getLoginBean());
         binding.setAction(new LoginListener());
-        binding.tbTitle.setTitle(R.string.login_activity_title).setImageLeftHide().setImageRightHide();
+        binding.tbTitle.setTitle(getResources().getString(R.string.login_activity_title))
+                .setImageLeftHide().setImageRightHide();
     }
 
     private class LoginListener implements ILoginListener {
         boolean isRuning = false;
+        LoginBean loginBean = loginHandle.getLoginBean();
 
         private void login() {
             if (isRuning) {
@@ -56,12 +57,18 @@ public class ActivityLogin extends FragmentActivity {
                 return;
             }
 
-            loginHandle.userLogin(loginBean, () -> {
-                UITransfer.toWelcomeActivity(activity);
-                finish();
-            }, (msg)->{
-                isRuning = false;
-                binding.btnLogin.setText("登   录");
+            loginHandle.userLogin(loginBean, new DefaultAction() {
+                @Override
+                public void run() {
+//                    UITransfer.toWelcomeActivity(activity);
+                    finish();
+                }
+            }, new DefaultConsumer<String>() {
+                @Override
+                public void accept(String s) {
+                    isRuning = false;
+                    binding.btnLogin.setText("登   录");
+                }
             });
         }
 
