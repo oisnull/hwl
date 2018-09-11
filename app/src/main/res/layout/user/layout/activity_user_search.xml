@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--<data>-->
+
+        <!--<variable-->
+            <!--name="searchBean"-->
+            <!--type="com.hwl.beta.ui.user.bean.UserSearchBean"></variable>-->
+
+        <!--<variable-->
+            <!--name="searchAdapter"-->
+            <!--type="com.hwl.beta.ui.user.adp.UserSearchAdapter"></variable>-->
+
+        <!--<variable-->
+            <!--name="action"-->
+            <!--type="com.hwl.beta.ui.user.action.IUserSearchListener"></variable>-->
+    <!--</data>-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:background="@color/main"-->
+            <!--android:gravity="center"-->
+            <!--android:paddingBottom="10dp"-->
+            <!--android:paddingLeft="10dp"-->
+            <!--android:paddingTop="10dp">-->
+
+            <!--<ImageView-->
+                <!--android:id="@+id/iv_back"-->
+                <!--android:layout_width="20dp"-->
+                <!--android:layout_height="20dp"-->
+                <!--android:onClick="@{(view)->action.onBackClick()}"-->
+                <!--android:src="@drawable/back" />-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/et_user_key"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_marginLeft="20dp"-->
+                <!--android:layout_marginRight="20dp"-->
+                <!--android:layout_weight="1.0"-->
+                <!--android:background="@color/white"-->
+                <!--android:drawableLeft="@drawable/search"-->
+                <!--android:hint="请输入要查找的用户标识"-->
+                <!--android:imeOptions="actionSearch"-->
+                <!--android:maxLength="10"-->
+                <!--android:paddingLeft="10dp"-->
+                <!--android:paddingRight="10dp"-->
+                <!--android:singleLine="true"-->
+                <!--android:text="@={searchBean.userSymbol}"-->
+                <!--android:textColorHint="@color/color_b2b2b2"-->
+                <!--android:textSize="15dp" />-->
+
+            <!--<Button-->
+                <!--android:id="@+id/btn_search"-->
+                <!--android:layout_width="60dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:background="@drawable/bg_top"-->
+                <!--android:onClick="@{(view)->action.onSearchClick()}"-->
+                <!--android:paddingBottom="5dp"-->
+                <!--android:paddingLeft="10dp"-->
+                <!--android:paddingRight="10dp"-->
+                <!--android:paddingTop="5dp"-->
+                <!--android:text="搜索"-->
+                <!--android:textColor="@color/white"-->
+                <!--android:textSize="@dimen/dp_15" />-->
+        <!--</LinearLayout>-->
+
+        <!--<ProgressBar-->
+            <!--android:id="@+id/pb_loading"-->
+            <!--android:layout_width="30dp"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:layout_marginTop="@dimen/dp_20"-->
+            <!--android:visibility="gone" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/tv_show"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:layout_marginTop="@dimen/dp_20"-->
+            <!--android:text="没有搜索到用户数据"-->
+            <!--android:textColor="@color/color_b2b2b2"-->
+            <!--android:visibility="gone" />-->
+
+        <!--<ListView-->
+            <!--android:id="@+id/lv_users"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--app:adapter="@{searchAdapter}"></ListView>-->
+    </LinearLayout>
+</layout>

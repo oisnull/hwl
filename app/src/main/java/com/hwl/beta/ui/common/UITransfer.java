@@ -32,7 +32,9 @@ import com.hwl.beta.ui.TestActivity;
 //import com.hwl.beta.ui.entry.ActivityGetpwd;
 //import com.hwl.beta.ui.entry.ActivityMain;
 //import com.hwl.beta.ui.entry.ActivityQRCode;
+import com.hwl.beta.ui.entry.ActivityGetpwd;
 import com.hwl.beta.ui.entry.ActivityLogin;
+import com.hwl.beta.ui.entry.ActivityMain;
 import com.hwl.beta.ui.entry.ActivityRegister;
 //import com.hwl.beta.ui.entry.ActivityWelcome;
 //import com.hwl.beta.ui.group.ActivityGroup;
@@ -54,6 +56,7 @@ import com.hwl.beta.ui.entry.ActivityRegister;
 //import com.hwl.beta.ui.user.ActivityUserSetting;
 //import com.hwl.beta.ui.video.ActivityVideoPlay;
 //import com.hwl.beta.ui.video.ActivityVideoSelect;
+import com.hwl.beta.ui.entry.ActivityWelcome;
 import com.hwl.beta.utils.StorageUtils;
 import com.hwl.beta.utils.StringUtils;
 
@@ -86,29 +89,29 @@ public class UITransfer {
         context.startActivity(intent);
     }
 
-//    public static void toGetpwdActivity(Activity context) {
-//        Intent intent = new Intent(context, ActivityGetpwd.class);
-//        context.startActivity(intent);
-//    }
-//
-//    public static void toWelcomeActivity(Activity context) {
-//        Intent intent = new Intent(context, ActivityWelcome.class);
-//        context.startActivity(intent);
-//    }
+    public static void toGetpwdActivity(Activity context) {
+        Intent intent = new Intent(context, ActivityGetpwd.class);
+        context.startActivity(intent);
+    }
 
-//    public static void toLogout(Activity context) {
-//        String userAccount = UserSP.getAccount();
-//        UserSP.clearUserInfo();
-//        UserPosSP.clearPosInfo();
-//        DaoUtils.closeDB();
-//        toWelcomeActivity(context);
-//        UserSP.setAccount(userAccount);
-//    }
-//
-//    public static void toMainActivity(Activity context) {
-//        Intent intent = new Intent(context, ActivityMain.class);
-//        context.startActivity(intent);
-//    }
+    public static void toWelcomeActivity(Activity context) {
+        Intent intent = new Intent(context, ActivityWelcome.class);
+        context.startActivity(intent);
+    }
+
+    public static void toLogout(Activity context) {
+        String userAccount = UserSP.getAccount();
+        UserSP.clearUserInfo();
+        UserPosSP.clearPosInfo();
+        DaoUtils.closeDB();
+        toWelcomeActivity(context);
+        UserSP.setAccount(userAccount);
+    }
+
+    public static void toMainActivity(Activity context) {
+        Intent intent = new Intent(context, ActivityMain.class);
+        context.startActivity(intent);
+    }
 //
 //    public static void toUserSettingActivity(Activity context) {
 //        Intent intent = new Intent(context, ActivityUserSetting.class);

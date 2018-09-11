@@ -37,20 +37,20 @@
         android:supportsRtl="true"
         android:theme="@style/ThemeActivity"
         tools:replace="android:name">
-        <activity android:name=".ui.entry.ActivityLogin">
+        <activity android:name=".ui.entry.ActivityWelcome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--<activity-->
-            <!--android:name=".ui.entry.ActivityMain"-->
-            <!--android:theme="@style/SwipeTheme" />-->
-        <!--<activity android:name=".ui.TestActivity"></activity>-->
+        <activity
+            android:name=".ui.entry.ActivityMain"
+            android:theme="@style/SwipeTheme" />
+        <activity android:name=".ui.TestActivity"></activity>
         <!--<activity android:name=".ui.entry.ActivityQRCode" />-->
-        <!--<activity android:name=".ui.entry.ActivityLogin" />-->
-        <!--<activity android:name=".ui.entry.ActivityRegister" />-->
-        <!--<activity android:name=".ui.entry.ActivityGetpwd" />-->
+        <activity android:name=".ui.entry.ActivityLogin" />
+        <activity android:name=".ui.entry.ActivityRegister" />
+        <activity android:name=".ui.entry.ActivityGetpwd" />
         <!--<activity android:name=".ui.user.ActivityUserSearch" />-->
         <!--<activity android:name=".ui.user.ActivityUserIndex" />-->
         <!--<activity android:name=".ui.user.ActivityUserSetting" />-->

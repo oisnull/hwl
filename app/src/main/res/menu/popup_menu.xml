@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/pop_near_group"
+        android:title="我的附近" />
+    <item
+        android:id="@+id/pop_near_publish"
+        android:title="发布信息" />
+    <item
+        android:id="@+id/pop_near_message"
+        android:title="附近消息" />
+    <item
+        android:id="@+id/pop_add_user"
+        android:title="查找用户" />
+    <item
+        android:id="@+id/pop_share_app"
+        android:title="分享应用" />
+    <item
+        android:id="@+id/pop_open_test"
+        android:title="测试Activity" />
+
+</menu>

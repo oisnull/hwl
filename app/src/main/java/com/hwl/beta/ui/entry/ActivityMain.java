@@ -1,114 +1,104 @@
-//package com.hwl.beta.ui.entry;
-//
-//import android.app.Activity;
-//import android.app.AlertDialog;
-//import android.content.BroadcastReceiver;
-//import android.content.Context;
-//import android.content.DialogInterface;
-//import android.content.Intent;
-//import android.content.IntentFilter;
-//import android.databinding.DataBindingUtil;
-//import android.net.ConnectivityManager;
-//import android.net.NetworkInfo;
-//import android.os.Bundle;
-//import android.support.v4.app.Fragment;
-//import android.support.v4.app.FragmentActivity;
-//import android.support.v4.view.ViewPager;
-//import android.view.KeyEvent;
-//import android.view.MenuItem;
-//import android.view.View;
-//import android.view.WindowManager;
-//import android.widget.PopupMenu;
-//import android.widget.Toast;
-//
-//import com.hwl.beta.R;
-//import com.hwl.beta.databinding.ActivityMainBinding;
-//import com.hwl.beta.db.DaoUtils;
-//import com.hwl.beta.db.entity.GroupInfo;
-//import com.hwl.beta.mq.bean.UserLogoutMessageBean;
-//import com.hwl.beta.mq.receive.MessageReceive;
-//import com.hwl.beta.net.NetConstant;
-//import com.hwl.beta.net.user.UserService;
-//import com.hwl.beta.net.user.body.SetUserPosRequest;
-//import com.hwl.beta.net.user.body.SetUserPosResponse;
-//import com.hwl.beta.service.LocationService;
-//import com.hwl.beta.sp.MessageCountSP;
-//import com.hwl.beta.sp.UserPosSP;
-//import com.hwl.beta.sp.UserSP;
-//import com.hwl.beta.ui.TabFragmentPagerAdapter;
-//import com.hwl.beta.ui.busbean.EventActionGroup;
-//import com.hwl.beta.ui.busbean.EventBusConstant;
-//import com.hwl.beta.ui.chat.FragmentRecord;
-//import com.hwl.beta.ui.common.ShareTransfer;
-//import com.hwl.beta.ui.common.UITransfer;
-//import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
-//import com.hwl.beta.ui.convert.DBGroupAction;
-//import com.hwl.beta.ui.dialog.LocationDialogFragment;
-//import com.hwl.beta.ui.entry.action.IMainListener;
-//import com.hwl.beta.ui.entry.bean.MainBean;
-//import com.hwl.beta.ui.near.FragmentNear;
-//import com.hwl.beta.ui.user.FragmentCenter;
-//import com.hwl.beta.ui.user.FragmentUser;
-//
-//import org.greenrobot.eventbus.EventBus;
-//import org.greenrobot.eventbus.Subscribe;
-//import org.greenrobot.eventbus.ThreadMode;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
-//
-//public class ActivityMain extends FragmentActivity {
-//    Activity activity;
-//    ActivityMainBinding binding;
-//    MainBean mainBean;
-//    MainListener mainListener;
-//    private long exitTime = 0;
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
-//        activity = this;
-//        mainBean = new MainBean(MessageCountSP.getChatMessageCount(), MessageCountSP.getNearCircleMessageCount(), MessageCountSP.getFriendRequestCount(), MessageCountSP.getCircleMessageCount(), 0);
-//        mainListener = new MainListener();
-//        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-//        binding.setMainBean(mainBean);
-//        binding.setAction(mainListener);
-//
-//        initView();
+package com.hwl.beta.ui.entry;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.databinding.DataBindingUtil;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.PopupMenu;
+import android.widget.Toast;
+
+import com.hwl.beta.R;
+import com.hwl.beta.databinding.ActivityMainBinding;
+import com.hwl.beta.db.DaoUtils;
+import com.hwl.beta.db.entity.GroupInfo;
+import com.hwl.beta.net.NetConstant;
+import com.hwl.beta.net.user.UserService;
+import com.hwl.beta.net.user.body.SetUserPosRequest;
+import com.hwl.beta.net.user.body.SetUserPosResponse;
+import com.hwl.beta.sp.MessageCountSP;
+import com.hwl.beta.sp.UserPosSP;
+import com.hwl.beta.sp.UserSP;
+import com.hwl.beta.ui.TabFragmentPagerAdapter;
+import com.hwl.beta.ui.common.ShareTransfer;
+import com.hwl.beta.ui.common.UITransfer;
+import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
+import com.hwl.beta.ui.entry.action.IMainListener;
+import com.hwl.beta.ui.entry.bean.MainBean;
+import com.hwl.beta.ui.user.FragmentCenter;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
+
+public class ActivityMain extends FragmentActivity {
+    Activity activity;
+    ActivityMainBinding binding;
+    MainBean mainBean;
+    MainListener mainListener;
+    private long exitTime = 0;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+        activity = this;
+        mainBean = new MainBean(MessageCountSP.getChatMessageCount(), MessageCountSP.getNearCircleMessageCount(), MessageCountSP.getFriendRequestCount(), MessageCountSP.getCircleMessageCount(), 0);
+        mainListener = new MainListener();
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        binding.setMainBean(mainBean);
+        binding.setAction(mainListener);
+
+        initView();
 //        if (!EventBus.getDefault().isRegistered(this)) {
 //            EventBus.getDefault().register(this);
 //        }
-//    }
-//
-//    private void initView() {
-//        mainListener.initLocation();
-//        mainListener.initVPContainer();
-//        binding.tbTitle.setTitle("位置获取中...")
-//                .setImageLeftResource(R.drawable.ic_location, 0)
-//                .setImageLeftClick(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        mainListener.showLoactionStatus();
-//                    }
-//                })
-//                .setImageRightClick(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        showPopMenu(v);
-//                    }
-//                });
-//
+    }
+
+    private void initView() {
+        mainListener.initLocation();
+        mainListener.initVPContainer();
+        binding.tbTitle.setTitle("位置获取中...")
+                .setImageLeftResource(R.drawable.ic_location, 0)
+                .setImageLeftClick(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mainListener.showLoactionStatus();
+                    }
+                })
+                .setImageRightClick(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showPopMenu(v);
+                    }
+                });
+
 //        MessageReceive.start();
 //        SQLiteStudioService.instance().start(activity);
 //        activity.registerReceiver(networkBroadcastReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
 //        EventBus.getDefault().postSticky(EventBusConstant.EB_TYPE_NEAR_INFO_UPDATE);
-//    }
-//
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void updateMessageCount(Integer ebType) {
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updateMessageCount(Integer ebType) {
 //        if (ebType == EventBusConstant.EB_TYPE_FRIEND_REQUEST_UPDATE) {
 //            mainBean.setFriendMessageCount(MessageCountSP.getFriendRequestCount());
 //        } else if (ebType == EventBusConstant.EB_TYPE_CHAT_MESSAGE_UPDATE) {
@@ -116,28 +106,28 @@
 //        } else if (ebType == EventBusConstant.EB_TYPE_NEAR_CIRCLE_MESSAGE_UPDATE) {
 //            mainBean.setNearMessageCount(MessageCountSP.getNearCircleMessageCount());
 //        }
-//    }
-//
+    }
+
 //    @Subscribe(threadMode = ThreadMode.MAIN)
 //    public void userLogoutHint(UserLogoutMessageBean messageBean) {
 //        if (messageBean == null) return;
 //        UITransfer.toReloginDialog(this, messageBean.getHintContent());
 //    }
-//
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 //        activity.unregisterReceiver(networkBroadcastReceiver);
 //        EventBus.getDefault().unregister(this);
-//        MessageReceive.stop();
+////        MessageReceive.stop();
 //        SQLiteStudioService.instance().stop();
-//    }
-//
-//    private void showPopMenu(View v) {
-//        PopupMenu popup = new PopupMenu(activity, v);
-//        popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
-//        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//            public boolean onMenuItemClick(MenuItem item) {
+    }
+
+    private void showPopMenu(View v) {
+        PopupMenu popup = new PopupMenu(activity, v);
+        popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
 //                switch (item.getItemId()) {
 //                    case R.id.pop_add_user:
 //                        UITransfer.toUserSearchActivity(activity);
@@ -174,69 +164,69 @@
 //                        UITransfer.toTestActivity(activity);
 //                        break;
 //                }
-//                return true;
-//            }
-//        });
-//        popup.show();
-//    }
-//
-//    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if (keyCode == KeyEvent.KEYCODE_BACK) {
-//            if ((System.currentTimeMillis() - exitTime) > 2000) {
-//                Toast.makeText(activity, "再按一次退出程序",
-//                        Toast.LENGTH_SHORT).show();
-//                exitTime = System.currentTimeMillis();
-//            } else {
-//                finish();
-//                System.exit(0);
-//            }
-//            return false;
-//        }
-//        return super.onKeyDown(keyCode, event);
-//    }
-//
-//    public class MainListener implements IMainListener {
+                return true;
+            }
+        });
+        popup.show();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if ((System.currentTimeMillis() - exitTime) > 2000) {
+                Toast.makeText(activity, "再按一次退出程序",
+                        Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
+                finish();
+                System.exit(0);
+            }
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    public class MainListener implements IMainListener {
 //        LocationService locationService;
 //        LocationDialogFragment locationTip;
-//
-//        @Override
-//        public void initVPContainer() {
-//            List<Fragment> fragments = new ArrayList<>();
+
+        @Override
+        public void initVPContainer() {
+            List<Fragment> fragments = new ArrayList<>();
 //            fragments.add(new FragmentRecord());
 //            fragments.add(new FragmentNear());
 //            fragments.add(new FragmentUser());
-//            fragments.add(new FragmentCenter());
-//
-//            TabFragmentPagerAdapter adapter = new TabFragmentPagerAdapter(getSupportFragmentManager(), fragments);
-//            binding.vpContainer.setAdapter(adapter);
-//            binding.vpContainer.setCurrentItem(0);
-//            switchTab(0);
-//
-//            binding.vpContainer.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//                @Override
-//                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//                    //页面在滑动后调用
-//                }
-//
-//                @Override
-//                public void onPageSelected(int position) {
-//                    //页面跳转完后调用
-//                }
-//
-//                @Override
-//                public void onPageScrollStateChanged(int state) {
-//                    //页面状态改变时调用 1:表示正在滑动 ，2：表示滑动完毕，0：表示什么都没做
-//                    if (state == 2) {
-//                        int index = binding.vpContainer.getCurrentItem();
-//                        switchTab(index);
-//                    }
-//                }
-//            });
-//        }
-//
-//        @Override
-//        public void initLocation() {
+            fragments.add(new FragmentCenter());
+
+            TabFragmentPagerAdapter adapter = new TabFragmentPagerAdapter(getSupportFragmentManager(), fragments);
+            binding.vpContainer.setAdapter(adapter);
+            binding.vpContainer.setCurrentItem(0);
+            switchTab(0);
+
+            binding.vpContainer.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                    //页面在滑动后调用
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+                    //页面跳转完后调用
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+                    //页面状态改变时调用 1:表示正在滑动 ，2：表示滑动完毕，0：表示什么都没做
+                    if (state == 2) {
+                        int index = binding.vpContainer.getCurrentItem();
+                        switchTab(index);
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void initLocation() {
 //            locationService = new LocationService(new LocationService.OnLocationListener() {
 //                @Override
 //                public void onSuccess(LocationService.ResultModel result) {
@@ -288,9 +278,9 @@
 //                }
 //            });
 //            locationService.start();
-//        }
-//
-//        public void showLocationDialog() {
+        }
+
+        public void showLocationDialog() {
 //            if (locationTip == null) {
 //                locationTip = new LocationDialogFragment();
 //            }
@@ -303,9 +293,9 @@
 //                }
 //            });
 //            locationTip.show(getSupportFragmentManager(), "LocationDialogFragment");
-//        }
-//
-//        public void showLoactionStatus() {
+        }
+
+        public void showLoactionStatus() {
 //            int status = locationService.getCurrentLocationStatus();
 //            switch (status) {
 //                case LocationService.NOT_START:
@@ -325,68 +315,68 @@
 //                    locationTip.setContentShow(UserPosSP.getPosDesc());
 //                    break;
 //            }
-//        }
-//
-//        @Override
-//        public void onTabMessageClick() {
-//            binding.vpContainer.setCurrentItem(0);
-//            switchTab(0);
-//        }
-//
-//        @Override
-//        public void onTabNearClick() {
-//            binding.vpContainer.setCurrentItem(1);
-//            switchTab(1);
-//        }
-//
-//        @Override
-//        public void onTabFriendClick() {
-//            binding.vpContainer.setCurrentItem(2);
-//            switchTab(2);
-//
-//        }
-//
-//        @Override
-//        public void onTabMeClick() {
-//            binding.vpContainer.setCurrentItem(3);
-//            switchTab(3);
-//        }
-//
-//        int currentViewIndex = -1;
-//
-//        private void switchTab(int index) {
-//            if (currentViewIndex == index) return;
-//            currentViewIndex = index;
-//            switch (index) {
-//                case 0:
-//                    binding.tvMessage.setTextColor(getResources().getColor(R.color.main));
-//                    binding.tvFriend.setTextColor(getResources().getColor(R.color.black));
-//                    binding.tvNear.setTextColor(getResources().getColor(R.color.black));
-//                    binding.tvMe.setTextColor(getResources().getColor(R.color.black));
-//                    break;
-//                case 1:
-//                    binding.tvMessage.setTextColor(getResources().getColor(R.color.black));
-//                    binding.tvFriend.setTextColor(getResources().getColor(R.color.black));
-//                    binding.tvNear.setTextColor(getResources().getColor(R.color.main));
-//                    binding.tvMe.setTextColor(getResources().getColor(R.color.black));
-//                    //binding.nearFragment.loadData();
-//                    break;
-//                case 2:
-//                    binding.tvMessage.setTextColor(getResources().getColor(R.color.black));
-//                    binding.tvFriend.setTextColor(getResources().getColor(R.color.main));
-//                    binding.tvNear.setTextColor(getResources().getColor(R.color.black));
-//                    binding.tvMe.setTextColor(getResources().getColor(R.color.black));
-//                    break;
-//                case 3:
-//                    binding.tvMessage.setTextColor(getResources().getColor(R.color.black));
-//                    binding.tvFriend.setTextColor(getResources().getColor(R.color.black));
-//                    binding.tvNear.setTextColor(getResources().getColor(R.color.black));
-//                    binding.tvMe.setTextColor(getResources().getColor(R.color.main));
-//                    break;
-//            }
-//        }
-//    }
-//
+        }
+
+        @Override
+        public void onTabMessageClick() {
+            binding.vpContainer.setCurrentItem(0);
+            switchTab(0);
+        }
+
+        @Override
+        public void onTabNearClick() {
+            binding.vpContainer.setCurrentItem(1);
+            switchTab(1);
+        }
+
+        @Override
+        public void onTabFriendClick() {
+            binding.vpContainer.setCurrentItem(2);
+            switchTab(2);
+
+        }
+
+        @Override
+        public void onTabMeClick() {
+            binding.vpContainer.setCurrentItem(3);
+            switchTab(3);
+        }
+
+        int currentViewIndex = -1;
+
+        private void switchTab(int index) {
+            if (currentViewIndex == index) return;
+            currentViewIndex = index;
+            switch (index) {
+                case 0:
+                    binding.tvMessage.setTextColor(getResources().getColor(R.color.main));
+                    binding.tvFriend.setTextColor(getResources().getColor(R.color.black));
+                    binding.tvNear.setTextColor(getResources().getColor(R.color.black));
+                    binding.tvMe.setTextColor(getResources().getColor(R.color.black));
+                    break;
+                case 1:
+                    binding.tvMessage.setTextColor(getResources().getColor(R.color.black));
+                    binding.tvFriend.setTextColor(getResources().getColor(R.color.black));
+                    binding.tvNear.setTextColor(getResources().getColor(R.color.main));
+                    binding.tvMe.setTextColor(getResources().getColor(R.color.black));
+                    //binding.nearFragment.loadData();
+                    break;
+                case 2:
+                    binding.tvMessage.setTextColor(getResources().getColor(R.color.black));
+                    binding.tvFriend.setTextColor(getResources().getColor(R.color.main));
+                    binding.tvNear.setTextColor(getResources().getColor(R.color.black));
+                    binding.tvMe.setTextColor(getResources().getColor(R.color.black));
+                    break;
+                case 3:
+                    binding.tvMessage.setTextColor(getResources().getColor(R.color.black));
+                    binding.tvFriend.setTextColor(getResources().getColor(R.color.black));
+                    binding.tvNear.setTextColor(getResources().getColor(R.color.black));
+                    binding.tvMe.setTextColor(getResources().getColor(R.color.main));
+                    break;
+            }
+        }
+    }
+
 //    private BroadcastReceiver networkBroadcastReceiver = new BroadcastReceiver() {
 //        @Override
 //        public void onReceive(Context context, Intent intent) {
@@ -401,4 +391,4 @@
 //            }
 //        }
 //    };
-//}
+}

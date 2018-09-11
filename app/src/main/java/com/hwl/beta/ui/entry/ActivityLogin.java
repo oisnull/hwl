@@ -60,7 +60,7 @@ public class ActivityLogin extends FragmentActivity {
             loginHandle.userLogin(loginBean, new DefaultAction() {
                 @Override
                 public void run() {
-//                    UITransfer.toWelcomeActivity(activity);
+                    UITransfer.toWelcomeActivity(activity);
                     finish();
                 }
             }, new DefaultConsumer<String>() {
@@ -79,12 +79,12 @@ public class ActivityLogin extends FragmentActivity {
 
         @Override
         public void onRegisterClick() {
-            // UITransfer.toRegisterActivity(activity);
+             UITransfer.toRegisterActivity(activity);
         }
 
         @Override
         public void onGetpwdClick() {
-            // UITransfer.toGetpwdActivity(activity);
+             UITransfer.toGetpwdActivity(activity);
         }
 
         @Override

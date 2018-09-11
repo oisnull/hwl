@@ -23,7 +23,7 @@ public class LoginHandle implements LoginStandard {
     @Override
     public void userLogin(LoginBean loginBean, final DefaultAction succCallback, final DefaultConsumer<String> errorCallback) {
         if (loginBean == null) {
-            errorCallback.accept("login param is empty");
+            errorCallback.accept("login parameter is empty");
             return;
         }
 

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/pop_send_friend"
+        android:title="发送给好友"/>
+    <item
+        android:id="@+id/pop_copy"
+        android:title="复制"/>
+    <item
+        android:id="@+id/pop_delete"
+        android:title="删除"/>
+    <item
+        android:id="@+id/pop_collection"
+        android:title="收藏"/>
+
+</menu>
