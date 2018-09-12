@@ -1,84 +1,79 @@
-//package com.hwl.beta.ui.user;
-//
-//import android.app.Activity;
-//import android.databinding.DataBindingUtil;
-//import android.os.Bundle;
-//import android.support.annotation.Nullable;
-//import android.view.LayoutInflater;
-//import android.view.View;
-//import android.view.ViewGroup;
-//import android.widget.AdapterView;
-//
-//import com.hwl.beta.R;
-//import com.hwl.beta.databinding.FragmentUserBinding;
-//import com.hwl.beta.db.DaoUtils;
-//import com.hwl.beta.db.entity.Friend;
-//import com.hwl.beta.net.ResponseBase;
-//import com.hwl.beta.net.user.NetUserFriendInfo;
-//import com.hwl.beta.net.user.UserService;
-//import com.hwl.beta.net.user.body.GetFriendsResponse;
-//import com.hwl.beta.sp.MessageCountSP;
-//import com.hwl.beta.sp.UserSP;
-//import com.hwl.beta.ui.busbean.EventBusConstant;
-//import com.hwl.beta.ui.busbean.EventDeleteFriend;
-//import com.hwl.beta.ui.busbean.EventUpdateFriendRemark;
-//import com.hwl.beta.ui.common.BaseFragment;
-//import com.hwl.beta.ui.common.FriendComparator;
-//import com.hwl.beta.ui.common.UITransfer;
-//import com.hwl.beta.ui.convert.DBFriendAction;
-//import com.hwl.beta.ui.user.adp.FriendAdapter;
-//import com.hwl.beta.ui.widget.SideBar;
-//
-//import org.greenrobot.eventbus.EventBus;
-//import org.greenrobot.eventbus.Subscribe;
-//import org.greenrobot.eventbus.ThreadMode;
-//
-//import java.util.ArrayList;
-//import java.util.Collections;
-//import java.util.List;
-//
-//import io.reactivex.Observable;
-//import io.reactivex.ObservableSource;
-//import io.reactivex.android.schedulers.AndroidSchedulers;
-//import io.reactivex.functions.Consumer;
-//import io.reactivex.functions.Function;
-//import io.reactivex.functions.Predicate;
-//import io.reactivex.observers.DefaultObserver;
-//import io.reactivex.schedulers.Schedulers;
-//
-///**
-// * Created by Administrator on 2017/12/27.
-// */
-//
-//public class FragmentUser extends BaseFragment {
-//    FragmentUserBinding binding;
+package com.hwl.beta.ui.user;
+
+import android.app.Activity;
+import android.databinding.DataBindingUtil;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+
+import com.hwl.beta.R;
+import com.hwl.beta.databinding.FragmentUserBinding;
+import com.hwl.beta.db.DaoUtils;
+import com.hwl.beta.db.entity.Friend;
+import com.hwl.beta.net.ResponseBase;
+import com.hwl.beta.net.user.NetUserFriendInfo;
+import com.hwl.beta.net.user.UserService;
+import com.hwl.beta.net.user.body.GetFriendsResponse;
+import com.hwl.beta.sp.MessageCountSP;
+import com.hwl.beta.sp.UserSP;
+import com.hwl.beta.ui.common.BaseFragment;
+import com.hwl.beta.ui.common.FriendComparator;
+import com.hwl.beta.ui.common.UITransfer;
+import com.hwl.beta.ui.widget.SideBar;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
+import io.reactivex.observers.DefaultObserver;
+import io.reactivex.schedulers.Schedulers;
+
+/**
+ * Created by Administrator on 2017/12/27.
+ */
+
+public class FragmentUser extends BaseFragment {
+    FragmentUserBinding binding;
 //    List<Friend> users;
 //    int friendCount = 0;
 //    FriendAdapter friendAdapter;
-//    Activity activity;
+    Activity activity;
 //    FriendComparator pinyinComparator;
-//
-//    @Nullable
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
-//            Bundle savedInstanceState) {
-//        activity = getActivity();
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
+            Bundle savedInstanceState) {
+        activity = getActivity();
 //        pinyinComparator = new FriendComparator();
 //        users = new ArrayList<>();
 //        friendAdapter = new FriendAdapter(activity, users);
-//
-//        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_user, container, false);
+
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_user, container, false);
 //        binding.setFriendAdapter(friendAdapter);
 //        initView();
 //
 //        if (!EventBus.getDefault().isRegistered(this)) {
 //            EventBus.getDefault().register(this);
 //        }
-//        return binding.getRoot();
-//    }
-//
-//    @Override
-//    protected void onFragmentFirstVisible() {
+        return binding.getRoot();
+    }
+
+    @Override
+    protected void onFragmentFirstVisible() {
 //        binding.pbLoading.setVisibility(View.VISIBLE);
 //        Observable.just(1)
 //                .map(new Function<Integer, Boolean>() {
@@ -105,9 +100,9 @@
 //                        binding.pbLoading.setVisibility(View.GONE);
 //                    }
 //                });
-//
-//    }
-//
+
+    }
+
 //    @Subscribe(threadMode = ThreadMode.MAIN)
 //    public void updateFriendCount(Integer ebType) {
 //        if (ebType == EventBusConstant.EB_TYPE_FRIEND_REQUEST_UPDATE) {
@@ -165,8 +160,8 @@
 //            }
 //        }
 //    }
-//
-//    private void initUsers() {
+
+    private void initUsers() {
 //        List<Friend> friends = DaoUtils.getFriendManagerInstance().getAll();
 //        if (friends != null) {
 //            users.addAll(friends);
@@ -196,15 +191,15 @@
 //        func3.setMessageCount(MessageCountSP.getFriendRequestCountDesc());
 //        users.add(func3);
 //        Collections.sort(users, pinyinComparator);
-//    }
-//
-//    @Override
-//    public void onDestroy() {
-//        super.onDestroy();
-//        EventBus.getDefault().unregister(this);
-//    }
-//
-//    private void initView() {
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    private void initView() {
 //        binding.lvFriends.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
 //            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -244,11 +239,11 @@
 //                }
 //            }
 //        });
-//    }
-//
-//    private void loadServerFriendInfo() {
-////        Log.d("FragmentUser", "friendCount:" + friendCount + "  UserSP:" + UserSP
-//// .getFriendCount());
+    }
+
+    private void loadServerFriendInfo() {
+//        Log.d("FragmentUser", "friendCount:" + friendCount + "  UserSP:" + UserSP
+// .getFriendCount());
 //        if (friendCount < UserSP.getFriendCount()) {
 //            binding.pbLoading.setVisibility(View.VISIBLE);
 //            UserService.getFriends()
@@ -309,5 +304,5 @@
 //                        }
 //                    });
 //        }
-//    }
-//}
+    }
+}

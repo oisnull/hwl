@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/main_background"
+        android:orientation="vertical">
+
+        <!--<com.hwl.beta.ui.widget.TitleBar-->
+            <!--android:id="@+id/tb_title"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content" />-->
+
+        <!--<ScrollView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:scrollbars="none">-->
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:orientation="vertical">-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:background="@color/white"-->
+                    <!--android:orientation="vertical">-->
+                    <!--&lt;!&ndash;内容输入框&ndash;&gt;-->
+                    <!--<com.hwl.beta.emotion.widget.EmotionEditText-->
+                        <!--android:id="@+id/et_emotion_text"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginTop="15dp"-->
+                        <!--android:background="@color/white"-->
+                        <!--android:gravity="top|left"-->
+                        <!--android:hint="你想说些什么..."-->
+                        <!--android:lines="5"-->
+                        <!--android:paddingLeft="15dp"-->
+                        <!--android:paddingRight="15dp"-->
+                        <!--android:textColor="@color/color_727270"-->
+                        <!--android:textColorHint="@color/color_b2b2b2"-->
+                        <!--android:textSize="15dp" />-->
+
+                    <!--&lt;!&ndash;表情显示&ndash;&gt;-->
+                    <!--<com.hwl.beta.emotion.EmotionControlPannel-->
+                        <!--android:id="@+id/ecp_emotion"-->
+                        <!--app:pannel_theme="1"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:visibility="visible" />-->
+
+                <!--</LinearLayout>-->
+
+                <!--<com.hwl.beta.ui.widget.WarpLinearLayout-->
+                    <!--android:id="@+id/wll_image_container"-->
+                    <!--app:grivate="left"-->
+                    <!--app:isFull="true"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="15dp"-->
+                    <!--android:background="@color/white">-->
+                    <!--&lt;!&ndash;动态加载图片&ndash;&gt;-->
+                <!--</com.hwl.beta.ui.widget.WarpLinearLayout>-->
+
+                <!--&lt;!&ndash;所在位置&ndash;&gt;-->
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="15dp"-->
+                    <!--android:background="@color/white"-->
+                    <!--android:paddingLeft="15dp"-->
+                    <!--android:paddingRight="15dp">-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_location"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:drawableLeft="@drawable/ic_location2"-->
+                        <!--android:drawablePadding="10dp"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:paddingBottom="10dp"-->
+                        <!--android:paddingTop="15dp"-->
+                        <!--android:text="所在位置"-->
+                        <!--android:textColor="@color/color_727270"-->
+                        <!--android:textSize="15dp" />-->
+
+                <!--</RelativeLayout>-->
+            <!--</LinearLayout>-->
+        <!--</ScrollView>-->
+    </LinearLayout>
+</layout>

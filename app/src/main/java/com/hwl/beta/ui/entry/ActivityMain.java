@@ -23,22 +23,18 @@ import android.widget.Toast;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.ActivityMainBinding;
-import com.hwl.beta.db.DaoUtils;
-import com.hwl.beta.db.entity.GroupInfo;
-import com.hwl.beta.net.NetConstant;
-import com.hwl.beta.net.user.UserService;
-import com.hwl.beta.net.user.body.SetUserPosRequest;
-import com.hwl.beta.net.user.body.SetUserPosResponse;
-import com.hwl.beta.sp.MessageCountSP;
-import com.hwl.beta.sp.UserPosSP;
-import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.TabFragmentPagerAdapter;
+import com.hwl.beta.ui.chat.FragmentRecord;
 import com.hwl.beta.ui.common.ShareTransfer;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.entry.action.IMainListener;
 import com.hwl.beta.ui.entry.bean.MainBean;
+import com.hwl.beta.ui.entry.logic.MainHandle;
+import com.hwl.beta.ui.entry.standard.MainStandard;
+import com.hwl.beta.ui.near.FragmentNear;
 import com.hwl.beta.ui.user.FragmentCenter;
+import com.hwl.beta.ui.user.FragmentUser;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -52,7 +48,8 @@ import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 public class ActivityMain extends FragmentActivity {
     Activity activity;
     ActivityMainBinding binding;
-    MainBean mainBean;
+//    MainBean mainBean;
+    MainStandard mainStandard;
     MainListener mainListener;
     private long exitTime = 0;
 
@@ -61,10 +58,10 @@ public class ActivityMain extends FragmentActivity {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         activity = this;
-        mainBean = new MainBean(MessageCountSP.getChatMessageCount(), MessageCountSP.getNearCircleMessageCount(), MessageCountSP.getFriendRequestCount(), MessageCountSP.getCircleMessageCount(), 0);
+        mainStandard=new MainHandle();
         mainListener = new MainListener();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        binding.setMainBean(mainBean);
+        binding.setMainBean(mainStandard.getMainBean());
         binding.setAction(mainListener);
 
         initView();
@@ -81,7 +78,7 @@ public class ActivityMain extends FragmentActivity {
                 .setImageLeftClick(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mainListener.showLoactionStatus();
+//                        mainListener.showLoactionStatus();
                     }
                 })
                 .setImageRightClick(new View.OnClickListener() {
@@ -97,8 +94,8 @@ public class ActivityMain extends FragmentActivity {
 //        EventBus.getDefault().postSticky(EventBusConstant.EB_TYPE_NEAR_INFO_UPDATE);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void updateMessageCount(Integer ebType) {
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void updateMessageCount(Integer ebType) {
 //        if (ebType == EventBusConstant.EB_TYPE_FRIEND_REQUEST_UPDATE) {
 //            mainBean.setFriendMessageCount(MessageCountSP.getFriendRequestCount());
 //        } else if (ebType == EventBusConstant.EB_TYPE_CHAT_MESSAGE_UPDATE) {
@@ -106,7 +103,7 @@ public class ActivityMain extends FragmentActivity {
 //        } else if (ebType == EventBusConstant.EB_TYPE_NEAR_CIRCLE_MESSAGE_UPDATE) {
 //            mainBean.setNearMessageCount(MessageCountSP.getNearCircleMessageCount());
 //        }
-    }
+//    }
 
 //    @Subscribe(threadMode = ThreadMode.MAIN)
 //    public void userLogoutHint(UserLogoutMessageBean messageBean) {
@@ -128,42 +125,42 @@ public class ActivityMain extends FragmentActivity {
         popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-//                switch (item.getItemId()) {
-//                    case R.id.pop_add_user:
+                switch (item.getItemId()) {
+                    case R.id.pop_add_user:
 //                        UITransfer.toUserSearchActivity(activity);
-//                        break;
-//                    case R.id.pop_near_group:
+                        break;
+                    case R.id.pop_near_group:
 //                        UITransfer.toChatGroupActivity(activity, UserPosSP.getGroupGuid());
-//                        break;
-//                    case R.id.pop_near_message:
+                        break;
+                    case R.id.pop_near_message:
 //                        UITransfer.toNearMessagesActivity(activity);
-//                        break;
-//                    case R.id.pop_near_publish:
+                        break;
+                    case R.id.pop_near_publish:
 //                        UITransfer.toNearPublishActivity(activity);
-//                        break;
-//                    case R.id.pop_share_app:
-//                        new AlertDialog.Builder(activity)
-//                                .setMessage("如果别人就在你的旁边，你可以通过二维码来分享给TA...")
-//                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
+                        break;
+                    case R.id.pop_share_app:
+                        new AlertDialog.Builder(activity)
+                                .setMessage("如果别人就在你的旁边，你可以通过二维码来分享给TA...")
+                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
 //                                        UITransfer.toQRCodeActivity(activity);
-//                                        dialog.dismiss();
-//                                    }
-//                                })
-//                                .setNegativeButton("用其它方式", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        ShareTransfer.shareApp();
-//                                    }
-//                                })
-//                                .show();
-//
-//                        break;
-//                    case R.id.pop_open_test:
-//                        UITransfer.toTestActivity(activity);
-//                        break;
-//                }
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .setNegativeButton("用其它方式", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        ShareTransfer.shareApp();
+                                    }
+                                })
+                                .show();
+
+                        break;
+                    case R.id.pop_open_test:
+                        UITransfer.toTestActivity(activity);
+                        break;
+                }
                 return true;
             }
         });
@@ -193,9 +190,9 @@ public class ActivityMain extends FragmentActivity {
         @Override
         public void initVPContainer() {
             List<Fragment> fragments = new ArrayList<>();
-//            fragments.add(new FragmentRecord());
-//            fragments.add(new FragmentNear());
-//            fragments.add(new FragmentUser());
+            fragments.add(new FragmentRecord());
+            fragments.add(new FragmentNear());
+            fragments.add(new FragmentUser());
             fragments.add(new FragmentCenter());
 
             TabFragmentPagerAdapter adapter = new TabFragmentPagerAdapter(getSupportFragmentManager(), fragments);
@@ -280,7 +277,7 @@ public class ActivityMain extends FragmentActivity {
 //            locationService.start();
         }
 
-        public void showLocationDialog() {
+//        public void showLocationDialog() {
 //            if (locationTip == null) {
 //                locationTip = new LocationDialogFragment();
 //            }
@@ -293,9 +290,9 @@ public class ActivityMain extends FragmentActivity {
 //                }
 //            });
 //            locationTip.show(getSupportFragmentManager(), "LocationDialogFragment");
-        }
+//        }
 
-        public void showLoactionStatus() {
+//        public void showLoactionStatus() {
 //            int status = locationService.getCurrentLocationStatus();
 //            switch (status) {
 //                case LocationService.NOT_START:
@@ -315,7 +312,7 @@ public class ActivityMain extends FragmentActivity {
 //                    locationTip.setContentShow(UserPosSP.getPosDesc());
 //                    break;
 //            }
-        }
+//        }
 
         @Override
         public void onTabMessageClick() {
