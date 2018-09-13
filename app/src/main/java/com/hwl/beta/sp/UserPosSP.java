@@ -36,7 +36,21 @@ public class UserPosSP {
         return true;
     }
 
-    public static void setUserPos(int userPosId, String groupGuid, float latitude, float lontitude, String country, String province, String city, String district, String street, String addr) {
+    public static void setUserPos(float latitude, float lontitude, String country, String
+            province, String city, String district, String street, String addr) {
+        setUserPos(0, "", latitude, lontitude, country, province, city, district, street, addr);
+    }
+
+    public static void setUserPos(int userPosId, String groupGuid) {
+        final SharedPreferences.Editor editor = getSP().edit();
+        editor.putInt(USERPOSID, userPosId);
+        editor.putString(GROUPGUID, groupGuid);
+        editor.commit();
+    }
+
+    public static void setUserPos(int userPosId, String groupGuid, float latitude, float
+            lontitude, String country, String province, String city, String district, String
+            street, String addr) {
         final SharedPreferences.Editor editor = getSP().edit();
         editor.putInt(USERPOSID, userPosId);
         editor.putString(GROUPGUID, groupGuid);

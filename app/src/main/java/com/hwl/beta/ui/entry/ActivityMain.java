@@ -23,11 +23,16 @@ import android.widget.Toast;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.ActivityMainBinding;
+import com.hwl.beta.location.BaiduLocation;
+import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.ui.TabFragmentPagerAdapter;
 import com.hwl.beta.ui.chat.FragmentRecord;
 import com.hwl.beta.ui.common.ShareTransfer;
 import com.hwl.beta.ui.common.UITransfer;
+import com.hwl.beta.ui.common.rxext.DefaultAction;
+import com.hwl.beta.ui.common.rxext.DefaultConsumer;
 import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
+import com.hwl.beta.ui.dialog.LocationDialogFragment;
 import com.hwl.beta.ui.entry.action.IMainListener;
 import com.hwl.beta.ui.entry.bean.MainBean;
 import com.hwl.beta.ui.entry.logic.MainHandle;
@@ -48,9 +53,9 @@ import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 public class ActivityMain extends FragmentActivity {
     Activity activity;
     ActivityMainBinding binding;
-//    MainBean mainBean;
     MainStandard mainStandard;
     MainListener mainListener;
+    LocationDialogFragment locationTip;
     private long exitTime = 0;
 
     @Override
@@ -58,27 +63,24 @@ public class ActivityMain extends FragmentActivity {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         activity = this;
-        mainStandard=new MainHandle();
+        mainStandard = new MainHandle();
         mainListener = new MainListener();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setMainBean(mainStandard.getMainBean());
         binding.setAction(mainListener);
 
         initView();
-//        if (!EventBus.getDefault().isRegistered(this)) {
-//            EventBus.getDefault().register(this);
-//        }
     }
 
     private void initView() {
-        mainListener.initLocation();
         mainListener.initVPContainer();
+
         binding.tbTitle.setTitle("位置获取中...")
                 .setImageLeftResource(R.drawable.ic_location, 0)
                 .setImageLeftClick(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        mainListener.showLoactionStatus();
+                        showLoactionStatus();
                     }
                 })
                 .setImageRightClick(new View.OnClickListener() {
@@ -88,10 +90,70 @@ public class ActivityMain extends FragmentActivity {
                     }
                 });
 
+        initLocation();
+
+//        if (!EventBus.getDefault().isRegistered(this)) {
+//            EventBus.getDefault().register(this);
+//        }
 //        MessageReceive.start();
 //        SQLiteStudioService.instance().start(activity);
-//        activity.registerReceiver(networkBroadcastReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+//        activity.registerReceiver(networkBroadcastReceiver, new IntentFilter("android.net.conn
+// .CONNECTIVITY_CHANGE"));
 //        EventBus.getDefault().postSticky(EventBusConstant.EB_TYPE_NEAR_INFO_UPDATE);
+    }
+
+    private void initLocation() {
+        mainStandard.getLocation(new DefaultConsumer<String>() {
+            @Override
+            public void accept(String desc) {
+                binding.tbTitle.setTitle(desc);
+            }
+        }, new DefaultConsumer<String>() {
+            @Override
+            public void accept(String s) {
+                binding.tbTitle.setTitle("未知");
+//                    showLocationDialog();
+//                    locationTip.setTitleShow("定位失败");
+//                    locationTip.setContentShow(info.status + " : " + info.message);
+            }
+        });
+    }
+
+    public void showLocationDialog() {
+        if (locationTip == null) {
+            locationTip = new LocationDialogFragment();
+        }
+        locationTip.setResetLocationClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.tbTitle.setTitle("位置重新获取中...");
+                initLocation();
+                locationTip.dismiss();
+            }
+        });
+        locationTip.show(getSupportFragmentManager(), "LocationDialogFragment");
+    }
+
+    public void showLoactionStatus() {
+        int status = mainStandard.getLocationStatus();
+        switch (status) {
+            case BaiduLocation.NOT_START:
+            case BaiduLocation.POSITIONING:
+                showLocationDialog();
+                locationTip.setTitleShow("当前位置");
+                locationTip.setContentShow("正在获取当前位置信息...");
+                break;
+            case BaiduLocation.COMPLETE_FAILD:
+                showLocationDialog();
+                locationTip.setTitleShow("定位失败");
+                locationTip.setContentShow("获取当前位置失败,请检测是否已经连网！");
+                break;
+            case BaiduLocation.COMPLETE_SUCCESS:
+                showLocationDialog();
+                locationTip.setTitleShow("当前位置");
+                locationTip.setContentShow(UserPosSP.getPosDesc());
+                break;
+        }
     }
 
 //    @Subscribe(threadMode = ThreadMode.MAIN)
@@ -184,10 +246,7 @@ public class ActivityMain extends FragmentActivity {
     }
 
     public class MainListener implements IMainListener {
-//        LocationService locationService;
-//        LocationDialogFragment locationTip;
 
-        @Override
         public void initVPContainer() {
             List<Fragment> fragments = new ArrayList<>();
             fragments.add(new FragmentRecord());
@@ -195,14 +254,16 @@ public class ActivityMain extends FragmentActivity {
             fragments.add(new FragmentUser());
             fragments.add(new FragmentCenter());
 
-            TabFragmentPagerAdapter adapter = new TabFragmentPagerAdapter(getSupportFragmentManager(), fragments);
+            TabFragmentPagerAdapter adapter = new TabFragmentPagerAdapter
+                    (getSupportFragmentManager(), fragments);
             binding.vpContainer.setAdapter(adapter);
             binding.vpContainer.setCurrentItem(0);
             switchTab(0);
 
             binding.vpContainer.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                public void onPageScrolled(int position, float positionOffset, int
+                        positionOffsetPixels) {
                     //页面在滑动后调用
                 }
 
@@ -221,98 +282,6 @@ public class ActivityMain extends FragmentActivity {
                 }
             });
         }
-
-        @Override
-        public void initLocation() {
-//            locationService = new LocationService(new LocationService.OnLocationListener() {
-//                @Override
-//                public void onSuccess(LocationService.ResultModel result) {
-//                    binding.tbTitle.setTitle(result.getNearDesc());
-//                    //判断本地存储的位置是否与当前定位的位置是否一样，如果一样则不做任何操作
-//                    if (UserPosSP.getLontitude() == result.lontitude && UserPosSP.getLatitude() == result.latitude) {
-//                        return;
-//                    }
-//
-//                    //调用api将当前位置存储到服务器
-//                    final SetUserPosRequest request = new SetUserPosRequest();
-//                    request.setUserId(UserSP.getUserId());
-//                    request.setLastGroupGuid(UserPosSP.getGroupGuid());
-//                    request.setLatitude(result.latitude + "");
-//                    request.setLongitude(result.lontitude + "");
-//                    request.setCountry(result.country);
-//                    request.setProvince(result.province);
-//                    request.setCity(result.city);
-//                    request.setDistrict(result.district);
-//                    request.setStreet(result.street);
-//                    request.setDetails(result.addr);
-//                    UserService.setUserPos(request)
-//                            .subscribe(new NetDefaultObserver<SetUserPosResponse>() {
-//                                @Override
-//                                protected void onSuccess(SetUserPosResponse res) {
-//                                    if (res.getStatus() == NetConstant.RESULT_SUCCESS) {
-//                                        binding.tbTitle.setTitle(UserPosSP.getNearDesc());
-//
-//                                        //往本地存储一份定位数据
-//                                        UserPosSP.setUserPos(res.getUserPosId(), res.getUserGroupGuid(), Float.parseFloat(request.getLatitude()), Float.parseFloat(request.getLongitude()), request.getCountry(), request.getProvince(), request.getCity(), request.getDistrict(), request.getStreet(), request.getDetails());
-//                                        if (res.getGroupUserInfos() != null && res.getGroupUserInfos().size() > 0) {
-//                                            //保存组和组用户数据到本地
-//                                            GroupInfo groupInfo = DBGroupAction.convertToNearGroupInfo(res.getUserGroupGuid(), res.getGroupUserInfos().size(), DBGroupAction.convertToGroupUserImages(res.getGroupUserInfos()));
-//                                            DaoUtils.getGroupInfoManagerInstance().add(groupInfo);
-//                                            DaoUtils.getGroupUserInfoManagerInstance().addListAsync(DBGroupAction.convertToGroupUserInfos(res.getGroupUserInfos()));
-//                                            EventBus.getDefault().post(new EventActionGroup(EventBusConstant.EB_TYPE_GROUP_IMAGE_UPDATE, groupInfo));
-//                                        }
-//                                    }
-//                                }
-//                            });
-//                }
-//
-//                @Override
-//                public void onFaild(LocationService.ResultInfo info) {
-//                    binding.tbTitle.setTitle(UserPosSP.getNearDesc());
-//                    showLocationDialog();
-//                    locationTip.setTitleShow("定位失败");
-//                    locationTip.setContentShow(info.status + " : " + info.message);
-//                }
-//            });
-//            locationService.start();
-        }
-
-//        public void showLocationDialog() {
-//            if (locationTip == null) {
-//                locationTip = new LocationDialogFragment();
-//            }
-//            locationTip.setResetLocationClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    binding.tbTitle.setTitle("位置重新获取中...");
-//                    locationService.start();
-//                    locationTip.dismiss();
-//                }
-//            });
-//            locationTip.show(getSupportFragmentManager(), "LocationDialogFragment");
-//        }
-
-//        public void showLoactionStatus() {
-//            int status = locationService.getCurrentLocationStatus();
-//            switch (status) {
-//                case LocationService.NOT_START:
-//                case LocationService.POSITIONING:
-//                    showLocationDialog();
-//                    locationTip.setTitleShow("当前位置");
-//                    locationTip.setContentShow("正在获取当前位置信息...");
-//                    break;
-//                case LocationService.COMPLETE_FAILD:
-//                    showLocationDialog();
-//                    locationTip.setTitleShow("定位失败");
-//                    locationTip.setContentShow("获取当前位置失败,请检测是否已经连网！");
-//                    break;
-//                case LocationService.COMPLETE_SUCCESS:
-//                    showLocationDialog();
-//                    locationTip.setTitleShow("当前位置");
-//                    locationTip.setContentShow(UserPosSP.getPosDesc());
-//                    break;
-//            }
-//        }
 
         @Override
         public void onTabMessageClick() {
@@ -377,7 +346,8 @@ public class ActivityMain extends FragmentActivity {
 //    private BroadcastReceiver networkBroadcastReceiver = new BroadcastReceiver() {
 //        @Override
 //        public void onReceive(Context context, Intent intent) {
-//            ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//            ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService
+// (Context.CONNECTIVITY_SERVICE);
 //            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 //            if (networkInfo != null && networkInfo.isAvailable()) {
 ////                Toast.makeText(context, "当前网络可用", Toast.LENGTH_SHORT).show();

@@ -8,8 +8,6 @@ public interface IMainListener {
 
     void initVPContainer();
 
-    void initLocation();
-
     void onTabMessageClick();
 
     void onTabNearClick();
