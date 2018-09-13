@@ -32,50 +32,22 @@ public class MainHandle implements MainStandard {
                 if (UserPosSP.getLontitude() == result.lontitude && UserPosSP.getLatitude() ==
                         result.latitude) {
                     return;
+                }else{
+                //往本地存储一份定位数据
+                UserPosSP.setUserPos(
+                    res.getUserPosId(), 
+                    res.getUserGroupGuid(), 
+                    Float.parseFloat(request.getLatitude()), 
+                    Float.parseFloat(request.getLongitude()), 
+                    request.getCountry(), 
+                    request.getProvince(), 
+                    request.getCity(), 
+                    request.getDistrict(), 
+                    request.getStreet(),
+                    request.getDetails());
                 }
 
-                //调用api将当前位置存储到服务器
-                final SetUserPosRequest request = new SetUserPosRequest();
-                request.setUserId(UserSP.getUserId());
-                request.setLastGroupGuid(UserPosSP.getGroupGuid());
-                request.setLatitude(result.latitude + "");
-                request.setLongitude(result.lontitude + "");
-                request.setCountry(result.country);
-                request.setProvince(result.province);
-                request.setCity(result.city);
-                request.setDistrict(result.district);
-                request.setStreet(result.street);
-                request.setDetails(result.addr);
-                UserService.setUserPos(request)
-                        .subscribe(new NetDefaultObserver<SetUserPosResponse>() {
-                            @Override
-                            protected void onSuccess(SetUserPosResponse res) {
-                                if (res.getStatus() == NetConstant.RESULT_SUCCESS) {
-                                    succCallback.run();
-                                    //往本地存储一份定位数据
-//                                    UserPosSP.setUserPos(res.getUserPosId(), res.getUserGroupGuid
-//                                            (), Float.parseFloat(request.getLatitude()), Float
-//                                            .parseFloat(request.getLongitude()), request
-//                                            .getCountry(), request.getProvince(), request.getCity
-//                                            (), request.getDistrict(), request.getStreet(),
-//                                            request.getDetails());
-//                                    if (res.getGroupUserInfos() != null && res.getGroupUserInfos
-//                                            ().size() > 0) {
-                                        //保存组和组用户数据到本地
-//                                            GroupInfo groupInfo = DBGroupAction
-// .convertToNearGroupInfo(res.getUserGroupGuid(), res.getGroupUserInfos().size(), DBGroupAction
-// .convertToGroupUserImages(res.getGroupUserInfos()));
-//                                            DaoUtils.getGroupInfoManagerInstance().add(groupInfo);
-//                                            DaoUtils.getGroupUserInfoManagerInstance()
-// .addListAsync(DBGroupAction.convertToGroupUserInfos(res.getGroupUserInfos()));
-//                                            EventBus.getDefault().post(new EventActionGroup
-// (EventBusConstant.EB_TYPE_GROUP_IMAGE_UPDATE, groupInfo));
-//                                    }
-                                } else {
-                                    errorCallback.accept("定位失败");
-                                }
-                            }
-                        });
+                this.setUserPos(result,succCallback,errorCallback);
             }
 
             @Override
@@ -88,5 +60,45 @@ public class MainHandle implements MainStandard {
             }
         });
         locationService.start();
+    }
+
+    private void setUserPos(BaiduLocation.ResultModel result,final DefaultAction succCallback, final DefaultConsumer<String>
+    errorCallback) {
+         //调用api将当前位置存储到服务器
+         final SetUserPosRequest request = new SetUserPosRequest();
+         request.setUserId(UserSP.getUserId());
+         request.setLastGroupGuid(UserPosSP.getGroupGuid());
+         request.setLatitude(result.latitude + "");
+         request.setLongitude(result.lontitude + "");
+         request.setCountry(result.country);
+         request.setProvince(result.province);
+         request.setCity(result.city);
+         request.setDistrict(result.district);
+         request.setStreet(result.street);
+         request.setDetails(result.addr);
+         UserService.setUserPos(request)
+                 .subscribe(new NetDefaultObserver<SetUserPosResponse>() {
+                     @Override
+                     protected void onSuccess(SetUserPosResponse res) {
+                         if (res.getStatus() == NetConstant.RESULT_SUCCESS) {
+                             succCallback.run();
+                             
+//                                    if (res.getGroupUserInfos() != null && res.getGroupUserInfos
+//                                            ().size() > 0) {
+                                 //保存组和组用户数据到本地
+//                                            GroupInfo groupInfo = DBGroupAction
+// .convertToNearGroupInfo(res.getUserGroupGuid(), res.getGroupUserInfos().size(), DBGroupAction
+// .convertToGroupUserImages(res.getGroupUserInfos()));
+//                                            DaoUtils.getGroupInfoManagerInstance().add(groupInfo);
+//                                            DaoUtils.getGroupUserInfoManagerInstance()
+// .addListAsync(DBGroupAction.convertToGroupUserInfos(res.getGroupUserInfos()));
+//                                            EventBus.getDefault().post(new EventActionGroup
+// (EventBusConstant.EB_TYPE_GROUP_IMAGE_UPDATE, groupInfo));
+//                                    }
+                         } else {
+                             errorCallback.accept("定位失败");
+                         }
+                     }
+                 });
     }
 }
