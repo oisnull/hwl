@@ -2,6 +2,7 @@ package com.hwl.beta;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDex;
 
 //import com.hwl.beta.sp.AppInstallStatus;
 //import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -36,6 +37,12 @@ public class HWLApp extends Application {
 
     public static HWLApp getContext() {
         return application;
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this) ;
     }
 
     //static 代码段可以防止内存泄露
