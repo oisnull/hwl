@@ -1,4 +1,5 @@
 syntax = "proto3";
+//test
 //protoc --java_out=src/main/java src/main/java/com/hwl/im/protocol/im_message.proto
 option csharp_namespace = "IMCore.Protocol";
 option java_multiple_files = true;
