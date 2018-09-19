@@ -80,4 +80,5 @@ dependencies {
     implementation project(':autolayout')
     implementation project(':swipback')
     implementation project(':badge')
+    implementation project(':im')
 }
