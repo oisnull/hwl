@@ -1,11 +1,10 @@
-package com.hwl.im.client.send;
+package com.hwl.beta.ui.immsg.send;
 
+import com.hwl.im.common.DefaultConsumer;
 import com.hwl.im.imaction.AbstractMessageSendExecutor;
 import com.hwl.im.improto.ImHeartBeatMessageRequest;
 import com.hwl.im.improto.ImMessageRequest;
 import com.hwl.im.improto.ImMessageType;
-
-import java.util.function.Consumer;
 
 public class HeartBeatMessageSend extends AbstractMessageSendExecutor {
 
@@ -23,7 +22,7 @@ public class HeartBeatMessageSend extends AbstractMessageSendExecutor {
     }
 
 	@Override
-	public Consumer<Boolean> sendStatusCallback() {
+	public DefaultConsumer<Boolean> sendStatusCallback() {
 		return null;
 	}
 }

@@ -21,12 +21,12 @@
 //    static String userToken = "123456";
 //
 //    public static void autoConnect() {
-////        log.debug("Client listen : im loader auto connect {} start ...", IMClientAndroidEntry.getServerAddress());
-//        IMClientAndroidEntry.registerClientListener(clientListener);
-//        IMClientAndroidEntry.connectServer();
+////        log.debug("Client listen : im loader auto connect {} start ...", IMClientEntry.getServerAddress());
+//        IMClientEntry.registerClientListener(clientListener);
+//        IMClientEntry.connectServer();
 //    }
 //
-//    static IMClientAndroidEntry.DefaultSendOperateListener operateListener = new IMClientAndroidEntry.DefaultSendOperateListener() {
+//    static IMClientEntry.DefaultSendOperateListener operateListener = new IMClientEntry.DefaultSendOperateListener() {
 //
 //        @Override
 //        public void success() {
@@ -56,34 +56,34 @@
 //        @Override
 //        public void onBuildConnectionSuccess(String clientAddress, String serverAddress) {
 ////            log.debug("Client listen : client {} connected to server {} successfully.", clientAddress, serverAddress);
-//            IMClientAndroidEntry.stopCheckConnect();
+//            IMClientEntry.stopCheckConnect();
 ////            log.debug("Client listen : send user validate message userid({}) usertoken({}) start.", userId, userToken);
-//            IMClientAndroidEntry.sendUserValidateMessage(userId, userToken, operateListener);
+//            IMClientEntry.sendUserValidateMessage(userId, userToken, operateListener);
 //        }
 //
 //        @Override
 //        public void onBuildConnectionError(String clientAddress, String serverAddress, String errorInfo) {
 ////            log.error("Client listen : client {} connected to server {} failure. info :", clientAddress, serverAddress,
 ////                    errorInfo);
-//            IMClientAndroidEntry.startCheckConnect();
+//            IMClientEntry.startCheckConnect();
 //        }
 //
 //        @Override
 //        public void onClosed(String clientAddress) {
 ////            log.debug("Client listen : client {} closed", clientAddress);
-//            IMClientAndroidEntry.startCheckConnect();
+//            IMClientEntry.startCheckConnect();
 //        }
 //
 //        @Override
 //        public void onDisconnected(String clientAddress) {
 ////            log.debug("Client listen : client {} disconnect", clientAddress);
-//            IMClientAndroidEntry.startCheckConnect();
+//            IMClientEntry.startCheckConnect();
 //        }
 //
 //        @Override
 //        public void onError(String clientAddress, String errorInfo) {
 ////            log.error("Client listen : an error occurred on the client {}. info : {}", clientAddress, errorInfo);
-//            IMClientAndroidEntry.startCheckConnect();
+//            IMClientEntry.startCheckConnect();
 //        }
 //    };
 //

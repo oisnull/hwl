@@ -2,14 +2,8 @@ package com.hwl.beta.ui.entry;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -29,26 +23,17 @@ import com.hwl.beta.ui.TabFragmentPagerAdapter;
 import com.hwl.beta.ui.chat.FragmentRecord;
 import com.hwl.beta.ui.common.ShareTransfer;
 import com.hwl.beta.ui.common.UITransfer;
-import com.hwl.beta.ui.common.rxext.DefaultAction;
-import com.hwl.beta.ui.common.rxext.DefaultConsumer;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
+import com.hwl.im.common.DefaultConsumer;
 import com.hwl.beta.ui.dialog.LocationDialogFragment;
 import com.hwl.beta.ui.entry.action.IMainListener;
-import com.hwl.beta.ui.entry.bean.MainBean;
 import com.hwl.beta.ui.entry.logic.MainHandle;
 import com.hwl.beta.ui.entry.standard.MainStandard;
 import com.hwl.beta.ui.near.FragmentNear;
 import com.hwl.beta.ui.user.FragmentCenter;
 import com.hwl.beta.ui.user.FragmentUser;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
 public class ActivityMain extends FragmentActivity {
     Activity activity;

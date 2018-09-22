@@ -1,12 +1,12 @@
 package com.hwl.im.client;
 
-// import com.hwl.im.client.listen.ChatGroupMessageListen;
-// import com.hwl.im.client.listen.ChatUserMessageListen;
-// import com.hwl.im.client.listen.UserValidateListen;
-// import com.hwl.im.client.send.ChatGroupMessageSend;
-// import com.hwl.im.client.send.ChatUserMessageSend;
-// import com.hwl.im.client.send.HeartBeatMessageSend;
-// import com.hwl.im.client.send.UserValidateSend;
+// import com.hwl.beta.ui.immsg.listen.ChatGroupMessageListen;
+// import com.hwl.beta.ui.immsg.listen.ChatUserMessageListen;
+// import com.hwl.beta.ui.immsg.listen.UserValidateListen;
+// import com.hwl.beta.ui.immsg.send.ChatGroupMessageSend;
+// import com.hwl.beta.ui.immsg.send.ChatUserMessageSend;
+// import com.hwl.beta.ui.immsg.send.HeartBeatMessageSend;
+// import com.hwl.beta.ui.immsg.send.UserValidateSend;
 // import com.hwl.im.core.immode.MessageRequestHeadOperate;
 // import com.hwl.im.core.proto.ImMessageType;
 

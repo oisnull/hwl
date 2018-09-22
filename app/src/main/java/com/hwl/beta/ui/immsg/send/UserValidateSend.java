@@ -1,11 +1,10 @@
-package com.hwl.im.client.send;
+package com.hwl.beta.ui.immsg.send;
 
+import com.hwl.im.common.DefaultConsumer;
 import com.hwl.im.imaction.AbstractMessageSendExecutor;
 import com.hwl.im.improto.ImMessageRequest;
 import com.hwl.im.improto.ImMessageType;
 import com.hwl.im.improto.ImUserValidateRequest;
-
-import java.util.function.Consumer;
 
 public class UserValidateSend extends AbstractMessageSendExecutor {
 
@@ -13,14 +12,14 @@ public class UserValidateSend extends AbstractMessageSendExecutor {
 
     Long userId = 0L;
     String token = "";
-    Consumer<Boolean> sendCallback;
+    DefaultConsumer<Boolean> sendCallback;
 
     public UserValidateSend(Long userId, String token) {
         this.userId = userId;
         this.token = token;
     }
 
-    public UserValidateSend(Long userId, String token, Consumer<Boolean> sendCallback) {
+    public UserValidateSend(Long userId, String token, DefaultConsumer<Boolean> sendCallback) {
         this(userId, token);
         this.sendCallback = sendCallback;
     }
@@ -38,7 +37,7 @@ public class UserValidateSend extends AbstractMessageSendExecutor {
     }
 
     @Override
-    public Consumer<Boolean> sendStatusCallback() {
+    public DefaultConsumer<Boolean> sendStatusCallback() {
         return this.sendCallback;
     }
 }

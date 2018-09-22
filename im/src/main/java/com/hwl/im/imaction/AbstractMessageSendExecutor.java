@@ -1,11 +1,10 @@
 package com.hwl.im.imaction;
 
+import com.hwl.im.common.DefaultConsumer;
 import com.hwl.im.immode.MessageRequestHeadOperate;
 import com.hwl.im.improto.ImMessageContext;
 import com.hwl.im.improto.ImMessageRequest;
 import com.hwl.im.improto.ImMessageRequestHead;
-
-import java.util.function.Consumer;
 
 //import org.apache.logging.log4j.LogManager;
 //import org.apache.logging.log4j.Logger;
@@ -39,7 +38,7 @@ public abstract class AbstractMessageSendExecutor implements MessageSendExecutor
     public final void sendResultCallback(boolean isSuccess) {
 //        log.debug("Client send request {} , message context : {}", isSuccess ? "success" : "failed",
 //                getMessageContext());
-        Consumer<Boolean> callback = sendStatusCallback();
+        DefaultConsumer<Boolean> callback = sendStatusCallback();
         if (callback != null) {
             callback.accept(isSuccess);
         }
@@ -56,7 +55,7 @@ public abstract class AbstractMessageSendExecutor implements MessageSendExecutor
 
     // public abstract boolean checkBody();
 
-    public abstract Consumer<Boolean> sendStatusCallback();
+    public abstract DefaultConsumer<Boolean> sendStatusCallback();
 
     public abstract void setRequestBody(final ImMessageRequest.Builder request);
 

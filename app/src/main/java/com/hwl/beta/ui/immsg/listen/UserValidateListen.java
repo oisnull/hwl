@@ -1,22 +1,21 @@
-package com.hwl.im.client.listen;
+package com.hwl.beta.ui.immsg.listen;
 
+import com.hwl.im.common.DefaultConsumer;
 import com.hwl.im.imaction.AbstractMessageListenExecutor;
 import com.hwl.im.improto.ImMessageResponse;
 import com.hwl.im.improto.ImUserValidateResponse;
 
-import java.util.function.Consumer;
-
 public class UserValidateListen extends AbstractMessageListenExecutor<ImUserValidateResponse> {
 
-    private Consumer<String> succCallback;
-    private Consumer<String> failedCallback;
+    private DefaultConsumer<String> succCallback;
+    private DefaultConsumer<String> failedCallback;
 //    static Logger log = LogManager.getLogger(UserValidateListen.class.getName());
 
-    public UserValidateListen(Consumer<String> succCallback) {
+    public UserValidateListen(DefaultConsumer<String> succCallback) {
         this.succCallback = succCallback;
     }
 
-    public UserValidateListen(Consumer<String> succCallback, Consumer<String> failedCallback) {
+    public UserValidateListen(DefaultConsumer<String> succCallback, DefaultConsumer<String> failedCallback) {
         this.succCallback = succCallback;
         this.failedCallback = failedCallback;
     }

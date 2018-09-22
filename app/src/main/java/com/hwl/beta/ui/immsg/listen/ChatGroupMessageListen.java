@@ -1,4 +1,4 @@
-package com.hwl.im.client.listen;
+package com.hwl.beta.ui.immsg.listen;
 
 import com.hwl.im.imaction.AbstractMessageListenExecutor;
 import com.hwl.im.improto.ImChatGroupMessageResponse;

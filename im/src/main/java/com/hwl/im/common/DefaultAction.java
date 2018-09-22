@@ -1,4 +1,4 @@
-package com.hwl.beta.ui.common.rxext;
+package com.hwl.im.common;
 
 import io.reactivex.functions.Action;
 
