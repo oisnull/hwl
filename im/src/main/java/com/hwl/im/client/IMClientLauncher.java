@@ -93,12 +93,10 @@ public class IMClientLauncher {
             channel = bootstrap.connect(host, port).sync().channel();
             // channelFuture.channel().closeFuture().sync();
             registerChannel();
-            this.clientListener.onBuildConnectionSuccess(channel.localAddress().toString(),
-                    channel.remoteAddress().toString());
-        } catch (InterruptedException e) {
+            this.clientListener.onBuildConnectionSuccess(channel.remoteAddress().toString());
+        } catch (Exception e) {
             e.printStackTrace();
-            this.clientListener.onBuildConnectionError(channel.localAddress().toString(),
-                    channel.remoteAddress().toString(), e.getMessage());
+            this.clientListener.onBuildConnectionError(this.getServerAddress(), e.getMessage());
             status = STATUS_DISCONNECT;
             stop();
         }
@@ -138,13 +136,13 @@ public class IMClientLauncher {
     private class DefaultClientListener implements IMClientListener {
 
         @Override
-        public void onBuildConnectionSuccess(String clientAddress, String serverAddress) {
+        public void onBuildConnectionSuccess(String serverAddress) {
 //            log.info("Client {} connected to server {} successfully.", clientAddress,
 // serverAddress);
         }
 
         @Override
-        public void onBuildConnectionError(String clientAddress, String serverAddress, String
+        public void onBuildConnectionError(String serverAddress, String
                 errorInfo) {
 //            log.info("Client {} connected to server {} failure. info :", clientAddress,
 // serverAddress, errorInfo);

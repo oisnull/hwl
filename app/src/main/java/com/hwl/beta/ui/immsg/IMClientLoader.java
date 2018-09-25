@@ -4,7 +4,7 @@
 //
 //import java.util.logging.Logger;
 //
-//public class IMClientAndroidLoader {
+//public class IMClientLoader {
 //
 //    /**
 //     * Process : 1,(app start|app disconnect network and reconnect) and connect im

@@ -2,14 +2,14 @@ package com.hwl.im.client;
 
 public interface IMClientListener {
 
-    void onBuildConnectionSuccess(String clientAddress, String serverAddress);
+    void onBuildConnectionSuccess(String serverAddress);
 
-    void onBuildConnectionError(String clientAddress, String serverAddress, String errorInfo);
+    void onBuildConnectionError(String serverAddress, String errorInfo);
 
-    void onClosed(String clientAddress);
+    void onClosed(String serverAddress);
 
-    void onDisconnected(String clientAddress);
+    void onDisconnected(String serverAddress);
 
-    void onError(String clientAddress, String errorInfo);
+    void onError(String serverAddress, String errorInfo);
 
 }

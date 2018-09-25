@@ -5,15 +5,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.logging.Logger;
 
+import com.hwl.beta.AppConfig;
 import com.hwl.beta.ui.immsg.listen.UserValidateListen;
 import com.hwl.beta.ui.immsg.send.UserValidateSend;
+import com.hwl.beta.utils.NetworkUtils;
 import com.hwl.im.client.ClientMessageOperate;
 import com.hwl.im.client.IMClientHeartbeatTimer;
 import com.hwl.im.client.IMClientLauncher;
-import com.hwl.im.client.IMClientListener;
 import com.hwl.beta.ui.immsg.listen.ChatGroupMessageListen;
 import com.hwl.beta.ui.immsg.listen.ChatUserMessageListen;
 import com.hwl.beta.ui.immsg.send.HeartBeatMessageSend;
@@ -23,18 +23,20 @@ import com.hwl.im.improto.ImMessageType;
 
 public class IMClientEntry {
 
-    static Logger log = Logger.getLogger(IMClientEntry.class.getName());
+    static Logger log = Logger.getLogger(AppConfig.IM_DEBUG_TAG);
     static int CHECK_TIME_INTERNAL = 5; // s
 
     final static ExecutorService executorService = Executors.newSingleThreadExecutor();
     final static ScheduledExecutorService checkConnectExecutor = Executors
             .newSingleThreadScheduledExecutor();
     final static ClientMessageOperate messageOperate = new ClientMessageOperate();
-    final static IMClientLauncher launcher = new IMClientLauncher("localhost", 8081);
+    final static IMClientLauncher launcher = new IMClientLauncher(AppConfig.IM_HOST, AppConfig
+            .IM_PORT);
 
     static {
         initListenExecutor();
         launcher.registerAction(messageOperate);
+        launcher.registerClientListener(new IMClientDefaultListener());
     }
 
     static void initListenExecutor() {
@@ -43,12 +45,10 @@ public class IMClientEntry {
                 ());
     }
 
-    public static void registerClientListener(IMClientListener clientListener) {
-        if (clientListener != null)
-            launcher.registerClientListener(clientListener);
-    }
-
     public static void startCheckConnect() {
+        if (!NetworkUtils.isConnected())
+            return;
+
         if (checkConnectExecutor.isShutdown()) {
             checkConnectExecutor.schedule(new Runnable() {
                 @Override
@@ -83,7 +83,7 @@ public class IMClientEntry {
         });
     }
 
-    static void commomExec(final DefaultSendOperateListener operateListener, final
+    static void commomExec(final IMDefaultSendOperateListener operateListener, final
     DefaultConsumer<DefaultConsumer<Boolean>> sendConsumer) {
         if (!launcher.isConnected()) {
             operateListener.unconnect();
@@ -101,8 +101,8 @@ public class IMClientEntry {
         sendConsumer.accept(sendCallback);
     }
 
-    public static void sendUserValidateMessage(final Long userId, final String userToken,
-                                               final DefaultSendOperateListener operateListener) {
+    public static void sendUserValidateMessage(final Long userId, final String userToken) {
+        final IMDefaultSendOperateListener operateListener = new IMDefaultSendOperateListener();
         commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
@@ -118,6 +118,7 @@ public class IMClientEntry {
                     @Override
                     public void accept(String msg) {
                         operateListener.failed(msg);
+                        operateListener.sessionidInvaild();
                         stopHeartbeat();
                     }
                 });
@@ -139,40 +140,5 @@ public class IMClientEntry {
     private static void stopHeartbeat() {
         IMClientHeartbeatTimer.getInstance().stop();
         launcher.stop();
-    }
-
-    public static class DefaultSendOperateListener {
-
-        public void unconnect() {
-            log.info("Android client send operate : unconnect server ");
-        }
-
-        public void notSendToServer() {
-            log.info("Android client send operate : message not send to server ");
-        }
-
-        public void success() {
-
-        }
-
-        public void failed(String message) {
-            log.info("Android client send operate failed : " + message);
-        }
-
-        public void sessionidInvaild() {
-            log.info("Android client send operate : sessionid invalid");
-        }
-
-    }
-
-    public static void main(String[] args) {
-        // IMClientEntry.connectServer();
-        // IMClientEntry.sendUserValidateMessage(10000L, "123456", new
-        // DefaultSendOperateListener() {
-        // @Override
-        // public void success() {
-
-        // }
-        // });
     }
 }

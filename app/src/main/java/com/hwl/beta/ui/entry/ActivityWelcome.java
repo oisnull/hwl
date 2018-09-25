@@ -2,15 +2,13 @@ package com.hwl.beta.ui.entry;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.hwl.beta.R;
 import com.hwl.beta.net.user.NetUserInfo;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.UITransfer;
-
-import org.reactivestreams.Subscriber;
+import com.hwl.beta.ui.immsg.IMClientEntry;
 
 import java.util.concurrent.TimeUnit;
 
@@ -18,13 +16,11 @@ import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 public class ActivityWelcome extends FragmentActivity {
 
     private TextView tvCountdown;
     private int tmrCount = 3;
-//    final Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +28,6 @@ public class ActivityWelcome extends FragmentActivity {
         setContentView(R.layout.activity_welcome);
         tvCountdown = findViewById(R.id.tv_countdown);
         tvCountdown.setText(tmrCount + " s");
-//        handler.postDelayed(runnable, 1000);
 
         load();
     }
@@ -74,6 +69,7 @@ public class ActivityWelcome extends FragmentActivity {
     private void check() {
         NetUserInfo user = UserSP.getUserInfo();
         if (user != null && user.getId() > 0) {
+            IMClientEntry.connectServer();
             UITransfer.toMainActivity(this);
         } else {
             UITransfer.toLoginActivity(this);
