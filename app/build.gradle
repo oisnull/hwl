@@ -21,26 +21,34 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
+//        'src/main/res/layout/widget',
+//        'src/main/res/layout/dialog',
+//        'src/main/res/layout/chat',
+//        'src/main/res/layout/chatitem',
+//        'src/main/res/layout/common',
+//        'src/main/res/layout/near',
+//        'src/main/res/layout/user',
+//        'src/main/res/layout/group',
+//        'src/main/res/layout/imgselect',
+//        'src/main/res/layout/circle',
+//        'src/main/res/layout/emotion',
+//        'src/main/res/layout/video',
+//        'src/main/res'
+
+        def listSubFile = {
+            def resFolder = 'src/main/res/layout'
+            def files = file(resFolder).listFiles()
+            def folders = []
+            files.each {
+                item -> folders.add(item.absolutePath)
+            }
+            folders.add(file(resFolder).parentFile.absolutePath)
+            return folders
+        }
     }
     sourceSets {
         main {
-            res.srcDirs =
-                    [
-                            'src/main/res/layout/widget',
-                            'src/main/res/layout/dialog',
-                            'src/main/res/layout/chat',
-                            'src/main/res/layout/chatitem',
-                            'src/main/res/layout/common',
-                            'src/main/res/layout/near',
-                            'src/main/res/layout/user',
-                            'src/main/res/layout/group',
-                            'src/main/res/layout/imgselect',
-                            'src/main/res/layout/circle',
-                            'src/main/res/layout/emotion',
-                            'src/main/res/layout/video',
-                            'src/main/res'
-                    ]
-
             jniLibs.srcDir("libs")
             jni.srcDirs = []
         }
