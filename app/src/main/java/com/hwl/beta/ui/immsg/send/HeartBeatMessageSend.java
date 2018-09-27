@@ -8,7 +8,11 @@ import com.hwl.im.improto.ImMessageType;
 
 public class HeartBeatMessageSend extends AbstractMessageSendExecutor {
 
-//    static Logger log = LogManager.getLogger(HeartBeatMessageSend.class.getName());
+    DefaultConsumer<Boolean> sendCallback;
+
+    public HeartBeatMessageSend(DefaultConsumer<Boolean> sendCallback) {
+        this.sendCallback = sendCallback;
+    }
 
     @Override
     public ImMessageType getMessageType() {
@@ -23,6 +27,6 @@ public class HeartBeatMessageSend extends AbstractMessageSendExecutor {
 
 	@Override
 	public DefaultConsumer<Boolean> sendStatusCallback() {
-		return null;
+		return sendCallback;
 	}
 }
