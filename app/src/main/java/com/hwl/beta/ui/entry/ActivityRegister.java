@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.hwl.beta.R;
-import com.hwl.beta.databinding.ActivityRegisterBinding;
+import com.hwl.beta.databinding.EntryActivityRegisterBinding;
 import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.UITransfer;
@@ -26,7 +26,7 @@ import com.hwl.beta.ui.widget.TimeCount;
 
 public class ActivityRegister extends BaseActivity {
     Activity activity;
-    ActivityRegisterBinding binding;
+    EntryActivityRegisterBinding binding;
     RegisterStandard registerStandard;
 
     TimeCount timeCount = null;
@@ -35,10 +35,10 @@ public class ActivityRegister extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+//        setContentView(R.layout.entry_activity_register);
         activity = this;
         registerStandard = new RegisterHandle();
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_register);
+        binding = DataBindingUtil.setContentView(this, R.layout.entry_activity_register);
         binding.setRegisterBean(registerStandard.getRegisterBean());
         binding.setAction(new RegisterListener());
 

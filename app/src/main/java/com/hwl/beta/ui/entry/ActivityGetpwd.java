@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.hwl.beta.R;
-import com.hwl.beta.databinding.ActivityGetpwdBinding;
+import com.hwl.beta.databinding.EntryActivityGetpwdBinding;
 import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.net.general.GeneralService;
 import com.hwl.beta.net.general.body.SendEmailResponse;
@@ -29,7 +29,7 @@ import com.hwl.beta.ui.widget.TimeCount;
 public class ActivityGetpwd extends BaseActivity {
 
     Activity activity;
-    ActivityGetpwdBinding binding;
+    EntryActivityGetpwdBinding binding;
     RegisterBean registerBean;
     TimeCount timeCount = null;
     static final int CODETIMESECONDS = 60 * 2;
@@ -38,7 +38,7 @@ public class ActivityGetpwd extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = this;
-        binding = DataBindingUtil.setContentView(activity, R.layout.activity_getpwd);
+        binding = DataBindingUtil.setContentView(activity, R.layout.entry_activity_getpwd);
         registerBean = new RegisterBean();
         registerBean.setAccount("253621965@qq.com");
         registerBean.setCheckCode("888888");

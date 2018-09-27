@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.PopupMenu;
 
 import com.hwl.beta.R;
-import com.hwl.beta.databinding.FragmentRecordBinding;
+import com.hwl.beta.databinding.ChatFragmentRecordBinding;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.ChatRecordMessage;
 import com.hwl.beta.ui.common.BaseFragment;
@@ -30,21 +30,23 @@ import java.util.List;
  */
 
 public class FragmentRecord extends BaseFragment {
-    FragmentRecordBinding binding;
-//    List<ChatRecordMessage> records;
+    ChatFragmentRecordBinding binding;
+    //    List<ChatRecordMessage> records;
 //    RecordAdapter recordAdapter;
     Activity activity;
-//    ChatRecordMessageComparator dateComparator;
+    //    ChatRecordMessageComparator dateComparator;
     int currMessageTotalCount = 0;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
+            Bundle savedInstanceState) {
         activity = getActivity();
 //        dateComparator = new ChatRecordMessageComparator();
 //
 //        records = DaoUtils.getChatRecordMessageManagerInstance().getRecords();
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_record, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.chat_fragment_record, container,
+                false);
 //        initView();
 //
 //        if (!EventBus.getDefault().isRegistered(this)) {
@@ -56,7 +58,8 @@ public class FragmentRecord extends BaseFragment {
 
     private void initView() {
 //        Collections.sort(records, dateComparator);
-//        recordAdapter = new RecordAdapter(activity, records, new RecordAdapter.IAdapterListener() {
+//        recordAdapter = new RecordAdapter(activity, records, new RecordAdapter.IAdapterListener
+// () {
 //            @Override
 //            public void onLoadComplete(int messageTotalCount) {
 ////                if (currMessageTotalCount == messageTotalCount) return;
@@ -70,9 +73,11 @@ public class FragmentRecord extends BaseFragment {
 ////                ChatRecordMessage record = records.get(position);
 ////                if (record.getRecordType() == MQConstant.CHAT_RECORD_TYPE_USER) {
 ////                    if (record.getFromUserId() == UserSP.getUserId()) {
-////                        UITransfer.toChatUserActivity(activity, record.getToUserId(), record.getToUserName(), record.getToUserHeadImage(), record.getRecordId());
+////                        UITransfer.toChatUserActivity(activity, record.getToUserId(), record
+// .getToUserName(), record.getToUserHeadImage(), record.getRecordId());
 ////                    } else {
-////                        UITransfer.toChatUserActivity(activity, record.getFromUserId(), record.getFromUserName(), record.getFromUserHeadImage(), record.getRecordId());
+////                        UITransfer.toChatUserActivity(activity, record.getFromUserId(),
+// record.getFromUserName(), record.getFromUserHeadImage(), record.getRecordId());
 ////                    }
 ////                } else if (record.getRecordType() == MQConstant.CHAT_RECORD_TYPE_GROUP) {
 ////                    UITransfer.toChatGroupActivity(activity, record.getGruopGuid());
@@ -90,7 +95,8 @@ public class FragmentRecord extends BaseFragment {
 //                            case R.id.pop_set_top:
 //                                break;
 //                            case R.id.pop_delete_record:
-////                                if (DaoUtils.getChatRecordMessageManagerInstance().deleteRecord(record)) {
+////                                if (DaoUtils.getChatRecordMessageManagerInstance()
+// .deleteRecord(record)) {
 ////                                    records.remove(record);
 ////                                    recordAdapter.notifyDataSetChanged();
 ////                                }
@@ -98,15 +104,23 @@ public class FragmentRecord extends BaseFragment {
 //                            case R.id.pop_delete_messages:
 //                                new AlertDialog.Builder(activity)
 //                                        .setMessage("聊天数据清空后,不能恢复,确认清空 ?")
-//                                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                                        .setPositiveButton("确定", new DialogInterface
+// .OnClickListener() {
 //                                            @Override
-//                                            public void onClick(DialogInterface dialog, int which) {
-////                                                if (DaoUtils.getChatRecordMessageManagerInstance().deleteRecord(record)) {
+//                                            public void onClick(DialogInterface dialog, int
+// which) {
+////                                                if (DaoUtils
+// .getChatRecordMessageManagerInstance().deleteRecord(record)) {
 ////                                                    boolean succ = false;
-////                                                    if (record.getRecordType() == MQConstant.CHAT_RECORD_TYPE_GROUP) {
-////                                                        succ = DaoUtils.getChatGroupMessageManagerInstance().deleteMessages(record.getGruopGuid());
-////                                                    } else if (record.getRecordType() == MQConstant.CHAT_RECORD_TYPE_USER) {
-////                                                        succ = DaoUtils.getChatUserMessageManagerInstance().deleteUserMessages(record.getFromUserId(), record.getToUserId());
+////                                                    if (record.getRecordType() == MQConstant
+// .CHAT_RECORD_TYPE_GROUP) {
+////                                                        succ = DaoUtils
+// .getChatGroupMessageManagerInstance().deleteMessages(record.getGruopGuid());
+////                                                    } else if (record.getRecordType() ==
+// MQConstant.CHAT_RECORD_TYPE_USER) {
+////                                                        succ = DaoUtils
+// .getChatUserMessageManagerInstance().deleteUserMessages(record.getFromUserId(), record
+// .getToUserId());
 ////                                                    }
 ////                                                    if (succ) {
 ////                                                        records.remove(record);
@@ -166,7 +180,8 @@ public class FragmentRecord extends BaseFragment {
 //            records.remove(position);
 //            recordAdapter.notifyItemRemoved(position);
 //            recordAdapter.notifyItemRangeChanged(position, records.size() - position);
-//        } else if (actionChatRecord.getActionType() == EventBusConstant.EB_TYPE_CHAT_RECORD_UPDATE_SHIELD) {
+//        } else if (actionChatRecord.getActionType() == EventBusConstant
+// .EB_TYPE_CHAT_RECORD_UPDATE_SHIELD) {
 //            records.get(position).setIsShield(actionChatRecord.getRecord().getIsShield());
 //            recordAdapter.notifyItemChanged(position);
 //        }
@@ -177,7 +192,8 @@ public class FragmentRecord extends BaseFragment {
 //        if (actionGroup == null || actionGroup.getGroupInfo() == null)
 //            return;
 //        if (actionGroup.getActionType() == EventBusConstant.EB_TYPE_GROUP_IMAGE_UPDATE) {
-//            recordAdapter.updateGroupImage(actionGroup.getGroupInfo().getGroupGuid(), actionGroup.getGroupInfo().getUserImages());
+//            recordAdapter.updateGroupImage(actionGroup.getGroupInfo().getGroupGuid(),
+// actionGroup.getGroupInfo().getUserImages());
 //        }
 //    }
 
@@ -186,7 +202,8 @@ public class FragmentRecord extends BaseFragment {
 //        if (remark == null || remark.getFriendId() <= 0)
 //            return;
 //        for (int i = 0; i < records.size(); i++) {
-//            if (records.get(i).getFromUserId() == remark.getFriendId() && records.get(i).getRecordType() == MQConstant.CHAT_RECORD_TYPE_USER) {
+//            if (records.get(i).getFromUserId() == remark.getFriendId() && records.get(i)
+// .getRecordType() == MQConstant.CHAT_RECORD_TYPE_USER) {
 //                ChatRecordMessage record = records.get(i);
 //                if (!record.getFromUserName().equals(remark.getFriendRemark())) {
 //                    record.setFromUserName(remark.getFriendRemark());

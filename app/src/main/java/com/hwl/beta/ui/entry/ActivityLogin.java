@@ -13,7 +13,7 @@ import com.hwl.im.common.DefaultConsumer;
 import com.hwl.beta.ui.entry.logic.LoginHandle;
 
 import com.hwl.beta.R;
-import com.hwl.beta.databinding.ActivityLoginBinding;
+import com.hwl.beta.databinding.EntryActivityLoginBinding;
 import com.hwl.beta.ui.entry.action.ILoginListener;
 import com.hwl.beta.ui.entry.bean.LoginBean;
 
@@ -24,7 +24,7 @@ import com.hwl.beta.ui.entry.bean.LoginBean;
 public class ActivityLogin extends FragmentActivity {
 
     Activity activity;
-    ActivityLoginBinding binding;
+    EntryActivityLoginBinding binding;
     LoginHandle loginHandle;
 
     @Override
@@ -32,7 +32,7 @@ public class ActivityLogin extends FragmentActivity {
         super.onCreate(savedInstanceState);
         activity = this;
         loginHandle = new LoginHandle();
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
+        binding = DataBindingUtil.setContentView(this, R.layout.entry_activity_login);
         binding.setLoginBean(loginHandle.getLoginBean());
         binding.setAction(new LoginListener());
         binding.tbTitle.setTitle(getResources().getString(R.string.login_activity_title))

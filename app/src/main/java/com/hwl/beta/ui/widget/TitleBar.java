@@ -42,7 +42,7 @@ public class TitleBar extends RelativeLayout {
     }
 
     private void init() {
-        View view = LayoutInflater.from(currContext).inflate(R.layout.title_bar, this, false);
+        View view = LayoutInflater.from(currContext).inflate(R.layout.widget_title_bar, this, false);
 
         rlTitleLeft = view.findViewById(R.id.rl_title_left);
         llTitleRight = view.findViewById(R.id.ll_title_right);

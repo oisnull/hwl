@@ -16,28 +16,28 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.hwl.beta.R;
-import com.hwl.beta.databinding.ActivityMainBinding;
+import com.hwl.beta.databinding.EntryActivityMainBinding;
 import com.hwl.beta.location.BaiduLocation;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.ui.TabFragmentPagerAdapter;
 import com.hwl.beta.ui.chat.FragmentRecord;
 import com.hwl.beta.ui.common.ShareTransfer;
 import com.hwl.beta.ui.common.UITransfer;
-import com.hwl.im.common.DefaultConsumer;
 import com.hwl.beta.ui.dialog.LocationDialogFragment;
+import com.hwl.beta.ui.near.FragmentNear;
+import com.hwl.beta.ui.user.FragmentCenter;
+import com.hwl.beta.ui.user.FragmentFriends;
+import com.hwl.im.common.DefaultConsumer;
 import com.hwl.beta.ui.entry.action.IMainListener;
 import com.hwl.beta.ui.entry.logic.MainHandle;
 import com.hwl.beta.ui.entry.standard.MainStandard;
-import com.hwl.beta.ui.near.FragmentNear;
-import com.hwl.beta.ui.user.FragmentCenter;
-import com.hwl.beta.ui.user.FragmentUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityMain extends FragmentActivity {
     Activity activity;
-    ActivityMainBinding binding;
+    EntryActivityMainBinding binding;
     MainStandard mainStandard;
     MainListener mainListener;
     LocationDialogFragment locationTip;
@@ -50,7 +50,7 @@ public class ActivityMain extends FragmentActivity {
         activity = this;
         mainStandard = new MainHandle();
         mainListener = new MainListener();
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        binding = DataBindingUtil.setContentView(this, R.layout.entry_activity_main);
         binding.setMainBean(mainStandard.getMainBean());
         binding.setAction(mainListener);
 
@@ -97,9 +97,9 @@ public class ActivityMain extends FragmentActivity {
             @Override
             public void accept(String s) {
                 binding.tbTitle.setTitle("未知");
-//                    showLocationDialog();
-//                    locationTip.setTitleShow("定位失败");
-//                    locationTip.setContentShow(info.status + " : " + info.message);
+                showLocationDialog();
+                locationTip.setTitleShow("定位失败");
+                locationTip.setContentShow(s);
             }
         });
     }
@@ -236,7 +236,7 @@ public class ActivityMain extends FragmentActivity {
             List<Fragment> fragments = new ArrayList<>();
             fragments.add(new FragmentRecord());
             fragments.add(new FragmentNear());
-            fragments.add(new FragmentUser());
+            fragments.add(new FragmentFriends());
             fragments.add(new FragmentCenter());
 
             TabFragmentPagerAdapter adapter = new TabFragmentPagerAdapter

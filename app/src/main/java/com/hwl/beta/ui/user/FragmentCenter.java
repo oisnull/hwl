@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.hwl.beta.R;
-import com.hwl.beta.databinding.FragmentCenterBinding;
+import com.hwl.beta.databinding.UserFragmentCenterBinding;
 import com.hwl.beta.net.general.GeneralService;
 import com.hwl.beta.net.general.body.CheckVersionResponse;
 import com.hwl.beta.net.user.NetUserInfo;
@@ -36,7 +36,7 @@ import org.greenrobot.eventbus.ThreadMode;
  */
 
 public class FragmentCenter extends Fragment {
-    FragmentCenterBinding binding;
+    UserFragmentCenterBinding binding;
     Activity activity;
     CenterBean centerBean;
 
@@ -47,27 +47,27 @@ public class FragmentCenter extends Fragment {
 
         centerBean = new CenterBean();
         setCenterBean();
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_center, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.user_fragment_center, container, false);
         binding.setUser(centerBean);
         binding.setAction(new CenterListener());
         binding.setImage(new ImageViewBean(centerBean.getHeadImage()));
 
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
+//        if (!EventBus.getDefault().isRegistered(this)) {
+//            EventBus.getDefault().register(this);
+//        }
         setView();
         return binding.getRoot();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(Integer ebType) {
-//        if (ebType == EventBusConstant.EB_TYPE_USER_UPDATE) {
-//            setCenterBean();
-//            setView();
-//        } else if (ebType == EventBusConstant.EB_TYPE_USER_HEAD_UPDATE) {
-//            ImageViewBean.loadImage(binding.ivHeader, UserSP.getUserHeadImage());
-//        }
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onEventMainThread(Integer ebType) {
+////        if (ebType == EventBusConstant.EB_TYPE_USER_UPDATE) {
+////            setCenterBean();
+////            setView();
+////        } else if (ebType == EventBusConstant.EB_TYPE_USER_HEAD_UPDATE) {
+////            ImageViewBean.loadImage(binding.ivHeader, UserSP.getUserHeadImage());
+////        }
+//    }
 
     private void setCenterBean() {
         NetUserInfo netUser = UserSP.getUserInfo();

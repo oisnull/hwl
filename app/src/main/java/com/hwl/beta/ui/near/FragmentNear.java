@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 
 import com.hwl.beta.R;
-import com.hwl.beta.databinding.FragmentNearBinding;
+import com.hwl.beta.databinding.NearFragmentMainBinding;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.NearCircle;
 import com.hwl.beta.db.entity.NearCircleComment;
@@ -57,7 +57,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class FragmentNear extends BaseFragment {
 
-    FragmentNearBinding binding;
+    NearFragmentMainBinding binding;
     Activity activity;
 //    List<NearCircleExt> nearCircles;
 //    NearCircleAdapter nearCircleAdapter;
@@ -72,7 +72,7 @@ public class FragmentNear extends BaseFragment {
 //        nearCircleAdapter = new NearCircleAdapter(activity, nearCircles, new NearCircleItemListener());
 //        myUserId = UserSP.getUserId();
 
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_near, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.near_fragment_main, container, false);
 
         //initView();
 
@@ -116,7 +116,7 @@ public class FragmentNear extends BaseFragment {
 
     @Override
     protected void onFragmentFirstVisible() {
-        binding.pbLoading.setVisibility(View.VISIBLE);
+//        binding.pbLoading.setVisibility(View.VISIBLE);
         loadNearCircleInfoFromLocal();
     }
 

@@ -32,7 +32,7 @@ public class LocationDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
-        View view = inflater.inflate(R.layout.location_dialog, container, false);
+        View view = inflater.inflate(R.layout.dialog_location, container, false);
         btnBack = view.findViewById(R.id.btn_back);
         tvContent = view.findViewById(R.id.tv_content);
         tvTitle = view.findViewById(R.id.tv_title);

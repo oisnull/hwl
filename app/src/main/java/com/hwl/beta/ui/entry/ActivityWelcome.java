@@ -25,7 +25,7 @@ public class ActivityWelcome extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_welcome);
+        setContentView(R.layout.entry_activity_welcome);
         tvCountdown = findViewById(R.id.tv_countdown);
         tvCountdown.setText(tmrCount + " s");
 

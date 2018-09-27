@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.hwl.beta.R;
-import com.hwl.beta.databinding.FragmentUserBinding;
+import com.hwl.beta.databinding.UserFragmentFriendsBinding;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.net.ResponseBase;
@@ -45,8 +45,8 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Administrator on 2017/12/27.
  */
 
-public class FragmentUser extends BaseFragment {
-    FragmentUserBinding binding;
+public class FragmentFriends extends BaseFragment {
+    UserFragmentFriendsBinding binding;
 //    List<Friend> users;
 //    int friendCount = 0;
 //    FriendAdapter friendAdapter;
@@ -62,7 +62,7 @@ public class FragmentUser extends BaseFragment {
 //        users = new ArrayList<>();
 //        friendAdapter = new FriendAdapter(activity, users);
 
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_user, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.user_fragment_friends, container, false);
 //        binding.setFriendAdapter(friendAdapter);
 //        initView();
 //
@@ -242,7 +242,7 @@ public class FragmentUser extends BaseFragment {
     }
 
     private void loadServerFriendInfo() {
-//        Log.d("FragmentUser", "friendCount:" + friendCount + "  UserSP:" + UserSP
+//        Log.d("FragmentFriends", "friendCount:" + friendCount + "  UserSP:" + UserSP
 // .getFriendCount());
 //        if (friendCount < UserSP.getFriendCount()) {
 //            binding.pbLoading.setVisibility(View.VISIBLE);
