@@ -71,8 +71,10 @@ public class IMClientEntry {
     }
 
     public static void connectServer() {
+        log.info("Client listen : start connect to server "+launcher.getServerAddress()+" ...");
         if (launcher.isConnected()) {
             stopCheckConnect();
+            log.info("Client listen : connected to server "+launcher.getServerAddress()+" and stop auto check");
             return;
         }
         executorService.execute(new Runnable() {
@@ -98,16 +100,19 @@ public class IMClientEntry {
             }
         };
 
-        sendConsumer.accept(sendCallback);
+        sendConsumer.accept(sendCallback);    
     }
 
-    public static void sendUserValidateMessage(final Long userId, final String userToken) {
-        final IMDefaultSendOperateListener operateListener = new IMDefaultSendOperateListener();
+    
+    public static void sendUserValidateMessage(){
+        sendUserValidateMessage(new IMDefaultSendOperateListener());
+    }
+
+    static void sendUserValidateMessage(final IMDefaultSendOperateListener operateListener) { 
         commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
-
-                UserValidateSend request = new UserValidateSend(userId, userToken, sendCallback);
+                UserValidateSend request  = new UserValidateSend(sendCallback);
                 UserValidateListen response = new UserValidateListen(new DefaultConsumer<String>() {
                     @Override
                     public void accept(String sess) {
@@ -127,17 +132,30 @@ public class IMClientEntry {
         });
     }
 
-    private static void startHeartbeat(String sessionId) {
-        MessageRequestHeadOperate.setSessionid(sessionId);
-        IMClientHeartbeatTimer.getInstance().run(new TimerTask() {
+    static void sendHeartBeatMessage(){
+        final IMDefaultSendOperateListener operateListener=new IMDefaultSendOperateListener();
+        commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
             @Override
-            public void run() {
-                messageOperate.send(new HeartBeatMessageSend());
+            public void accept(DefaultConsumer<Boolean> sendCallback) {
+                HeartBeatMessageSend request= new HeartBeatMessageSend(sendCallback);
+                messageOperate.send(request);
             }
         });
     }
 
-    private static void stopHeartbeat() {
+    static void startHeartbeat(String sessionId) {
+        log.info("Client listen : start send heart package, sessionid : "+sessionId);
+        MessageRequestHeadOperate.setSessionid(sessionId);
+        IMClientHeartbeatTimer.getInstance().run(new TimerTask() {
+            @Override
+            public void run() {
+                sendHeartBeatMessage();
+            }
+        });
+    }
+
+    static void stopHeartbeat() {
+        log.info("Client listen : stop send heart package");
         IMClientHeartbeatTimer.getInstance().stop();
         launcher.stop();
     }
