@@ -40,7 +40,7 @@ public class ChatUserMessageSend extends AbstractMessageSendExecutor {
     }
 
     public ChatUserMessageSend(Long toUserId, String content,DefaultConsumer<Boolean> sendCallback) {
-        this(toUserId,CHAT_MESSAGE_CONTENT_TYPE_WORD,content,null,0,0,content.length,0,sendCallback);
+        this(toUserId,CHAT_MESSAGE_CONTENT_TYPE_WORD,content,null,0,0,content.length(),0,sendCallback);
     }
 
     public ChatUserMessageSend(Long toUserId, String previewUrl,int imageWidth,int imageHeight,int size,DefaultConsumer<Boolean> sendCallback) {
@@ -63,20 +63,20 @@ public class ChatUserMessageSend extends AbstractMessageSendExecutor {
     @Override
     public void setRequestBody(ImMessageRequest.Builder request) {
 
-        this.checkParams();
+//        this.checkParams();
 
         request.setChatUserMessageRequest(
                 ImChatUserMessageRequest.newBuilder().setChatUserMessageContent(messageContent).build());
     }
 
-    private void checkParams() {
-        if (fromUserId <= 0 || toUserId <= 0 || fromUserId == toUserId) {
-            throw new InvalidParameterException("FromUserId cannot be the same as toUserId or is zero");
-        }
-        if (content == null || content.isEmpty()) {
-            throw new NullPointerException("Send chat user message content cannot be null or empty");
-        }
-    }
+//    private void checkParams() {
+//        if (fromUserId <= 0 || toUserId <= 0 || fromUserId == toUserId) {
+//            throw new InvalidParameterException("FromUserId cannot be the same as toUserId or is zero");
+//        }
+//        if (content == null || content.isEmpty()) {
+//            throw new NullPointerException("Send chat user message content cannot be null or empty");
+//        }
+//    }
 
 	@Override
 	public DefaultConsumer<Boolean> sendStatusCallback() {

@@ -15,12 +15,9 @@ import android.widget.Toast;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.UserFragmentCenterBinding;
-import com.hwl.beta.net.general.GeneralService;
-import com.hwl.beta.net.general.body.CheckVersionResponse;
 import com.hwl.beta.net.user.NetUserInfo;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.UITransfer;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.user.action.ICenterListener;
 import com.hwl.beta.ui.user.bean.CenterBean;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
@@ -28,8 +25,6 @@ import com.hwl.beta.utils.AppUtils;
 import com.hwl.beta.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * Created by Administrator on 2017/12/27.

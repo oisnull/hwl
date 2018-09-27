@@ -28,7 +28,7 @@ import com.hwl.beta.ui.TestActivity;
 //import com.hwl.beta.ui.circle.ActivityCircleMessages;
 //import com.hwl.beta.ui.circle.ActivityCirclePublish;
 //import com.hwl.beta.ui.circle.ActivityCircleUserIndex;
-//import com.hwl.beta.ui.dialog.ReloginDialogFragment;
+import com.hwl.beta.ui.dialog.ReloginDialogFragment;
 //import com.hwl.beta.ui.entry.ActivityGetpwd;
 //import com.hwl.beta.ui.entry.ActivityMain;
 //import com.hwl.beta.ui.entry.ActivityQRCode;
@@ -57,6 +57,7 @@ import com.hwl.beta.ui.entry.ActivityRegister;
 //import com.hwl.beta.ui.video.ActivityVideoPlay;
 //import com.hwl.beta.ui.video.ActivityVideoSelect;
 import com.hwl.beta.ui.entry.ActivityWelcome;
+import com.hwl.beta.ui.immsg.IMClientEntry;
 import com.hwl.beta.utils.StorageUtils;
 import com.hwl.beta.utils.StringUtils;
 
@@ -106,6 +107,7 @@ public class UITransfer {
         DaoUtils.closeDB();
         toWelcomeActivity(context);
         UserSP.setAccount(userAccount);
+        IMClientEntry.disconnectServer();
     }
 
     public static void toMainActivity(Activity context) {
@@ -379,33 +381,32 @@ public class UITransfer {
 //        intent.putExtra("groupguid", groupGuid);
 //        context.startActivity(intent);
 //    }
-//
-//    public static void toReloginDialog(FragmentActivity fragmentActivity) {
-//        toReloginDialog(fragmentActivity, null);
-//    }
-//
-//    public static void toReloginDialog(final FragmentActivity fragmentActivity, String
-//            hintContent) {
-//        final ReloginDialogFragment reloginFragment = new ReloginDialogFragment();
-//        if (StringUtils.isNotBlank(hintContent)) {
-//            reloginFragment.setHintText(hintContent);
-//        }
-//        reloginFragment.setReloginClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-////                Intent intent = new Intent(fragmentActivity, ActivityWelcome.class);
-////                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-////                fragmentActivity.startActivity(intent);
-//
-//                reloginFragment.dismiss();
-//                toLogout(fragmentActivity);
-//                fragmentActivity.finish();
-//            }
-//        });
-//        reloginFragment.show(fragmentActivity.getSupportFragmentManager(), "ReloginDialogFragment");
-//        MessageReceive.stop();
-//    }
+
+    public static void toReloginDialog(FragmentActivity fragmentActivity) {
+        toReloginDialog(fragmentActivity, null);
+    }
+
+    public static void toReloginDialog(final FragmentActivity fragmentActivity, String
+            hintContent) {
+        final ReloginDialogFragment reloginFragment = new ReloginDialogFragment();
+        if (StringUtils.isNotBlank(hintContent)) {
+            reloginFragment.setHintText(hintContent);
+        }
+        reloginFragment.setReloginClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+//                Intent intent = new Intent(fragmentActivity, ActivityWelcome.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                fragmentActivity.startActivity(intent);
+
+                reloginFragment.dismiss();
+                toLogout(fragmentActivity);
+                fragmentActivity.finish();
+            }
+        });
+        reloginFragment.show(fragmentActivity.getSupportFragmentManager(), "ReloginDialogFragment");
+    }
 //
 //    public static void toChatGroupSettingActivity(Activity context, String groupGuid) {
 //        Intent intent = new Intent(context, ActivityChatGroupSetting.class);

@@ -91,7 +91,6 @@ public class IMClientLauncher {
         try {
             status = STATUS_CONNECT;
             channel = bootstrap.connect(host, port).sync().channel();
-            // channelFuture.channel().closeFuture().sync();
             registerChannel();
             this.clientListener.onBuildConnectionSuccess(channel.remoteAddress().toString());
         } catch (Exception e) {
@@ -103,11 +102,13 @@ public class IMClientLauncher {
     }
 
     public void stop() {
+        if (!isConnected()) return;
         String localAddress = "";
         if (channel != null) {
             try {
                 localAddress = channel.localAddress().toString();
                 channel.close().sync();
+                resetStatus();
                 // log.info("Client disconnect {} success...", channel.remoteAddress());
             } catch (InterruptedException e) {
                 e.printStackTrace();

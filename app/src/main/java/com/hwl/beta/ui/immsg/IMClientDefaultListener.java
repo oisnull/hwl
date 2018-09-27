@@ -21,7 +21,7 @@ public class IMClientDefaultListener implements IMClientListener {
 
     @Override
     public void onBuildConnectionError(String serverAddress, String errorInfo) {
-        log.info("Client listen : connected to server " + serverAddress + " failure. info :" +
+        log.info("Client listen : connected to server " + serverAddress + " failure. info : " +
                 errorInfo);
         IMClientEntry.startCheckConnect();
     }
@@ -29,18 +29,18 @@ public class IMClientDefaultListener implements IMClientListener {
     @Override
     public void onClosed(String serverAddress) {
         log.info("Client listen : im server " + serverAddress + " closed");
-        IMClientEntry.startCheckConnect();
+//        IMClientEntry.startCheckConnect();
     }
 
     @Override
     public void onDisconnected(String serverAddress) {
         log.info("Client listen : im server " + serverAddress + " disconnect");
-        IMClientEntry.startCheckConnect();
+//        IMClientEntry.startCheckConnect();
     }
 
     @Override
     public void onError(String serverAddress, String errorInfo) {
         log.info("Client listen : an error occurred on the client . info : " + errorInfo);
-        IMClientEntry.startCheckConnect();
+//        IMClientEntry.startCheckConnect();
     }
 }

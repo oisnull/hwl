@@ -38,7 +38,7 @@ public class ChatGroupMessageSend extends AbstractMessageSendExecutor {
     }
 
     public ChatGroupMessageSend(String groupGuid, String content,DefaultConsumer<Boolean> sendCallback) {
-        this(groupGuid,CHAT_MESSAGE_CONTENT_TYPE_WORD,content,null,0,0,content.length,0,sendCallback);
+        this(groupGuid,CHAT_MESSAGE_CONTENT_TYPE_WORD,content,null,0,0,content.length(),0,sendCallback);
     }
 
     public ChatGroupMessageSend(String groupGuid, String previewUrl,int imageWidth,int imageHeight,int size,DefaultConsumer<Boolean> sendCallback) {

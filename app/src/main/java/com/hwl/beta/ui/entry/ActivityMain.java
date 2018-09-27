@@ -20,7 +20,10 @@ import com.hwl.beta.databinding.EntryActivityMainBinding;
 import com.hwl.beta.location.BaiduLocation;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.ui.TabFragmentPagerAdapter;
+import com.hwl.beta.ui.busbean.EventBusConstant;
+import com.hwl.beta.ui.busbean.EventMessageModel;
 import com.hwl.beta.ui.chat.FragmentRecord;
+import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.ShareTransfer;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.dialog.LocationDialogFragment;
@@ -35,7 +38,7 @@ import com.hwl.beta.ui.entry.standard.MainStandard;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivityMain extends FragmentActivity {
+public class ActivityMain extends BaseActivity {
     Activity activity;
     EntryActivityMainBinding binding;
     MainStandard mainStandard;
@@ -77,14 +80,21 @@ public class ActivityMain extends FragmentActivity {
 
         initLocation();
 
-//        if (!EventBus.getDefault().isRegistered(this)) {
-//            EventBus.getDefault().register(this);
-//        }
-//        MessageReceive.start();
 //        SQLiteStudioService.instance().start(activity);
 //        activity.registerReceiver(networkBroadcastReceiver, new IntentFilter("android.net.conn
 // .CONNECTIVITY_CHANGE"));
-//        EventBus.getDefault().postSticky(EventBusConstant.EB_TYPE_NEAR_INFO_UPDATE);
+    }
+
+    @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
+
+    @Override
+    protected void receiveEventMessage(EventMessageModel messageModel) {
+        if (messageModel.getMessageType() == EventBusConstant.EB_TYPE_TOKEN_INVALID_RELOGIN) {
+            UITransfer.toReloginDialog(this);
+        }
     }
 
     private void initLocation() {

@@ -1,10 +1,9 @@
 package com.hwl.beta.ui.immsg;
 
+import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import com.hwl.beta.AppConfig;
@@ -24,11 +23,11 @@ import com.hwl.im.improto.ImMessageType;
 public class IMClientEntry {
 
     static Logger log = Logger.getLogger(AppConfig.IM_DEBUG_TAG);
-    static int CHECK_TIME_INTERNAL = 5; // s
+    static int CHECK_TIME_INTERNAL = 5 * 1000; // s
 
     final static ExecutorService executorService = Executors.newSingleThreadExecutor();
-    final static ScheduledExecutorService checkConnectExecutor = Executors
-            .newSingleThreadScheduledExecutor();
+    static Timer checkConnectTimer;
+    static boolean checkConnectTimerRuning = false;
     final static ClientMessageOperate messageOperate = new ClientMessageOperate();
     final static IMClientLauncher launcher = new IMClientLauncher(AppConfig.IM_HOST, AppConfig
             .IM_PORT);
@@ -46,17 +45,16 @@ public class IMClientEntry {
     }
 
     public static void startCheckConnect() {
-        if (!NetworkUtils.isConnected())
+        if (!NetworkUtils.isConnected() || checkConnectTimerRuning)
             return;
-
-        if (checkConnectExecutor.isShutdown()) {
-            checkConnectExecutor.schedule(new Runnable() {
-                @Override
-                public void run() {
-                    connectServer();
-                }
-            }, CHECK_TIME_INTERNAL, TimeUnit.SECONDS);
-        }
+        checkConnectTimer = new Timer();
+        checkConnectTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                connectServer();
+                checkConnectTimerRuning = true;
+            }
+        }, CHECK_TIME_INTERNAL, CHECK_TIME_INTERNAL);
     }
 
     public static String getServerAddress() {
@@ -64,17 +62,20 @@ public class IMClientEntry {
     }
 
     public static void stopCheckConnect() {
-        if (checkConnectExecutor.isShutdown())
-            return;
-        checkConnectExecutor.shutdown();
-        // stopHeartbeat();
+        checkConnectTimerRuning = false;
+        if (checkConnectTimer != null) {
+            checkConnectTimer.cancel();
+            checkConnectTimer.purge();
+            checkConnectTimer = null;
+        }
     }
 
     public static void connectServer() {
-        log.info("Client listen : start connect to server "+launcher.getServerAddress()+" ...");
+        log.info("Client listen : start connect to server " + launcher.getServerAddress() + " ...");
         if (launcher.isConnected()) {
             stopCheckConnect();
-            log.info("Client listen : connected to server "+launcher.getServerAddress()+" and stop auto check");
+            log.info("Client listen : connected to server " + launcher.getServerAddress() + " and" +
+                    " stop auto check");
             return;
         }
         executorService.execute(new Runnable() {
@@ -83,6 +84,10 @@ public class IMClientEntry {
                 launcher.connect();
             }
         });
+    }
+
+    public static void disconnectServer() {
+        launcher.stop();
     }
 
     static void commomExec(final IMDefaultSendOperateListener operateListener, final
@@ -100,19 +105,19 @@ public class IMClientEntry {
             }
         };
 
-        sendConsumer.accept(sendCallback);    
+        sendConsumer.accept(sendCallback);
     }
 
-    
-    public static void sendUserValidateMessage(){
-        sendUserValidateMessage(new IMDefaultSendOperateListener());
+
+    public static void sendUserValidateMessage() {
+        sendUserValidateMessage(new IMDefaultSendOperateListener("UserValidateMessage"));
     }
 
-    static void sendUserValidateMessage(final IMDefaultSendOperateListener operateListener) { 
+    static void sendUserValidateMessage(final IMDefaultSendOperateListener operateListener) {
         commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
-                UserValidateSend request  = new UserValidateSend(sendCallback);
+                UserValidateSend request = new UserValidateSend(sendCallback);
                 UserValidateListen response = new UserValidateListen(new DefaultConsumer<String>() {
                     @Override
                     public void accept(String sess) {
@@ -132,19 +137,20 @@ public class IMClientEntry {
         });
     }
 
-    static void sendHeartBeatMessage(){
-        final IMDefaultSendOperateListener operateListener=new IMDefaultSendOperateListener();
+    static void sendHeartBeatMessage() {
+        final IMDefaultSendOperateListener operateListener = new IMDefaultSendOperateListener
+                ("HeartBeatMessage");
         commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
-                HeartBeatMessageSend request= new HeartBeatMessageSend(sendCallback);
+                HeartBeatMessageSend request = new HeartBeatMessageSend(sendCallback);
                 messageOperate.send(request);
             }
         });
     }
 
     static void startHeartbeat(String sessionId) {
-        log.info("Client listen : start send heart package, sessionid : "+sessionId);
+        log.info("Client listen : start send heart package, sessionid : " + sessionId);
         MessageRequestHeadOperate.setSessionid(sessionId);
         IMClientHeartbeatTimer.getInstance().run(new TimerTask() {
             @Override
