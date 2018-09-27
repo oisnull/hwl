@@ -16,7 +16,7 @@ public class IMClientDefaultListener implements IMClientListener {
         IMClientEntry.stopCheckConnect();
         log.info("Client listen : send user validate message userid(" + UserSP.getUserId() + ") " +
                 "usertoken(" + UserSP.getUserToken() + ")");
-        IMClientEntry.sendUserValidateMessage(UserSP.getUserId(), UserSP.getUserToken());
+        IMClientEntry.sendUserValidateMessage();
     }
 
     @Override
@@ -40,7 +40,7 @@ public class IMClientDefaultListener implements IMClientListener {
 
     @Override
     public void onError(String serverAddress, String errorInfo) {
-        log.info("Client listen : an error occurred on the client . info : {}" + errorInfo);
+        log.info("Client listen : an error occurred on the client . info : " + errorInfo);
         IMClientEntry.startCheckConnect();
     }
 }
