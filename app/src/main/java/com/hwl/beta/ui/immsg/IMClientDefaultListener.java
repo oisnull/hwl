@@ -13,7 +13,7 @@ public class IMClientDefaultListener implements IMClientListener {
     @Override
     public void onBuildConnectionSuccess(String serverAddress) {
         log.info("Client listen : connected to server " + serverAddress + " successfully.");
-        IMClientEntry.stopCheckConnect();
+//        IMClientEntry.stopCheckConnect();
         log.info("Client listen : send user validate message userid(" + UserSP.getUserId() + ") " +
                 "usertoken(" + UserSP.getUserToken() + ")");
         IMClientEntry.sendUserValidateMessage();
@@ -23,7 +23,7 @@ public class IMClientDefaultListener implements IMClientListener {
     public void onBuildConnectionError(String serverAddress, String errorInfo) {
         log.info("Client listen : connected to server " + serverAddress + " failure. info : " +
                 errorInfo);
-        IMClientEntry.startCheckConnect();
+//        IMClientEntry.startCheckConnect();
     }
 
     @Override

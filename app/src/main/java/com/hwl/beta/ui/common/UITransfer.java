@@ -280,7 +280,8 @@ public class UITransfer {
 //        toNearDetailActivity(context, 0, info);
 //    }
 //
-//    private static void toNearDetailActivity(Activity context, long circleId, NearCircleExt info) {
+//    private static void toNearDetailActivity(Activity context, long circleId, NearCircleExt
+// info) {
 //        Intent intent = new Intent(context, ActivityNearDetail.class);
 //        if (info != null && info.getInfo() != null) {
 //            Bundle bundle = new Bundle();
@@ -386,26 +387,26 @@ public class UITransfer {
         toReloginDialog(fragmentActivity, null);
     }
 
+    private static ReloginDialogFragment reloginDialogFragment = null;
+
     public static void toReloginDialog(final FragmentActivity fragmentActivity, String
             hintContent) {
-        final ReloginDialogFragment reloginFragment = new ReloginDialogFragment();
+        if (reloginDialogFragment != null && reloginDialogFragment.isVisible()) return;
+        reloginDialogFragment = new ReloginDialogFragment();
         if (StringUtils.isNotBlank(hintContent)) {
-            reloginFragment.setHintText(hintContent);
+            reloginDialogFragment.setHintText(hintContent);
         }
-        reloginFragment.setReloginClickListener(new View.OnClickListener() {
+        reloginDialogFragment.setReloginClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-//                Intent intent = new Intent(fragmentActivity, ActivityWelcome.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                fragmentActivity.startActivity(intent);
-
-                reloginFragment.dismiss();
+                reloginDialogFragment.dismiss();
+                reloginDialogFragment = null;
                 toLogout(fragmentActivity);
                 fragmentActivity.finish();
             }
         });
-        reloginFragment.show(fragmentActivity.getSupportFragmentManager(), "ReloginDialogFragment");
+        reloginDialogFragment.show(fragmentActivity.getSupportFragmentManager(),
+                "ReloginDialogFragment");
     }
 //
 //    public static void toChatGroupSettingActivity(Activity context, String groupGuid) {

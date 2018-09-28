@@ -3,10 +3,10 @@ package com.hwl.beta.ui.entry;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.hwl.beta.ui.NetworkBroadcastReceiver;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.EntryActivityMainBinding;
 import com.hwl.beta.location.BaiduLocation;
@@ -38,12 +39,15 @@ import com.hwl.beta.ui.entry.standard.MainStandard;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
+
 public class ActivityMain extends BaseActivity {
     Activity activity;
     EntryActivityMainBinding binding;
     MainStandard mainStandard;
     MainListener mainListener;
     LocationDialogFragment locationTip;
+    NetworkBroadcastReceiver networkBroadcastReceiver;
     private long exitTime = 0;
 
     @Override
@@ -80,9 +84,16 @@ public class ActivityMain extends BaseActivity {
 
         initLocation();
 
-//        SQLiteStudioService.instance().start(activity);
-//        activity.registerReceiver(networkBroadcastReceiver, new IntentFilter("android.net.conn
-// .CONNECTIVITY_CHANGE"));
+        SQLiteStudioService.instance().start(activity);
+
+        networkBroadcastReceiver = new NetworkBroadcastReceiver();
+        registerReceiver(networkBroadcastReceiver, new IntentFilter(NetworkBroadcastReceiver
+                .ACTION_TAG));
+    }
+
+    @Override
+    protected boolean isUseSwipeBackAnimation() {
+        return false;
     }
 
     @Override
@@ -91,10 +102,15 @@ public class ActivityMain extends BaseActivity {
     }
 
     @Override
-    protected void receiveEventMessage(EventMessageModel messageModel) {
+    protected void receiveStickyEventMessage(EventMessageModel messageModel) {
         if (messageModel.getMessageType() == EventBusConstant.EB_TYPE_TOKEN_INVALID_RELOGIN) {
             UITransfer.toReloginDialog(this);
         }
+    }
+
+    @Override
+    protected void receiveEventMessage(EventMessageModel messageModel) {
+
     }
 
     private void initLocation() {
@@ -171,10 +187,8 @@ public class ActivityMain extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        activity.unregisterReceiver(networkBroadcastReceiver);
-//        EventBus.getDefault().unregister(this);
-////        MessageReceive.stop();
-//        SQLiteStudioService.instance().stop();
+        unregisterReceiver(networkBroadcastReceiver);
+        SQLiteStudioService.instance().stop();
     }
 
     private void showPopMenu(View v) {
@@ -337,20 +351,4 @@ public class ActivityMain extends BaseActivity {
             }
         }
     }
-
-//    private BroadcastReceiver networkBroadcastReceiver = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService
-// (Context.CONNECTIVITY_SERVICE);
-//            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-//            if (networkInfo != null && networkInfo.isAvailable()) {
-////                Toast.makeText(context, "当前网络可用", Toast.LENGTH_SHORT).show();
-//                EventBus.getDefault().post(EventBusConstant.EB_TYPE_NETWORK_CONNECT_UPDATE);
-//            } else {
-////                Toast.makeText(context, "当前网络不可用", Toast.LENGTH_SHORT).show();
-//                EventBus.getDefault().post(EventBusConstant.EB_TYPE_NETWORK_BREAK_UPDATE);
-//            }
-//        }
-//    };
 }

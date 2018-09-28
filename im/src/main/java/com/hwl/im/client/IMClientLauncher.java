@@ -4,6 +4,8 @@ import com.hwl.im.improto.ImMessageContext;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
@@ -85,14 +87,30 @@ public class IMClientLauncher {
     }
 
     public void connect() {
+        if (channel != null) {
+            init();
+        }
+        connectServer();
+    }
+
+    private void connectServer() {
         if (status == STATUS_CONNECT)
             return;
 
         try {
             status = STATUS_CONNECT;
-            channel = bootstrap.connect(host, port).sync().channel();
-            registerChannel();
-            this.clientListener.onBuildConnectionSuccess(channel.remoteAddress().toString());
+            final ChannelFuture channelFuture = bootstrap.connect(host, port);//.sync();
+            channelFuture.addListener(new ChannelFutureListener() {
+                public void operationComplete(ChannelFuture f) throws Exception {
+                    if (f.isSuccess()) {
+                        channel = channelFuture.channel();
+                        registerChannel();
+                        clientListener.onBuildConnectionSuccess(getServerAddress());
+                    } else {
+                        throw new Exception("build connection failure");
+                    }
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
             this.clientListener.onBuildConnectionError(this.getServerAddress(), e.getMessage());
@@ -103,21 +121,19 @@ public class IMClientLauncher {
 
     public void stop() {
         if (!isConnected()) return;
-        String localAddress = "";
         if (channel != null) {
             try {
-                localAddress = channel.localAddress().toString();
-                channel.close().sync();
+                channel.close();//.sync();
                 resetStatus();
                 // log.info("Client disconnect {} success...", channel.remoteAddress());
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         if (workGroup != null) {
             workGroup.shutdownGracefully();
         }
-        this.clientListener.onClosed(localAddress);
+        this.clientListener.onClosed(this.getServerAddress());
     }
 
     public boolean isConnected() {

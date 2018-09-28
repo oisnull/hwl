@@ -20,6 +20,6 @@ public class EventBusUtil {
     }
 
     public static void sendTokenInvalidEvent() {
-        sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_TOKEN_INVALID_RELOGIN));
+        sendStickyEvent(new EventMessageModel(EventBusConstant.EB_TYPE_TOKEN_INVALID_RELOGIN));
     }
 }

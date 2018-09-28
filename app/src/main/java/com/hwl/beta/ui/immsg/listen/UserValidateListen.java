@@ -9,7 +9,6 @@ public class UserValidateListen extends AbstractMessageListenExecutor<ImUserVali
 
     private DefaultConsumer<String> succCallback;
     private DefaultConsumer<String> failedCallback;
-//    static Logger log = LogManager.getLogger(UserValidateListen.class.getName());
 
     public UserValidateListen(DefaultConsumer<String> succCallback) {
         this.succCallback = succCallback;
@@ -23,10 +22,6 @@ public class UserValidateListen extends AbstractMessageListenExecutor<ImUserVali
     @Override
     public void success(ImUserValidateResponse response) {
         super.success(response);
-
-//        log.debug("User validate {} , listen content : {}", response.getIsSuccess() ? "success" : "failed",
-//                response.toString());
-
         if (response.getIsSuccess()) {
             if (this.succCallback != null)
                 this.succCallback.accept(response.getSessionid());
@@ -38,7 +33,6 @@ public class UserValidateListen extends AbstractMessageListenExecutor<ImUserVali
 
     @Override
     public void failed(int responseCode, String message) {
-//        log.debug("User validate receive failed : {}", message);
         if (this.failedCallback != null)
             this.failedCallback.accept(message);
     }

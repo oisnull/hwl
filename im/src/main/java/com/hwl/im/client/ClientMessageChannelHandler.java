@@ -32,14 +32,14 @@ public class ClientMessageChannelHandler extends SimpleChannelInboundHandler<ImM
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         // log.debug("Client inactive : {}", ctx.channel().remoteAddress());
-        this.clientListener.onDisconnected(ctx.channel().localAddress().toString());
+        this.clientListener.onDisconnected(ctx.channel().remoteAddress().toString());
         this.messageOperate.disconnect();
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         // log.error("Client passive disconnect : {}", ctx.channel().remoteAddress());
-        String clientAddress = ctx.channel().localAddress().toString();
+        String clientAddress = ctx.channel().remoteAddress().toString();
         cause.printStackTrace();
         ctx.close();
         this.clientListener.onError(clientAddress, cause.getMessage());

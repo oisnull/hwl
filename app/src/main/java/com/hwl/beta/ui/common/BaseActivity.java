@@ -18,12 +18,15 @@ public abstract class BaseActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SwipeBackHelper.onCreate(this);
-        SwipeBackHelper.getCurrentPage(this)
-                .setSwipeBackEnable(true)
-                .setSwipeSensitivity(0.5f)
-                .setSwipeRelateEnable(true)
-                .setSwipeRelateOffset(300);
+
+        if (isUseSwipeBackAnimation()) {
+            SwipeBackHelper.onCreate(this);
+            SwipeBackHelper.getCurrentPage(this)
+                    .setSwipeBackEnable(true)
+                    .setSwipeSensitivity(0.5f)
+                    .setSwipeRelateEnable(true)
+                    .setSwipeRelateOffset(300);
+        }
         //ViewServer.get(this).addWindow(this);
 
         if (isRegisterEventBus()) {
@@ -35,16 +38,25 @@ public abstract class BaseActivity extends FragmentActivity {
         return false;
     }
 
+    protected boolean isUseSwipeBackAnimation() {
+        return true;
+    }
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        SwipeBackHelper.onPostCreate(this);
+        if (isUseSwipeBackAnimation()) {
+            SwipeBackHelper.onPostCreate(this);
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SwipeBackHelper.onDestroy(this);
+
+        if (isUseSwipeBackAnimation()) {
+            SwipeBackHelper.onDestroy(this);
+        }
         if (isRegisterEventBus()) {
             EventBusUtil.unRegister(this);
         }
@@ -64,21 +76,9 @@ public abstract class BaseActivity extends FragmentActivity {
         }
     }
 
-    /**
-     * 接收到eventbus分发到的事件
-     *
-     * @param messageModel 事件
-     */
     protected void receiveEventMessage(EventMessageModel messageModel) {
-
     }
 
-    /**
-     * 接收到eventbus分发到的粘性事件
-     *
-     * @param messageModel 粘性事件
-     */
     protected void receiveStickyEventMessage(EventMessageModel messageModel) {
-
     }
 }

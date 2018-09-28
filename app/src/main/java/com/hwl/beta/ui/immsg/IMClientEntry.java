@@ -1,9 +1,6 @@
 package com.hwl.beta.ui.immsg;
 
-import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 import com.hwl.beta.AppConfig;
@@ -25,9 +22,8 @@ public class IMClientEntry {
     static Logger log = Logger.getLogger(AppConfig.IM_DEBUG_TAG);
     static int CHECK_TIME_INTERNAL = 5 * 1000; // s
 
-    final static ExecutorService executorService = Executors.newSingleThreadExecutor();
-    static Timer checkConnectTimer;
-    static boolean checkConnectTimerRuning = false;
+    static Thread imThread = null;
+    static boolean isIMThreadRuning = false;
     final static ClientMessageOperate messageOperate = new ClientMessageOperate();
     final static IMClientLauncher launcher = new IMClientLauncher(AppConfig.IM_HOST, AppConfig
             .IM_PORT);
@@ -44,49 +40,31 @@ public class IMClientEntry {
                 ());
     }
 
-    public static void startCheckConnect() {
-        if (!NetworkUtils.isConnected() || checkConnectTimerRuning)
-            return;
-        checkConnectTimer = new Timer();
-        checkConnectTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                connectServer();
-                checkConnectTimerRuning = true;
-            }
-        }, CHECK_TIME_INTERNAL, CHECK_TIME_INTERNAL);
-    }
-
     public static String getServerAddress() {
         return launcher.getServerAddress();
     }
 
-    public static void stopCheckConnect() {
-        checkConnectTimerRuning = false;
-        if (checkConnectTimer != null) {
-            checkConnectTimer.cancel();
-            checkConnectTimer.purge();
-            checkConnectTimer = null;
-        }
-    }
-
     public static void connectServer() {
+        if (isIMThreadRuning) return;
         log.info("Client listen : start connect to server " + launcher.getServerAddress() + " ...");
-        if (launcher.isConnected()) {
-            stopCheckConnect();
+        if (!NetworkUtils.isConnected() || launcher.isConnected()) {
             log.info("Client listen : connected to server " + launcher.getServerAddress() + " and" +
                     " stop auto check");
             return;
         }
-        executorService.execute(new Runnable() {
+        isIMThreadRuning = true;
+        imThread = new Thread() {
             @Override
             public void run() {
                 launcher.connect();
             }
-        });
+        };
+        imThread.start();
     }
 
     public static void disconnectServer() {
+        isIMThreadRuning = false;
+        imThread = null;
         launcher.stop();
     }
 
@@ -99,8 +77,10 @@ public class IMClientEntry {
         DefaultConsumer<Boolean> sendCallback = new DefaultConsumer<Boolean>() {
             @Override
             public void accept(Boolean succ) {
-                if (!succ) {
-                    operateListener.notSendToServer();
+                if (succ) {
+                    operateListener.sendToServerFaild();
+                } else {
+                    operateListener.sendToServerSuccess();
                 }
             }
         };
@@ -160,9 +140,9 @@ public class IMClientEntry {
         });
     }
 
-    static void stopHeartbeat() {
+    public static void stopHeartbeat() {
         log.info("Client listen : stop send heart package");
         IMClientHeartbeatTimer.getInstance().stop();
-        launcher.stop();
+        disconnectServer();
     }
 }

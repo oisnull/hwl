@@ -26,14 +26,16 @@ public class ActivityLogin extends FragmentActivity {
     Activity activity;
     EntryActivityLoginBinding binding;
     LoginHandle loginHandle;
+    LoginBean loginBean;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = this;
         loginHandle = new LoginHandle();
+        loginBean=loginHandle.getLoginBean();
         binding = DataBindingUtil.setContentView(this, R.layout.entry_activity_login);
-        binding.setLoginBean(loginHandle.getLoginBean());
+        binding.setLoginBean(loginBean);
         binding.setAction(new LoginListener());
         binding.tbTitle.setTitle(getResources().getString(R.string.login_activity_title))
                 .setImageLeftHide().setImageRightHide();
@@ -41,7 +43,6 @@ public class ActivityLogin extends FragmentActivity {
 
     private class LoginListener implements ILoginListener {
         boolean isRuning = false;
-        LoginBean loginBean = loginHandle.getLoginBean();
 
         private void login() {
             if (isRuning) {

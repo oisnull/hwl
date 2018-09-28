@@ -2,7 +2,6 @@ package com.hwl.beta.ui.immsg;
 
 import com.hwl.beta.AppConfig;
 import com.hwl.beta.ui.busbean.EventBusUtil;
-import com.hwl.beta.ui.busbean.EventMessageModel;
 
 import java.util.logging.Logger;
 
@@ -26,8 +25,12 @@ public class IMDefaultSendOperateListener {
         log.info(getSendDesc() + " : unconnect server ");
     }
 
-    public void notSendToServer() {
+    public void sendToServerSuccess() {
         log.info(getSendDesc() + " : message not send to server ");
+    }
+
+    public void sendToServerFaild() {
+        log.info(getSendDesc() + " : message send to server success");
     }
 
     public void success() {

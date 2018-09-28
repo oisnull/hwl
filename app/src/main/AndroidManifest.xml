@@ -69,23 +69,23 @@
         <!--<activity android:name=".ui.chat.ActivityChatGroupSettingEdit" />-->
         <!--<activity android:name=".ui.chat.ActivityChatUserSetting" />-->
         <!--<activity-->
-            <!--android:name=".ui.chat.ActivityChatUser"-->
-            <!--android:windowSoftInputMode="stateHidden" />-->
+        <!--android:name=".ui.chat.ActivityChatUser"-->
+        <!--android:windowSoftInputMode="stateHidden" />-->
         <!--<activity android:name=".ui.near.ActivityNearPublish" />-->
         <!--<activity android:name=".ui.near.ActivityNearMessages" />-->
         <!--<activity android:name=".ui.near.ActivityNearDetail" />-->
         <!--<activity-->
-            <!--android:name=".ui.near.ActivityCommentPublish"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:theme="@style/ActivityBottomDialog"-->
-            <!--android:windowSoftInputMode="stateVisible" />-->
+        <!--android:name=".ui.near.ActivityCommentPublish"-->
+        <!--android:screenOrientation="portrait"-->
+        <!--android:theme="@style/ActivityBottomDialog"-->
+        <!--android:windowSoftInputMode="stateVisible" />-->
         <!--<activity android:name=".ui.circle.ActivityCircleIndex" />-->
         <!--<activity android:name=".ui.circle.ActivityCirclePublish" />-->
         <!--<activity-->
-            <!--android:name=".ui.circle.ActivityCircleCommentPublish"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:theme="@style/ActivityBottomDialog"-->
-            <!--android:windowSoftInputMode="stateVisible" />-->
+        <!--android:name=".ui.circle.ActivityCircleCommentPublish"-->
+        <!--android:screenOrientation="portrait"-->
+        <!--android:theme="@style/ActivityBottomDialog"-->
+        <!--android:windowSoftInputMode="stateVisible" />-->
         <!--<activity android:name=".ui.circle.ActivityCircleUserIndex" />-->
         <!--<activity android:name=".ui.circle.ActivityCircleDetail" />-->
         <!--<activity android:name=".ui.circle.ActivityCircleMessages" />-->
@@ -102,13 +102,18 @@
             android:process=":remote" />
 
         <!--<provider-->
-            <!--android:name="android.support.v4.content.FileProvider"-->
-            <!--android:authorities="com.hwl.beta.fileprovider"-->
-            <!--android:exported="false"-->
-            <!--android:grantUriPermissions="true">-->
-            <!--<meta-data-->
-                <!--android:name="android.support.FILE_PROVIDER_PATHS"-->
-                <!--android:resource="@xml/filepaths" />-->
+        <!--android:name="android.support.v4.content.FileProvider"-->
+        <!--android:authorities="com.hwl.beta.fileprovider"-->
+        <!--android:exported="false"-->
+        <!--android:grantUriPermissions="true">-->
+        <!--<meta-data-->
+        <!--android:name="android.support.FILE_PROVIDER_PATHS"-->
+        <!--android:resource="@xml/filepaths" />-->
         <!--</provider>-->
+        <receiver android:name=".ui.NetworkBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>
