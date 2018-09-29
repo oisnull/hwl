@@ -39,15 +39,15 @@ import com.hwl.beta.ui.entry.ActivityRegister;
 //import com.hwl.beta.ui.entry.ActivityWelcome;
 //import com.hwl.beta.ui.group.ActivityGroup;
 //import com.hwl.beta.ui.group.ActivityGroupAdd;
-//import com.hwl.beta.ui.imgselect.ActivityImageBrowse;
-//import com.hwl.beta.ui.imgselect.ActivityImageSelect;
+import com.hwl.beta.ui.imgselect.ActivityImageBrowse;
+import com.hwl.beta.ui.imgselect.ActivityImageSelect;
 //import com.hwl.beta.ui.near.ActivityCommentPublish;
 //import com.hwl.beta.ui.near.ActivityNearDetail;
 //import com.hwl.beta.ui.near.ActivityNearMessages;
 //import com.hwl.beta.ui.near.ActivityNearPublish;
 import com.hwl.beta.ui.user.ActivityNewFriend;
-//import com.hwl.beta.ui.user.ActivityUserEdit;
-//import com.hwl.beta.ui.user.ActivityUserEditItem;
+import com.hwl.beta.ui.user.ActivityUserEdit;
+import com.hwl.beta.ui.user.ActivityUserEditItem;
 //import com.hwl.beta.ui.user.ActivityUserIndex;
 //import com.hwl.beta.ui.user.ActivityUserMessageSetting;
 //import com.hwl.beta.ui.user.ActivityUserPasswordReset;
@@ -154,76 +154,76 @@ public class UITransfer {
         context.startActivity(intent);
     }
 
-//    public static void toUserEditActivity(Activity context) {
-//        Intent intent = new Intent(context, ActivityUserEdit.class);
+    public static void toUserEditActivity(Activity context) {
+        Intent intent = new Intent(context, ActivityUserEdit.class);
+        context.startActivity(intent);
+    }
+
+    public static void toUserEditItemActivity(Activity context, int actoinType, String
+            editContent) {
+        toUserEditItemActivity(context, actoinType, editContent, 0);
+    }
+
+    public static void toUserEditItemActivity(Activity context, int actoinType, String
+            editContent, long friendId) {
+        Intent intent = new Intent(context, ActivityUserEditItem.class);
+        intent.putExtra("actiontype", actoinType);
+        intent.putExtra("editcontent", editContent);
+        if (friendId > 0) {
+            intent.putExtra("friendid", friendId);
+        }
+        context.startActivity(intent);
+    }
+
+    public static void toSystemCamera(Activity activity, int requestCode) {
+        toSystemCamera(activity, StorageUtils.getUriForTempFile(), requestCode);
+    }
+
+    public static void toSystemCamera(Activity activity, Uri saveUri, int requestCode) {
+        if (!PermissionsAction.checkCamera(activity)) return;
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent
+                    .FLAG_GRANT_WRITE_URI_PERMISSION);
+        }
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, saveUri);
+        activity.startActivityForResult(intent, requestCode);
+    }
+
+    public static void toImageSelectActivity(final Activity context, final int selectType, final
+    int requestCode) {
+        toImageSelectActivity(context, selectType, 1, requestCode);
+    }
+
+    public static void toImageSelectActivity(Activity context, int selectType, int selectCount,
+                                             int requestCode) {
+        if (!PermissionsAction.checkCamera(context)) {
+            return;
+        }
+
+        Intent intent = new Intent(context, ActivityImageSelect.class);
+        intent.putExtra("selecttype", selectType);
+        intent.putExtra("selectcount", selectCount);
 //        context.startActivity(intent);
-//    }
-//
-//    public static void toUserEditItemActivity(Activity context, int actoinType, String
-//            editContent) {
-//        toUserEditItemActivity(context, actoinType, editContent, 0);
-//    }
-//
-//    public static void toUserEditItemActivity(Activity context, int actoinType, String
-//            editContent, long friendId) {
-//        Intent intent = new Intent(context, ActivityUserEditItem.class);
-//        intent.putExtra("actiontype", actoinType);
-//        intent.putExtra("editcontent", editContent);
-//        if (friendId > 0) {
-//            intent.putExtra("friendid", friendId);
-//        }
-//        context.startActivity(intent);
-//    }
-//
-//    public static void toSystemCamera(Activity activity, int requestCode) {
-//        toSystemCamera(activity, StorageUtils.getUriForTempFile(), requestCode);
-//    }
-//
-//    public static void toSystemCamera(Activity activity, Uri saveUri, int requestCode) {
-//        if (!PermissionsAction.checkCamera(activity)) return;
-//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent
-//                    .FLAG_GRANT_WRITE_URI_PERMISSION);
-//        }
-//        intent.putExtra(MediaStore.EXTRA_OUTPUT, saveUri);
-//        activity.startActivityForResult(intent, requestCode);
-//    }
-//
-//    public static void toImageSelectActivity(final Activity context, final int selectType, final
-//    int requestCode) {
-//        toImageSelectActivity(context, selectType, 1, requestCode);
-//    }
-//
-//    public static void toImageSelectActivity(Activity context, int selectType, int selectCount,
-//                                             int requestCode) {
-//        if (!PermissionsAction.checkCamera(context)) {
-//            return;
-//        }
-//
-//        Intent intent = new Intent(context, ActivityImageSelect.class);
-//        intent.putExtra("selecttype", selectType);
-//        intent.putExtra("selectcount", selectCount);
-////        context.startActivity(intent);
-//        context.startActivityForResult(intent, requestCode);
-//    }
-//
-//    public static void toImageBrowseActivity(Activity context, String imageUrl) {
-//        if (StringUtils.isBlank(imageUrl)) return;
-//        List<String> imgs = new ArrayList<>(1);
-//        imgs.add(imageUrl);
-//        toImageBrowseActivity(context, ActivityImageBrowse.MODE_VIEW, 0, imgs);
-//    }
-//
-//    public static void toImageBrowseActivity(Activity context, int mode, int position,
-//                                             List<String> imageUrls) {
-//        if (imageUrls == null || imageUrls.size() <= 0) return;
-//        Intent intent = new Intent(context, ActivityImageBrowse.class);
-//        intent.putExtra("mode", mode);
-//        intent.putExtra("position", position);
-//        intent.putStringArrayListExtra("imageurls", (ArrayList<String>) imageUrls);
-//        context.startActivity(intent);
-//    }
+        context.startActivityForResult(intent, requestCode);
+    }
+
+    public static void toImageBrowseActivity(Activity context, String imageUrl) {
+        if (StringUtils.isBlank(imageUrl)) return;
+        List<String> imgs = new ArrayList<>(1);
+        imgs.add(imageUrl);
+        toImageBrowseActivity(context, ActivityImageBrowse.MODE_VIEW, 0, imgs);
+    }
+
+    public static void toImageBrowseActivity(Activity context, int mode, int position,
+                                             List<String> imageUrls) {
+        if (imageUrls == null || imageUrls.size() <= 0) return;
+        Intent intent = new Intent(context, ActivityImageBrowse.class);
+        intent.putExtra("mode", mode);
+        intent.putExtra("position", position);
+        intent.putStringArrayListExtra("imageurls", (ArrayList<String>) imageUrls);
+        context.startActivity(intent);
+    }
 
 //    public static void toChatUserActivity(Activity context, long userId, String userName, String
 //            userImage) {

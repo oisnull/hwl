@@ -55,13 +55,13 @@
         <!--<activity android:name=".ui.user.ActivityUserIndex" />-->
         <!--<activity android:name=".ui.user.ActivityUserSetting" />-->
         <activity android:name=".ui.user.ActivityNewFriend" />
-        <!--<activity android:name=".ui.user.ActivityUserEdit" />-->
-        <!--<activity android:name=".ui.user.ActivityUserEditItem" />-->
+        <activity android:name=".ui.user.ActivityUserEdit" />
+        <activity android:name=".ui.user.ActivityUserEditItem" />
         <!--<activity android:name=".ui.user.ActivityUserMessageSetting" />-->
         <!--<activity android:name=".ui.user.ActivityUserPrivacySetting" />-->
         <!--<activity android:name=".ui.user.ActivityUserPasswordReset" />-->
-        <!--<activity android:name=".ui.imgselect.ActivityImageSelect" />-->
-        <!--<activity android:name=".ui.imgselect.ActivityImageBrowse" />-->
+        <activity android:name=".ui.imgselect.ActivityImageSelect" />
+        <activity android:name=".ui.imgselect.ActivityImageBrowse" />
         <!--<activity android:name=".ui.video.ActivityVideoPlay" />-->
         <!--<activity android:name=".ui.video.ActivityVideoSelect" />-->
         <!--<activity android:name=".ui.chat.ActivityChatGroup" />-->

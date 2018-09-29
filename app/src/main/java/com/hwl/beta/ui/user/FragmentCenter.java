@@ -1,13 +1,10 @@
 package com.hwl.beta.ui.user;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +14,7 @@ import com.hwl.beta.R;
 import com.hwl.beta.databinding.UserFragmentCenterBinding;
 import com.hwl.beta.net.user.NetUserInfo;
 import com.hwl.beta.sp.UserSP;
+import com.hwl.beta.ui.common.BaseFragment;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.user.action.ICenterListener;
 import com.hwl.beta.ui.user.bean.CenterBean;
@@ -30,7 +28,7 @@ import org.greenrobot.eventbus.EventBus;
  * Created by Administrator on 2017/12/27.
  */
 
-public class FragmentCenter extends Fragment {
+public class FragmentCenter extends BaseFragment {
     UserFragmentCenterBinding binding;
     Activity activity;
     CenterBean centerBean;
@@ -47,22 +45,9 @@ public class FragmentCenter extends Fragment {
         binding.setAction(new CenterListener());
         binding.setImage(new ImageViewBean(centerBean.getHeadImage()));
 
-//        if (!EventBus.getDefault().isRegistered(this)) {
-//            EventBus.getDefault().register(this);
-//        }
         setView();
         return binding.getRoot();
     }
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onEventMainThread(Integer ebType) {
-////        if (ebType == EventBusConstant.EB_TYPE_USER_UPDATE) {
-////            setCenterBean();
-////            setView();
-////        } else if (ebType == EventBusConstant.EB_TYPE_USER_HEAD_UPDATE) {
-////            ImageViewBean.loadImage(binding.ivHeader, UserSP.getUserHeadImage());
-////        }
-//    }
 
     private void setCenterBean() {
         NetUserInfo netUser = UserSP.getUserInfo();
@@ -103,12 +88,12 @@ public class FragmentCenter extends Fragment {
 
         @Override
         public void onInfoClick() {
-//            UITransfer.toUserEditActivity(activity);
+            UITransfer.toUserEditActivity(activity);
         }
 
         @Override
         public void onHeadImageClick() {
-//            UITransfer.toImageBrowseActivity(activity, UserSP.getUserHeadImage());
+            UITransfer.toImageBrowseActivity(activity, UserSP.getUserHeadImage());
         }
 
         @Override
