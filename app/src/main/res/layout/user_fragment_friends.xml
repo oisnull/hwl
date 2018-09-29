@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="friendAdapter"
+            type="com.hwl.beta.ui.user.adp.FriendAdapter"></variable>
+    </data>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,7 +22,8 @@
             <ListView
                 android:id="@+id/lv_friends"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></ListView>
+                android:layout_height="wrap_content"
+                app:adapter="@{friendAdapter}"></ListView>
 
             <ProgressBar
                 android:id="@+id/pb_loading"

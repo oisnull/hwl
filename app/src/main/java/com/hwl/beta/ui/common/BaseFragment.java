@@ -5,9 +5,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.hwl.beta.ui.busbean.EventBusUtil;
+import com.hwl.beta.ui.busbean.EventMessageModel;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 /**
  * Fragment基类，封装了懒加载的实现
- *
+ * <p>
  * 1、Viewpager + Fragment情况下，fragment的生命周期因Viewpager的缓存机制而失去了具体意义
  * 该抽象类自定义新的回调方法，当fragment可见状态改变时会触发的回调方法，和 Fragment 第一次可见时会回调的方法
  *
@@ -55,6 +61,34 @@ public abstract class BaseFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initVariable();
+
+        if (isRegisterEventBus()) {
+            EventBusUtil.register(this);
+        }
+    }
+
+    protected boolean isRegisterEventBus() {
+        return false;
+    }
+
+    protected void receiveEventMessage(EventMessageModel messageModel) {
+    }
+
+    protected void receiveStickyEventMessage(EventMessageModel messageModel) {
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventBusCome(EventMessageModel messageModel) {
+        if (messageModel != null) {
+            receiveEventMessage(messageModel);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onStickyEventBusCome(EventMessageModel messageModel) {
+        if (messageModel != null) {
+            receiveStickyEventMessage(messageModel);
+        }
     }
 
     @Override
@@ -85,6 +119,10 @@ public abstract class BaseFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         initVariable();
+
+        if (isRegisterEventBus()) {
+            EventBusUtil.unRegister(this);
+        }
     }
 
     private void initVariable() {

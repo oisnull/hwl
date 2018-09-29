@@ -2,6 +2,7 @@ package com.hwl.beta.net;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.hwl.beta.AppConfig;
 import com.hwl.beta.net.resx.IDownloadProgressListener;
 
 import java.util.concurrent.Executors;
@@ -16,11 +17,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class RetrofitUtils {
-    /**
-     * http请求测试环境url
-     */
-    public static String BASE_URL = "http://115.29.179.171:8013/";
-    public static String RESX_URL = "http://115.29.179.171:8015/";
+//    public static String BASE_URL = "http://115.29.179.171:8013/";
+//    public static String RESX_URL = "http://115.29.179.171:8015/";
 
     private static Retrofit singleton;
     private static Retrofit resxSingleton;
@@ -34,7 +32,7 @@ public class RetrofitUtils {
             synchronized (RetrofitUtils.class) {
                 if (singleton == null) {
                     Retrofit.Builder builder = new Retrofit.Builder();
-                    builder.baseUrl(BASE_URL);
+                    builder.baseUrl(AppConfig.NET_API_HOST);
                     builder.addConverterFactory(GsonConverterFactory.create(gsonTimeFormat));
                     builder.addCallAdapterFactory(RxJava2CallAdapterFactory.create());
                     builder.client(OkHttpUtils.getInstance());
@@ -50,7 +48,7 @@ public class RetrofitUtils {
             synchronized (RetrofitUtils.class) {
                 if (resxSingleton == null) {
                     Retrofit.Builder builder = new Retrofit.Builder();
-                    builder.baseUrl(RESX_URL);
+                    builder.baseUrl(AppConfig.NET_RESX_HOST);
                     builder.addConverterFactory(GsonConverterFactory.create());
                     builder.addCallAdapterFactory(RxJava2CallAdapterFactory.create());
                     builder.client(OkHttpUtils.getInstance());
@@ -65,7 +63,7 @@ public class RetrofitUtils {
         if (resxDownton == null) {
             OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
             Retrofit.Builder builder = new Retrofit.Builder();
-            builder.baseUrl(BASE_URL)
+            builder.baseUrl(AppConfig.NET_RESX_HOST)
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .client(okHttpClient)
                     .callbackExecutor(Executors.newFixedThreadPool(1));
@@ -77,7 +75,7 @@ public class RetrofitUtils {
     public static <T> T createStreamDownApi(Class<T> clazz, IDownloadProgressListener progressListener) {
         if (streamDownton == null) {
             Retrofit.Builder builder = new Retrofit.Builder();
-            builder.baseUrl(BASE_URL);
+            builder.baseUrl(AppConfig.NET_RESX_HOST);
             builder.client(OkHttpUtils.getDownloadStreamInstance(progressListener))
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .callbackExecutor(Executors.newFixedThreadPool(1));

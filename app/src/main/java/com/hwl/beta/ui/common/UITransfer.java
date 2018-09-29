@@ -45,14 +45,14 @@ import com.hwl.beta.ui.entry.ActivityRegister;
 //import com.hwl.beta.ui.near.ActivityNearDetail;
 //import com.hwl.beta.ui.near.ActivityNearMessages;
 //import com.hwl.beta.ui.near.ActivityNearPublish;
-//import com.hwl.beta.ui.user.ActivityNewFriend;
+import com.hwl.beta.ui.user.ActivityNewFriend;
 //import com.hwl.beta.ui.user.ActivityUserEdit;
 //import com.hwl.beta.ui.user.ActivityUserEditItem;
 //import com.hwl.beta.ui.user.ActivityUserIndex;
 //import com.hwl.beta.ui.user.ActivityUserMessageSetting;
 //import com.hwl.beta.ui.user.ActivityUserPasswordReset;
 //import com.hwl.beta.ui.user.ActivityUserPrivacySetting;
-//import com.hwl.beta.ui.user.ActivityUserSearch;
+import com.hwl.beta.ui.user.ActivityUserSearch;
 //import com.hwl.beta.ui.user.ActivityUserSetting;
 //import com.hwl.beta.ui.video.ActivityVideoPlay;
 //import com.hwl.beta.ui.video.ActivityVideoSelect;
@@ -143,17 +143,17 @@ public class UITransfer {
 //        intent.putExtra("userimage", userImage);
 //        context.startActivity(intent);
 //    }
-//
-//    public static void toUserSearchActivity(Activity context) {
-//        Intent intent = new Intent(context, ActivityUserSearch.class);
-//        context.startActivity(intent);
-//    }
-//
-//    public static void toNewFriendActivity(Activity context) {
-//        Intent intent = new Intent(context, ActivityNewFriend.class);
-//        context.startActivity(intent);
-//    }
-//
+
+    public static void toUserSearchActivity(Activity context) {
+        Intent intent = new Intent(context, ActivityUserSearch.class);
+        context.startActivity(intent);
+    }
+
+    public static void toNewFriendActivity(Activity context) {
+        Intent intent = new Intent(context, ActivityNewFriend.class);
+        context.startActivity(intent);
+    }
+
 //    public static void toUserEditActivity(Activity context) {
 //        Intent intent = new Intent(context, ActivityUserEdit.class);
 //        context.startActivity(intent);

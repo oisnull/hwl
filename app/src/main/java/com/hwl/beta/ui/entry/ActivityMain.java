@@ -167,23 +167,6 @@ public class ActivityMain extends BaseActivity {
         }
     }
 
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void updateMessageCount(Integer ebType) {
-//        if (ebType == EventBusConstant.EB_TYPE_FRIEND_REQUEST_UPDATE) {
-//            mainBean.setFriendMessageCount(MessageCountSP.getFriendRequestCount());
-//        } else if (ebType == EventBusConstant.EB_TYPE_CHAT_MESSAGE_UPDATE) {
-//            mainBean.setChatMessageCount(MessageCountSP.getChatMessageCount());
-//        } else if (ebType == EventBusConstant.EB_TYPE_NEAR_CIRCLE_MESSAGE_UPDATE) {
-//            mainBean.setNearMessageCount(MessageCountSP.getNearCircleMessageCount());
-//        }
-//    }
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void userLogoutHint(UserLogoutMessageBean messageBean) {
-//        if (messageBean == null) return;
-//        UITransfer.toReloginDialog(this, messageBean.getHintContent());
-//    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -198,7 +181,7 @@ public class ActivityMain extends BaseActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.pop_add_user:
-//                        UITransfer.toUserSearchActivity(activity);
+                        UITransfer.toUserSearchActivity(activity);
                         break;
                     case R.id.pop_near_group:
 //                        UITransfer.toChatGroupActivity(activity, UserPosSP.getGroupGuid());

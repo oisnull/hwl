@@ -6,10 +6,6 @@ package com.hwl.beta.ui.user.action;
 
 public interface IUserSearchListener {
 
-    void initView();
-
-    void loadUsers();
-
     void onBackClick();
 
     void onSearchClick();
