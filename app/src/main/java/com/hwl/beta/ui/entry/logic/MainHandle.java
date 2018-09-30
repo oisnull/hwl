@@ -10,6 +10,7 @@ import com.hwl.beta.net.user.body.SetUserPosResponse;
 import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.sp.UserSP;
+import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.im.common.DefaultConsumer;
 import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.convert.DBGroupAction;
@@ -32,16 +33,14 @@ public class MainHandle implements MainStandard {
     }
 
     @Override
-    public void getLocation(final DefaultConsumer<String> succCallback, final
-    DefaultConsumer<String>
-            errorCallback) {
+    public void getLocation(final DefaultCallback<String, String> callback) {
         locationService = new BaiduLocation(new BaiduLocation.OnLocationListener() {
             @Override
             public void onSuccess(BaiduLocation.ResultModel result) {
                 //判断本地存储的位置是否与当前定位的位置是否一样，如果一样则不做任何操作
                 if (UserPosSP.getLontitude() == result.lontitude && UserPosSP.getLatitude() ==
                         result.latitude) {
-                    succCallback.accept(UserPosSP.getNearDesc());
+                    callback.success(UserPosSP.getNearDesc());
                     return;
                 } else {
                     //往本地存储一份定位数据
@@ -56,26 +55,20 @@ public class MainHandle implements MainStandard {
                             result.describe);
                 }
 
-                setUserPos(result, succCallback, errorCallback);
+                setUserPos(result, callback);
             }
 
             @Override
             public void onFaild(BaiduLocation.ResultInfo info) {
-//                    binding.tbTitle.setTitle(UserPosSP.getNearDesc());
-//                    showLocationDialog();
-//                    locationTip.setTitleShow("定位失败");
-//                    locationTip.setContentShow(info.status + " : " + info.message);
-                errorCallback.accept(info.message);
+                callback.error(info.message);
             }
         });
         locationService.start();
     }
 
     //设置用户位置信息，并返回当前位置群组信息和组用户信息
-    private void setUserPos(BaiduLocation.ResultModel result, final DefaultConsumer<String>
-            succCallback,
-                            final DefaultConsumer<String>
-                                    errorCallback) {
+    private void setUserPos(BaiduLocation.ResultModel result, final DefaultCallback<String,
+            String> callback) {
         //调用api将当前位置存储到服务器
         final SetUserPosRequest request = new SetUserPosRequest();
         request.setUserId(UserSP.getUserId());
@@ -94,10 +87,10 @@ public class MainHandle implements MainStandard {
                     protected void onSuccess(SetUserPosResponse res) {
                         if (res.getStatus() == NetConstant.RESULT_SUCCESS) {
                             UserPosSP.setUserPos(res.getUserPosId(), res.getUserGroupGuid());
-                            succCallback.accept(UserPosSP.getNearDesc());
+                            callback.success(UserPosSP.getNearDesc());
                             addLocalGroupInfo(res);
                         } else {
-                            errorCallback.accept("定位失败");
+                            callback.error("定位失败");
                         }
                     }
                 });

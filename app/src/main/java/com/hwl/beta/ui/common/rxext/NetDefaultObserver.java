@@ -8,7 +8,6 @@ import com.hwl.beta.HWLApp;
 import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.net.ResponseBase;
 import com.hwl.beta.net.ResponseHead;
-import com.hwl.beta.ui.busbean.EventBusUtil;
 import com.hwl.beta.utils.StringUtils;
 
 import java.net.SocketTimeoutException;
@@ -73,7 +72,6 @@ public abstract class NetDefaultObserver<T> implements Observer<ResponseBase<T>>
     }
 
     protected void onRelogin() {
-        EventBusUtil.sendTokenInvalidEvent();
     }
 
     @Override

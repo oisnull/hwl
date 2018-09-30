@@ -91,7 +91,7 @@
         <!--<activity android:name=".ui.circle.ActivityCircleMessages" />-->
         <!--<activity android:name=".ui.group.ActivityGroup" />-->
         <!--<activity android:name=".ui.group.ActivityGroupAdd" />-->
-        <!--<activity android:name="com.yalantis.ucrop.UCropActivity" />-->
+        <activity android:name="com.yalantis.ucrop.UCropActivity" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
@@ -101,15 +101,15 @@
             android:enabled="true"
             android:process=":remote" />
 
-        <!--<provider-->
-        <!--android:name="android.support.v4.content.FileProvider"-->
-        <!--android:authorities="com.hwl.beta.fileprovider"-->
-        <!--android:exported="false"-->
-        <!--android:grantUriPermissions="true">-->
-        <!--<meta-data-->
-        <!--android:name="android.support.FILE_PROVIDER_PATHS"-->
-        <!--android:resource="@xml/filepaths" />-->
-        <!--</provider>-->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.hwl.beta.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
         <receiver android:name=".ui.NetworkBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />

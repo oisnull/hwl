@@ -25,13 +25,13 @@ import com.hwl.beta.ui.busbean.EventBusConstant;
 import com.hwl.beta.ui.busbean.EventMessageModel;
 import com.hwl.beta.ui.chat.FragmentRecord;
 import com.hwl.beta.ui.common.BaseActivity;
+import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.ShareTransfer;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.dialog.LocationDialogFragment;
 import com.hwl.beta.ui.near.FragmentNear;
 import com.hwl.beta.ui.user.FragmentCenter;
 import com.hwl.beta.ui.user.FragmentFriends;
-import com.hwl.im.common.DefaultConsumer;
 import com.hwl.beta.ui.entry.action.IMainListener;
 import com.hwl.beta.ui.entry.logic.MainHandle;
 import com.hwl.beta.ui.entry.standard.MainStandard;
@@ -108,24 +108,19 @@ public class ActivityMain extends BaseActivity {
         }
     }
 
-    @Override
-    protected void receiveEventMessage(EventMessageModel messageModel) {
-
-    }
-
     private void initLocation() {
-        mainStandard.getLocation(new DefaultConsumer<String>() {
+        mainStandard.getLocation(new DefaultCallback<String, String>() {
             @Override
-            public void accept(String desc) {
+            public void success(String desc) {
                 binding.tbTitle.setTitle(desc);
             }
-        }, new DefaultConsumer<String>() {
+
             @Override
-            public void accept(String s) {
+            public void error(String errorMessage) {
                 binding.tbTitle.setTitle("未知");
                 showLocationDialog();
                 locationTip.setTitleShow("定位失败");
-                locationTip.setContentShow(s);
+                locationTip.setContentShow(errorMessage);
             }
         });
     }

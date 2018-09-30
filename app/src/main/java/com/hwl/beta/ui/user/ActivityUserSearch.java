@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 
 import com.hwl.beta.R;
@@ -11,7 +12,9 @@ import com.hwl.beta.databinding.UserActivitySearchBinding;
 import com.hwl.beta.net.user.UserSearchInfo;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.BaseActivity;
+import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.KeyBoardAction;
+import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.dialog.AddFriendDialogFragment;
 import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.user.action.IUserSearchItemListener;
@@ -19,7 +22,6 @@ import com.hwl.beta.ui.user.action.IUserSearchListener;
 import com.hwl.beta.ui.user.adp.UserSearchAdapter;
 import com.hwl.beta.ui.user.logic.UserSearchLogic;
 import com.hwl.beta.ui.user.standard.UserSearchStandard;
-import com.hwl.im.common.DefaultConsumer;
 
 import java.util.List;
 
@@ -28,7 +30,7 @@ import java.util.List;
  */
 
 public class ActivityUserSearch extends BaseActivity {
-    Activity activity;
+    FragmentActivity activity;
     UserActivitySearchBinding binding;
     UserSearchAdapter userAdapter;
     UserSearchStandard searchStandard;
@@ -72,22 +74,27 @@ public class ActivityUserSearch extends BaseActivity {
             KeyBoardAction.hideSoftInput(activity);
             binding.pbLoading.setVisibility(View.VISIBLE);
 
-            searchStandard.searchUsers(binding.etUserKey.getText() + "", new DefaultConsumer<List
-                    <UserSearchInfo>>() {
+            searchStandard.searchUsers(binding.etUserKey.getText() + "", new
+                    DefaultCallback<List<UserSearchInfo>, String>() {
                 @Override
-                public void accept(List<UserSearchInfo> users) {
+                public void success(List<UserSearchInfo> users) {
                     isRuning = false;
                     userAdapter.clearAndAddUsers(users);
                     binding.pbLoading.setVisibility(View.GONE);
                     binding.tvShow.setVisibility((users != null && users.size() > 0) ? View.GONE
                             : View.VISIBLE);
                 }
-            }, new DefaultConsumer<String>() {
+
                 @Override
-                public void accept(String s) {
+                public void error(String errorMessage) {
                     isRuning = false;
                     binding.tvShow.setVisibility(View.GONE);
                     binding.pbLoading.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void relogin() {
+                    UITransfer.toReloginDialog(activity);
                 }
             });
         }

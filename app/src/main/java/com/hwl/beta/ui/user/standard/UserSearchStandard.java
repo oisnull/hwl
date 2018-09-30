@@ -1,13 +1,10 @@
 package com.hwl.beta.ui.user.standard;
 
 import com.hwl.beta.net.user.UserSearchInfo;
-import com.hwl.im.common.DefaultConsumer;
+import com.hwl.beta.ui.common.DefaultCallback;
 
 import java.util.List;
 
 public interface UserSearchStandard {
-
-    void searchUsers(String key, DefaultConsumer<List<UserSearchInfo>> succCallback, DefaultConsumer<String>
-            errorCallback);
-
+    void searchUsers(String key, DefaultCallback<List<UserSearchInfo>, String> callback);
 }
