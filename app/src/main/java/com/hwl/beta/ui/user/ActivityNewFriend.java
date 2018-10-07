@@ -18,7 +18,6 @@ import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.AddFriendResponse;
 import com.hwl.beta.sp.MessageCountSP;
-import com.hwl.beta.ui.busbean.EventBusConstant;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.convert.DBFriendAction;

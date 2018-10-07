@@ -1,4 +1,4 @@
-package com.hwl.beta.ui.busbean;
+package com.hwl.beta.ui.ebus.bean;
 
 import com.hwl.beta.db.entity.CircleComment;
 

@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
 import com.hwl.beta.swipeback.SwipeBackHelper;
-import com.hwl.beta.ui.busbean.EventBusUtil;
-import com.hwl.beta.ui.busbean.EventMessageModel;
+import com.hwl.beta.ui.ebus.EventBusUtil;
+import com.hwl.beta.ui.ebus.EventMessageModel;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

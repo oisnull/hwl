@@ -1,4 +1,4 @@
-package com.hwl.beta.ui.busbean;
+package com.hwl.beta.ui.ebus;
 
 public class EventMessageModel<T> {
     private int messageType;

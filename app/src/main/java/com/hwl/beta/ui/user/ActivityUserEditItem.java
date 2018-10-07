@@ -18,8 +18,8 @@ import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.SetFriendRemarkResponse;
 import com.hwl.beta.net.user.body.SetUserInfoResponse;
 import com.hwl.beta.sp.UserSP;
-import com.hwl.beta.ui.busbean.EventBusConstant;
-import com.hwl.beta.ui.busbean.EventUpdateFriendRemark;
+import com.hwl.beta.ui.ebus.EventBusUtil;
+import com.hwl.beta.ui.ebus.bean.EventUpdateFriendRemark;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.KeyBoardAction;
 import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
@@ -55,7 +55,7 @@ public class ActivityUserEditItem extends BaseActivity {
         binding.setUser(itemBean);
         binding.setAction(itemListener);
 
-        binding.tbTitle.setTitle("个人信息设置")
+        binding.tbTitle.setTitle(getActionName())
                 .setTitleRightShow()
                 .setTitleRightText("提交")
                 .setImageRightHide()
@@ -68,19 +68,24 @@ public class ActivityUserEditItem extends BaseActivity {
 
                         switch (itemBean.getActionType()) {
                             case UserEditItemBean.ACTIONTYPE_SYMBOL:
-                                UserService.setUserSymbol(itemBean.getEditContent()).subscribe(defaultObserver);
+                                UserService.setUserSymbol(itemBean.getEditContent()).subscribe
+                                        (defaultObserver);
                                 break;
                             case UserEditItemBean.ACTIONTYPE_NAME:
-                                UserService.setUserName(itemBean.getEditContent()).subscribe(defaultObserver);
+                                UserService.setUserName(itemBean.getEditContent()).subscribe
+                                        (defaultObserver);
                                 break;
                             case UserEditItemBean.ACTIONTYPE_LIFENOTES:
-                                UserService.setUserLifeNotes(itemBean.getEditContent()).subscribe(defaultObserver);
+                                UserService.setUserLifeNotes(itemBean.getEditContent()).subscribe
+                                        (defaultObserver);
                                 break;
                             case UserEditItemBean.ACTIONTYPE_SEX:
-                                UserService.setUserSex(SexAction.getSex(itemBean.getEditContent())).subscribe(defaultObserver);
+                                UserService.setUserSex(SexAction.getSex(itemBean.getEditContent()
+                                )).subscribe(defaultObserver);
                                 break;
                             case UserEditItemBean.ACTIONTYPE_REMARK:
-                                UserService.setFriendRemark(itemBean.getFriendId(), itemBean.getEditContent()).subscribe(friendRemarkObserver);
+                                UserService.setFriendRemark(itemBean.getFriendId(), itemBean
+                                        .getEditContent()).subscribe(friendRemarkObserver);
                                 break;
                         }
                     }
@@ -95,60 +100,86 @@ public class ActivityUserEditItem extends BaseActivity {
         itemListener.init();
     }
 
-    private NetDefaultObserver<SetUserInfoResponse> defaultObserver = new NetDefaultObserver<SetUserInfoResponse>() {
-        @Override
-        protected void onSuccess(SetUserInfoResponse response) {
-            if (response != null && response.getStatus() == NetConstant.RESULT_SUCCESS) {
-                switch (itemBean.getActionType()) {
-                    case UserEditItemBean.ACTIONTYPE_SYMBOL:
-                        UserSP.setUserSymbol(itemBean.getEditContent());
-                        break;
-                    case UserEditItemBean.ACTIONTYPE_NAME:
-                        UserSP.setUserName(itemBean.getEditContent());
-                        break;
-                    case UserEditItemBean.ACTIONTYPE_LIFENOTES:
-                        UserSP.setUserLifeNotes(itemBean.getEditContent());
-                        break;
-                    case UserEditItemBean.ACTIONTYPE_SEX:
-                        UserSP.setUserSex(SexAction.getSex(itemBean.getEditContent()));
-                        break;
+    private String getActionName() {
+        switch (itemBean.getActionType()) {
+            case UserEditItemBean.ACTIONTYPE_SYMBOL:
+                return "标识号设置";
+            case UserEditItemBean.ACTIONTYPE_NAME:
+                return "昵称设置";
+            case UserEditItemBean.ACTIONTYPE_LIFENOTES:
+                return "个性签名设置";
+            case UserEditItemBean.ACTIONTYPE_SEX:
+                return "性别设置";
+            case UserEditItemBean.ACTIONTYPE_REMARK:
+                return "好友备注设置";
+        }
+        return "个人信息设置";
+    }
 
+    private NetDefaultObserver<SetUserInfoResponse> defaultObserver = new
+            NetDefaultObserver<SetUserInfoResponse>() {
+                @Override
+                protected void onSuccess(SetUserInfoResponse response) {
+                    if (response != null && response.getStatus() == NetConstant.RESULT_SUCCESS) {
+                        switch (itemBean.getActionType()) {
+                            case UserEditItemBean.ACTIONTYPE_SYMBOL:
+                                UserSP.setUserSymbol(itemBean.getEditContent());
+                                EventBusUtil.sendUserSymbolEditEvent(itemBean.getEditContent());
+                                break;
+                            case UserEditItemBean.ACTIONTYPE_NAME:
+                                UserSP.setUserName(itemBean.getEditContent());
+                                EventBusUtil.sendUserNameEditEvent(itemBean.getEditContent());
+                                break;
+                            case UserEditItemBean.ACTIONTYPE_LIFENOTES:
+                                UserSP.setUserLifeNotes(itemBean.getEditContent());
+                                EventBusUtil.sendUserLifeNotesEditEvent(itemBean.getEditContent());
+                                break;
+                            case UserEditItemBean.ACTIONTYPE_SEX:
+                                UserSP.setUserSex(SexAction.getSex(itemBean.getEditContent()));
+                                EventBusUtil.sendUserSexEditEvent(SexAction.getSex(itemBean
+                                        .getEditContent()));
+                                break;
+
+                        }
+                        finish();
+                        LoadingDialog.hide();
+                    }
                 }
-                EventBus.getDefault().post(EventBusConstant.EB_TYPE_USER_UPDATE);
-                finish();
-                LoadingDialog.hide();
-            }
-        }
 
-        @Override
-        protected void onError(String resultMessage) {
-            super.onError(resultMessage);
-            LoadingDialog.hide();
-        }
-    };
+                @Override
+                protected void onError(String resultMessage) {
+                    super.onError(resultMessage);
+                    LoadingDialog.hide();
+                }
+            };
 
-    private NetDefaultObserver<SetFriendRemarkResponse> friendRemarkObserver = new NetDefaultObserver<SetFriendRemarkResponse>() {
-        @Override
-        protected void onSuccess(SetFriendRemarkResponse response) {
-            //更新好友备注信息到本地
-            Friend friend = DaoUtils.getFriendManagerInstance().get(itemBean.getFriendId());
-            if (friend != null && friend.getId() > 0) {
-                friend.setRemark(itemBean.getEditContent());
-                DaoUtils.getFriendManagerInstance().save(friend);
-                EventBus.getDefault().post(new EventUpdateFriendRemark(friend.getId(), friend.getFirstLetter(), friend.getRemark()));
-                ChatRecordMessage record = DaoUtils.getChatRecordMessageManagerInstance().updateUserRecrdTitle(UserSP.getUserId(), friend.getId(), friend.getRemark(), friend.getHeadImage());
-                if (record != null) EventBus.getDefault().post(record);
-            }
-            finish();
-            LoadingDialog.hide();
-        }
+    private NetDefaultObserver<SetFriendRemarkResponse> friendRemarkObserver = new
+            NetDefaultObserver<SetFriendRemarkResponse>() {
+                @Override
+                protected void onSuccess(SetFriendRemarkResponse response) {
+                    //更新好友备注信息到本地
+                    Friend friend = DaoUtils.getFriendManagerInstance().get(itemBean.getFriendId());
+                    if (friend != null && friend.getId() > 0) {
+                        friend.setRemark(itemBean.getEditContent());
+                        DaoUtils.getFriendManagerInstance().save(friend);
+                        EventBus.getDefault().post(new EventUpdateFriendRemark(friend.getId(),
+                                friend
+                                        .getFirstLetter(), friend.getRemark()));
+                        ChatRecordMessage record = DaoUtils.getChatRecordMessageManagerInstance()
+                                .updateUserRecrdTitle(UserSP.getUserId(), friend.getId(), friend
+                                        .getRemark(), friend.getHeadImage());
+                        if (record != null) EventBus.getDefault().post(record);
+                    }
+                    finish();
+                    LoadingDialog.hide();
+                }
 
-        @Override
-        protected void onError(String resultMessage) {
-            super.onError(resultMessage);
-            LoadingDialog.hide();
-        }
-    };
+                @Override
+                protected void onError(String resultMessage) {
+                    super.onError(resultMessage);
+                    LoadingDialog.hide();
+                }
+            };
 
     public class UserEditItemListener implements IUserEditItemListener {
 

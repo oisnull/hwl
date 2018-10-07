@@ -25,6 +25,9 @@ import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.convert.SexAction;
 import com.hwl.beta.ui.dialog.LoadingDialog;
+import com.hwl.beta.ui.ebus.EventBusConstant;
+import com.hwl.beta.ui.ebus.EventBusUtil;
+import com.hwl.beta.ui.ebus.EventMessageModel;
 import com.hwl.beta.ui.imgselect.bean.ImageSelectType;
 import com.hwl.beta.ui.user.action.IUserEditListener;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
@@ -46,7 +49,7 @@ public class ActivityUserEdit extends BaseActivity {
 
     UserActivityInfoEditBinding binding;
     UserEditBean user;
-    Activity activity;
+    FragmentActivity activity;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,10 +87,32 @@ public class ActivityUserEdit extends BaseActivity {
     }
 
     @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
+
+    @Override
+    protected void receiveEventMessage(EventMessageModel messageModel) {
+        switch (messageModel.getMessageType()) {
+            case EventBusConstant.EB_TYPE_USER_SYMBOL_UPDATE:
+                user.setSymbol(UserSP.getUserSymbol());
+                break;
+            case EventBusConstant.EB_TYPE_USER_NAME_UPDATE:
+                user.setName(UserSP.getUserName());
+                break;
+            case EventBusConstant.EB_TYPE_USER_SEX_UPDATE:
+                user.setSex(SexAction.getSexName(UserSP.getUserSex()));
+                break;
+            case EventBusConstant.EB_TYPE_USER_LIFENOTES_UPDATE:
+                user.setLifeNotes(UserSP.getLifeNotes());
+                break;
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == 1) {
-//            byte[] bitmap = data.getByteArrayExtra("bitmap");
             String localPath = data.getStringExtra("localpath");
             if (StringUtils.isBlank(localPath)) {
                 Toast.makeText(activity, "上传数据不能为空", Toast.LENGTH_SHORT).show();
@@ -115,10 +140,9 @@ public class ActivityUserEdit extends BaseActivity {
                             LoadingDialog.hide();
                             if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
                                 UserSP.setUserHeadImage(response.getHeadImage());
-//                                EventBus.getDefault().post(EventBusConstant
-// .EB_TYPE_USER_HEAD_UPDATE);
                                 ImageViewBean.loadImage(binding.ivHeaderLook, response
                                         .getHeadImage());
+                                EventBusUtil.sendUserHeadImageEditEvent(response.getHeadImage());
                                 Toast.makeText(activity, "头像上传成功", Toast.LENGTH_SHORT).show();
                             } else {
                                 onError("头像上传失败");
@@ -133,7 +157,7 @@ public class ActivityUserEdit extends BaseActivity {
 
                         @Override
                         protected void onRelogin() {
-                            UITransfer.toReloginDialog((FragmentActivity) activity);
+                            UITransfer.toReloginDialog(activity);
                         }
                     });
         }

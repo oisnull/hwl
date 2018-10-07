@@ -1,4 +1,4 @@
-package com.hwl.beta.ui.busbean;
+package com.hwl.beta.ui.ebus;
 
 /**
  * Created by Administrator on 2018/4/1.
@@ -11,6 +11,10 @@ public class EventBusConstant {
     public static final int EB_TYPE_CHAT_RECORD_UPDATE_SHIELD = 201;
     public static final int EB_TYPE_USER_UPDATE = 300;
     public static final int EB_TYPE_USER_HEAD_UPDATE = 301;
+    public static final int EB_TYPE_USER_SYMBOL_UPDATE = 302;
+    public static final int EB_TYPE_USER_NAME_UPDATE = 303;
+    public static final int EB_TYPE_USER_SEX_UPDATE = 304;
+    public static final int EB_TYPE_USER_LIFENOTES_UPDATE = 305;
 //    public static final int EB_TYPE_USER_CIRCLE_IMAGE_UPDATE = 302;
     public static final int EB_TYPE_NETWORK_CONNECT_UPDATE = 400;
     public static final int EB_TYPE_NETWORK_BREAK_UPDATE = 401;

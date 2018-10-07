@@ -1,7 +1,6 @@
 package com.hwl.beta.ui.user;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,10 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.UserFragmentCenterBinding;
 import com.hwl.beta.net.user.NetUserInfo;
 import com.hwl.beta.sp.UserSP;
+import com.hwl.beta.ui.ebus.EventBusConstant;
+import com.hwl.beta.ui.ebus.EventMessageModel;
 import com.hwl.beta.ui.common.BaseFragment;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.user.action.ICenterListener;
@@ -21,8 +23,6 @@ import com.hwl.beta.ui.user.bean.CenterBean;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
 import com.hwl.beta.utils.AppUtils;
 import com.hwl.beta.utils.StringUtils;
-
-import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by Administrator on 2017/12/27.
@@ -35,12 +35,14 @@ public class FragmentCenter extends BaseFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle
+            savedInstanceState) {
         activity = getActivity();
 
         centerBean = new CenterBean();
         setCenterBean();
-        binding = DataBindingUtil.inflate(inflater, R.layout.user_fragment_center, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.user_fragment_center, container,
+                false);
         binding.setUser(centerBean);
         binding.setAction(new CenterListener());
         binding.setImage(new ImageViewBean(centerBean.getHeadImage()));
@@ -56,7 +58,7 @@ public class FragmentCenter extends BaseFragment {
         centerBean.setSymbol(netUser.getSymbol());
     }
 
-    private void setView(){
+    private void setView() {
         if (StringUtils.isBlank(centerBean.getSymbol())) {
             binding.llSymbolContainer.setVisibility(View.GONE);
         } else {
@@ -65,22 +67,25 @@ public class FragmentCenter extends BaseFragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
+    protected boolean isRegisterEventBus() {
+        return true;
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-//            //Log.d("当前刷新的图片：", UserSP.getUserHeadImage());
-//            Glide.with(this).load(UserSP.getUserHeadImage())
-//                    .placeholder(R.drawable.empty_photo)
-//                    .error(R.drawable.empty_photo)
-//                    .into(ivHeader);
-//            tvName.setText(UserSP.getUserName());
-//            tvAccount.setText(UserSP.getUserSymbol());
+    protected void receiveEventMessage(EventMessageModel messageModel) {
+        switch (messageModel.getMessageType()) {
+            case EventBusConstant.EB_TYPE_USER_HEAD_UPDATE:
+                Glide.with(this).load(UserSP.getUserHeadImage())
+                        .placeholder(R.drawable.empty_photo)
+                        .error(R.drawable.empty_photo)
+                        .into(binding.ivHeader);
+                break;
+            case EventBusConstant.EB_TYPE_USER_SYMBOL_UPDATE:
+                binding.tvSymbol.setText(UserSP.getUserSymbol());
+                break;
+            case EventBusConstant.EB_TYPE_USER_NAME_UPDATE:
+                binding.tvName.setText(UserSP.getUserName());
+                break;
         }
     }
 
@@ -98,7 +103,9 @@ public class FragmentCenter extends BaseFragment {
 
         @Override
         public void onCircleClick() {
-//            UITransfer.toCircleUserIndexActivity(activity, UserSP.getUserId(), UserSP.getUserName(), UserSP.getUserHeadImage(), UserSP.getUserCirclebackimage(), UserSP.getLifeNotes());
+//            UITransfer.toCircleUserIndexActivity(activity, UserSP.getUserId(), UserSP
+// .getUserName(), UserSP.getUserHeadImage(), UserSP.getUserCirclebackimage(), UserSP
+// .getLifeNotes());
         }
 
         @Override
@@ -121,18 +128,23 @@ public class FragmentCenter extends BaseFragment {
 //                            LoadingDialog.hide();
 //                            if (response.isNewVersion()) {
 //                                new AlertDialog.Builder(activity)
-//                                        .setMessage("检测到最新版本 " + response.getNewVersion() + "，是否更新?")
-//                                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                                        .setMessage("检测到最新版本 " + response.getNewVersion() +
+// "，是否更新?")
+//                                        .setPositiveButton("确定", new DialogInterface
+// .OnClickListener() {
 //                                            @Override
-//                                            public void onClick(DialogInterface dialog, int which) {
-//                                                UITransfer.toBrowser(activity, response.getDownLoadUrl());
+//                                            public void onClick(DialogInterface dialog, int
+// which) {
+//                                                UITransfer.toBrowser(activity, response
+// .getDownLoadUrl());
 //                                                dialog.dismiss();
 //                                            }
 //                                        })
 //                                        .setNegativeButton("取消", null)
 //                                        .show();
 //                            } else {
-//                                Toast.makeText(activity, "当前已经是最新的版本,不需要更新", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(activity, "当前已经是最新的版本,不需要更新", Toast
+// .LENGTH_SHORT).show();
 //                            }
 //                        }
 //

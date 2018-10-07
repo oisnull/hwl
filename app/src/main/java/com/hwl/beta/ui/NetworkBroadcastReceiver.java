@@ -19,11 +19,11 @@ public class NetworkBroadcastReceiver extends BroadcastReceiver {
                 (Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isAvailable()) {
-            Toast.makeText(context, "当前网络可用", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, "当前网络可用", Toast.LENGTH_SHORT).show();
 //                EventBus.getDefault().post(EventBusConstant.EB_TYPE_NETWORK_CONNECT_UPDATE);
             IMClientEntry.connectServer();
         } else {
-            Toast.makeText(context, "当前网络不可用", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, "当前网络不可用", Toast.LENGTH_SHORT).show();
 //                EventBus.getDefault().post(EventBusConstant.EB_TYPE_NETWORK_BREAK_UPDATE);
             IMClientEntry.stopHeartbeat();
         }

@@ -1,7 +1,7 @@
 package com.hwl.beta.ui.immsg;
 
 import com.hwl.beta.AppConfig;
-import com.hwl.beta.ui.busbean.EventBusUtil;
+import com.hwl.beta.ui.ebus.EventBusUtil;
 
 import java.util.logging.Logger;
 
