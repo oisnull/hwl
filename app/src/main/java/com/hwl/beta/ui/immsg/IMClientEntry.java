@@ -4,7 +4,9 @@ import java.util.TimerTask;
 import java.util.logging.Logger;
 
 import com.hwl.beta.AppConfig;
+import com.hwl.beta.ui.immsg.listen.AddFriendMessageListen;
 import com.hwl.beta.ui.immsg.listen.UserValidateListen;
+import com.hwl.beta.ui.immsg.send.AddFriendMessageSend;
 import com.hwl.beta.ui.immsg.send.UserValidateSend;
 import com.hwl.beta.utils.NetworkUtils;
 import com.hwl.im.client.ClientMessageOperate;
@@ -20,7 +22,7 @@ import com.hwl.im.improto.ImMessageType;
 public class IMClientEntry {
 
     static Logger log = Logger.getLogger(AppConfig.IM_DEBUG_TAG);
-    static int CHECK_TIME_INTERNAL = 5 * 1000; // s
+//    static int CHECK_TIME_INTERNAL = 5 * 1000; // s
 
     static Thread imThread = null;
     static boolean isIMThreadRuning = false;
@@ -37,6 +39,8 @@ public class IMClientEntry {
     static void initListenExecutor() {
         messageOperate.registerListenExecutor(ImMessageType.ChatUser, new ChatUserMessageListen());
         messageOperate.registerListenExecutor(ImMessageType.ChatGroup, new ChatGroupMessageListen
+                ());
+        messageOperate.registerListenExecutor(ImMessageType.AddFriend, new AddFriendMessageListen
                 ());
     }
 
@@ -144,5 +148,17 @@ public class IMClientEntry {
         log.info("Client listen : stop send heart package");
         IMClientHeartbeatTimer.getInstance().stop();
         disconnectServer();
+    }
+
+    public static void sendAddFriendMessage(final long toUserId, final String toUserName, final
+    IMDefaultSendOperateListener operateListener) {
+        commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+            @Override
+            public void accept(DefaultConsumer<Boolean> sendCallback) {
+                AddFriendMessageSend request = new AddFriendMessageSend(toUserId, toUserName,
+                        sendCallback);
+                messageOperate.send(request);
+            }
+        });
     }
 }

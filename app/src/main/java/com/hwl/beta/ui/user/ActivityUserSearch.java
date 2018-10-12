@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.widget.Toast;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.UserActivitySearchBinding;
@@ -17,6 +18,8 @@ import com.hwl.beta.ui.common.KeyBoardAction;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.dialog.AddFriendDialogFragment;
 import com.hwl.beta.ui.dialog.LoadingDialog;
+import com.hwl.beta.ui.immsg.IMClientEntry;
+import com.hwl.beta.ui.immsg.IMDefaultSendOperateListener;
 import com.hwl.beta.ui.user.action.IUserSearchItemListener;
 import com.hwl.beta.ui.user.action.IUserSearchListener;
 import com.hwl.beta.ui.user.adp.UserSearchAdapter;
@@ -125,6 +128,21 @@ public class ActivityUserSearch extends BaseActivity {
                     LoadingDialog.show(activity, "请求发送中...");
                     KeyBoardAction.hideSoftInput(activity);
 
+                    IMClientEntry.sendAddFriendMessage(user.getId(),"",new IMDefaultSendOperateListener(){
+                        @Override
+                        public void success() {
+                            view.setVisibility(View.GONE);
+                            Toast.makeText(activity, "好友请求发送成功", Toast.LENGTH_SHORT).show();
+                            addFriendDialogFragment.dismiss();
+                            LoadingDialog.hide();
+                        }
+
+                        @Override
+                        public void failed(String message) {
+                            super.failed(message);
+                            LoadingDialog.hide();
+                        }
+                    });
 //                    UserMessageSend.sendFriendRequestMessage(user.getId(), remark).subscribe
 // (new MQDefaultObserver() {
 //                        @Override
