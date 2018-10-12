@@ -45,14 +45,22 @@ public class IMClientEntry {
     }
 
     public static void connectServer() {
-        if (isIMThreadRuning) return;
-        log.info("Client listen : start connect to server " + launcher.getServerAddress() + " ...");
-        if (!NetworkUtils.isConnected() || launcher.isConnected()) {
-            log.info("Client listen : connected to server " + launcher.getServerAddress() + " and" +
-                    " stop auto check");
+        if(!NetworkUtils.isConnected()){
+            log.info("Client listen : network is disconnect");
             return;
         }
+
+        if (launcher.isConnected()) {
+            log.info("Client listen : im is connected");
+            // log.info("Client listen : connected to server " + launcher.getServerAddress() + " and" +
+            //         " stop auto check");
+            return;
+        }
+        
+        if (isIMThreadRuning) return;
         isIMThreadRuning = true;
+
+        log.info("Client listen : start connect to server " + launcher.getServerAddress() + " ...");
         imThread = new Thread() {
             @Override
             public void run() {
