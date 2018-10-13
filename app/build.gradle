@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 27
@@ -25,6 +26,13 @@ android {
             jni.srcDirs = []
         }
     }
+
+    greendao {
+        schemaVersion 24 //数据库版本号
+        daoPackage 'com.hwl.beta.db.dao'// 设置DaoMaster、DaoSession、Dao 包名
+        targetGenDir 'src/main/java'//设置DaoMaster、DaoSession、Dao目录
+    }
+
     dataBinding {
         enabled = true
     }

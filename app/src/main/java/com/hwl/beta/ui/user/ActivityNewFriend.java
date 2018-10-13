@@ -22,6 +22,7 @@ import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.convert.DBFriendAction;
 import com.hwl.beta.ui.dialog.LoadingDialog;
+import com.hwl.beta.ui.ebus.EventBusUtil;
 import com.hwl.beta.ui.user.action.INewFriendItemListener;
 import com.hwl.beta.ui.user.adp.NewFriendAdapter;
 
@@ -51,7 +52,7 @@ public class ActivityNewFriend extends BaseActivity {
             friendRequests = new ArrayList<>();
         } else {
             MessageCountSP.setFriendRequestCount(0);//清空好友请求数据
-//            EventBus.getDefault().post(EventBusConstant.EB_TYPE_FRIEND_REQUEST_UPDATE);
+            EventBusUtil.sendFriendRequestEvent();
         }
         friendAdapter = new NewFriendAdapter(activity, friendRequests, new NewFriendItemListener());
         binding = DataBindingUtil.setContentView(this, R.layout.user_activity_new_friend);

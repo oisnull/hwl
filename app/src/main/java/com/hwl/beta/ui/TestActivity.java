@@ -7,8 +7,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.hwl.beta.R;
+import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.MessageNotifyManage;
+import com.hwl.beta.ui.ebus.EventBusUtil;
 import com.hwl.beta.utils.AppUtils;
 
 /**
@@ -22,8 +25,19 @@ public class TestActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_test);
-//        mActivity = this;
+        setContentView(R.layout.entry_activity_test);
+        mActivity = this;
+
+
+        Button btnPackage = findViewById(R.id.btn_friend_request_add);
+        btnPackage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MessageCountSP.setFriendRequestCount(MessageCountSP.getFriendRequestCount() + 1);
+                EventBusUtil.sendFriendRequestEvent();
+            }
+        });
+
 //        Button button = findViewById(R.id.btn_test);
 //        button.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -44,7 +58,8 @@ public class TestActivity extends BaseActivity {
 //        btnPackage.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                Toast.makeText(mActivity, AppUtils.getAppPackageName(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mActivity, AppUtils.getAppPackageName(), Toast.LENGTH_SHORT)
+// .show();
 //            }
 //        });
     }

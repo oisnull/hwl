@@ -42,6 +42,12 @@ public class FriendAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public Friend getFirendRequestItem() {
+        if (this.users != null && this.users.size() >= 3)
+            return this.users.get(2);
+        return null;
+    }
+
     @Override
     public int getCount() {
         return users.size();

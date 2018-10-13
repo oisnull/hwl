@@ -30,7 +30,7 @@ public class EventBusUtil {
         if (StringUtils.isBlank(userHeadImageUrl)) return;
         EventUserEditModel messageModel = new EventUserEditModel();
         messageModel.setUserHeadImageUrl(userHeadImageUrl);
-        sendStickyEvent(new EventMessageModel
+        sendEvent(new EventMessageModel
                 (EventBusConstant.EB_TYPE_USER_HEAD_UPDATE, messageModel));
     }
 
@@ -38,7 +38,7 @@ public class EventBusUtil {
         if (StringUtils.isBlank(userSymbol)) return;
         EventUserEditModel messageModel = new EventUserEditModel();
         messageModel.setUserSymbol(userSymbol);
-        sendStickyEvent(new EventMessageModel
+        sendEvent(new EventMessageModel
                 (EventBusConstant.EB_TYPE_USER_SYMBOL_UPDATE, messageModel));
     }
 
@@ -46,14 +46,14 @@ public class EventBusUtil {
         if (StringUtils.isBlank(userName)) return;
         EventUserEditModel messageModel = new EventUserEditModel();
         messageModel.setUserName(userName);
-        sendStickyEvent(new EventMessageModel
+        sendEvent(new EventMessageModel
                 (EventBusConstant.EB_TYPE_USER_NAME_UPDATE, messageModel));
     }
 
     public static void sendUserSexEditEvent(int userSex) {
         EventUserEditModel messageModel = new EventUserEditModel();
         messageModel.setUserSex(userSex);
-        sendStickyEvent(new EventMessageModel
+        sendEvent(new EventMessageModel
                 (EventBusConstant.EB_TYPE_USER_SEX_UPDATE, messageModel));
     }
 
@@ -61,7 +61,11 @@ public class EventBusUtil {
         if (StringUtils.isBlank(userLifeNotes)) return;
         EventUserEditModel messageModel = new EventUserEditModel();
         messageModel.setUserLifeNotes(userLifeNotes);
-        sendStickyEvent(new EventMessageModel
+        sendEvent(new EventMessageModel
                 (EventBusConstant.EB_TYPE_USER_LIFENOTES_UPDATE, messageModel));
+    }
+
+    public static void sendFriendRequestEvent() {
+        sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_FRIEND_REQUEST_UPDATE));
     }
 }

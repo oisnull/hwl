@@ -76,17 +76,4 @@ public class ActivityWelcome extends FragmentActivity {
         }
         this.finish();
     }
-
-//    Runnable runnable = new Runnable() {
-//        @Override
-//        public void run() {
-//            if (tmrCount <= 1) {
-//                check();
-//            } else {
-//                tmrCount--;
-//                tvCountdown.setText(tmrCount + " s");
-//                handler.postDelayed(this, 1000);
-//            }
-//        }
-//    };
 }

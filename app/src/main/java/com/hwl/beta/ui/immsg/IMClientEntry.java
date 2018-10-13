@@ -88,11 +88,11 @@ public class IMClientEntry {
         }
         DefaultConsumer<Boolean> sendCallback = new DefaultConsumer<Boolean>() {
             @Override
-            public void accept(Boolean succ) {
-                if (succ) {
-                    operateListener.sendToServerFaild();
-                } else {
+            public void accept(Boolean success) {
+                if (success) {
                     operateListener.sendToServerSuccess();
+                } else {
+                    operateListener.sendToServerFaild();
                 }
             }
         };
@@ -113,13 +113,13 @@ public class IMClientEntry {
                 UserValidateListen response = new UserValidateListen(new DefaultConsumer<String>() {
                     @Override
                     public void accept(String sess) {
-                        operateListener.success();
+                        operateListener.listenSucess();
                         startHeartbeat(sess);
                     }
                 }, new DefaultConsumer<String>() {
                     @Override
                     public void accept(String msg) {
-                        operateListener.failed(msg);
+                        operateListener.listenFailed(msg);
                         operateListener.sessionidInvaild();
                         stopHeartbeat();
                     }
@@ -158,12 +158,12 @@ public class IMClientEntry {
         disconnectServer();
     }
 
-    public static void sendAddFriendMessage(final long toUserId, final String toUserName, final
+    public static void sendAddFriendMessage(final long toUserId, final String content, final
     IMDefaultSendOperateListener operateListener) {
         commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
-                AddFriendMessageSend request = new AddFriendMessageSend(toUserId, toUserName,
+                AddFriendMessageSend request = new AddFriendMessageSend(toUserId, content,
                         sendCallback);
                 messageOperate.send(request);
             }

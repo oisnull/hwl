@@ -1,12 +1,12 @@
 package com.hwl.beta.ui.entry;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -15,12 +15,14 @@ import android.view.WindowManager;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.NetworkBroadcastReceiver;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.EntryActivityMainBinding;
 import com.hwl.beta.location.BaiduLocation;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.ui.TabFragmentPagerAdapter;
+import com.hwl.beta.ui.dialog.DialogUtils;
 import com.hwl.beta.ui.ebus.EventBusConstant;
 import com.hwl.beta.ui.ebus.EventMessageModel;
 import com.hwl.beta.ui.chat.FragmentRecord;
@@ -28,7 +30,7 @@ import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.ShareTransfer;
 import com.hwl.beta.ui.common.UITransfer;
-import com.hwl.beta.ui.dialog.LocationDialogFragment;
+import com.hwl.beta.ui.entry.bean.MainBean;
 import com.hwl.beta.ui.near.FragmentNear;
 import com.hwl.beta.ui.user.FragmentCenter;
 import com.hwl.beta.ui.user.FragmentFriends;
@@ -39,14 +41,12 @@ import com.hwl.beta.ui.entry.standard.MainStandard;
 import java.util.ArrayList;
 import java.util.List;
 
-import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
-
 public class ActivityMain extends BaseActivity {
-    Activity activity;
+    FragmentActivity activity;
     EntryActivityMainBinding binding;
     MainStandard mainStandard;
+    MainBean mainBean;
     MainListener mainListener;
-    LocationDialogFragment locationTip;
     NetworkBroadcastReceiver networkBroadcastReceiver;
     private long exitTime = 0;
 
@@ -56,9 +56,10 @@ public class ActivityMain extends BaseActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         activity = this;
         mainStandard = new MainHandle();
+        mainBean = mainStandard.getMainBean();
         mainListener = new MainListener();
         binding = DataBindingUtil.setContentView(this, R.layout.entry_activity_main);
-        binding.setMainBean(mainStandard.getMainBean());
+        binding.setMainBean(mainBean);
         binding.setAction(mainListener);
 
         initView();
@@ -72,7 +73,7 @@ public class ActivityMain extends BaseActivity {
                 .setImageLeftClick(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showLoactionStatus();
+                        showLocationStatus();
                     }
                 })
                 .setImageRightClick(new View.OnClickListener() {
@@ -84,7 +85,7 @@ public class ActivityMain extends BaseActivity {
 
         initLocation();
 
-        SQLiteStudioService.instance().start(activity);
+//        SQLiteStudioService.instance().start(activity);
 
         networkBroadcastReceiver = new NetworkBroadcastReceiver();
         registerReceiver(networkBroadcastReceiver, new IntentFilter(NetworkBroadcastReceiver
@@ -103,8 +104,14 @@ public class ActivityMain extends BaseActivity {
 
     @Override
     protected void receiveStickyEventMessage(EventMessageModel messageModel) {
-        if (messageModel.getMessageType() == EventBusConstant.EB_TYPE_TOKEN_INVALID_RELOGIN) {
-            UITransfer.toReloginDialog(this);
+        switch (messageModel.getMessageType()) {
+            case EventBusConstant.EB_TYPE_TOKEN_INVALID_RELOGIN:
+                UITransfer.toReloginDialog(this);
+                break;
+            case EventBusConstant.EB_TYPE_FRIEND_REQUEST_UPDATE:
+                mainBean.setFriendMessageCount(MessageCountSP
+                        .getFriendRequestCount());
+                break;
         }
     }
 
@@ -118,46 +125,34 @@ public class ActivityMain extends BaseActivity {
             @Override
             public void error(String errorMessage) {
                 binding.tbTitle.setTitle("未知");
-                showLocationDialog();
-                locationTip.setTitleShow("定位失败");
-                locationTip.setContentShow(errorMessage);
+                showLocationDialog("定位失败", errorMessage);
             }
         });
     }
 
-    public void showLocationDialog() {
-        if (locationTip == null) {
-            locationTip = new LocationDialogFragment();
-        }
-        locationTip.setResetLocationClickListener(new View.OnClickListener() {
+    public void showLocationDialog(String title, String content) {
+        DialogUtils.showLocationDialog(activity, title, content, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 binding.tbTitle.setTitle("位置重新获取中...");
                 initLocation();
-                locationTip.dismiss();
+                DialogUtils.closeLocationDialog();
             }
         });
-        locationTip.show(getSupportFragmentManager(), "LocationDialogFragment");
     }
 
-    public void showLoactionStatus() {
+    public void showLocationStatus() {
         int status = mainStandard.getLocationStatus();
         switch (status) {
             case BaiduLocation.NOT_START:
             case BaiduLocation.POSITIONING:
-                showLocationDialog();
-                locationTip.setTitleShow("当前位置");
-                locationTip.setContentShow("正在获取当前位置信息...");
+                showLocationDialog("当前位置", "正在获取当前位置信息...");
                 break;
             case BaiduLocation.COMPLETE_FAILD:
-                showLocationDialog();
-                locationTip.setTitleShow("定位失败");
-                locationTip.setContentShow("获取当前位置失败,请检测是否已经连网！");
+                showLocationDialog("定位失败", "获取当前位置失败,请检测是否已经连网！");
                 break;
             case BaiduLocation.COMPLETE_SUCCESS:
-                showLocationDialog();
-                locationTip.setTitleShow("当前位置");
-                locationTip.setContentShow(UserPosSP.getPosDesc());
+                showLocationDialog("当前位置", UserPosSP.getPosDesc());
                 break;
         }
     }
@@ -166,7 +161,7 @@ public class ActivityMain extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(networkBroadcastReceiver);
-        SQLiteStudioService.instance().stop();
+//        SQLiteStudioService.instance().stop();
     }
 
     private void showPopMenu(View v) {

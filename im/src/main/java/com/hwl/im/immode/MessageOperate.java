@@ -1,12 +1,8 @@
 package com.hwl.im.immode;
 
-import com.hwl.im.ThreadPoolUtil;
+import com.hwl.im.common.DefaultConsumer;
 import com.hwl.im.imaction.MessageSendExecutor;
 import com.hwl.im.improto.ImMessageContext;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.function.Function;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -14,11 +10,11 @@ import io.netty.channel.ChannelFutureListener;
 
 public class MessageOperate {
 
-    final static ExecutorService executorService = Executors.newFixedThreadPool(ThreadPoolUtil.ioIntesivePoolSize());
+//    final static ExecutorService executorService = Executors.newFixedThreadPool(ThreadPoolUtil.ioIntesivePoolSize());
 
-    public static void send(Channel channel, ImMessageContext messageContext,final Function<Boolean, Void> callback) {
+    public static void send(Channel channel, ImMessageContext messageContext, final DefaultConsumer<Boolean> callback) {
         if (channel == null || messageContext == null) {
-            callback.apply(false);
+            callback.accept(false);
             return;
         }
         ChannelFuture channelFuture = channel.writeAndFlush(messageContext);
@@ -27,7 +23,7 @@ public class MessageOperate {
             @Override
             public void operationComplete(ChannelFuture future) throws Exception {
                 if (callback != null)
-                    callback.apply(future.isSuccess());
+                    callback.accept(future.isSuccess());
             }
         });
     }
@@ -44,7 +40,7 @@ public class MessageOperate {
         channelFuture.addListener(new ChannelFutureListener() {
 
             @Override
-            public void operationComplete(ChannelFuture future) throws Exception {
+            public void operationComplete(ChannelFuture future) {
                 if (sendExecutor.isSendFailedAndClose() && !future.isSuccess()) {
                     channel.close();
                 }

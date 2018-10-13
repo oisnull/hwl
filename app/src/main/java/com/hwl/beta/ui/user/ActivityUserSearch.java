@@ -1,6 +1,5 @@
 package com.hwl.beta.ui.user;
 
-import android.app.Activity;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,7 +15,7 @@ import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.KeyBoardAction;
 import com.hwl.beta.ui.common.UITransfer;
-import com.hwl.beta.ui.dialog.AddFriendDialogFragment;
+import com.hwl.beta.ui.dialog.DialogUtils;
 import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.immsg.IMClientEntry;
 import com.hwl.beta.ui.immsg.IMDefaultSendOperateListener;
@@ -79,33 +78,32 @@ public class ActivityUserSearch extends BaseActivity {
 
             searchStandard.searchUsers(binding.etUserKey.getText() + "", new
                     DefaultCallback<List<UserSearchInfo>, String>() {
-                @Override
-                public void success(List<UserSearchInfo> users) {
-                    isRuning = false;
-                    userAdapter.clearAndAddUsers(users);
-                    binding.pbLoading.setVisibility(View.GONE);
-                    binding.tvShow.setVisibility((users != null && users.size() > 0) ? View.GONE
-                            : View.VISIBLE);
-                }
+                        @Override
+                        public void success(List<UserSearchInfo> users) {
+                            isRuning = false;
+                            userAdapter.clearAndAddUsers(users);
+                            binding.pbLoading.setVisibility(View.GONE);
+                            binding.tvShow.setVisibility((users != null && users.size() > 0) ?
+                                    View.GONE
+                                    : View.VISIBLE);
+                        }
 
-                @Override
-                public void error(String errorMessage) {
-                    isRuning = false;
-                    binding.tvShow.setVisibility(View.GONE);
-                    binding.pbLoading.setVisibility(View.GONE);
-                }
+                        @Override
+                        public void error(String errorMessage) {
+                            isRuning = false;
+                            binding.tvShow.setVisibility(View.GONE);
+                            binding.pbLoading.setVisibility(View.GONE);
+                        }
 
-                @Override
-                public void relogin() {
-                    UITransfer.toReloginDialog(activity);
-                }
-            });
+                        @Override
+                        public void relogin() {
+                            UITransfer.toReloginDialog(activity);
+                        }
+                    });
         }
     }
 
     public class UserSearchItemListener implements IUserSearchItemListener {
-        private AddFriendDialogFragment addFriendDialogFragment;
-
         @Override
         public void onHeadImageClick(UserSearchInfo user) {
 
@@ -116,52 +114,31 @@ public class ActivityUserSearch extends BaseActivity {
         //只有当好友验证通过了，再发送一条验证通过的消息到自己
         @Override
         public void onAddClick(final View view, final UserSearchInfo user) {
-            if (addFriendDialogFragment == null) {
-                addFriendDialogFragment = new AddFriendDialogFragment();
-            }
-            final String remark = "我是 " + UserSP.getUserShowName();
-            addFriendDialogFragment.setRemark(remark);
-            addFriendDialogFragment.setTitle(user.getShowName());
-            addFriendDialogFragment.setOnClickListener(new View.OnClickListener() {
+            String title = "TO: " + user.getShowName();
+            final String content = "我是 " + UserSP.getUserShowName();
+            DialogUtils.showAddFriendDialog(activity, title, content, new View.OnClickListener() {
                 @Override
-                public void onClick(final View v) {
+                public void onClick(View v) {
                     LoadingDialog.show(activity, "请求发送中...");
                     KeyBoardAction.hideSoftInput(activity);
 
-                    IMClientEntry.sendAddFriendMessage(user.getId(),"",new IMDefaultSendOperateListener(){
-                        @Override
-                        public void success() {
-                            view.setVisibility(View.GONE);
-                            Toast.makeText(activity, "好友请求发送成功", Toast.LENGTH_SHORT).show();
-                            addFriendDialogFragment.dismiss();
-                            LoadingDialog.hide();
-                        }
+                    IMClientEntry.sendAddFriendMessage(user.getId(), content, new
+                            IMDefaultSendOperateListener("AddFriend", true) {
+                                @Override
+                                public void success1() {
+                                    view.setVisibility(View.GONE);
+                                    Toast.makeText(activity, "好友请求发送成功", Toast.LENGTH_SHORT).show();
+                                    DialogUtils.closeAddFriendDialog();
+                                    LoadingDialog.hide();
+                                }
 
-                        @Override
-                        public void failed(String message) {
-                            super.failed(message);
-                            LoadingDialog.hide();
-                        }
-                    });
-//                    UserMessageSend.sendFriendRequestMessage(user.getId(), remark).subscribe
-// (new MQDefaultObserver() {
-//                        @Override
-//                        protected void onSuccess() {
-//                            view.setVisibility(View.GONE);
-//                            Toast.makeText(activity, "好友请求发送成功", Toast.LENGTH_SHORT).show();
-//                            addFriendDialogFragment.dismiss();
-//                            LoadingDialog.hide();
-//                        }
-//
-//                        @Override
-//                        protected void onError(String resultMessage) {
-//                            super.onError(resultMessage);
-//                            LoadingDialog.hide();
-//                        }
-//                    });
+                                @Override
+                                public void failed1() {
+                                    LoadingDialog.hide();
+                                }
+                            });
                 }
             });
-            addFriendDialogFragment.show(getFragmentManager(), "AddFriendDialogFragment");
         }
     }
 }

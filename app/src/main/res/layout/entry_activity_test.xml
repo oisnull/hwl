@@ -5,6 +5,12 @@
     android:orientation="vertical">
 
     <Button
+        android:id="@+id/btn_friend_request_add"
+        android:text="添加一条好友请求消息"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
         android:id="@+id/btn_test"
         android:text="震动测试"
         android:layout_width="wrap_content"

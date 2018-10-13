@@ -11,6 +11,7 @@ import com.hwl.beta.utils.StringUtils;
 import java.util.List;
 
 public class UserSearchLogic implements UserSearchStandard {
+
     @Override
     public void searchUsers(String key, final DefaultCallback<List<UserSearchInfo>, String>
             callback) {

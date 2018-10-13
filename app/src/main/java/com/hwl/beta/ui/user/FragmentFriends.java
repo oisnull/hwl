@@ -12,8 +12,11 @@ import android.widget.AdapterView;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.UserFragmentFriendsBinding;
 import com.hwl.beta.db.entity.Friend;
+import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.common.BaseFragment;
 import com.hwl.beta.ui.common.UITransfer;
+import com.hwl.beta.ui.ebus.EventBusConstant;
+import com.hwl.beta.ui.ebus.EventMessageModel;
 import com.hwl.beta.ui.user.adp.FriendAdapter;
 import com.hwl.beta.ui.user.logic.FriendsLogic;
 import com.hwl.beta.ui.user.standard.FriendsStandard;
@@ -51,6 +54,15 @@ public class FragmentFriends extends BaseFragment {
     @Override
     protected boolean isRegisterEventBus() {
         return true;
+    }
+
+    @Override
+    protected void receiveEventMessage(EventMessageModel messageModel) {
+        if (messageModel.getMessageType() == EventBusConstant.EB_TYPE_FRIEND_REQUEST_UPDATE) {
+            Friend item = friendAdapter.getFirendRequestItem();
+            if (item == null) return;
+            item.setMessageCount(MessageCountSP.getFriendRequestCountDesc());
+        }
     }
 
     @Override

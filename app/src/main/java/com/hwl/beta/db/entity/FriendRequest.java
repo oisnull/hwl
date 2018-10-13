@@ -4,6 +4,8 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 
+import java.util.Date;
+
 /**
  * Created by Administrator on 2018/2/5.
  */
@@ -17,14 +19,16 @@ public class FriendRequest {
     private String friendHeadImage;
     private String remark;
     private int status;
-    @Generated(hash = 1166218192)
+    private Date requestTime;
+    @Generated(hash = 1707398741)
     public FriendRequest(long friendId, String friendName, String friendHeadImage,
-            String remark, int status) {
+            String remark, int status, Date requestTime) {
         this.friendId = friendId;
         this.friendName = friendName;
         this.friendHeadImage = friendHeadImage;
         this.remark = remark;
         this.status = status;
+        this.requestTime = requestTime;
     }
     @Generated(hash = 1677678717)
     public FriendRequest() {
@@ -59,4 +63,11 @@ public class FriendRequest {
     public void setStatus(int status) {
         this.status = status;
     }
+    public Date getRequestTime() {
+        return this.requestTime;
+    }
+    public void setRequestTime(Date requestTime) {
+        this.requestTime = requestTime;
+    }
+
 }
