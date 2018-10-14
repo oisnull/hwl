@@ -6,7 +6,7 @@ import com.hwl.beta.db.entity.FriendRequest;
 import com.hwl.beta.net.user.NetUserFriendInfo;
 import com.hwl.beta.net.user.UserDetailsInfo;
 import com.hwl.beta.utils.StringUtils;
-import com.hwl.im.improto.ImAddFriendMessageResponse;
+import com.hwl.imcore.improto.ImAddFriendMessageResponse;
 
 import java.util.Date;
 

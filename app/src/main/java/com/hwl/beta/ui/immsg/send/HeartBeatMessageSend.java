@@ -2,9 +2,9 @@ package com.hwl.beta.ui.immsg.send;
 
 import com.hwl.im.common.DefaultConsumer;
 import com.hwl.im.imaction.AbstractMessageSendExecutor;
-import com.hwl.im.improto.ImHeartBeatMessageRequest;
-import com.hwl.im.improto.ImMessageRequest;
-import com.hwl.im.improto.ImMessageType;
+import com.hwl.imcore.improto.ImHeartBeatMessageRequest;
+import com.hwl.imcore.improto.ImMessageRequest;
+import com.hwl.imcore.improto.ImMessageType;
 
 public class HeartBeatMessageSend extends AbstractMessageSendExecutor {
 

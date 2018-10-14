@@ -10,9 +10,11 @@ import android.widget.BaseAdapter;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.UserLetterItemBinding;
 import com.hwl.beta.db.entity.Friend;
+import com.hwl.beta.ui.common.FriendComparator;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,20 +22,37 @@ import java.util.List;
  */
 
 public class FriendAdapter extends BaseAdapter {
-    final Context context;
-    private LayoutInflater inflater;
+    Context context;
+    LayoutInflater inflater;
     List<Friend> users;
     UserLetterItemBinding itemBinding;
+    FriendComparator pinyinComparator;
 
     public FriendAdapter(Context context) {
-        this.context = context;
-        this.users = new ArrayList<>();
-        inflater = LayoutInflater.from(context);
+        this(context, new ArrayList<Friend>());
     }
 
     public FriendAdapter(Context context, List<Friend> users) {
-        this(context);
+        this.context = context;
         this.users = users;
+        inflater = LayoutInflater.from(context);
+        pinyinComparator = new FriendComparator();
+    }
+
+    public void addFriend(Friend friend) {
+        if (friend == null) return;
+        boolean isExists = false;
+        for (int i = 0; i < users.size(); i++) {
+            if (friend.getId() == users.get(i).getId()) {
+                isExists = true;
+                break;
+            }
+        }
+        if (!isExists) {
+            users.add(friend);
+            Collections.sort(users, pinyinComparator);
+            notifyDataSetChanged();
+        }
     }
 
     public void addFriends(List<Friend> friends) {

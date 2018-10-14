@@ -5,9 +5,9 @@ import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.convert.DBFriendAction;
 import com.hwl.beta.ui.ebus.EventBusUtil;
 import com.hwl.im.imaction.AbstractMessageListenExecutor;
-import com.hwl.im.improto.ImAddFriendMessageResponse;
-import com.hwl.im.improto.ImMessageResponse;
-import com.hwl.im.improto.ImMessageType;
+import com.hwl.imcore.improto.ImAddFriendMessageResponse;
+import com.hwl.imcore.improto.ImMessageResponse;
+import com.hwl.imcore.improto.ImMessageType;
 
 public class AddFriendMessageListen extends
         AbstractMessageListenExecutor<ImAddFriendMessageResponse> {

@@ -44,7 +44,7 @@ public class IMDefaultSendOperateListener {
     }
 
     public final void sendToServerSuccess() {
-        log.info(getSendDesc() + " : message not send to server ");
+        log.info(getSendDesc() + " : message send to server success");
         if (mainHandler != null)
             mainHandler.post(new Runnable() {
                 @Override
@@ -55,7 +55,7 @@ public class IMDefaultSendOperateListener {
     }
 
     public final void sendToServerFaild() {
-        log.info(getSendDesc() + " : message send to server success");
+        log.info(getSendDesc() + " : message send to server failed");
         if (mainHandler != null)
             mainHandler.post(new Runnable() {
                 @Override
@@ -71,6 +71,7 @@ public class IMDefaultSendOperateListener {
     }
 
     public final void listenSucess() {
+        log.info(getSendDesc() + " listen success");
         if (mainHandler != null)
             mainHandler.post(new Runnable() {
                 @Override
@@ -81,7 +82,7 @@ public class IMDefaultSendOperateListener {
     }
 
     public final void listenFailed(final String message) {
-        log.info(getSendDesc() + " failed : " + message);
+        log.info(getSendDesc() + " listen failed : " + message);
         if (mainHandler != null)
             mainHandler.post(new Runnable() {
                 @Override

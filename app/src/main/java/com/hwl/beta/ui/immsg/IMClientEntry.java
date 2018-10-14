@@ -17,7 +17,7 @@ import com.hwl.beta.ui.immsg.listen.ChatUserMessageListen;
 import com.hwl.beta.ui.immsg.send.HeartBeatMessageSend;
 import com.hwl.im.common.DefaultConsumer;
 import com.hwl.im.immode.MessageRequestHeadOperate;
-import com.hwl.im.improto.ImMessageType;
+import com.hwl.imcore.improto.ImMessageType;
 
 public class IMClientEntry {
 

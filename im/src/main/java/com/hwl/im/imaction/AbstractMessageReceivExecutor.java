@@ -5,11 +5,11 @@ package com.hwl.im.imaction;
 
 import com.hwl.im.immode.MessageRequestHeadOperate;
 import com.hwl.im.immode.RequestSessionInvalidException;
-import com.hwl.im.improto.ImMessageContext;
-import com.hwl.im.improto.ImMessageRequestHead;
-import com.hwl.im.improto.ImMessageResponse;
-import com.hwl.im.improto.ImMessageResponseCode;
-import com.hwl.im.improto.ImMessageResponseHead;
+import com.hwl.imcore.improto.ImMessageContext;
+import com.hwl.imcore.improto.ImMessageRequestHead;
+import com.hwl.imcore.improto.ImMessageResponse;
+import com.hwl.imcore.improto.ImMessageResponseCode;
+import com.hwl.imcore.improto.ImMessageResponseHead;
 
 import io.netty.channel.Channel;
 

@@ -3,8 +3,8 @@ package com.hwl.im.client;
 import com.hwl.im.imaction.MessageListenExecutor;
 import com.hwl.im.imaction.MessageSendExecutor;
 import com.hwl.im.immode.MessageOperate;
-import com.hwl.im.improto.ImMessageContext;
-import com.hwl.im.improto.ImMessageType;
+import com.hwl.imcore.improto.ImMessageContext;
+import com.hwl.imcore.improto.ImMessageType;
 
 import java.util.concurrent.ConcurrentHashMap;
 

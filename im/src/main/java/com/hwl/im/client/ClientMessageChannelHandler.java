@@ -1,22 +1,21 @@
 package com.hwl.im.client;
 
-// import org.apache.logging.log4j.LogManager;
-// import org.apache.logging.log4j.Logger;
+import com.hwl.imcore.improto.ImMessageContext;
 
-import com.hwl.im.improto.ImMessageContext;
+import java.util.logging.Logger;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 public class ClientMessageChannelHandler extends SimpleChannelInboundHandler<ImMessageContext> {
 
-    // static boolean isDebug = false;
-    // private static Logger log =
-    // LogManager.getLogger(ClientMessageChannelHandler.class.getName());
+    static boolean isDebug = true;
+    static Logger log = Logger.getLogger("hwl-im");
     private ClientMessageOperate messageOperate;
     private IMClientListener clientListener;
 
-    public ClientMessageChannelHandler(ClientMessageOperate messageOperate, IMClientListener clientListener) {
+    public ClientMessageChannelHandler(ClientMessageOperate messageOperate, IMClientListener
+            clientListener) {
         this.messageOperate = messageOperate;
         this.clientListener = clientListener;
         if (this.messageOperate == null) {
@@ -47,11 +46,11 @@ public class ClientMessageChannelHandler extends SimpleChannelInboundHandler<ImM
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, ImMessageContext msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, ImMessageContext msg) {
         if (msg == null)
             return;
-        // if (isDebug)
-        // log.debug("Client read0 : {}", msg.toString());
+        if (isDebug)
+            log.info("Client channel read0 : " + msg.toString());
         this.messageOperate.listen(msg);
     }
 }

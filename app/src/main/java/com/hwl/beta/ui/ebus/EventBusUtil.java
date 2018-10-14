@@ -1,5 +1,6 @@
 package com.hwl.beta.ui.ebus;
 
+import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.ui.ebus.bean.EventUserEditModel;
 import com.hwl.beta.utils.StringUtils;
 
@@ -67,5 +68,10 @@ public class EventBusUtil {
 
     public static void sendFriendRequestEvent() {
         sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_FRIEND_REQUEST_UPDATE));
+    }
+
+    public static void sendFriendEvent(Friend friend) {
+        sendEvent(new EventMessageModel
+                (EventBusConstant.EB_TYPE_FRIEND_ADD, friend));
     }
 }

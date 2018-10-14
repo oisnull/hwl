@@ -58,10 +58,15 @@ public class FragmentFriends extends BaseFragment {
 
     @Override
     protected void receiveEventMessage(EventMessageModel messageModel) {
-        if (messageModel.getMessageType() == EventBusConstant.EB_TYPE_FRIEND_REQUEST_UPDATE) {
-            Friend item = friendAdapter.getFirendRequestItem();
-            if (item == null) return;
-            item.setMessageCount(MessageCountSP.getFriendRequestCountDesc());
+        switch (messageModel.getMessageType()) {
+            case EventBusConstant.EB_TYPE_FRIEND_REQUEST_UPDATE:
+                Friend item = friendAdapter.getFirendRequestItem();
+                if (item == null) return;
+                item.setMessageCount(MessageCountSP.getFriendRequestCountDesc());
+                break;
+            case EventBusConstant.EB_TYPE_FRIEND_ADD:
+                friendAdapter.addFriend((Friend) messageModel.getMessageModel());
+                break;
         }
     }
 

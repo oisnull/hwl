@@ -1,14 +1,14 @@
 package com.hwl.beta.ui.ebus;
 
-public class EventMessageModel<T> {
+public class EventMessageModel {
     private int messageType;
-    private T messageModel;
+    private Object messageModel;
 
     public EventMessageModel(int messageType) {
         this.messageType = messageType;
     }
 
-    public EventMessageModel(int messageType, T messageModel) {
+    public EventMessageModel(int messageType, Object messageModel) {
         this(messageType);
         this.messageModel = messageModel;
     }
@@ -21,11 +21,11 @@ public class EventMessageModel<T> {
         this.messageType = messageType;
     }
 
-    public T getMessageModel() {
+    public Object getMessageModel() {
         return messageModel;
     }
 
-    public void setMessageModel(T messageModel) {
+    public void setMessageModel(Object messageModel) {
         this.messageModel = messageModel;
     }
 }

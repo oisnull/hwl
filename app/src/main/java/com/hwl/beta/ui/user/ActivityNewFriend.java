@@ -1,35 +1,26 @@
 package com.hwl.beta.ui.user;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Toast;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.UserActivityNewFriendBinding;
-import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.db.entity.FriendRequest;
-import com.hwl.beta.net.NetConstant;
-import com.hwl.beta.net.user.UserService;
-import com.hwl.beta.net.user.body.AddFriendResponse;
-import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.common.BaseActivity;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
-import com.hwl.beta.ui.convert.DBFriendAction;
+import com.hwl.beta.ui.common.DefaultCallback;
+import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.dialog.LoadingDialog;
-import com.hwl.beta.ui.ebus.EventBusUtil;
 import com.hwl.beta.ui.user.action.INewFriendItemListener;
 import com.hwl.beta.ui.user.adp.NewFriendAdapter;
-
-import org.greenrobot.eventbus.EventBus;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.hwl.beta.ui.user.logic.NewFriendLogic;
+import com.hwl.beta.ui.user.standard.NewFriendStandard;
 
 /**
  * Created by Administrator on 2018/1/8.
@@ -37,8 +28,8 @@ import java.util.List;
 
 public class ActivityNewFriend extends BaseActivity {
 
-    Activity activity;
-    List<FriendRequest> friendRequests;
+    FragmentActivity activity;
+    NewFriendStandard friendStandard;
     NewFriendAdapter friendAdapter;
     UserActivityNewFriendBinding binding;
 
@@ -47,14 +38,10 @@ public class ActivityNewFriend extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         activity = this;
-        friendRequests = DaoUtils.getFriendRequestManagerInstance().getAll();
-        if (friendRequests == null) {
-            friendRequests = new ArrayList<>();
-        } else {
-            MessageCountSP.setFriendRequestCount(0);//清空好友请求数据
-            EventBusUtil.sendFriendRequestEvent();
-        }
-        friendAdapter = new NewFriendAdapter(activity, friendRequests, new NewFriendItemListener());
+        friendStandard = new NewFriendLogic();
+
+        friendAdapter = new NewFriendAdapter(activity, friendStandard.getFriendRequestInfos(),
+                new NewFriendItemListener());
         binding = DataBindingUtil.setContentView(this, R.layout.user_activity_new_friend);
         binding.setFriendAdapter(friendAdapter);
 
@@ -92,10 +79,8 @@ public class ActivityNewFriend extends BaseActivity {
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            DaoUtils.getFriendRequestManagerInstance().delete(friendRequest);
-                            friendRequests.remove(friendRequest);
-                            friendAdapter.notifyDataSetChanged();
-                            MessageCountSP.setFriendRequestCount(friendRequests.size());
+                            friendAdapter.removeInfo(friendRequest);
+                            friendStandard.deleteFriendRequest(friendRequest);
                             dialog.dismiss();
                         }
                     })
@@ -106,32 +91,51 @@ public class ActivityNewFriend extends BaseActivity {
         @Override
         public void onAddClick(View view, final FriendRequest friendRequest) {
             LoadingDialog.show(activity);
-            UserService.addFriend(friendRequest.getFriendId(), friendRequest.getFriendName())
-                    .subscribe(new NetDefaultObserver<AddFriendResponse>() {
-                        @Override
-                        protected void onSuccess(AddFriendResponse response) {
-                            if (response != null && response.getStatus() == NetConstant
-                                    .RESULT_SUCCESS && response.getFriendInfo() != null) {
-                                Toast.makeText(activity, "添加好友成功", Toast.LENGTH_SHORT).show();
-                                Friend friend = DBFriendAction.convertToFriendInfo(response
-                                        .getFriendInfo());
-                                sendSuccessMessage(friend);//发送好友添加成功的聊天消息
-                                DaoUtils.getFriendManagerInstance().save(friend);
-                                DaoUtils.getFriendRequestManagerInstance().delete(friendRequest);
-                                friendRequests.remove(friendRequest);
-                                friendAdapter.notifyDataSetChanged();
-                                EventBus.getDefault().post(friend);
-                                MessageCountSP.setFriendRequestCount(friendRequests.size());
-                            }
-                            LoadingDialog.hide();
-                        }
+            friendStandard.addFriend(friendRequest, new DefaultCallback<Boolean, String>() {
+                @Override
+                public void success(Boolean successMessage) {
+                    LoadingDialog.hide();
+                    Toast.makeText(activity, "添加好友成功", Toast.LENGTH_SHORT).show();
+                    friendAdapter.removeInfo(friendRequest);
+                }
 
-                        @Override
-                        protected void onError(String resultMessage) {
-                            super.onError(resultMessage);
-                            LoadingDialog.hide();
-                        }
-                    });
+                @Override
+                public void error(String errorMessage) {
+                    LoadingDialog.hide();
+                }
+
+                @Override
+                public void relogin() {
+                    LoadingDialog.hide();
+                    UITransfer.toReloginDialog(activity);
+                }
+            });
+//            UserService.addFriend(friendRequest.getFriendId(), friendRequest.getFriendName())
+//                    .subscribe(new NetDefaultObserver<AddFriendResponse>() {
+//                        @Override
+//                        protected void onSuccess(AddFriendResponse response) {
+//                            if (response != null && response.getStatus() == NetConstant
+//                                    .RESULT_SUCCESS && response.getFriendInfo() != null) {
+//                                Toast.makeText(activity, "添加好友成功", Toast.LENGTH_SHORT).show();
+//                                Friend friend = DBFriendAction.convertToFriendInfo(response
+//                                        .getFriendInfo());
+//                                sendSuccessMessage(friend);//发送好友添加成功的聊天消息
+//                                DaoUtils.getFriendManagerInstance().save(friend);
+//                                DaoUtils.getFriendRequestManagerInstance().delete(friendRequest);
+//                                friendRequests.remove(friendRequest);
+//                                friendAdapter.notifyDataSetChanged();
+//                                EventBus.getDefault().post(friend);
+//                                MessageCountSP.setFriendRequestCount(friendRequests.size());
+//                            }
+//                            LoadingDialog.hide();
+//                        }
+//
+//                        @Override
+//                        protected void onError(String resultMessage) {
+//                            super.onError(resultMessage);
+//                            LoadingDialog.hide();
+//                        }
+//                    });
         }
 
         private void sendSuccessMessage(final Friend friend) {

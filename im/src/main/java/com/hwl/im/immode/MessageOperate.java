@@ -2,7 +2,7 @@ package com.hwl.im.immode;
 
 import com.hwl.im.common.DefaultConsumer;
 import com.hwl.im.imaction.MessageSendExecutor;
-import com.hwl.im.improto.ImMessageContext;
+import com.hwl.imcore.improto.ImMessageContext;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;

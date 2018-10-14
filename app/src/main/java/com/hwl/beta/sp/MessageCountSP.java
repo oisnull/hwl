@@ -17,7 +17,8 @@ public class MessageCountSP {
     private static final String CIRCLEMESSAGECOUNT = "circlemessagecount";
 
     private static SharedPreferences getSP() {
-        return HWLApp.getContext().getSharedPreferences(MESSAGECOUNTPREFERENCE, Context.MODE_PRIVATE);
+        return HWLApp.getContext().getSharedPreferences(MESSAGECOUNTPREFERENCE, Context
+                .MODE_PRIVATE);
     }
 
     public static int getFriendRequestCount() {
@@ -34,6 +35,17 @@ public class MessageCountSP {
         final SharedPreferences.Editor editor = getSP().edit();
         editor.putInt(FRIENDREQUESTCOUNT, count);
         editor.commit();
+    }
+
+    public static void setFriendRequestIncreaseCount() {
+        int count = getFriendRequestCount();
+        setFriendRequestCount(count + 1);
+    }
+
+    public static void setFriendRequestReductionCount() {
+        int count = getFriendRequestCount();
+        if (count <= 0) return;
+        setFriendRequestCount(count - 1);
     }
 
     public static String getChatMessageCountDesc() {

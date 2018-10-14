@@ -7,5 +7,5 @@ public interface MainStandard {
     MainBean getMainBean();
 
     int getLocationStatus();
-    void getLocation(DefaultCallback<String,String> callback);// DefaultConsumer<String> succCallback, DefaultConsumer<String> errorCallback);
+    void getLocation(DefaultCallback<String,String> callback);
 }

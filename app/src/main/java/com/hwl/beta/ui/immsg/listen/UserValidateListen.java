@@ -2,8 +2,8 @@ package com.hwl.beta.ui.immsg.listen;
 
 import com.hwl.im.common.DefaultConsumer;
 import com.hwl.im.imaction.AbstractMessageListenExecutor;
-import com.hwl.im.improto.ImMessageResponse;
-import com.hwl.im.improto.ImUserValidateResponse;
+import com.hwl.imcore.improto.ImMessageResponse;
+import com.hwl.imcore.improto.ImUserValidateResponse;
 
 public class UserValidateListen extends AbstractMessageListenExecutor<ImUserValidateResponse> {
 

@@ -27,11 +27,18 @@ public class NewFriendAdapter extends BaseAdapter {
     INewFriendItemListener itemListener;
     UserNewFriendItemBinding itemBinding;
 
-    public NewFriendAdapter(Context context, List<FriendRequest> users, INewFriendItemListener itemListener) {
+    public NewFriendAdapter(Context context, List<FriendRequest> users, INewFriendItemListener
+            itemListener) {
         this.context = context;
         this.users = users;
         this.itemListener = itemListener;
         inflater = LayoutInflater.from(context);
+    }
+
+    public void removeInfo(FriendRequest friendRequest) {
+        if (friendRequest == null || friendRequest.getFriendId() <= 0) return;
+        users.remove(friendRequest);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -52,7 +59,8 @@ public class NewFriendAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            itemBinding = DataBindingUtil.inflate(inflater, R.layout.user_new_friend_item, parent, false);
+            itemBinding = DataBindingUtil.inflate(inflater, R.layout.user_new_friend_item,
+                    parent, false);
             convertView = itemBinding.getRoot();
             convertView.setTag(itemBinding);
         } else {

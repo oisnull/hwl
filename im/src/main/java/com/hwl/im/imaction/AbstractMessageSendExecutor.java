@@ -2,9 +2,9 @@ package com.hwl.im.imaction;
 
 import com.hwl.im.common.DefaultConsumer;
 import com.hwl.im.immode.MessageRequestHeadOperate;
-import com.hwl.im.improto.ImMessageContext;
-import com.hwl.im.improto.ImMessageRequest;
-import com.hwl.im.improto.ImMessageRequestHead;
+import com.hwl.imcore.improto.ImMessageContext;
+import com.hwl.imcore.improto.ImMessageRequest;
+import com.hwl.imcore.improto.ImMessageRequestHead;
 
 //import org.apache.logging.log4j.LogManager;
 //import org.apache.logging.log4j.Logger;

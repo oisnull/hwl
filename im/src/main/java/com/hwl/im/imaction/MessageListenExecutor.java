@@ -1,7 +1,7 @@
 package com.hwl.im.imaction;
 
 
-import com.hwl.im.improto.ImMessageContext;
+import com.hwl.imcore.improto.ImMessageContext;
 
 public interface MessageListenExecutor {
     void execute(ImMessageContext messageContext);

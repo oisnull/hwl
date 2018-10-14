@@ -1,6 +1,6 @@
 package com.hwl.im.client;
 
-import com.hwl.im.improto.ImMessageContext;
+import com.hwl.imcore.improto.ImMessageContext;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;

@@ -2,6 +2,8 @@ package com.hwl.beta.net;
 
 import android.util.Log;
 
+import com.hwl.beta.AppConfig;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 
@@ -26,7 +28,8 @@ public class HttpInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Response response = null;
         String urlPath = chain.request().url().encodedPath();
-        String tag = "Retrofit-" + urlPath.substring(urlPath.lastIndexOf("/") + 1);
+        String tag = AppConfig.NET_API_DEBUG_TAG + "-" + urlPath.substring(urlPath.lastIndexOf
+                ("/") + 1);
 
         if (chain != null && chain.request().body() != null) {
             Buffer bufferedSink = new Buffer();
@@ -37,10 +40,12 @@ public class HttpInterceptor implements Interceptor {
         //本地测试
         if (isDebug) {
             Response.Builder builder1 = new Response.Builder();
-            Headers headers = new Headers.Builder().add("Content-Type", "application/json; charset=utf-8").build();
+            Headers headers = new Headers.Builder().add("Content-Type", "application/json; " +
+                    "charset=utf-8").build();
             builder1.request(chain.request());
             //根据方法名获取本地json文件
-//            InputStream is = MCApplication.getContext().getAssets().open("json" + urlPath.substring(urlPath.lastIndexOf("/")) + ".json");
+//            InputStream is = MCApplication.getContext().getAssets().open("json" + urlPath
+// .substring(urlPath.lastIndexOf("/")) + ".json");
 //            ResponseBody body = new RealResponseBody(headers, Okio.buffer(Okio.source(is)));
             builder1.protocol(Protocol.HTTP_2);
             builder1.code(200);
@@ -48,14 +53,16 @@ public class HttpInterceptor implements Interceptor {
             response = builder1.build();
         } else {
             Request originalRequest = chain.request();
-            if (originalRequest.body() == null || originalRequest.header("Content-Encoding") != null) {
+            if (originalRequest.body() == null || originalRequest.header("Content-Encoding") !=
+                    null) {
                 response = chain.proceed(originalRequest);
             } else {
                 //gzip压缩请求体
                 Request compressedRequest = originalRequest.newBuilder()
                         .header("Content-Encoding", "gzip")
                         .header("User-Agent", getUserAgent())
-//                                                .method(originalRequest.method(), gzip(originalRequest.body()))
+//                                                .method(originalRequest.method(), gzip
+// (originalRequest.body()))
                         .build();
                 response = chain.proceed(compressedRequest);
             }
