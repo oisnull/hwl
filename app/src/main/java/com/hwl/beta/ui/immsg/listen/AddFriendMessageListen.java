@@ -15,6 +15,7 @@ public class AddFriendMessageListen extends
     @Override
     public void executeCore(ImMessageType messageType, ImAddFriendMessageResponse
             response) {
+        super.executeCore(messageType, response);
         //存储消息到本地数据库中
         if (DaoUtils.getFriendRequestManagerInstance().isExists(response
                 .getAddFriendMessageContent().getFromUserId())) {

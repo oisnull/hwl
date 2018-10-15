@@ -43,7 +43,6 @@ public class MainHandle implements MainStandard {
                     callback.success(UserPosSP.getNearDesc());
                     return;
                 } else {
-                    //往本地存储一份定位数据
                     UserPosSP.setUserPos(
                             result.latitude,
                             result.lontitude,
@@ -69,8 +68,7 @@ public class MainHandle implements MainStandard {
     //设置用户位置信息，并返回当前位置群组信息和组用户信息
     private void setUserPos(BaiduLocation.ResultModel result, final DefaultCallback<String,
             String> callback) {
-        //调用api将当前位置存储到服务器
-        final SetUserPosRequest request = new SetUserPosRequest();
+        SetUserPosRequest request = new SetUserPosRequest();
         request.setUserId(UserSP.getUserId());
         request.setLastGroupGuid(UserPosSP.getGroupGuid());
         request.setLatitude(result.latitude + "");
@@ -81,6 +79,7 @@ public class MainHandle implements MainStandard {
         request.setDistrict(result.district);
         request.setStreet(result.street);
         request.setDetails(result.addr);
+
         UserService.setUserPos(request)
                 .subscribe(new NetDefaultObserver<SetUserPosResponse>() {
                     @Override
@@ -90,7 +89,7 @@ public class MainHandle implements MainStandard {
                             callback.success(UserPosSP.getNearDesc());
                             addLocalGroupInfo(res);
                         } else {
-                            callback.error("定位失败");
+                            callback.error("设置定位信息失败");
                         }
                     }
                 });
@@ -99,7 +98,6 @@ public class MainHandle implements MainStandard {
     private void addLocalGroupInfo(SetUserPosResponse res) {
         if (res.getGroupUserInfos() != null && res.getGroupUserInfos
                 ().size() > 0) {
-            //保存组和组用户数据到本地
             GroupInfo groupInfo = DBGroupAction
                     .convertToNearGroupInfo(res.getUserGroupGuid(), res.getGroupUserInfos().size
                             (), DBGroupAction
