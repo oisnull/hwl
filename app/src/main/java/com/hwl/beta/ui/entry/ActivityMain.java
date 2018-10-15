@@ -307,7 +307,6 @@ public class ActivityMain extends BaseActivity {
                     binding.tvFriend.setTextColor(getResources().getColor(R.color.black));
                     binding.tvNear.setTextColor(getResources().getColor(R.color.main));
                     binding.tvMe.setTextColor(getResources().getColor(R.color.black));
-                    //binding.nearFragment.loadData();
                     break;
                 case 2:
                     binding.tvMessage.setTextColor(getResources().getColor(R.color.black));

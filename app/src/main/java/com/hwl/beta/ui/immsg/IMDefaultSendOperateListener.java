@@ -10,33 +10,32 @@ import java.util.logging.Logger;
 
 public class IMDefaultSendOperateListener {
 
-    static Logger log = Logger.getLogger(AppConfig.IM_DEBUG_TAG);
+    private static Logger log = Logger.getLogger(AppConfig.IM_DEBUG_TAG);
     private String prefix;
     private boolean isRunMainThread = false;
     private Handler mainHandler;
 
     public IMDefaultSendOperateListener() {
-        this(false);
+        this("",false);
     }
 
     public IMDefaultSendOperateListener(boolean isRunMainThread) {
+        this("",isRunMainThread);
+    }
+
+    public IMDefaultSendOperateListener(String prefix) {
+        this(prefix,false);
+    }
+
+    public IMDefaultSendOperateListener(String prefix, boolean isRunMainThread) {
+        this.prefix = prefix;
         this.isRunMainThread = isRunMainThread;
         if (isRunMainThread)
             mainHandler = new Handler(Looper.getMainLooper());
     }
 
-    public IMDefaultSendOperateListener(String prefix) {
-        this(false);
-        this.prefix = prefix;
-    }
-
-    public IMDefaultSendOperateListener(String prefix, boolean isRunMainThread) {
-        this(isRunMainThread);
-        this.prefix = prefix;
-    }
-
     protected String getSendDesc() {
-        return String.format("send %s message operate status", this.prefix);
+        return String.format("send %s message operate status", (this.prefix==null?"":this.prefix));
     }
 
     public void unconnect() {
