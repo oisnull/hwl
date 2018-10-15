@@ -35,7 +35,7 @@ import com.hwl.beta.ui.near.FragmentNear;
 import com.hwl.beta.ui.user.FragmentCenter;
 import com.hwl.beta.ui.user.FragmentFriends;
 import com.hwl.beta.ui.entry.action.IMainListener;
-import com.hwl.beta.ui.entry.logic.MainHandle;
+import com.hwl.beta.ui.entry.logic.MainLogic;
 import com.hwl.beta.ui.entry.standard.MainStandard;
 
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class ActivityMain extends BaseActivity {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         activity = this;
-        mainStandard = new MainHandle();
+        mainStandard = new MainLogic();
         mainBean = mainStandard.getMainBean();
         mainListener = new MainListener();
         binding = DataBindingUtil.setContentView(this, R.layout.entry_activity_main);

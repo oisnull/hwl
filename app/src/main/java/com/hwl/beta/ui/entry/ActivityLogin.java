@@ -10,7 +10,7 @@ import android.widget.Toast;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.im.common.DefaultAction;
 import com.hwl.im.common.DefaultConsumer;
-import com.hwl.beta.ui.entry.logic.LoginHandle;
+import com.hwl.beta.ui.entry.logic.LoginLogic;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.EntryActivityLoginBinding;
@@ -25,14 +25,14 @@ public class ActivityLogin extends FragmentActivity {
 
     Activity activity;
     EntryActivityLoginBinding binding;
-    LoginHandle loginHandle;
+    LoginLogic loginHandle;
     LoginBean loginBean;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = this;
-        loginHandle = new LoginHandle();
+        loginHandle = new LoginLogic();
         loginBean=loginHandle.getLoginBean();
         binding = DataBindingUtil.setContentView(this, R.layout.entry_activity_login);
         binding.setLoginBean(loginBean);

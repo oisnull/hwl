@@ -17,7 +17,7 @@ import com.hwl.beta.ui.convert.DBGroupAction;
 import com.hwl.beta.ui.entry.bean.MainBean;
 import com.hwl.beta.ui.entry.standard.MainStandard;
 
-public class MainHandle implements MainStandard {
+public class MainLogic implements MainStandard {
     private BaiduLocation locationService;
 
     @Override

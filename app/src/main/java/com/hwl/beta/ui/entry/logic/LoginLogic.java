@@ -10,7 +10,7 @@ import com.hwl.beta.ui.entry.bean.LoginBean;
 
 import com.hwl.beta.ui.entry.standard.LoginStandard;
 
-public class LoginHandle implements LoginStandard {
+public class LoginLogic implements LoginStandard {
 
     @Override
     public LoginBean getLoginBean() {

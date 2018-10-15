@@ -58,6 +58,7 @@ public class FriendAdapter extends BaseAdapter {
     public void addFriends(List<Friend> friends) {
         if (friends == null) return;
         this.users.addAll(friends);
+//        Collections.sort(users, pinyinComparator);
         notifyDataSetChanged();
     }
 

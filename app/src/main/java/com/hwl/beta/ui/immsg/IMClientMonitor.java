@@ -9,7 +9,7 @@ import java.util.TimerTask;
 public class IMClientMonitor {
 
     static Logger log = Logger.getLogger(AppConfig.IM_DEBUG_TAG);
-    static int MONITOR_TIME_INTERNAL = 5 * 1000; // s
+    static int MONITOR_TIME_INTERNAL = 8 * 1000; // s
 
     private Timer monTimer = null;
     private Boolean isRunning = false;

@@ -38,7 +38,7 @@ public class FriendsLogic implements FriendsStandard {
 
     private List<Friend> getLocalFriends() {
         List<Friend> friends = DaoUtils.getFriendManagerInstance().getAll();
-        if (friends != null) {
+        if (friends == null) {
             friends = new ArrayList<>();
         }
         Friend func1 = new Friend();

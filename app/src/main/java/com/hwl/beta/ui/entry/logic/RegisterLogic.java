@@ -13,9 +13,9 @@ import com.hwl.beta.ui.entry.bean.RegisterBean;
 import com.hwl.beta.ui.entry.standard.RegisterStandard;
 
 /**
- * RegisterHandle
+ * RegisterLogic
  */
-public class RegisterHandle implements RegisterStandard {
+public class RegisterLogic implements RegisterStandard {
 
 
     @Override

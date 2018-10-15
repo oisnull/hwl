@@ -135,6 +135,7 @@ public class ActivityUserSearch extends BaseActivity {
                                 @Override
                                 public void failed1() {
                                     LoadingDialog.hide();
+                                    Toast.makeText(activity, "好友请求发送失败", Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }

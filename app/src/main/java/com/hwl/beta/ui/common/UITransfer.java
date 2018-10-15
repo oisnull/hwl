@@ -28,6 +28,7 @@ import com.hwl.beta.ui.TestActivity;
 //import com.hwl.beta.ui.circle.ActivityCircleMessages;
 //import com.hwl.beta.ui.circle.ActivityCirclePublish;
 //import com.hwl.beta.ui.circle.ActivityCircleUserIndex;
+import com.hwl.beta.ui.TestActivityLocation;
 import com.hwl.beta.ui.dialog.ReloginDialogFragment;
 //import com.hwl.beta.ui.entry.ActivityGetpwd;
 //import com.hwl.beta.ui.entry.ActivityMain;
@@ -72,6 +73,11 @@ public class UITransfer {
 
     public static void toTestActivity(Activity context) {
         Intent intent = new Intent(context, TestActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void toTestActivityLocation(Activity context) {
+        Intent intent = new Intent(context, TestActivityLocation.class);
         context.startActivity(intent);
     }
 

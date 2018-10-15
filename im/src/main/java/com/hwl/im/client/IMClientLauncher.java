@@ -98,16 +98,18 @@ public class IMClientLauncher {
             return;
 
         try {
-            status = STATUS_CONNECT;
             final ChannelFuture channelFuture = bootstrap.connect(host, port);//.sync();
             channelFuture.addListener(new ChannelFutureListener() {
-                public void operationComplete(ChannelFuture f) throws Exception {
+                public void operationComplete(ChannelFuture f) {
                     if (f.isSuccess()) {
+                        status = STATUS_CONNECT;
                         channel = channelFuture.channel();
                         registerChannel();
                         clientListener.onBuildConnectionSuccess(getServerAddress());
                     } else {
-                        throw new Exception("build connection failure");
+                        //throw new Exception("build connection failure");
+                        clientListener.onBuildConnectionError(getServerAddress(), "build connection failure");
+                        status = STATUS_DISCONNECT;
                     }
                 }
             });

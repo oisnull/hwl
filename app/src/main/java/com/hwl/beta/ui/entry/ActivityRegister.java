@@ -16,7 +16,7 @@ import com.hwl.im.common.DefaultAction;
 import com.hwl.im.common.DefaultConsumer;
 import com.hwl.beta.ui.entry.action.IRegisterListener;
 import com.hwl.beta.ui.entry.bean.RegisterBean;
-import com.hwl.beta.ui.entry.logic.RegisterHandle;
+import com.hwl.beta.ui.entry.logic.RegisterLogic;
 import com.hwl.beta.ui.entry.standard.RegisterStandard;
 import com.hwl.beta.ui.widget.TimeCount;
 
@@ -37,7 +37,7 @@ public class ActivityRegister extends BaseActivity {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.entry_activity_register);
         activity = this;
-        registerStandard = new RegisterHandle();
+        registerStandard = new RegisterLogic();
         binding = DataBindingUtil.setContentView(this, R.layout.entry_activity_register);
         binding.setRegisterBean(registerStandard.getRegisterBean());
         binding.setAction(new RegisterListener());
