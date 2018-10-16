@@ -25,7 +25,8 @@ public class NewFriendLogic implements NewFriendStandard {
         if (friendRequests == null) {
             friendRequests = new ArrayList<>();
         } else {
-            MessageCountSP.setFriendRequestCount(0);//清空好友请求数据
+            //clear friend message request count
+            MessageCountSP.setFriendRequestCount(0);
             EventBusUtil.sendFriendRequestEvent();
         }
 
@@ -43,6 +44,11 @@ public class NewFriendLogic implements NewFriendStandard {
             callback.error("friendName is empty");
             return;
         }
+        if(DaoUtils.getFriendManagerInstance().isExists(friendRequest.getFriendId())){
+            DaoUtils.getFriendRequestManagerInstance().delete(friendRequest);
+            callback.success(true);
+            return;
+        }
         UserService.addFriend(friendRequest.getFriendId(), friendRequest.getFriendName())
                 .subscribe(new NetDefaultObserver<AddFriendResponse>() {
                     @Override
@@ -56,7 +62,7 @@ public class NewFriendLogic implements NewFriendStandard {
                             MessageCountSP.setFriendRequestReductionCount();
                             EventBusUtil.sendFriendEvent(friend);
                             callback.success(true);
-//                            sendSuccessMessage(friend);//发送好友添加成功的聊天消息
+                            sendChatUserMessage(friend);
                         }
                     }
 
@@ -71,6 +77,16 @@ public class NewFriendLogic implements NewFriendStandard {
                         callback.relogin();
                     }
                 });
+    }
+
+    private void sendChatUserMessage(final Friend friend){
+        final String content="我们已经成为好友了";
+        IMClientEntry.sendChatUserTextMessage(friend.getId(),content , new IMDefaultSendOperateListener("ChatUserMessage(AddFriendSuccess)") {
+            @Override
+            public void success1() {
+                // DaoUtils.getChatUserMessageManagerInstance().save(DBChatMessageAction.convertToTextMessage(friend,content));
+            }
+        });
     }
 
     @Override

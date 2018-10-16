@@ -91,16 +91,7 @@ public class FragmentFriends extends BaseFragment {
         binding.lvFriends.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (id > 0) {
-//                    UITransfer.toUserIndexActivity(activity, friend.getId(), friend.getName(),
-//                            friend.getHeadImage());
-                } else {
-                    transfer(id);
-                }
-            }
-
-            private void transfer(long fid) {
-                switch ((int) fid) {
+                switch ((int) id) {
                     case -1:
 //                        UITransfer.toCircleIndexActivity(activity);
                         break;
@@ -110,16 +101,20 @@ public class FragmentFriends extends BaseFragment {
                     case -3:
                         UITransfer.toNewFriendActivity(activity);
                         break;
+                    default:
+//                    UITransfer.toUserIndexActivity(activity, friend.getId(), friend.getName(),
+//                            friend.getHeadImage());
+                        break;
                 }
             }
         });
+        
         binding.sidrbarLetter.setTextView(binding.tvLetter);
         binding.sidrbarLetter.setOnTouchingLetterChangedListener(new SideBar
                 .OnTouchingLetterChangedListener() {
             @Override
             public void onTouchingLetterChanged(String letter) {
                 //Toast.makeText(getContext(), letter, Toast.LENGTH_SHORT);
-                // 该字母首次出现的位置
                 int position = friendAdapter.getPositionForSection(letter.charAt(0));
                 if (position != -1) {
                     binding.lvFriends.setSelection(position);

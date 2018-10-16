@@ -10,14 +10,6 @@ import com.hwl.imcore.improto.ImMessageType;
 
 public class ChatGroupMessageSend extends AbstractMessageSendExecutor {
 
-    public final static int CHAT_MESSAGE_CONTENT_TYPE_WORD = 1;
-    public final static int CHAT_MESSAGE_CONTENT_TYPE_IMAGE = 2;
-    public final static int CHAT_MESSAGE_CONTENT_TYPE_SOUND = 3;
-    public final static int CHAT_MESSAGE_CONTENT_TYPE_VIDEO = 4;
-    public final static int CHAT_MESSAGE_CONTENT_TYPE_REJECT = 5;
-    public final static int CHAT_MESSAGE_CONTENT_TYPE_REJECT_COZY = 6;
-    public final static int CHAT_MESSAGE_CONTENT_TYPE_WELCOME_TIP = 7;
-
     ImChatGroupMessageContent messageContent;
     DefaultConsumer<Boolean> sendCallback;
 
@@ -37,21 +29,21 @@ public class ChatGroupMessageSend extends AbstractMessageSendExecutor {
         this.sendCallback=sendCallback;
     }
 
-    public ChatGroupMessageSend(String groupGuid, String content,DefaultConsumer<Boolean> sendCallback) {
-        this(groupGuid,CHAT_MESSAGE_CONTENT_TYPE_WORD,content,null,0,0,content.length(),0,sendCallback);
-    }
+    // public ChatGroupMessageSend(String groupGuid, String content,DefaultConsumer<Boolean> sendCallback) {
+    //     this(groupGuid,IMConstant.CHAT_MESSAGE_CONTENT_TYPE_WORD,content,null,0,0,content.length(),0,sendCallback);
+    // }
 
-    public ChatGroupMessageSend(String groupGuid, String previewUrl,int imageWidth,int imageHeight,int size,DefaultConsumer<Boolean> sendCallback) {
-        this(groupGuid,CHAT_MESSAGE_CONTENT_TYPE_IMAGE,"[图片]",previewUrl,imageWidth,imageHeight,size,0,sendCallback);
-    }
+    // public ChatGroupMessageSend(String groupGuid, String previewUrl,int imageWidth,int imageHeight,int size,DefaultConsumer<Boolean> sendCallback) {
+    //     this(groupGuid,IMConstant.CHAT_MESSAGE_CONTENT_TYPE_IMAGE,"[图片]",previewUrl,imageWidth,imageHeight,size,0,sendCallback);
+    // }
 
-    public ChatGroupMessageSend(String groupGuid, String previewUrl,int size,int playTime,DefaultConsumer<Boolean> sendCallback) {
-        this(groupGuid,CHAT_MESSAGE_CONTENT_TYPE_SOUND,"[语音]",previewUrl,0,0,size,playTime,sendCallback);
-    }
+    // public ChatGroupMessageSend(String groupGuid, String previewUrl,int size,int playTime,DefaultConsumer<Boolean> sendCallback) {
+    //     this(groupGuid,IMConstant.CHAT_MESSAGE_CONTENT_TYPE_SOUND,"[语音]",previewUrl,0,0,size,playTime,sendCallback);
+    // }
 
-    public ChatGroupMessageSend(String groupGuid, String previewUrl,int imageWidth,int imageHeight,int size,int playTime,DefaultConsumer<Boolean> sendCallback) {
-        this(groupGuid,CHAT_MESSAGE_CONTENT_TYPE_VIDEO,"[视频]",previewUrl,imageWidth,imageHeight,size,playTime,sendCallback);
-    }
+    // public ChatGroupMessageSend(String groupGuid, String previewUrl,int imageWidth,int imageHeight,int size,int playTime,DefaultConsumer<Boolean> sendCallback) {
+    //     this(groupGuid,IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VIDEO,"[视频]",previewUrl,imageWidth,imageHeight,size,playTime,sendCallback);
+    // }
 
     @Override
     public ImMessageType getMessageType() {

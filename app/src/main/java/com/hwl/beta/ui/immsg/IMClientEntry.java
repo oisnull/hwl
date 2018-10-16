@@ -169,4 +169,56 @@ public class IMClientEntry {
             }
         });
     }
+
+    public static void sendChatUserTextMessage(Long toUserId,String content,IMDefaultSendOperateListener operateListener){
+        sendChatUserMessage(toUserId,IMConstant.CHAT_MESSAGE_CONTENT_TYPE_TEXT,content,null,0,0,content.length(),0,operateListener);
+    }
+
+    public static void sendChatUserImageMessage(Long toUserId,String previewUrl,int imageWidth,int imageHeight,int size,IMDefaultSendOperateListener operateListener){
+        sendChatUserMessage(toUserId,IMConstant.CHAT_MESSAGE_CONTENT_TYPE_IMAGE,"[图片]",previewUrl,imageWidth,imageHeight,size,0,operateListener);
+    }
+
+    public static void sendChatUserVoiceMessage(Long toUserId, String previewUrl,int size,int playTime,IMDefaultSendOperateListener operateListener){
+        sendChatUserMessage(toUserId,IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VOICE,"[语音]",previewUrl,0,0,size,playTime,operateListener);
+    }
+
+    public static void sendChatUserVideoMessage(Long toUserId, String previewUrl,int imageWidth,int imageHeight,int size,int playTime,IMDefaultSendOperateListener operateListener){
+        sendChatUserMessage(toUserId,IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VIDEO,"[视频]",previewUrl,imageWidth,imageHeight,size,playTime,operateListener);
+    }
+
+    private static void sendChatUserMessage(final Long toUserId,final int contentType,final String content,final String previewUrl,final int imageWidth,final int imageHeight,final int size,final int playTime, final IMDefaultSendOperateListener operateListener) {
+        commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+            @Override
+            public void accept(DefaultConsumer<Boolean> sendCallback) {
+                ChatUserMessageSend request = new ChatUserMessageSend(toUserId,contentType,content,previewUrl,imageWidth,imageHeight,size,playTime,sendCallback);
+                messageOperate.send(request);
+            }
+        });
+    }
+
+    public static void sendChatGroupTextMessage(String groupGuid,String content,IMDefaultSendOperateListener operateListener){
+        sendChatGroupMessage(groupGuid,IMConstant.CHAT_MESSAGE_CONTENT_TYPE_TEXT,content,null,0,0,content.length(),0,operateListener);
+    }
+
+    public static void sendChatGroupImageMessage(String groupGuid,String previewUrl,int imageWidth,int imageHeight,int size,IMDefaultSendOperateListener operateListener){
+        sendChatGroupMessage(groupGuid,IMConstant.CHAT_MESSAGE_CONTENT_TYPE_IMAGE,"[图片]",previewUrl,imageWidth,imageHeight,size,0,operateListener);
+    }
+
+    public static void sendChatGroupVoiceMessage(String groupGuid, String previewUrl,int size,int playTime,IMDefaultSendOperateListener operateListener){
+        sendChatGroupMessage(groupGuid,IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VOICE,"[语音]",previewUrl,0,0,size,playTime,operateListener);
+    }
+
+    public static void sendChatGroupVideoMessage(String groupGuid, String previewUrl,int imageWidth,int imageHeight,int size,int playTime,IMDefaultSendOperateListener operateListener){
+        sendChatGroupMessage(groupGuid,IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VIDEO,"[视频]",previewUrl,imageWidth,imageHeight,size,playTime,operateListener);
+    }
+
+    private static void sendChatGroupMessage(String groupGuid,int contentType, String content,String previewUrl,int imageWidth,int imageHeight,int size,int playTime, final IMDefaultSendOperateListener operateListener) {
+        commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+            @Override
+            public void accept(DefaultConsumer<Boolean> sendCallback) {
+                ChatGroupMessageSend request = new ChatGroupMessageSend(groupGuid,contentType,content,previewUrl,imageWidth,imageHeight,size,playTime,sendCallback);
+                messageOperate.send(request);
+            }
+        });
+    }
 }

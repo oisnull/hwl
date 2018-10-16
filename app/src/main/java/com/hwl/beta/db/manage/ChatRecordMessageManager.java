@@ -58,9 +58,8 @@ public class ChatRecordMessageManager extends BaseDao<ChatRecordMessage> {
         return message;
     }
 
-    public ChatRecordMessage addOrUpdate(ChatRecordMessage request) {
+    public ChatRecordMessage save(ChatRecordMessage request) {
         if (request == null) return null;
-        //查询是否存在组记录或者用户记录
         ChatRecordMessage existsRecord = null;
         QueryBuilder<ChatRecordMessage> query = daoSession.getChatRecordMessageDao().queryBuilder()
                 .where(ChatRecordMessageDao.Properties.RecordType.eq(request.getRecordType()));
