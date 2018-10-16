@@ -1,5 +1,7 @@
 package com.hwl.beta.ui.ebus;
 
+import com.hwl.beta.db.entity.ChatRecordMessage;
+import com.hwl.beta.db.entity.ChatUserMessage;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.ui.ebus.bean.EventUserEditModel;
 import com.hwl.beta.utils.StringUtils;
@@ -21,6 +23,14 @@ public class EventBusUtil {
 
     public static void sendStickyEvent(EventMessageModel messageModel) {
         EventBus.getDefault().postSticky(messageModel);
+    }
+
+    public static void sendNetworkConnectEvent() {
+        sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_NETWORK_CONNECT_UPDATE));
+    }
+
+    public static void sendNetworkBreakEvent() {
+        sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_NETWORK_BREAK_UPDATE));
     }
 
     public static void sendTokenInvalidEvent() {
@@ -73,5 +83,15 @@ public class EventBusUtil {
     public static void sendFriendEvent(Friend friend) {
         sendEvent(new EventMessageModel
                 (EventBusConstant.EB_TYPE_FRIEND_ADD, friend));
+    }
+
+    public static void sendChatUserMessageEvent(ChatUserMessage userMessage) {
+        sendEvent(new EventMessageModel
+                (EventBusConstant.EB_TYPE_CHAT_USER_MESSAGE_UPDATE, userMessage));
+    }
+
+    public static void sendChatRecordMessageEvent(ChatRecordMessage recordMessage) {
+        sendEvent(new EventMessageModel
+                (EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_UPDATE, recordMessage));
     }
 }

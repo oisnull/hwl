@@ -8,7 +8,9 @@ import com.hwl.beta.net.user.UserDetailsInfo;
 import com.hwl.beta.utils.StringUtils;
 import com.hwl.imcore.improto.ImAddFriendMessageResponse;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Administrator on 2018/4/1.
@@ -25,6 +27,15 @@ public class DBFriendAction {
         request.setStatus(0);
         request.setRequestTime(new Date(response.getBuildTime()));
         return request;
+    }
+
+    public static List<Friend> convertToFriendInfos(List<NetUserFriendInfo> netUserFriendInfos) {
+        if (netUserFriendInfos == null) return null;
+        List<Friend> friends = new ArrayList<>(netUserFriendInfos.size());
+        for (int i = 0; i < netUserFriendInfos.size(); i++) {
+            friends.add(convertToFriendInfo(netUserFriendInfos.get(i)));
+        }
+        return friends;
     }
 
     public static Friend convertToFriendInfo(NetUserFriendInfo netFriendInfo) {

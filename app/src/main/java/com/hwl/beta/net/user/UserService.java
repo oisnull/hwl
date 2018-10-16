@@ -214,8 +214,8 @@ public class UserService {
         requestBody.setUserId(UserSP.getUserId());
         Observable<ResponseBase<GetFriendsResponse>> response = RetrofitUtils.createApi(IUserService.class)
                 .getFriends(new RequestBase(UserSP.getUserToken(), requestBody))
-                .subscribeOn(Schedulers.io());
-//                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
         return response;
     }
 

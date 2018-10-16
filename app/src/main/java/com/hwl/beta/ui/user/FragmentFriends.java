@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.hwl.beta.databinding.UserFragmentFriendsBinding;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.common.BaseFragment;
+import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.ebus.EventBusConstant;
 import com.hwl.beta.ui.ebus.EventMessageModel;
@@ -33,7 +35,7 @@ public class FragmentFriends extends BaseFragment {
     UserFragmentFriendsBinding binding;
     FriendsStandard friendsStandard;
     FriendAdapter friendAdapter;
-    Activity activity;
+    FragmentActivity activity;
 
     @Nullable
     @Override
@@ -76,8 +78,8 @@ public class FragmentFriends extends BaseFragment {
         friendsStandard.loadLocalFriends(new DefaultConsumer<List<Friend>>() {
             @Override
             public void accept(List<Friend> friends) {
-                binding.pbLoading.setVisibility(View.GONE);
                 friendAdapter.addFriends(friends);
+                loadServerFriendInfo();
             }
         }, new DefaultConsumer<Throwable>() {
             @Override
@@ -108,7 +110,7 @@ public class FragmentFriends extends BaseFragment {
                 }
             }
         });
-        
+
         binding.sidrbarLetter.setTextView(binding.tvLetter);
         binding.sidrbarLetter.setOnTouchingLetterChangedListener(new SideBar
                 .OnTouchingLetterChangedListener() {
@@ -124,68 +126,24 @@ public class FragmentFriends extends BaseFragment {
     }
 
     private void loadServerFriendInfo() {
-//        Log.d("FragmentFriends", "friendCount:" + friendCount + "  UserSP:" + UserSP
-// .getFriendCount());
-//        if (friendCount < UserSP.getFriendCount()) {
-//            binding.pbLoading.setVisibility(View.VISIBLE);
-//            UserService.getFriends()
-//                    .flatMap(new Function<ResponseBase<GetFriendsResponse>,
-//                            ObservableSource<NetUserFriendInfo>>() {
-//                        @Override
-//                        public ObservableSource<NetUserFriendInfo> apply
-//                                (ResponseBase<GetFriendsResponse> response) throws Exception {
-//                            if (response != null && response.getResponseBody() != null &&
-//                                    response.getResponseBody().getUserFriendInfos() != null &&
-//                                    response.getResponseBody().getUserFriendInfos().size() > 0) {
-//                                return Observable.fromIterable(response.getResponseBody()
-//                                        .getUserFriendInfos());
-//                            }
-//                            return null;
-//                        }
-//                    })
-//                    .filter(new Predicate<NetUserFriendInfo>() {
-//                        @Override
-//                        public boolean test(NetUserFriendInfo netUserFriendInfo) throws
-// Exception {
-//                            if (netUserFriendInfo == null) return false;
-//                            for (int i = 0; i < users.size(); i++) {
-//                                if (users.get(i).getId() == netUserFriendInfo.getId()) {
-//                                    return false;
-//                                }
-//                            }
-//                            return true;
-//                        }
-//                    })
-//                    .doOnNext(new Consumer<NetUserFriendInfo>() {
-//                        @Override
-//                        public void accept(NetUserFriendInfo netUserFriendInfo) throws Exception {
-//                            Friend friend = DBFriendAction.convertToFriendInfo(netUserFriendInfo);
-//                            DaoUtils.getFriendManagerInstance().save(friend);
-//                            users.add(friend);
-//                        }
-//                    })
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(new DefaultObserver<NetUserFriendInfo>() {
-//                        int updateCount = 0;
-//
-//                        @Override
-//                        public void onNext(NetUserFriendInfo info) {
-//                            updateCount++;
-//                        }
-//
-//                        @Override
-//                        public void onError(Throwable e) {
-//                            binding.pbLoading.setVisibility(View.GONE);
-//                        }
-//
-//                        @Override
-//                        public void onComplete() {
-//                            if (updateCount > 0) {
-//                                friendAdapter.notifyDataSetChanged();
-//                            }
-//                            binding.pbLoading.setVisibility(View.GONE);
-//                        }
-//                    });
-//        }
+        friendsStandard.loadServerFriends(friendAdapter.getFriends(), new
+                DefaultCallback<List<Friend>, String>() {
+                    @Override
+                    public void success(List<Friend> friends) {
+                        binding.pbLoading.setVisibility(View.GONE);
+                        friendAdapter.addFriends(friends);
+                    }
+
+                    @Override
+                    public void error(String errorMessage) {
+                        binding.pbLoading.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void relogin() {
+                        binding.pbLoading.setVisibility(View.GONE);
+                        UITransfer.toReloginDialog(activity);
+                    }
+                });
     }
 }

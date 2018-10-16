@@ -31,12 +31,18 @@ public class FriendManager extends BaseDao<Friend> {
         return "--";
     }
 
-    //friend action
-
     public void save(Friend friend) {
         if (friend == null || friend.getId() <= 0) return;
         setFirstLetter(friend);
         daoSession.getFriendDao().insertOrReplace(friend);
+    }
+
+    public void save(List<Friend> friends) {
+        if (friends == null || friends.size() <= 0) return;
+        for (int i = 0; i < friends.size(); i++) {
+            setFirstLetter(friends.get(i));
+        }
+        daoSession.getFriendDao().insertInTx(friends);
     }
 
     public void setFirstLetter(Friend friend) {
@@ -66,13 +72,6 @@ public class FriendManager extends BaseDao<Friend> {
             return true;
         }
         return false;
-    }
-
-
-    public void addList(List<Friend> friends) {
-        if (friends == null || friends.size() <= 0) return;
-
-        daoSession.getFriendDao().insertInTx(friends);
     }
 
     public Friend get(long friendId) {

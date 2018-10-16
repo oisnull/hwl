@@ -1,29 +1,24 @@
 package com.hwl.beta.ui.chat;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.PopupMenu;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.ChatFragmentRecordBinding;
-import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.ChatRecordMessage;
+import com.hwl.beta.ui.chat.adp.RecordAdapter;
+import com.hwl.beta.ui.chat.logic.RecordLogic;
+import com.hwl.beta.ui.chat.standard.RecordStandard;
 import com.hwl.beta.ui.common.BaseFragment;
-import com.hwl.beta.ui.common.ChatRecordMessageComparator;
-import com.hwl.beta.ui.common.UITransfer;
+import com.hwl.beta.ui.ebus.EventBusConstant;
+import com.hwl.beta.ui.ebus.EventMessageModel;
 import com.hwl.beta.utils.NetworkUtils;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by Administrator on 2017/12/27.
@@ -31,32 +26,45 @@ import java.util.List;
 
 public class FragmentRecord extends BaseFragment {
     ChatFragmentRecordBinding binding;
-    //    List<ChatRecordMessage> records;
-//    RecordAdapter recordAdapter;
+    RecordStandard recordStandard;
+    RecordAdapter recordAdapter;
     Activity activity;
-    //    ChatRecordMessageComparator dateComparator;
-    int currMessageTotalCount = 0;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
             Bundle savedInstanceState) {
         activity = getActivity();
-//        dateComparator = new ChatRecordMessageComparator();
-//
-//        records = DaoUtils.getChatRecordMessageManagerInstance().getRecords();
+
+        recordStandard = new RecordLogic();
         binding = DataBindingUtil.inflate(inflater, R.layout.chat_fragment_record, container,
                 false);
-//        initView();
-//
-//        if (!EventBus.getDefault().isRegistered(this)) {
-//            EventBus.getDefault().register(this);
-//        }
+
+        initView();
 
         return binding.getRoot();
     }
 
     private void initView() {
+        recordAdapter = new RecordAdapter(activity, recordStandard.loadRecords(), new
+                RecordAdapter.IAdapterListener() {
+                    @Override
+                    public void onLoadComplete(int messageTotalCount) {
+
+                    }
+
+                    @Override
+                    public void onItemClick(int position) {
+
+                    }
+
+                    @Override
+                    public void onItemLongClick(View view, int position) {
+
+                    }
+                });
+        binding.rvRecordContainer.setAdapter(recordAdapter);
+        binding.rvRecordContainer.setLayoutManager(new LinearLayoutManager(activity));
 //        Collections.sort(records, dateComparator);
 //        recordAdapter = new RecordAdapter(activity, records, new RecordAdapter.IAdapterListener
 // () {
@@ -146,20 +154,41 @@ public class FragmentRecord extends BaseFragment {
 //        binding.rvRecordContainer.setAdapter(recordAdapter);
 //        binding.rvRecordContainer.setLayoutManager(new LinearLayoutManager(activity));
 //
-//        binding.tvCheckNetwork.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                NetworkUtils.openWirelessSettings();
-//            }
-//        });
-//        if (NetworkUtils.isConnected()) {
-//            binding.llNetworkNone.setVisibility(View.GONE);
-//        } else {
-//            binding.llNetworkNone.setVisibility(View.VISIBLE);
-//        }
+        binding.tvCheckNetwork.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NetworkUtils.openWirelessSettings();
+            }
+        });
+
+        if (NetworkUtils.isConnected()) {
+            binding.llNetworkNone.setVisibility(View.GONE);
+        } else {
+            binding.llNetworkNone.setVisibility(View.VISIBLE);
+        }
     }
 
-//    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
+
+    @Override
+    protected void receiveStickyEventMessage(EventMessageModel messageModel) {
+        switch (messageModel.getMessageType()) {
+            case EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_UPDATE:
+                recordAdapter.updateRecord((ChatRecordMessage) messageModel.getMessageModel());
+                break;
+            case EventBusConstant.EB_TYPE_NETWORK_CONNECT_UPDATE:
+                binding.llNetworkNone.setVisibility(View.GONE);
+                break;
+            case EventBusConstant.EB_TYPE_NETWORK_BREAK_UPDATE:
+                binding.llNetworkNone.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+
+    //    @Subscribe(threadMode = ThreadMode.MAIN)
 //    public void updateRecord(ChatRecordMessage record) {
 //        if (record == null) return;
 //        int position = records.indexOf(record);
@@ -214,21 +243,4 @@ public class FragmentRecord extends BaseFragment {
 //        }
 //    }
 
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void updateNetwork(Integer ebType) {
-//        switch (ebType) {
-//            case EventBusConstant.EB_TYPE_NETWORK_CONNECT_UPDATE:
-//                binding.llNetworkNone.setVisibility(View.GONE);
-//                break;
-//            case EventBusConstant.EB_TYPE_NETWORK_BREAK_UPDATE:
-//                binding.llNetworkNone.setVisibility(View.VISIBLE);
-//                break;
-//        }
-//    }
-
-//    @Override
-//    public void onDestroy() {
-//        super.onDestroy();
-//        EventBus.getDefault().unregister(this);
-//    }
 }

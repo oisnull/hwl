@@ -3,11 +3,13 @@ package com.hwl.beta.ui.user.logic;
 import com.hwl.beta.R;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.Friend;
-import com.hwl.beta.net.ResponseBase;
-import com.hwl.beta.net.user.NetUserFriendInfo;
 import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.GetFriendsResponse;
 import com.hwl.beta.sp.MessageCountSP;
+import com.hwl.beta.sp.UserSP;
+import com.hwl.beta.ui.common.DefaultCallback;
+import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
+import com.hwl.beta.ui.convert.DBFriendAction;
 import com.hwl.beta.ui.user.standard.FriendsStandard;
 import com.hwl.im.common.DefaultConsumer;
 
@@ -17,7 +19,9 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class FriendsLogic implements FriendsStandard {
@@ -69,65 +73,36 @@ public class FriendsLogic implements FriendsStandard {
     }
 
     @Override
-    public List<Friend> getServerFriends() {
-//        UserService.getFriends()
-//                .flatMap(new Function<ResponseBase<GetFriendsResponse>,
-//                                        ObservableSource<NetUserFriendInfo>>() {
-//                    @Override
-//                    public ObservableSource<NetUserFriendInfo> apply
-//                            (ResponseBase<GetFriendsResponse> response) throws Exception {
-//                        if (response != null && response.getResponseBody() != null &&
-//                                response.getResponseBody().getUserFriendInfos() != null &&
-//                                response.getResponseBody().getUserFriendInfos().size() > 0) {
-//                            return Observable.fromIterable(response.getResponseBody()
-//                                    .getUserFriendInfos());
-//                        }
-//                        return null;
-//                    }
-//                })
-//                .filter(new Predicate<NetUserFriendInfo>() {
-//                    @Override
-//                    public boolean test(NetUserFriendInfo netUserFriendInfo) throws Exception {
-//                        if (netUserFriendInfo == null) return false;
-//                        for (int i = 0; i < users.size(); i++) {
-//                            if (users.get(i).getId() == netUserFriendInfo.getId()) {
-//                                return false;
-//                            }
-//                        }
-//                        return true;
-//                    }
-//                })
-//                .doOnNext(new Consumer<NetUserFriendInfo>() {
-//                    @Override
-//                    public void accept(NetUserFriendInfo netUserFriendInfo) throws Exception {
-//                        Friend friend = DBFriendAction.convertToFriendInfo(netUserFriendInfo);
-//                        DaoUtils.getFriendManagerInstance().save(friend);
-//                        users.add(friend);
-//                    }
-//                })
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new DefaultObserver<NetUserFriendInfo>() {
-//                    int updateCount = 0;
-//
-//                    @Override
-//                    public void onNext(NetUserFriendInfo info) {
-//                        updateCount++;
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        binding.pbLoading.setVisibility(View.GONE);
-//                    }
-//
-//                    @Override
-//                    public void onComplete() {
-//                        if (updateCount > 0) {
-//                            friendAdapter.notifyDataSetChanged();
-//                        }
-//                        binding.pbLoading.setVisibility(View.GONE);
-//                    }
-//                });
+    public void loadServerFriends(final List<Friend> localFriends, final
+    DefaultCallback<List<Friend>, String>
+            callback) {
+        if ((localFriends.size() - 3) >= UserSP.getFriendCount()) {
+            callback.error("已经是最新的数据了");
+            return;
+        }
 
-        return null;
+        UserService.getFriends().subscribe(new NetDefaultObserver<GetFriendsResponse>() {
+            @Override
+            protected void onSuccess(GetFriendsResponse response) {
+                List<Friend> serverFriends = DBFriendAction.convertToFriendInfos(response
+                        .getUserFriendInfos());
+                if (serverFriends != null) {
+                    serverFriends.removeAll(localFriends);
+                    DaoUtils.getFriendManagerInstance().save(serverFriends);
+                }
+                callback.success(serverFriends);
+            }
+
+            @Override
+            protected void onError(String resultMessage) {
+                super.onError(resultMessage);
+                callback.error(resultMessage);
+            }
+
+            @Override
+            protected void onRelogin() {
+                callback.relogin();
+            }
+        });
     }
 }

@@ -5,6 +5,9 @@ public class IMConstant {
     public final static int CHAT_SEND_SENDING = 1;
     public final static int CHAT_SEND_SUCCESS = 2;
     public final static int CHAT_SEND_FAILD = 3;
+
+    public final static int CHAT_RECORD_TYPE_USER = 1;
+    public final static int CHAT_RECORD_TYPE_GROUP = 2;
     
     //chat message content type constant
     public final static int CHAT_MESSAGE_CONTENT_TYPE_TEXT = 1;

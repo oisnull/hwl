@@ -70,7 +70,9 @@ public class Friend extends BaseObservable implements Serializable {
     }
 
     @Generated(hash = 1893035974)
-    public Friend(long id, String symbol, String name, String remark, String firstLetter, String headImage, String lifeNotes, int sex, String circleBackImage, String country, String province,
+    public Friend(long id, String symbol, String name, String remark, String firstLetter, String
+            headImage, String lifeNotes, int sex, String circleBackImage, String country, String
+                          province,
                   String updateTime) {
         this.id = id;
         this.symbol = symbol;
@@ -180,7 +182,9 @@ public class Friend extends BaseObservable implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("%s-%s-%s-%s-%s-%s-%s-%s-%s-%s", this.id, this.symbol, this.name, this.remark, this.headImage, this.lifeNotes, this.sex, this.circleBackImage, this.country, this.province);
+        return String.format("%s-%s-%s-%s-%s-%s-%s-%s-%s-%s", this.id, this.symbol, this.name,
+                this.remark, this.headImage, this.lifeNotes, this.sex, this.circleBackImage, this
+                        .country, this.province);
     }
 
     public String getUpdateTime() {
@@ -189,5 +193,14 @@ public class Friend extends BaseObservable implements Serializable {
 
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof Friend) {
+            Friend f = (Friend) obj;
+            return this.getId() == f.getId();
+        }
+        return super.equals(obj);
     }
 }

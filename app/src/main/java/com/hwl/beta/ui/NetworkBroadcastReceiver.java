@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
+import com.hwl.beta.ui.ebus.EventBusUtil;
 import com.hwl.beta.ui.immsg.IMClientEntry;
 
 public class NetworkBroadcastReceiver extends BroadcastReceiver {
@@ -20,11 +21,11 @@ public class NetworkBroadcastReceiver extends BroadcastReceiver {
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isAvailable()) {
 //            Toast.makeText(context, "当前网络可用", Toast.LENGTH_SHORT).show();
-//                EventBus.getDefault().post(EventBusConstant.EB_TYPE_NETWORK_CONNECT_UPDATE);
+            EventBusUtil.sendNetworkConnectEvent();
             IMClientEntry.connectServer();
         } else {
 //            Toast.makeText(context, "当前网络不可用", Toast.LENGTH_SHORT).show();
-//                EventBus.getDefault().post(EventBusConstant.EB_TYPE_NETWORK_BREAK_UPDATE);
+            EventBusUtil.sendNetworkBreakEvent();
             IMClientEntry.stopHeartbeat();
         }
     }
