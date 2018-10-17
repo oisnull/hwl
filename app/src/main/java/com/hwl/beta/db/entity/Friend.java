@@ -37,6 +37,7 @@ public class Friend extends BaseObservable implements Serializable {
     private int imageRes;
     @Transient
     private String showName;
+    private boolean isFriend;
 
     public String getShowName() {
         if (StringUtils.isNotBlank(this.remark))
@@ -69,11 +70,10 @@ public class Friend extends BaseObservable implements Serializable {
         this.imageRes = imageRes;
     }
 
-    @Generated(hash = 1893035974)
-    public Friend(long id, String symbol, String name, String remark, String firstLetter, String
-            headImage, String lifeNotes, int sex, String circleBackImage, String country, String
-                          province,
-                  String updateTime) {
+    @Generated(hash = 1809963805)
+    public Friend(long id, String symbol, String name, String remark, String firstLetter,
+            String headImage, String lifeNotes, int sex, String circleBackImage, String country,
+            String province, boolean isFriend, String updateTime) {
         this.id = id;
         this.symbol = symbol;
         this.name = name;
@@ -85,6 +85,7 @@ public class Friend extends BaseObservable implements Serializable {
         this.circleBackImage = circleBackImage;
         this.country = country;
         this.province = province;
+        this.isFriend = isFriend;
         this.updateTime = updateTime;
     }
 
@@ -197,10 +198,18 @@ public class Friend extends BaseObservable implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj != null && obj instanceof Friend) {
+        if (obj instanceof Friend) {
             Friend f = (Friend) obj;
             return this.getId() == f.getId();
         }
         return super.equals(obj);
+    }
+
+    public boolean getIsFriend() {
+        return this.isFriend;
+    }
+
+    public void setIsFriend(boolean isFriend) {
+        this.isFriend = isFriend;
     }
 }

@@ -23,13 +23,13 @@ import com.hwl.imcore.improto.ImMessageType;
 
 public class IMClientEntry {
 
-    static Logger log = Logger.getLogger(AppConfig.IM_DEBUG_TAG);
+    private static Logger log = Logger.getLogger(AppConfig.IM_DEBUG_TAG);
 //    static int CHECK_TIME_INTERNAL = 5 * 1000; // s
 
-    static Thread imThread = null;
-    static boolean isIMThreadRuning = false;
-    final static ClientMessageOperate messageOperate = new ClientMessageOperate();
-    final static IMClientLauncher launcher = new IMClientLauncher(AppConfig.IM_HOST, AppConfig
+    private static Thread imThread = null;
+    private static boolean isIMThreadRuning = false;
+    private final static ClientMessageOperate messageOperate = new ClientMessageOperate();
+    private  final static IMClientLauncher launcher = new IMClientLauncher(AppConfig.IM_HOST, AppConfig
             .IM_PORT);
 
     static {
@@ -38,7 +38,7 @@ public class IMClientEntry {
         launcher.registerClientListener(new IMClientDefaultListener());
     }
 
-    static void initListenExecutor() {
+    private static void initListenExecutor() {
         messageOperate.registerListenExecutor(ImMessageType.ChatUser, new ChatUserMessageListen());
         messageOperate.registerListenExecutor(ImMessageType.ChatGroup, new ChatGroupMessageListen
                 ());
@@ -83,7 +83,7 @@ public class IMClientEntry {
         launcher.stop();
     }
 
-    static void commomExec(final IMDefaultSendOperateListener operateListener, final
+    private static void commomExec(final IMDefaultSendOperateListener operateListener, final
     DefaultConsumer<DefaultConsumer<Boolean>> sendConsumer) {
         if (!launcher.isConnected()) {
             operateListener.unconnect();
@@ -108,7 +108,7 @@ public class IMClientEntry {
         sendUserValidateMessage(new IMDefaultSendOperateListener("UserValidateMessage"));
     }
 
-    static void sendUserValidateMessage(final IMDefaultSendOperateListener operateListener) {
+    private static void sendUserValidateMessage(final IMDefaultSendOperateListener operateListener) {
         commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
@@ -132,7 +132,7 @@ public class IMClientEntry {
         });
     }
 
-    static void sendHeartBeatMessage() {
+    private static void sendHeartBeatMessage() {
         final IMDefaultSendOperateListener operateListener = new IMDefaultSendOperateListener
                 ("HeartBeatMessage");
         commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
@@ -144,7 +144,7 @@ public class IMClientEntry {
         });
     }
 
-    static void startHeartbeat(String sessionId) {
+    private static void startHeartbeat(String sessionId) {
         log.info("Client listen : start send heart package, sessionid : " + sessionId);
         MessageRequestHeadOperate.setSessionid(sessionId);
         IMClientHeartbeatTimer.getInstance().run(new TimerTask() {
@@ -175,39 +175,46 @@ public class IMClientEntry {
 
     public static void sendChatUserTextMessage(Long toUserId, String content,
                                                IMDefaultSendOperateListener operateListener) {
+        sendChatUserTextMessage(toUserId, content, false, operateListener);
+    }
+
+    public static void sendChatUserTextMessage(Long toUserId, String content, boolean isFriend,
+                                               IMDefaultSendOperateListener operateListener) {
         sendChatUserMessage(toUserId, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_TEXT, content, null,
-                0, 0, content.length(), 0, operateListener);
+                0, 0, content.length(), 0, isFriend, operateListener);
     }
 
     public static void sendChatUserImageMessage(Long toUserId, String previewUrl, int imageWidth,
                                                 int imageHeight, int size,
                                                 IMDefaultSendOperateListener operateListener) {
         sendChatUserMessage(toUserId, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_IMAGE, "[图片]",
-                previewUrl, imageWidth, imageHeight, size, 0, operateListener);
+                previewUrl, imageWidth, imageHeight, size, 0, false, operateListener);
     }
 
     public static void sendChatUserVoiceMessage(Long toUserId, String previewUrl, int size, int
             playTime, IMDefaultSendOperateListener operateListener) {
         sendChatUserMessage(toUserId, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VOICE, "[语音]",
-                previewUrl, 0, 0, size, playTime, operateListener);
+                previewUrl, 0, 0, size, playTime, false, operateListener);
     }
 
     public static void sendChatUserVideoMessage(Long toUserId, String previewUrl, int imageWidth,
                                                 int imageHeight, int size, int playTime,
                                                 IMDefaultSendOperateListener operateListener) {
         sendChatUserMessage(toUserId, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VIDEO, "[视频]",
-                previewUrl, imageWidth, imageHeight, size, playTime, operateListener);
+                previewUrl, imageWidth, imageHeight, size, playTime, false, operateListener);
     }
 
     private static void sendChatUserMessage(final Long toUserId, final int contentType, final
     String content, final String previewUrl, final int imageWidth, final int imageHeight, final
-                                            int size, final int playTime, final
-    IMDefaultSendOperateListener operateListener) {
+                                            int size, final int playTime, final boolean isFriend,
+                                            final
+                                            IMDefaultSendOperateListener operateListener) {
         commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
                 ChatUserMessageSend request = new ChatUserMessageSend(toUserId, contentType,
-                        content, previewUrl, imageWidth, imageHeight, size, playTime, sendCallback);
+                        content, previewUrl, imageWidth, imageHeight, size, playTime, isFriend,
+                        sendCallback);
                 messageOperate.send(request);
             }
         });
@@ -241,9 +248,9 @@ public class IMClientEntry {
 
     private static void sendChatGroupMessage(final String groupGuid, final int contentType, final
     String content, final String previewUrl, final int imageWidth, final int imageHeight, final
-    int size, final int
+                                             int size, final int
                                                      playTime, final IMDefaultSendOperateListener
-            operateListener) {
+                                                     operateListener) {
         commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {

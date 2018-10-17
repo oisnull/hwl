@@ -446,6 +446,7 @@ public class DateUtils {
     public static String dayNames[] = {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
 
     public static String getChatShowTime(Date date) {
+        if(date==null) return "";
         return getChatShowTime(date.getTime());
     }
 

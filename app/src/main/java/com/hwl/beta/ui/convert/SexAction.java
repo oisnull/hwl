@@ -10,6 +10,10 @@ public class SexAction {
     public final static String WOMAN = "女";
     public final static String OTHER = "";//其它
 
+    public final static int MAN_1 = 1;
+    public final static int WOMAN_0 = 0;
+    public final static int OTHER_2 = -1;
+
     public static String getSexName(int sex) {
         String sexName = OTHER;
         switch (sex) {

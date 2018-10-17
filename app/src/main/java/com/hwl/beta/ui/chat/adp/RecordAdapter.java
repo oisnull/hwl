@@ -47,7 +47,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
     }
 
     public void updateRecord(ChatRecordMessage record) {
-        if (record == null || record.getRecordId() <= 0) return;
+        if (record == null || !record.hasRecordId()) return;
         int position = records.indexOf(record);
         if (position != -1) {
             records.remove(position);
@@ -70,22 +70,22 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
         itemBinding.setRecord(record);
         itemBinding.setPosition(position);
         itemBinding.tvTime.setText(DateUtils.getChatShowTime(record.getSendTime()));
-        itemBinding.ivNotify.setVisibility(record.getIsShield() ? View.VISIBLE : View.GONE);
+//        itemBinding.ivNotify.setVisibility(record.getIsShield() ? View.VISIBLE : View.GONE);
         holder.badge.setBadgeNumber(record.getUnreadCount());
 
         switch (record.getRecordType()) {
             case IMConstant.CHAT_RECORD_TYPE_GROUP:
                 itemBinding.ivGroupImage.setVisibility(View.VISIBLE);
                 itemBinding.ivRecordImage.setVisibility(View.GONE);
-                itemBinding.ivGroupImage.setImagesData(record.getGroupUserImages());
+//                itemBinding.ivGroupImage.setImagesData(record.getGroupUserImages());
                 break;
             default:
                 itemBinding.ivGroupImage.setVisibility(View.GONE);
                 itemBinding.ivRecordImage.setVisibility(View.VISIBLE);
-                Glide.with(context).load(record.getRecordImage())
-                        .placeholder(R.drawable.empty_photo)
-                        .error(R.drawable.empty_photo)
-                        .into(itemBinding.ivRecordImage);
+//                Glide.with(context).load(record.getRecordImage())
+//                        .placeholder(R.drawable.empty_photo)
+//                        .error(R.drawable.empty_photo)
+//                        .into(itemBinding.ivRecordImage);
                 break;
         }
 
@@ -131,8 +131,8 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
             return;
         for (int i = 0; i < records.size(); i++) {
             if (records.get(i).getRecordType() == IMConstant.CHAT_RECORD_TYPE_GROUP && records
-                    .get(i).getGruopGuid().equals(groupGuid)) {
-                records.get(i).setGroupUserImages(groupUserImages);
+                    .get(i).getGroupGuid().equals(groupGuid)) {
+//                records.get(i).setGroupUserImages(groupUserImages);
                 notifyItemChanged(i);
                 break;
             }

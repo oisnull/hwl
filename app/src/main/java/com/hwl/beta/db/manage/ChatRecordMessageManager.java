@@ -8,6 +8,7 @@ import com.hwl.beta.db.dao.ChatRecordMessageDao;
 import com.hwl.beta.db.entity.ChatRecordMessage;
 import com.hwl.beta.db.entity.GroupInfo;
 import com.hwl.beta.sp.UserSP;
+import com.hwl.beta.ui.immsg.IMConstant;
 import com.hwl.beta.utils.StringUtils;
 
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -27,7 +28,7 @@ public class ChatRecordMessageManager extends BaseDao<ChatRecordMessage> {
     public ChatRecordMessage getGroupRecord(String groupGuid) {
         if (StringUtils.isBlank(groupGuid)) return null;
         return daoSession.getChatRecordMessageDao().queryBuilder()
-                .where(ChatRecordMessageDao.Properties.GruopGuid.eq(groupGuid))
+                .where(ChatRecordMessageDao.Properties.GroupGuid.eq(groupGuid))
                 .unique();
     }
 
@@ -45,8 +46,8 @@ public class ChatRecordMessageManager extends BaseDao<ChatRecordMessage> {
         if (record == null) return null;
         if (StringUtils.isNotBlank(userName))
             record.setTitle(userName);
-        if (StringUtils.isNotBlank(userImage))
-            record.setRecordImage(userImage);
+//        if (StringUtils.isNotBlank(userImage))
+//            record.setRecordImage(userImage);
         daoSession.getChatRecordMessageDao().update(record);
         return record;
     }
@@ -63,15 +64,15 @@ public class ChatRecordMessageManager extends BaseDao<ChatRecordMessage> {
         ChatRecordMessage existsRecord = null;
         QueryBuilder<ChatRecordMessage> query = daoSession.getChatRecordMessageDao().queryBuilder()
                 .where(ChatRecordMessageDao.Properties.RecordType.eq(request.getRecordType()));
-//        if (request.getRecordType() == MQConstant.CHAT_RECORD_TYPE_USER) {
-//            //existsRecord = query.where(ChatRecordMessageDao.Properties.FromUserId.eq(request.getFromUserId())).build().unique();
-//            existsRecord = daoSession.getChatRecordMessageDao().queryBuilder()
-//                    .whereOr(ChatRecordMessageDao.Properties.FromUserId.eq(request.getFromUserId()), ChatRecordMessageDao.Properties.FromUserId.eq(request.getToUserId()))
-//                    .whereOr(ChatRecordMessageDao.Properties.ToUserId.eq(request.getFromUserId()), ChatRecordMessageDao.Properties.ToUserId.eq(request.getToUserId()))
-//                    .unique();
-//        } else if (request.getRecordType() == MQConstant.CHAT_RECORD_TYPE_GROUP) {
-//            existsRecord = query.where(ChatRecordMessageDao.Properties.GruopGuid.eq(request.getGruopGuid())).unique();
-//        }
+        if (request.getRecordType() == IMConstant.CHAT_RECORD_TYPE_USER) {
+            //existsRecord = query.where(ChatRecordMessageDao.Properties.FromUserId.eq(request.getFromUserId())).build().unique();
+            existsRecord = daoSession.getChatRecordMessageDao().queryBuilder()
+                    .whereOr(ChatRecordMessageDao.Properties.FromUserId.eq(request.getFromUserId()), ChatRecordMessageDao.Properties.FromUserId.eq(request.getToUserId()))
+                    .whereOr(ChatRecordMessageDao.Properties.ToUserId.eq(request.getFromUserId()), ChatRecordMessageDao.Properties.ToUserId.eq(request.getToUserId()))
+                    .unique();
+        } else if (request.getRecordType() == IMConstant.CHAT_RECORD_TYPE_GROUP) {
+            existsRecord = query.where(ChatRecordMessageDao.Properties.GroupGuid.eq(request.getGroupGuid())).unique();
+        }
 
         if (existsRecord != null) {
             existsRecord.setTitle(request.getTitle());
@@ -87,7 +88,6 @@ public class ChatRecordMessageManager extends BaseDao<ChatRecordMessage> {
             existsRecord.setToUserHeadImage(request.getToUserHeadImage());
 
             existsRecord.setGroupName(request.getGroupName());
-            existsRecord.setRecordImage(request.getRecordImage());
 
             if (request.getFromUserId() != UserSP.getUserId()) {
                 existsRecord.setUnreadCount(existsRecord.getUnreadCount() + 1);

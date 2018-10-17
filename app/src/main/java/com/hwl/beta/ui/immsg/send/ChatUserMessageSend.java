@@ -1,6 +1,7 @@
 package com.hwl.beta.ui.immsg.send;
 
 import com.hwl.beta.sp.UserSP;
+import com.hwl.beta.utils.StringUtils;
 import com.hwl.im.common.DefaultConsumer;
 import com.hwl.im.imaction.AbstractMessageSendExecutor;
 import com.hwl.imcore.improto.ImChatUserMessageContent;
@@ -15,14 +16,15 @@ public class ChatUserMessageSend extends AbstractMessageSendExecutor {
     ImChatUserMessageContent messageContent;
     DefaultConsumer<Boolean> sendCallback;
     
-    public ChatUserMessageSend(Long toUserId,int contentType, String content,String previewUrl,int imageWidth,int imageHeight,int size,int playTime,DefaultConsumer<Boolean> sendCallback) {
+    public ChatUserMessageSend(Long toUserId,int contentType, String content,String previewUrl,int imageWidth,int imageHeight,int size,int playTime,boolean isFriend,DefaultConsumer<Boolean> sendCallback) {
         messageContent = ImChatUserMessageContent.newBuilder().setFromUserId(UserSP.getUserId())
+                .setIsFriend(isFriend)
                 .setFromUserName(UserSP.getUserShowName())
                 .setFromUserImage(UserSP.getUserHeadImage())
                 .setToUserId(toUserId)
                 .setContentType(contentType)
-                .setContent(content)
-                .setPreviewUrl(previewUrl)
+                .setContent(StringUtils.nullStrToEmpty(content))
+                .setPreviewUrl(StringUtils.nullStrToEmpty(previewUrl))
                 .setImageWidth(imageWidth)
                 .setImageHeight(imageHeight)
                 .setSize(size)

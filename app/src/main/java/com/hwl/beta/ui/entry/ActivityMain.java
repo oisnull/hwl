@@ -41,6 +41,8 @@ import com.hwl.beta.ui.entry.standard.MainStandard;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
+
 public class ActivityMain extends BaseActivity {
     FragmentActivity activity;
     EntryActivityMainBinding binding;
@@ -85,7 +87,7 @@ public class ActivityMain extends BaseActivity {
 
         initLocation();
 
-//        SQLiteStudioService.instance().start(activity);
+        SQLiteStudioService.instance().start(activity);
 
         networkBroadcastReceiver = new NetworkBroadcastReceiver();
         registerReceiver(networkBroadcastReceiver, new IntentFilter(NetworkBroadcastReceiver
@@ -161,7 +163,7 @@ public class ActivityMain extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(networkBroadcastReceiver);
-//        SQLiteStudioService.instance().stop();
+        SQLiteStudioService.instance().stop();
     }
 
     private void showPopMenu(View v) {

@@ -1,10 +1,5 @@
 package com.hwl.beta.utils;
 
-/**
- * Created by Administrator on 2018/1/14.
- */
-
-
 import android.text.TextUtils;
 
 import org.json.JSONException;
@@ -81,6 +76,10 @@ public class StringUtils {
     public static String nullStrToEmpty(Object str) {
         return (str == null ? "" : (str instanceof String ? (String) str : str
                 .toString()));
+    }
+
+    public static String nullStrToEmpty(String str) {
+        return (str == null ? "" : str);
     }
 
     /**
@@ -267,9 +266,11 @@ public class StringUtils {
 //        String string;
 //        StringBuilder sortletterBuilder = new StringBuilder();
 //        for (int k = 0; k < str.length(); k++) {
-//            sortletterBuilder.append(CharacterParser.getInstance().getSelling(str.substring(k, k + 1)).toUpperCase().substring(0, 1));
+//            sortletterBuilder.append(CharacterParser.getInstance().getSelling(str.substring(k,
+// k + 1)).toUpperCase().substring(0, 1));
 //        }
-//        if (TextUtils.isEmpty(sortletterBuilder) || !sortletterBuilder.toString().substring(0, 1).matches("[A-Z]")) {
+//        if (TextUtils.isEmpty(sortletterBuilder) || !sortletterBuilder.toString().substring(0,
+// 1).matches("[A-Z]")) {
 //            string = "#";
 //        } else {
 //            string = sortletterBuilder.toString();
@@ -280,7 +281,8 @@ public class StringUtils {
     public static String hidePhoneStr(String phone) {
         String newPhone;
         if (!TextUtils.isEmpty(phone) && phone.length() == 11) {
-            newPhone = phone.substring(0, 3) + "****" + phone.substring(phone.length() - 4, phone.length());
+            newPhone = phone.substring(0, 3) + "****" + phone.substring(phone.length() - 4, phone
+                    .length());
         } else {
             newPhone = phone;
         }
@@ -405,7 +407,8 @@ public class StringUtils {
 
     public static String formatHtml(String content) {
 
-        String newS = content.replaceAll("&gt;", ">").replaceAll("&lt;", "<").replaceAll("&amp;", "&").replaceAll("&quot;", "'")
+        String newS = content.replaceAll("&gt;", ">").replaceAll("&lt;", "<").replaceAll("&amp;",
+                "&").replaceAll("&quot;", "'")
                 .replaceAll("&nbsp;", " ").replaceAll("\\\\", "");
         return newS;
     }
@@ -510,7 +513,7 @@ public class StringUtils {
         if (content.length() <= count) {
             return content;
         }
-        return content.substring(0,count)+" ...";
+        return content.substring(0, count) + " ...";
     }
 
 }

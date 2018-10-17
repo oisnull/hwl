@@ -37,7 +37,7 @@ public class DBChatMessageAction {
         record.setFromUserId(UserSP.getUserId());
         record.setFromUserName(UserSP.getUserShowName());
         record.setFromUserHeadImage(UserSP.getUserHeadImage());
-        record.setRecordImage(friend.getHeadImage());
+//        record.setRecordImage(friend.getHeadImage());
         record.setTitle(friend.getName());
         record.setContentType(IMConstant.CHAT_MESSAGE_CONTENT_TYPE_TEXT);
         record.setContent(content);

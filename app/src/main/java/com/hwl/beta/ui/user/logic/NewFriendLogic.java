@@ -85,22 +85,23 @@ public class NewFriendLogic implements NewFriendStandard {
 
     private void sendChatUserMessage(final Friend friend) {
         final String content = "我们已经成为好友了";
-        IMClientEntry.sendChatUserTextMessage(friend.getId(), content, new
+        IMClientEntry.sendChatUserTextMessage(friend.getId(), content, true, new
                 IMDefaultSendOperateListener("ChatUserMessage(AddFriendSuccess)") {
-            @Override
-            public void success1() {
-                ChatUserMessage chatUserMessage = DBChatMessageAction.convertToTextMessage
-                        (friend, content);
-                ChatRecordMessage chatRecordMessage = DBChatMessageAction.convertToRecordMessage
-                        (friend, content);
+                    @Override
+                    public void success1() {
+                        ChatUserMessage chatUserMessage = DBChatMessageAction.convertToTextMessage
+                                (friend, content);
+                        ChatRecordMessage chatRecordMessage = DBChatMessageAction
+                                .convertToRecordMessage
+                                (friend, content);
 
-                DaoUtils.getChatUserMessageManagerInstance().save(chatUserMessage);
-                DaoUtils.getChatRecordMessageManagerInstance().save(chatRecordMessage);
+                        DaoUtils.getChatUserMessageManagerInstance().save(chatUserMessage);
+                        DaoUtils.getChatRecordMessageManagerInstance().save(chatRecordMessage);
 
-                EventBusUtil.sendChatUserMessageEvent(chatUserMessage);
-                EventBusUtil.sendChatRecordMessageEvent(chatRecordMessage);
-            }
-        });
+                        EventBusUtil.sendChatUserMessageEvent(chatUserMessage);
+                        EventBusUtil.sendChatRecordMessageEvent(chatRecordMessage);
+                    }
+                });
     }
 
     @Override

@@ -70,6 +70,20 @@ public class DBFriendAction {
         return friend;
     }
 
+    public static Friend convertToFriendInfo(long userId, String userName, String userHeadImage,
+                                             boolean isFriend) {
+        Friend friend = new Friend();
+        friend.setId(userId);
+        friend.setSymbol("");
+        friend.setName(userName);
+        friend.setSex(SexAction.OTHER_2);
+        friend.setRemark(userName);
+        friend.setHeadImage(userHeadImage);
+        friend.setUpdateTime(new Date().toString());
+        friend.setIsFriend(isFriend);
+        return friend;
+    }
+
     public static boolean updateFriendNameAndImage(Friend friend, String newName, String
             newHeadImage) {
         if (friend == null || StringUtils.isBlank(newName) || StringUtils.isBlank(newHeadImage))

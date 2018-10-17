@@ -25,14 +25,13 @@ public class ChatRecordMessage extends BaseObservable implements Serializable {
     @Id(autoincrement = true)
     private Long recordId;
     private int recordType;
-    private String recordImage;
     private long fromUserId;
     private String fromUserName;
     private String fromUserHeadImage;
     private long toUserId;
     private String toUserName;
     private String toUserHeadImage;
-    private String gruopGuid;
+    private String groupGuid;
     private String groupName;
     private String title;
     private int contentType;
@@ -46,49 +45,21 @@ public class ChatRecordMessage extends BaseObservable implements Serializable {
     @Transient
     private List<String> groupUserImages;
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
-    public boolean isShield() {
-        return isShield;
-    }
-
-    public void setShield(boolean shield) {
-        isShield = shield;
-    }
-
-    public List<String> getGroupUserImages() {
-        return groupUserImages;
-    }
-
-    public void setGroupUserImages(List<String> groupUserImages) {
-        this.groupUserImages = groupUserImages;
-    }
-
-    public boolean getIsShield() {
-        return this.isShield;
-    }
-
-    public void setIsShield(boolean isShield) {
-        this.isShield = isShield;
-    }
-
-    @Generated(hash = 1168776574)
-    public ChatRecordMessage(Long recordId, int recordType, String recordImage, long fromUserId,
-            String fromUserName, String fromUserHeadImage, long toUserId, String toUserName,
-            String toUserHeadImage, String gruopGuid, String groupName, String title, int contentType,
-            String content, int unreadCount, Date sendTime) {
+    @Generated(hash = 292329467)
+    public ChatRecordMessage(Long recordId, int recordType, long fromUserId,
+                             String fromUserName, String fromUserHeadImage, long toUserId,
+                             String toUserName, String toUserHeadImage, String groupGuid,
+                             String groupName, String title, int contentType, String content,
+                             int unreadCount, Date sendTime) {
         this.recordId = recordId;
         this.recordType = recordType;
-        this.recordImage = recordImage;
         this.fromUserId = fromUserId;
         this.fromUserName = fromUserName;
         this.fromUserHeadImage = fromUserHeadImage;
         this.toUserId = toUserId;
         this.toUserName = toUserName;
         this.toUserHeadImage = toUserHeadImage;
-        this.gruopGuid = gruopGuid;
+        this.groupGuid = groupGuid;
         this.groupName = groupName;
         this.title = title;
         this.contentType = contentType;
@@ -115,14 +86,6 @@ public class ChatRecordMessage extends BaseObservable implements Serializable {
 
     public void setRecordType(int recordType) {
         this.recordType = recordType;
-    }
-
-    public String getRecordImage() {
-        return this.recordImage;
-    }
-
-    public void setRecordImage(String recordImage) {
-        this.recordImage = recordImage;
     }
 
     public long getFromUserId() {
@@ -173,12 +136,12 @@ public class ChatRecordMessage extends BaseObservable implements Serializable {
         this.toUserHeadImage = toUserHeadImage;
     }
 
-    public String getGruopGuid() {
-        return this.gruopGuid;
+    public String getGroupGuid() {
+        return this.groupGuid;
     }
 
-    public void setGruopGuid(String gruopGuid) {
-        this.gruopGuid = gruopGuid;
+    public void setGroupGuid(String groupGuid) {
+        this.groupGuid = groupGuid;
     }
 
     public String getGroupName() {
@@ -189,14 +152,12 @@ public class ChatRecordMessage extends BaseObservable implements Serializable {
         this.groupName = groupName;
     }
 
-    @Bindable
     public String getTitle() {
         return this.title;
     }
 
     public void setTitle(String title) {
         this.title = title;
-        notifyPropertyChanged(BR.content);
     }
 
     public int getContentType() {
@@ -207,42 +168,40 @@ public class ChatRecordMessage extends BaseObservable implements Serializable {
         this.contentType = contentType;
     }
 
-    @Bindable
     public String getContent() {
         return this.content;
     }
 
     public void setContent(String content) {
         this.content = content;
-        notifyPropertyChanged(BR.content);
     }
 
-    @Bindable
     public int getUnreadCount() {
         return this.unreadCount;
     }
 
     public void setUnreadCount(int unreadCount) {
         this.unreadCount = unreadCount;
-        notifyPropertyChanged(BR.unreadCount);
     }
 
-    @Bindable
     public Date getSendTime() {
         return this.sendTime;
     }
 
     public void setSendTime(Date sendTime) {
         this.sendTime = sendTime;
-        notifyPropertyChanged(BR.sendTime);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ChatRecordMessage) {
             ChatRecordMessage record = (ChatRecordMessage) obj;
-            return this.getRecordId() == record.getRecordId();
+            return this.getRecordId().equals(record.getRecordId());
         }
         return super.equals(obj);
+    }
+
+    public boolean hasRecordId() {
+        return this.recordId != null && this.recordId > 0;
     }
 }
