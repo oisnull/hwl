@@ -17,6 +17,12 @@
         android:layout_height="wrap_content" />
 
     <Button
+        android:id="@+id/btn_im_test"
+        android:text="测试IM是否已连接"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
         android:id="@+id/btn_test"
         android:text="震动测试"
         android:layout_width="wrap_content"

@@ -44,6 +44,14 @@ public class TestActivity extends BaseActivity {
             }
         });
 
+        Button btnImTest = findViewById(R.id.btn_im_test);
+        btnImTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UITransfer.toTestActivityIM(mActivity);
+            }
+        });
+
 //        Button button = findViewById(R.id.btn_test);
 //        button.setOnClickListener(new View.OnClickListener() {
 //            @Override

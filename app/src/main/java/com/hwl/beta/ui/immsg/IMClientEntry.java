@@ -5,10 +5,12 @@ import java.util.logging.Logger;
 
 import com.hwl.beta.AppConfig;
 import com.hwl.beta.ui.immsg.listen.AddFriendMessageListen;
+import com.hwl.beta.ui.immsg.listen.TestConnectionMessageListen;
 import com.hwl.beta.ui.immsg.listen.UserValidateListen;
 import com.hwl.beta.ui.immsg.send.AddFriendMessageSend;
 import com.hwl.beta.ui.immsg.send.ChatGroupMessageSend;
 import com.hwl.beta.ui.immsg.send.ChatUserMessageSend;
+import com.hwl.beta.ui.immsg.send.TestConnectionMessageSend;
 import com.hwl.beta.ui.immsg.send.UserValidateSend;
 import com.hwl.beta.utils.NetworkUtils;
 import com.hwl.im.client.ClientMessageOperate;
@@ -20,6 +22,7 @@ import com.hwl.beta.ui.immsg.send.HeartBeatMessageSend;
 import com.hwl.im.common.DefaultConsumer;
 import com.hwl.im.immode.MessageRequestHeadOperate;
 import com.hwl.imcore.improto.ImMessageType;
+import com.hwl.imcore.improto.ImTestConnectionMessageResponse;
 
 public class IMClientEntry {
 
@@ -29,8 +32,9 @@ public class IMClientEntry {
     private static Thread imThread = null;
     private static boolean isIMThreadRuning = false;
     private final static ClientMessageOperate messageOperate = new ClientMessageOperate();
-    private  final static IMClientLauncher launcher = new IMClientLauncher(AppConfig.IM_HOST, AppConfig
-            .IM_PORT);
+    private final static IMClientLauncher launcher = new IMClientLauncher(AppConfig.IM_HOST,
+            AppConfig
+                    .IM_PORT);
 
     static {
         initListenExecutor();
@@ -108,7 +112,8 @@ public class IMClientEntry {
         sendUserValidateMessage(new IMDefaultSendOperateListener("UserValidateMessage"));
     }
 
-    private static void sendUserValidateMessage(final IMDefaultSendOperateListener operateListener) {
+    private static void sendUserValidateMessage(final IMDefaultSendOperateListener
+                                                        operateListener) {
         commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
@@ -116,14 +121,14 @@ public class IMClientEntry {
                 UserValidateListen response = new UserValidateListen(new DefaultConsumer<String>() {
                     @Override
                     public void accept(String sess) {
-                        operateListener.listenSucess();
+                        operateListener.listenSuccess(null);
                         startHeartbeat(sess);
                     }
                 }, new DefaultConsumer<String>() {
                     @Override
                     public void accept(String msg) {
                         operateListener.listenFailed(msg);
-                        operateListener.sessionidInvaild();
+                        operateListener.sessionInvalid();
                         stopHeartbeat();
                     }
                 });
@@ -159,6 +164,29 @@ public class IMClientEntry {
         log.info("Client listen : stop send heart package");
         IMClientHeartbeatTimer.getInstance().stop();
         disconnectServer();
+    }
+
+    public static void sendTestConnectMessage(final IMDefaultSendOperateListener<ImTestConnectionMessageResponse>
+                                                       operateListener) {
+        commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+            @Override
+            public void accept(DefaultConsumer<Boolean> sendCallback) {
+                TestConnectionMessageSend request = new TestConnectionMessageSend(sendCallback);
+                TestConnectionMessageListen response = new TestConnectionMessageListen(new DefaultConsumer<ImTestConnectionMessageResponse>() {
+                    @Override
+                    public void accept(ImTestConnectionMessageResponse content) {
+                        operateListener.listenSuccess(content);
+                    }
+                }, new DefaultConsumer<String>() {
+                    @Override
+                    public void accept(String msg) {
+                        operateListener.listenFailed(msg);
+                        operateListener.sessionInvalid();
+                    }
+                });
+                messageOperate.send(request, response);
+            }
+        });
     }
 
     public static void sendAddFriendMessage(final long toUserId, final String content, final

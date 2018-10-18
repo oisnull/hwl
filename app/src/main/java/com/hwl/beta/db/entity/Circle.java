@@ -40,7 +40,7 @@ public class Circle implements Serializable {
 
     public String getShowDate() {
         if (this.publishTime != null)
-            return DateUtils.dateToStr(this.publishTime);
+            return DateUtils.dateToStrTime(this.publishTime);
         return null;
     }
 

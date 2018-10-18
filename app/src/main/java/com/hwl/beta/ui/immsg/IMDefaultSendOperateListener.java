@@ -8,7 +8,7 @@ import com.hwl.beta.ui.ebus.EventBusUtil;
 
 import java.util.logging.Logger;
 
-public class IMDefaultSendOperateListener {
+public class IMDefaultSendOperateListener<T> {
 
     private static Logger log = Logger.getLogger(AppConfig.IM_DEBUG_TAG);
     private String prefix;
@@ -64,18 +64,18 @@ public class IMDefaultSendOperateListener {
             });
     }
 
-    public final void sessionidInvaild() {
-        log.info(getSendDesc() + " : sessionid invalid");
+    public final void sessionInvalid() {
+        log.info(getSendDesc() + " : session invalid");
         EventBusUtil.sendTokenInvalidEvent();
     }
 
-    public final void listenSucess() {
+    public final void listenSuccess(final T t) {
         log.info(getSendDesc() + " listen success");
         if (mainHandler != null)
             mainHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    success2();
+                    success2(t);
                 }
             });
     }
@@ -98,7 +98,7 @@ public class IMDefaultSendOperateListener {
     public void failed1() {
     }
 
-    public void success2() {
+    public void success2(T t) {
     }
 
     public void failed2(String message) {

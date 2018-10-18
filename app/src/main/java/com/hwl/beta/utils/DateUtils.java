@@ -129,7 +129,7 @@ public class DateUtils {
         return dateString;
     }
 
-    public static String dateToStrLong2(Date dateDate) {
+    public static String dateToStrTime(Date dateDate) {
         if (dateDate == null) return null;
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
         String dateString = formatter.format(dateDate);
@@ -142,7 +142,7 @@ public class DateUtils {
      * @param dateDate
      * @return
      */
-    public static String dateToStr(Date dateDate) {
+    public static String dateToStrShort(Date dateDate) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = formatter.format(dateDate);
         return dateString;
