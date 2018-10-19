@@ -35,12 +35,15 @@ public class ChatRecordMessageManager extends BaseDao<ChatRecordMessage> {
     public ChatRecordMessage getUserRecord(long myUserId, long fromUserId) {
         if (fromUserId <= 0) return null;
         return daoSession.getChatRecordMessageDao().queryBuilder()
-                .whereOr(ChatRecordMessageDao.Properties.FromUserId.eq(fromUserId), ChatRecordMessageDao.Properties.FromUserId.eq(myUserId))
-                .whereOr(ChatRecordMessageDao.Properties.ToUserId.eq(fromUserId), ChatRecordMessageDao.Properties.ToUserId.eq(myUserId))
+                .whereOr(ChatRecordMessageDao.Properties.FromUserId.eq(fromUserId),
+                        ChatRecordMessageDao.Properties.FromUserId.eq(myUserId))
+                .whereOr(ChatRecordMessageDao.Properties.ToUserId.eq(fromUserId),
+                        ChatRecordMessageDao.Properties.ToUserId.eq(myUserId))
                 .unique();
     }
 
-    public ChatRecordMessage updateUserRecrdTitle(long myUserId, long fromUserId, String userName, String userImage) {
+    public ChatRecordMessage updateUserRecrdTitle(long myUserId, long fromUserId, String
+            userName, String userImage) {
         if (fromUserId <= 0) return null;
         ChatRecordMessage record = getUserRecord(myUserId, fromUserId);
         if (record == null) return null;
@@ -65,13 +68,18 @@ public class ChatRecordMessageManager extends BaseDao<ChatRecordMessage> {
         QueryBuilder<ChatRecordMessage> query = daoSession.getChatRecordMessageDao().queryBuilder()
                 .where(ChatRecordMessageDao.Properties.RecordType.eq(request.getRecordType()));
         if (request.getRecordType() == IMConstant.CHAT_RECORD_TYPE_USER) {
-            //existsRecord = query.where(ChatRecordMessageDao.Properties.FromUserId.eq(request.getFromUserId())).build().unique();
+            //existsRecord = query.where(ChatRecordMessageDao.Properties.FromUserId.eq(request
+            // .getFromUserId())).build().unique();
             existsRecord = daoSession.getChatRecordMessageDao().queryBuilder()
-                    .whereOr(ChatRecordMessageDao.Properties.FromUserId.eq(request.getFromUserId()), ChatRecordMessageDao.Properties.FromUserId.eq(request.getToUserId()))
-                    .whereOr(ChatRecordMessageDao.Properties.ToUserId.eq(request.getFromUserId()), ChatRecordMessageDao.Properties.ToUserId.eq(request.getToUserId()))
+                    .whereOr(ChatRecordMessageDao.Properties.FromUserId.eq(request.getFromUserId
+                            ()), ChatRecordMessageDao.Properties.FromUserId.eq(request
+                            .getToUserId()))
+                    .whereOr(ChatRecordMessageDao.Properties.ToUserId.eq(request.getFromUserId())
+                            , ChatRecordMessageDao.Properties.ToUserId.eq(request.getToUserId()))
                     .unique();
         } else if (request.getRecordType() == IMConstant.CHAT_RECORD_TYPE_GROUP) {
-            existsRecord = query.where(ChatRecordMessageDao.Properties.GroupGuid.eq(request.getGroupGuid())).unique();
+            existsRecord = query.where(ChatRecordMessageDao.Properties.GroupGuid.eq(request
+                    .getGroupGuid())).unique();
         }
 
         if (existsRecord != null) {
@@ -111,8 +119,10 @@ public class ChatRecordMessageManager extends BaseDao<ChatRecordMessage> {
     public ChatRecordMessage deleteUserRecords(long myUserId, long friendUserId) {
         if (myUserId <= 0 || friendUserId <= 0 || myUserId == friendUserId) return null;
         ChatRecordMessage record = daoSession.getChatRecordMessageDao().queryBuilder()
-                .whereOr(ChatRecordMessageDao.Properties.FromUserId.eq(myUserId), ChatRecordMessageDao.Properties.FromUserId.eq(friendUserId))
-                .whereOr(ChatRecordMessageDao.Properties.ToUserId.eq(myUserId), ChatRecordMessageDao.Properties.ToUserId.eq(friendUserId))
+                .whereOr(ChatRecordMessageDao.Properties.FromUserId.eq(myUserId),
+                        ChatRecordMessageDao.Properties.FromUserId.eq(friendUserId))
+                .whereOr(ChatRecordMessageDao.Properties.ToUserId.eq(myUserId),
+                        ChatRecordMessageDao.Properties.ToUserId.eq(friendUserId))
                 .unique();
         if (record == null) return null;
         daoSession.getChatRecordMessageDao().delete(record);
@@ -128,10 +138,14 @@ public class ChatRecordMessageManager extends BaseDao<ChatRecordMessage> {
         if (recordMessages != null && recordMessages.size() > 0) {
             for (int i = 0; i < recordMessages.size(); i++) {
 //                if (recordMessages.get(i).getRecordType() == MQConstant.CHAT_RECORD_TYPE_USER) {
-//                    long userId = UserSP.getUserId() == recordMessages.get(i).getFromUserId() ? recordMessages.get(i).getToUserId() : recordMessages.get(i).getFromUserId();
-//                    recordMessages.get(i).setIsShield(DaoUtils.getChatUserMessageManagerInstance().getChatUserSettingIsShield(userId));
-//                } else if (recordMessages.get(i).getRecordType() == MQConstant.CHAT_RECORD_TYPE_GROUP) {
-//                    GroupInfo groupInfo = DaoUtils.getGroupInfoManagerInstance().get(recordMessages.get(i).getGruopGuid());
+//                    long userId = UserSP.getUserId() == recordMessages.get(i).getFromUserId() ?
+// recordMessages.get(i).getToUserId() : recordMessages.get(i).getFromUserId();
+//                    recordMessages.get(i).setIsShield(DaoUtils
+// .getChatUserMessageManagerInstance().getChatUserSettingIsShield(userId));
+//                } else if (recordMessages.get(i).getRecordType() == MQConstant
+// .CHAT_RECORD_TYPE_GROUP) {
+//                    GroupInfo groupInfo = DaoUtils.getGroupInfoManagerInstance().get
+// (recordMessages.get(i).getGruopGuid());
 //                    if (groupInfo != null) {
 //                        recordMessages.get(i).setIsShield(groupInfo.getIsShield());
 //                        recordMessages.get(i).setGroupUserImages(groupInfo.getUserImages());
@@ -143,12 +157,17 @@ public class ChatRecordMessageManager extends BaseDao<ChatRecordMessage> {
         return new ArrayList<>();
     }
 
+    public void clearUnreadCount(ChatRecordMessage record) {
+        if (record == null) return;
+        record.setUnreadCount(0);
+        daoSession.getChatRecordMessageDao().insertOrReplace(record);
+    }
+
     public ChatRecordMessage clearUnreadCount(long recordId) {
         if (recordId <= 0) return null;
         ChatRecordMessage record = daoSession.getChatRecordMessageDao().load(recordId);
         if (record == null) return null;
-        record.setUnreadCount(0);
-        daoSession.getChatRecordMessageDao().insertOrReplace(record);
+        clearUnreadCount(record);
         return record;
     }
 

@@ -12,12 +12,15 @@ import android.view.ViewGroup;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.ChatFragmentRecordBinding;
 import com.hwl.beta.db.entity.ChatRecordMessage;
+import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.chat.adp.RecordAdapter;
 import com.hwl.beta.ui.chat.logic.RecordLogic;
 import com.hwl.beta.ui.chat.standard.RecordStandard;
 import com.hwl.beta.ui.common.BaseFragment;
+import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.ebus.EventBusConstant;
 import com.hwl.beta.ui.ebus.EventMessageModel;
+import com.hwl.beta.ui.immsg.IMConstant;
 import com.hwl.beta.utils.NetworkUtils;
 
 /**
@@ -55,7 +58,28 @@ public class FragmentRecord extends BaseFragment {
 
                     @Override
                     public void onItemClick(int position) {
-
+                        ChatRecordMessage recordMessage = recordAdapter.getRecordMessage(position);
+                        switch (recordMessage.getRecordType()) {
+                            case IMConstant.CHAT_RECORD_TYPE_USER:
+                                if (recordMessage.getFromUserId() == UserSP.getUserId()) {
+                                    UITransfer.toChatUserActivity(activity,
+                                            recordMessage.getToUserId(),
+                                            recordMessage.getToUserName(),
+                                            recordMessage.getToUserHeadImage(),
+                                            recordMessage.getRecordId());
+                                } else {
+                                    UITransfer.toChatUserActivity(activity,
+                                            recordMessage.getFromUserId(),
+                                            recordMessage.getFromUserName(),
+                                            recordMessage.getFromUserHeadImage(),
+                                            recordMessage.getRecordId());
+                                }
+                                break;
+                            case IMConstant.CHAT_RECORD_TYPE_GROUP:
+                                //UITransfer.toChatGroupActivity(activity, recordMessage
+                                // .getGruopGuid());
+                                break;
+                        }
                     }
 
                     @Override
@@ -65,7 +89,7 @@ public class FragmentRecord extends BaseFragment {
                 });
         binding.rvRecordContainer.setAdapter(recordAdapter);
         binding.rvRecordContainer.setLayoutManager(new LinearLayoutManager(activity));
-//        Collections.sort(records, dateComparator);
+
 //        recordAdapter = new RecordAdapter(activity, records, new RecordAdapter.IAdapterListener
 // () {
 //            @Override
@@ -151,9 +175,7 @@ public class FragmentRecord extends BaseFragment {
 //                popup.show();
 //            }
 //        });
-//        binding.rvRecordContainer.setAdapter(recordAdapter);
-//        binding.rvRecordContainer.setLayoutManager(new LinearLayoutManager(activity));
-//
+
         binding.tvCheckNetwork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,8 +198,11 @@ public class FragmentRecord extends BaseFragment {
     @Override
     protected void receiveStickyEventMessage(EventMessageModel messageModel) {
         switch (messageModel.getMessageType()) {
-            case EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_UPDATE:
+            case EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_UPDATE_SORT:
                 recordAdapter.updateRecord((ChatRecordMessage) messageModel.getMessageModel());
+                break;
+            case EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_UPDATE_NOSORT:
+                recordAdapter.updateRecord((ChatRecordMessage) messageModel.getMessageModel(),false);
                 break;
             case EventBusConstant.EB_TYPE_NETWORK_CONNECT_UPDATE:
                 binding.llNetworkNone.setVisibility(View.GONE);
@@ -187,18 +212,6 @@ public class FragmentRecord extends BaseFragment {
                 break;
         }
     }
-
-    //    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void updateRecord(ChatRecordMessage record) {
-//        if (record == null) return;
-//        int position = records.indexOf(record);
-//        if (position != -1) {
-//            records.remove(position);
-//        }
-//        records.add(record);
-//        Collections.sort(records, dateComparator);
-//        recordAdapter.notifyItemRangeChanged(0, records.size());
-//    }
 
 //    @Subscribe(threadMode = ThreadMode.MAIN)
 //    public void deleteRecord(EventActionChatRecord actionChatRecord) {

@@ -1,1 +1,1 @@
-include ':app', ':autolayout', ':mobshare', ':swipback', ':badge', ':im', ':photoview'
+include ':app', ':autolayout', ':mobshare', ':swipback', ':badge', ':im', ':photoview', ':emotion'

@@ -99,7 +99,7 @@ public class NewFriendLogic implements NewFriendStandard {
                         DaoUtils.getChatRecordMessageManagerInstance().save(chatRecordMessage);
 
                         EventBusUtil.sendChatUserMessageEvent(chatUserMessage);
-                        EventBusUtil.sendChatRecordMessageEvent(chatRecordMessage);
+                        EventBusUtil.sendChatRecordMessageSortEvent(chatRecordMessage);
                     }
                 });
     }

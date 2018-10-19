@@ -30,6 +30,7 @@ import com.hwl.beta.ui.TestActivity;
 //import com.hwl.beta.ui.circle.ActivityCircleUserIndex;
 import com.hwl.beta.ui.TestActivityIm;
 import com.hwl.beta.ui.TestActivityLocation;
+import com.hwl.beta.ui.chat.ActivityChatUser;
 import com.hwl.beta.ui.dialog.ReloginDialogFragment;
 //import com.hwl.beta.ui.entry.ActivityGetpwd;
 //import com.hwl.beta.ui.entry.ActivityMain;
@@ -237,21 +238,21 @@ public class UITransfer {
         context.startActivity(intent);
     }
 
-//    public static void toChatUserActivity(Activity context, long userId, String userName, String
-//            userImage) {
-//        toChatUserActivity(context, userId, userName, userImage, 0);
-//    }
+    public static void toChatUserActivity(Activity context, long userId, String userName, String
+            userImage) {
+        toChatUserActivity(context, userId, userName, userImage, 0);
+    }
 
-//    public static void toChatUserActivity(Activity context, long userId, String userName, String
-//            userImage, long recordId) {
-//        Intent intent = new Intent(context, ActivityChatUser.class);
-//        intent.putExtra("userid", userId);
-//        intent.putExtra("username", userName);
-//        intent.putExtra("userimage", userImage);
-//        intent.putExtra("recordid", recordId);
-//        context.startActivity(intent);
-//    }
-//
+    public static void toChatUserActivity(Activity context, long userId, String userName, String
+            userImage, long recordId) {
+        Intent intent = new Intent(context, ActivityChatUser.class);
+        intent.putExtra("userid", userId);
+        intent.putExtra("username", userName);
+        intent.putExtra("userimage", userImage);
+        intent.putExtra("recordid", recordId);
+        context.startActivity(intent);
+    }
+
 //    public static void toVideoSelectActivity(Activity context, int requestCode) {
 //        Intent intent = new Intent(context, ActivityVideoSelect.class);
 //        context.startActivityForResult(intent, requestCode);

@@ -1,42 +1,43 @@
-<!-- <?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical">
-
-    <com.hwl.beta.ui.widget.TitleBar
-        android:id="@+id/tb_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-
-    <com.scwang.smartrefresh.layout.SmartRefreshLayout
-        android:id="@+id/refreshLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_message_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
     <LinearLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/main_background"
-        android:focusable="true"
-        android:focusableInTouchMode="true" />
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
 
-    <com.hwl.beta.emotion.EmotionControlPannel
-        android:id="@+id/ecp_emotion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:pannel_theme="0" />
+        <com.hwl.beta.ui.widget.TitleBar
+            android:id="@+id/tb_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-</LinearLayout>
-</layout> -->
+
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_message_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/main_background"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+
+        <!--<com.hwl.beta.emotion.EmotionControlPannel-->
+            <!--android:id="@+id/ecp_emotion"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--app:pannel_theme="0" />-->
+
+    </LinearLayout>
+</layout>

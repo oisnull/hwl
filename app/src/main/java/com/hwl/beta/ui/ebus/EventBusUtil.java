@@ -90,8 +90,13 @@ public class EventBusUtil {
                 (EventBusConstant.EB_TYPE_CHAT_USER_MESSAGE_UPDATE, userMessage));
     }
 
-    public static void sendChatRecordMessageEvent(ChatRecordMessage recordMessage) {
+    public static void sendChatRecordMessageSortEvent(ChatRecordMessage recordMessage) {
         sendEvent(new EventMessageModel
-                (EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_UPDATE, recordMessage));
+                (EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_UPDATE_SORT, recordMessage));
+    }
+
+    public static void sendChatRecordMessageNoSortEvent(ChatRecordMessage recordMessage) {
+        sendEvent(new EventMessageModel
+                (EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_UPDATE_SORT, recordMessage));
     }
 }

@@ -3,6 +3,7 @@ package com.hwl.beta.ui.chat.adp;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.hwl.beta.R;
 import com.hwl.beta.badge.Badge;
+import com.hwl.beta.badge.QBadgeView;
 import com.hwl.beta.databinding.ChatRecordItemBinding;
 import com.hwl.beta.db.entity.ChatRecordMessage;
 import com.hwl.beta.ui.common.ChatRecordMessageComparator;
@@ -46,15 +48,28 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
         dateComparator = new ChatRecordMessageComparator();
     }
 
+    public ChatRecordMessage getRecordMessage(int position) {
+        return this.records.get(position);
+    }
+
     public void updateRecord(ChatRecordMessage record) {
+        this.updateRecord(record, true);
+    }
+
+    public void updateRecord(ChatRecordMessage record, boolean isSort) {
         if (record == null || !record.hasRecordId()) return;
         int position = records.indexOf(record);
         if (position != -1) {
             records.remove(position);
         }
         records.add(record);
-        Collections.sort(records, dateComparator);
-        notifyItemRangeChanged(0, records.size());
+
+        if (isSort) {
+            Collections.sort(records, dateComparator);
+            notifyItemRangeChanged(0, records.size());
+        } else {
+            notifyItemChanged(position);
+        }
     }
 
     @Override
@@ -155,8 +170,8 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
             super(itemBinding.getRoot());
             this.itemBinding = itemBinding;
             badge = BadgeNumber.bindBadgeView(context, itemBinding.llImageContainer);
-//            badge = new QBadgeView(context).bindTarget(itemBinding.llImageContainer);
-//            badge.setBadgeGravity(Gravity.TOP | Gravity.END);
+            badge = new QBadgeView(context).bindTarget(itemBinding.llImageContainer);
+            badge.setBadgeGravity(Gravity.TOP | Gravity.END);
 //            badge.setOnDragStateChangedListener(new Badge.OnDragStateChangedListener() {
 //                @Override
 //                public void onDragStateChanged(int dragState, Badge badge, View targetView) {

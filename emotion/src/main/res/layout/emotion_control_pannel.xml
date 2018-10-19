@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/layout_border"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_chat_voice"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/chat_voice"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/iv_chat_keyboard"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/chat_keyboard"
+            android:visibility="gone" />
+
+        <com.hwl.beta.emotion.audio.AudioRecorderButton
+            android:id="@+id/btn_chat_voice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/chat_context"
+            android:gravity="center"
+            android:minHeight="40dp"
+            android:padding="5dp"
+            android:text="按住说话"
+            android:textColor="@color/color_b2b2b2"
+            android:textSize="@dimen/dp_15"
+            android:visibility="gone" />
+
+        <com.hwl.beta.emotion.widget.EmotionEditText
+            android:id="@+id/et_chat_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/chat_context"
+            android:gravity="center_vertical"
+            android:hint="输入聊天内容"
+            android:maxHeight="250dp"
+            android:minHeight="40dp"
+            android:minLines="1"
+            android:padding="5dp"
+            android:textColorHint="@color/color_b2b2b2"
+            android:textSize="@dimen/dp_15"
+            android:textColor="@color/black"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/iv_chat_emoticons"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/chat_emotion"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/iv_chat_extends"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/chat_add"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/btn_chat_message_send"
+            android:layout_width="48dp"
+            android:layout_height="31dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/main"
+            android:gravity="center"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:text="发送"
+            android:textColor="@color/white"
+            android:textSize="@dimen/dp_15"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <!--扩展功能：发照片，拍照片发，发位置信息等-->
+    <GridView
+        android:id="@+id/gv_chat_extends"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:gravity="center_horizontal"
+        android:listSelector="@android:color/transparent"
+        android:numColumns="4"
+        android:padding="10dp"
+        android:visibility="gone"></GridView>
+
+    <!--默认表情和扩展表情列表-->
+    <LinearLayout
+        android:id="@+id/ll_emtion_extends"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <com.hwl.beta.emotion.NoHorizontalScrollerViewPager
+            android:id="@+id/vp_emotion_extend_container"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_weight="1"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/main_background" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_emotion_extends"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="加载中..."
+        android:textColor="@color/color_b2b2b2"
+        android:visibility="gone" />
+
+</LinearLayout>
