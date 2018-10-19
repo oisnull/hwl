@@ -1,53 +1,53 @@
-//package com.hwl.beta.ui.chat.adp;
-//
-//import android.content.Context;
-//import android.databinding.DataBindingUtil;
-//import android.support.v7.widget.RecyclerView;
-//import android.view.LayoutInflater;
-//import android.view.View;
-//import android.view.ViewGroup;
-//import android.widget.ImageView;
-//import android.widget.ProgressBar;
-//
-//import com.hwl.beta.R;
-//import com.hwl.beta.databinding.ReceivedAudioItemBinding;
-//import com.hwl.beta.databinding.ReceivedImageItemBinding;
-//import com.hwl.beta.databinding.ReceivedMessageItemBinding;
-//import com.hwl.beta.databinding.ReceivedVideoItemBinding;
-//import com.hwl.beta.databinding.ReceivedWelcomeTipBinding;
-//import com.hwl.beta.databinding.SendAudioItemBinding;
-//import com.hwl.beta.databinding.SendImageItemBinding;
-//import com.hwl.beta.databinding.SendMessageItemBinding;
-//import com.hwl.beta.databinding.SendVideoItemBinding;
-//import com.hwl.beta.db.entity.ChatUserMessage;
-//import com.hwl.beta.mq.MQConstant;
-//import com.hwl.beta.sp.UserSP;
-//import com.hwl.beta.ui.chat.action.IChatMessageItemListener;
-//import com.hwl.beta.ui.chat.bean.ChatImageViewBean;
-//import com.hwl.beta.ui.chat.holder.ChatMessageReceivedAudioViewHolder;
-//import com.hwl.beta.ui.chat.holder.ChatMessageReceivedImageViewHolder;
-//import com.hwl.beta.ui.chat.holder.ChatMessageReceivedMessageViewHolder;
-//import com.hwl.beta.ui.chat.holder.ChatMessageReceivedVideoViewHolder;
-//import com.hwl.beta.ui.chat.holder.ChatMessageReceivedWelcomeTipViewHolder;
-//import com.hwl.beta.ui.chat.holder.ChatMessageSendAudioViewHolder;
-//import com.hwl.beta.ui.chat.holder.ChatMessageSendImageViewHolder;
-//import com.hwl.beta.ui.chat.holder.ChatMessageSendMessageViewHolder;
-//import com.hwl.beta.ui.chat.holder.ChatMessageSendVideoViewHolder;
-//import com.hwl.beta.utils.DateUtils;
-//
-//import java.util.List;
-//
-///**
+// package com.hwl.beta.ui.chat.adp;
+
+// import android.content.Context;
+// import android.databinding.DataBindingUtil;
+// import android.support.v7.widget.RecyclerView;
+// import android.view.LayoutInflater;
+// import android.view.View;
+// import android.view.ViewGroup;
+// import android.widget.ImageView;
+// import android.widget.ProgressBar;
+
+// import com.hwl.beta.R;
+// import com.hwl.beta.databinding.ReceivedAudioItemBinding;
+// import com.hwl.beta.databinding.ReceivedImageItemBinding;
+// import com.hwl.beta.databinding.ReceivedMessageItemBinding;
+// import com.hwl.beta.databinding.ReceivedVideoItemBinding;
+// import com.hwl.beta.databinding.ReceivedWelcomeTipBinding;
+// import com.hwl.beta.databinding.SendAudioItemBinding;
+// import com.hwl.beta.databinding.SendImageItemBinding;
+// import com.hwl.beta.databinding.SendMessageItemBinding;
+// import com.hwl.beta.databinding.SendVideoItemBinding;
+// import com.hwl.beta.db.entity.ChatUserMessage;
+// import com.hwl.beta.mq.MQConstant;
+// import com.hwl.beta.sp.UserSP;
+// import com.hwl.beta.ui.chat.action.IChatMessageItemListener;
+// import com.hwl.beta.ui.chat.bean.ChatImageViewBean;
+// import com.hwl.beta.ui.chat.holder.ChatMessageReceivedAudioViewHolder;
+// import com.hwl.beta.ui.chat.holder.ChatMessageReceivedImageViewHolder;
+// import com.hwl.beta.ui.chat.holder.ChatMessageReceivedMessageViewHolder;
+// import com.hwl.beta.ui.chat.holder.ChatMessageReceivedVideoViewHolder;
+// import com.hwl.beta.ui.chat.holder.ChatMessageReceivedWelcomeTipViewHolder;
+// import com.hwl.beta.ui.chat.holder.ChatMessageSendAudioViewHolder;
+// import com.hwl.beta.ui.chat.holder.ChatMessageSendImageViewHolder;
+// import com.hwl.beta.ui.chat.holder.ChatMessageSendMessageViewHolder;
+// import com.hwl.beta.ui.chat.holder.ChatMessageSendVideoViewHolder;
+// import com.hwl.beta.utils.DateUtils;
+
+// import java.util.List;
+
+// /**
 // * Created by Administrator on 2018/2/10.
 // */
-//
-//public class ChatUserMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-//    final Context context;
-//    final LayoutInflater inflater;
+
+// public class ChatUserMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+//    Context context;
+//    LayoutInflater inflater;
 //    List<ChatUserMessage> messages;
 //    IChatMessageItemListener itemListener;
 //    long myUserId = 0;
-//
+
 //    public ChatUserMessageAdapter(Context context, List<ChatUserMessage> messages, IChatMessageItemListener itemListener) {
 //        this.context = context;
 //        this.messages = messages;
@@ -55,7 +55,7 @@
 //        inflater = LayoutInflater.from(context);
 //        myUserId = UserSP.getUserId();
 //    }
-//
+
 //    @Override
 //    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 //        switch (viewType) {
@@ -80,7 +80,7 @@
 //        }
 //        return null;
 //    }
-//
+
 //    private void setSendStatus(int sendStatus, ProgressBar pbMessageStatus, ImageView ivMessageStatusFail) {
 //        switch (sendStatus) {
 //            case MQConstant.CHAT_SEND_SENDING:
@@ -98,7 +98,7 @@
 //                break;
 //        }
 //    }
-//
+
 //    @Override
 //    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
 //        ChatUserMessage message = messages.get(position);
@@ -137,7 +137,7 @@
 //            viewHolder.setItemBinding(message.getContent());
 //        }
 //    }
-//
+
 //    @Override
 //    public int getItemViewType(int position) {
 //        ChatUserMessage message = messages.get(position);
@@ -171,7 +171,7 @@
 //                return 300;
 //        }
 //    }
-//
+
 //    public void addMessage(ChatUserMessage msg) {
 //        if (msg == null) return;
 //        int position = messages.indexOf(msg);
@@ -184,22 +184,22 @@
 //            notifyItemChanged(position);
 //        }
 //    }
-//
+
 //    public void addMessages(List<ChatUserMessage> msgs) {
 //        if (msgs == null || msgs.size() <= 0) return;
 //        messages.addAll(0, msgs);
-////        notifyItemRangeInserted(0, messages.size()-1);
+// //        notifyItemRangeInserted(0, messages.size()-1);
 //    }
-//
+
 //    public long getMinMessageId() {
 //        if (messages != null && messages.size() > 0) {
 //            return messages.get(0).getMsgId();
 //        }
 //        return 0;
 //    }
-//
+
 //    @Override
 //    public int getItemCount() {
 //        return messages.size();
 //    }
-//}
+// }

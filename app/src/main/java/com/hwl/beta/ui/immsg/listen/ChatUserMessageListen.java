@@ -133,9 +133,10 @@ public class ChatUserMessageListen extends
                     messageContent.getFromUserName(), messageContent.getFromUserImage(),
                     messageContent.getIsFriend());
 
-            if (messageContent.getIsFriend()) {
-                DaoUtils.getFriendManagerInstance().save(friend);
-            }
+            DaoUtils.getFriendManagerInstance().save(friend);
+            // if (messageContent.getIsFriend()) {
+            //     DaoUtils.getFriendManagerInstance().save(friend);
+            // }
         }
 
         return friend;
