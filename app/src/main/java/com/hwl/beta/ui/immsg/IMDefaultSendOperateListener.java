@@ -16,15 +16,15 @@ public class IMDefaultSendOperateListener<T> {
     private Handler mainHandler;
 
     public IMDefaultSendOperateListener() {
-        this("",false);
+        this("", false);
     }
 
     public IMDefaultSendOperateListener(boolean isRunMainThread) {
-        this("",isRunMainThread);
+        this("", isRunMainThread);
     }
 
     public IMDefaultSendOperateListener(String prefix) {
-        this(prefix,false);
+        this(prefix, false);
     }
 
     public IMDefaultSendOperateListener(String prefix, boolean isRunMainThread) {
@@ -35,7 +35,8 @@ public class IMDefaultSendOperateListener<T> {
     }
 
     protected String getSendDesc() {
-        return String.format("send %s message operate status", (this.prefix==null?"":this.prefix));
+        return String.format("send %s message operate status", (this.prefix == null ? "" : this
+                .prefix));
     }
 
     public void unconnect() {
@@ -51,6 +52,8 @@ public class IMDefaultSendOperateListener<T> {
                     success1();
                 }
             });
+        else
+            success1();
     }
 
     public final void sendToServerFaild() {
@@ -62,6 +65,8 @@ public class IMDefaultSendOperateListener<T> {
                     failed1();
                 }
             });
+        else
+            failed1();
     }
 
     public final void sessionInvalid() {
@@ -78,6 +83,8 @@ public class IMDefaultSendOperateListener<T> {
                     success2(t);
                 }
             });
+        else
+            success2(t);
     }
 
     public final void listenFailed(final String message) {
@@ -89,6 +96,8 @@ public class IMDefaultSendOperateListener<T> {
                     failed2(message);
                 }
             });
+        else
+            failed2(message);
     }
 
 

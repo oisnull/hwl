@@ -24,7 +24,7 @@
 //import com.hwl.beta.sp.UserSP;
 //import com.hwl.beta.ui.chat.action.IChatMessageItemListener;
 //import com.hwl.beta.ui.chat.bean.ChatImageViewBean;
-//import com.hwl.beta.ui.chat.holder.ChatMessageReceivedAudioViewHolder;
+//import com.hwl.beta.ui.chat.holder.ChatMessageReceivedVoiceViewHolder;
 //import com.hwl.beta.ui.chat.holder.ChatMessageReceivedImageViewHolder;
 //import com.hwl.beta.ui.chat.holder.ChatMessageReceivedMessageViewHolder;
 //import com.hwl.beta.ui.chat.holder.ChatMessageReceivedVideoViewHolder;
@@ -73,7 +73,7 @@
 //            case 201:
 //                return new ChatMessageReceivedImageViewHolder((ReceivedImageItemBinding) DataBindingUtil.inflate(inflater, R.layout.received_image_item, parent, false));
 //            case 202:
-//                return new ChatMessageReceivedAudioViewHolder((ReceivedAudioItemBinding) DataBindingUtil.inflate(inflater, R.layout.received_audio_item, parent, false));
+//                return new ChatMessageReceivedVoiceViewHolder((ReceivedAudioItemBinding) DataBindingUtil.inflate(inflater, R.layout.received_audio_item, parent, false));
 //            case 203:
 //                return new ChatMessageReceivedVideoViewHolder((ReceivedVideoItemBinding) DataBindingUtil.inflate(inflater, R.layout.received_video_item, parent, false));
 //            case 300:
@@ -127,8 +127,8 @@
 //            ChatMessageReceivedImageViewHolder viewHolder = (ChatMessageReceivedImageViewHolder) holder;
 //            String showUrl = ChatImageViewBean.getShowUrl(message.getLocalUrl(), message.getPreviewUrl(), message.getOriginalUrl());
 //            viewHolder.setItemBinding(itemListener, new ChatImageViewBean(message.getFromUserHeadImage(), showUrl), position, message.getFromUserName(), DateUtils.getChatShowTime(message.getSendTime()));
-//        } else if (holder instanceof ChatMessageReceivedAudioViewHolder) {
-//            ChatMessageReceivedAudioViewHolder viewHolder = (ChatMessageReceivedAudioViewHolder) holder;
+//        } else if (holder instanceof ChatMessageReceivedVoiceViewHolder) {
+//            ChatMessageReceivedVoiceViewHolder viewHolder = (ChatMessageReceivedVoiceViewHolder) holder;
 //            viewHolder.setItemBinding(itemListener, new ChatImageViewBean(message.getFromUserHeadImage()), position, message.getPlayTime(), message.getFromUserName(), DateUtils.getChatShowTime(message.getSendTime()));
 //        } else if (holder instanceof ChatMessageReceivedVideoViewHolder) {
 //            ChatMessageReceivedVideoViewHolder viewHolder = (ChatMessageReceivedVideoViewHolder) holder;

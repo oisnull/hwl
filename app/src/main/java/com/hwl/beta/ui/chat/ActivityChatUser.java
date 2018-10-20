@@ -2,21 +2,29 @@ package com.hwl.beta.ui.chat;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.ChatActivityUserBinding;
+import com.hwl.beta.db.entity.ChatUserMessage;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.ui.chat.action.IChatMessageItemListener;
 import com.hwl.beta.ui.chat.adp.ChatUserMessageAdapter;
 import com.hwl.beta.ui.chat.logic.ChatUserLogic;
 import com.hwl.beta.ui.chat.standard.ChatUserStandard;
 import com.hwl.beta.ui.common.BaseActivity;
+import com.hwl.beta.ui.common.DefaultCallback;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/12/31.
@@ -29,7 +37,6 @@ public class ActivityChatUser extends BaseActivity {
     ChatUserStandard chatUserStandard;
     SmartRefreshLayout refreshLayout;
     ChatUserMessageAdapter messageAdapter;
-    RecyclerView rvMessageContainer;
     //   ChatUserEmotionPannelListener emotionPannelListener;
     Friend user;
 
@@ -51,47 +58,24 @@ public class ActivityChatUser extends BaseActivity {
         initView();
     }
 
-//    @SuppressLint("CheckResult")
-//    private void loadMessages() {
-//        long msgId = messageAdapter.getMinMessageId();
-//        if (msgId <= 0) return;
-//        Observable.just(msgId)
-//                .map(new Function<Long, List<ChatUserMessage>>() {
-//                    @Override
-//                    public List<ChatUserMessage> apply(Long msgId) throws Exception {
-//                        return DaoUtils.getChatUserMessageManagerInstance().getFromUserMessages
-// (myUserId, user.getId(), msgId, pageSize);
-//                    }
-//                })
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Consumer<List<ChatUserMessage>>() {
-//                    @Override
-//                    public void accept(List<ChatUserMessage> msgs) throws Exception {
-//                        if (msgs != null && msgs.size() > 0) {
-//                            sortMessages(msgs);
-//                            messageAdapter.addMessages(msgs);
-//                        } else {
-//                            refreshLayout.setEnableRefresh(false);
-//                        }
-//                        refreshLayout.finishRefresh(true);
-//                    }
-//                }, new Consumer<Throwable>() {
-//                    @Override
-//                    public void accept(Throwable throwable) throws Exception {
-//                        refreshLayout.finishRefresh(false);
-//                    }
-//                });
-//    }
+    private void loadMessages() {
+        chatUserStandard.loadLocalMessages(user.getId(), messageAdapter.getMinMessageId(), new DefaultCallback<List<ChatUserMessage>, String>() {
+            @Override
+            public void success(List<ChatUserMessage> msgs) {
+                if (msgs != null && msgs.size() > 0) {
+                    messageAdapter.addMessages(msgs);
+                } else {
+                    refreshLayout.setEnableRefresh(false);
+                }
+                refreshLayout.finishRefresh(true);
+            }
 
-//    private void sortMessages(List<ChatUserMessage> messageList) {
-//        if (messageList == null || messageList.size() <= 0) return;
-//        Collections.sort(messageList, new Comparator<ChatUserMessage>() {
-//            public int compare(ChatUserMessage arg0, ChatUserMessage arg1) {
-//                return arg0.getMsgId().compareTo(arg1.getMsgId());
-//            }
-//        });
-//    }
+            @Override
+            public void error(String errorMessage) {
+                refreshLayout.finishRefresh(false);
+            }
+        });
+    }
 
     private void initView() {
         chatUserStandard.clearRecordMessageCount(user.getId());
@@ -116,34 +100,33 @@ public class ActivityChatUser extends BaseActivity {
         //    final EmotionControlPannel ecpEmotion = findViewById(R.id.ecp_emotion);
         //    ecpEmotion.setEmotionPannelListener(emotionPannelListener);
 
-        //    messageAdapter = new ChatUserMessageAdapter(activity, messages, new
-        // ChatMessageItemListener());
-        //    rvMessageContainer = findViewById(R.id.rv_message_container);
-        //    rvMessageContainer.setAdapter(messageAdapter);
-        //    rvMessageContainer.setLayoutManager(new LinearLayoutManager(activity));
-        //    rvMessageContainer.scrollToPosition(messageAdapter.getItemCount() - 1);
-        //    rvMessageContainer.setOnTouchListener(new View.OnTouchListener() {
-        //        @Override
-        //        public boolean onTouch(View v, MotionEvent event) {
-        //            switch (event.getAction()) {
-        //                case MotionEvent.ACTION_DOWN:
-        //                    ecpEmotion.hideEmotionFunction();
-        //                    break;
-        //            }
-        //            return false;
-        //        }
-        //    });
+        messageAdapter = new ChatUserMessageAdapter(activity, chatUserStandard
+                .getTopLocalMessages(user.getId()), new
+                ChatMessageItemListener());
+        binding.rvMessageContainer.setAdapter(messageAdapter);
+        binding.rvMessageContainer.setLayoutManager(new LinearLayoutManager(activity));
+        binding.rvMessageContainer.scrollToPosition(messageAdapter.getItemCount() - 1);
+//        binding.rvMessageContainer.setOnTouchListener(new View.OnTouchListener() {
+//                @Override
+//                public boolean onTouch(View v, MotionEvent event) {
+//                    switch (event.getAction()) {
+//                        case MotionEvent.ACTION_DOWN:
+//                            ecpEmotion.hideEmotionFunction();
+//                            break;
+//                    }
+//                    return false;
+//                }
+//            });
 
-        //    refreshLayout = findViewById(R.id.refreshLayout);
-        //    refreshLayout.setEnableLoadMore(false);
-        //    refreshLayout.setEnableScrollContentWhenLoaded(false);
-        //    refreshLayout.setEnableScrollContentWhenRefreshed(false);
-        //    refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-        //        @Override
-        //        public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-        //            loadMessages();
-        //        }
-        //    });
+        binding.refreshLayout.setEnableLoadMore(false);
+        binding.refreshLayout.setEnableScrollContentWhenLoaded(false);
+        binding.refreshLayout.setEnableScrollContentWhenRefreshed(false);
+        binding.refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                loadMessages();
+            }
+        });
     }
 
 //    @Subscribe(threadMode = ThreadMode.MAIN)

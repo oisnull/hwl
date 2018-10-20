@@ -10,12 +10,15 @@ import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.convert.DBFriendAction;
 import com.hwl.beta.ui.ebus.EventBusUtil;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class ChatUserLogic implements ChatUserStandard {
@@ -33,13 +36,48 @@ public class ChatUserLogic implements ChatUserStandard {
 
     @Override
     public List<ChatUserMessage> getTopLocalMessages(long userId) {
-        return DaoUtils.getChatUserMessageManagerInstance().getFromUserMessages(UserSP.getUserId
-                (), userId, 0, pageSize);
+        List<ChatUserMessage> messages = DaoUtils.getChatUserMessageManagerInstance()
+                .getFromUserMessages(UserSP.getUserId
+                        (), userId, 0, pageSize);
+        sortMessages(messages);
+        return messages;
+    }
+
+    private void sortMessages(List<ChatUserMessage> messageList) {
+        if (messageList == null || messageList.size() <= 0) return;
+        Collections.sort(messageList, new Comparator<ChatUserMessage>() {
+            public int compare(ChatUserMessage arg0, ChatUserMessage arg1) {
+                return arg0.getMsgId().compareTo(arg1.getMsgId());
+            }
+        });
     }
 
     @Override
-    public void loadLocalMessages(long userId, long minMsgId,
-                                  DefaultCallback<List<ChatUserMessage>, String> callback) {
+    public void loadLocalMessages(final long userId, final long minMsgId,
+                                  final DefaultCallback<List<ChatUserMessage>, String> callback) {
+        Observable.create(new ObservableOnSubscribe() {
+            @Override
+            public void subscribe(ObservableEmitter emitter) {
+                List<ChatUserMessage> messages = DaoUtils.getChatUserMessageManagerInstance()
+                        .getFromUserMessages(UserSP.getUserId
+                                (), userId, minMsgId, pageSize);
+                emitter.onNext(messages);
+                emitter.onComplete();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<ChatUserMessage>>() {
+                    @Override
+                    public void accept(List<ChatUserMessage> msgs) {
+                        callback.success(msgs);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) {
+                        callback.error(throwable.getMessage());
+                    }
+                });
     }
 
     @Override

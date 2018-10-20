@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="image"
+            type="com.hwl.beta.ui.chat.bean.ChatImageViewBean"></variable>
+
+        <variable
+            name="position"
+            type="int"></variable>
+
+        <variable
+            name="userName"
+            type="String"></variable>
+
+        <variable
+            name="showTime"
+            type="String"></variable>
+
+        <variable
+            name="action"
+            type="com.hwl.beta.ui.chat.action.IChatMessageItemListener"></variable>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_message_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@drawable/bg_message_time"
+            android:padding="5dp"
+            android:text="@{showTime}"
+            android:textColor="@color/white"
+            android:textSize="@dimen/dp_12"
+            android:visibility="@{android.text.TextUtils.isEmpty(showTime)?android.view.View.GONE:android.view.View.VISIBLE}" />
+
+        <RelativeLayout
+            android:id="@+id/rl_message_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_10">
+
+            <ImageView
+                android:id="@+id/iv_userhead"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:onClick="@{(view)->action.onHeadImageClick(position)}"
+                android:src="@drawable/empty_photo"
+                app:imageUrl="@{image.imageUrl}" />
+
+            <TextView
+                android:id="@+id/tv_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/iv_userhead"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="@dimen/dp_15"
+                android:layout_toRightOf="@+id/iv_userhead"
+                android:text="@{userName}"
+                android:textSize="@dimen/dp_12"
+                android:visibility="visible" />
+
+            <RelativeLayout
+                android:id="@+id/rl_video_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_username"
+                android:layout_toRightOf="@id/iv_userhead"
+                android:background="@drawable/chatfrom_bg">
+
+                <ImageView
+                    android:id="@+id/iv_video_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:adjustViewBounds="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:maxHeight="160dp"
+                    android:maxWidth="160dp"
+                    android:minHeight="50dp"
+                    android:minWidth="50dp"
+                    android:onClick="@{(view)->action.onImageItemClick(position)}"
+                    android:onLongClick="@{(view)->action.onChatItemLongClick(view,position)}"
+                    android:padding="5dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/empty_photo"
+                    app:chatImageUrl="@{image.chatImageUrl}" />
+
+                <ImageButton
+                    android:id="@+id/btn_video_play"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/video_play"
+                    android:onClick="@{(view)->action.onVideoItemClick(position)}" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+    </LinearLayout>
+</layout>
