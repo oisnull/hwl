@@ -20,6 +20,7 @@ import com.hwl.beta.ui.common.BaseFragment;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.ebus.EventBusConstant;
 import com.hwl.beta.ui.ebus.EventMessageModel;
+import com.hwl.beta.ui.ebus.bean.EventUpdateFriendRemark;
 import com.hwl.beta.ui.immsg.IMConstant;
 import com.hwl.beta.utils.NetworkUtils;
 
@@ -209,6 +210,12 @@ public class FragmentRecord extends BaseFragment {
                 break;
             case EventBusConstant.EB_TYPE_NETWORK_BREAK_UPDATE:
                 binding.llNetworkNone.setVisibility(View.VISIBLE);
+                break;
+            case EventBusConstant.EB_TYPE_FRIEND_UPDATE_REMARK:
+                EventUpdateFriendRemark friendRemark = (EventUpdateFriendRemark) messageModel
+                        .getMessageModel();
+                recordAdapter.updateFriendRemark(friendRemark.getFriendId(), friendRemark
+                        .getFriendRemark());
                 break;
         }
     }

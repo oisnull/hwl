@@ -42,13 +42,14 @@ public class ChatRecordMessageManager extends BaseDao<ChatRecordMessage> {
                 .unique();
     }
 
-    public ChatRecordMessage updateUserRecrdTitle(long myUserId, long fromUserId, String
-            userName, String userImage) {
+    public ChatRecordMessage updateUserRecordTitle(long myUserId, long fromUserId, String
+            userName) {
         if (fromUserId <= 0) return null;
         ChatRecordMessage record = getUserRecord(myUserId, fromUserId);
         if (record == null) return null;
-        if (StringUtils.isNotBlank(userName))
+        if (StringUtils.isNotBlank(userName)) {
             record.setTitle(userName);
+        }
 //        if (StringUtils.isNotBlank(userImage))
 //            record.setRecordImage(userImage);
         daoSession.getChatRecordMessageDao().update(record);

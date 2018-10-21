@@ -153,11 +153,14 @@ public class ActivityUserEditItem extends BaseActivity {
             NetDefaultObserver<SetFriendRemarkResponse>() {
                 @Override
                 protected void onSuccess(SetFriendRemarkResponse response) {
-                    DaoUtils.getFriendManagerInstance().updateRemark(itemBean.getFriendId(),
+                    Friend friend = DaoUtils.getFriendManagerInstance().updateRemark(itemBean.getFriendId(),
                             itemBean.getEditContent());
+                     DaoUtils.getChatRecordMessageManagerInstance()
+                            .updateUserRecordTitle(UserSP
+                            .getUserId(), friend.getId(), friend
+                            .getShowName());
                     EventBusUtil.sendFriendUpdateRemarkEvent(itemBean.getFriendId(), itemBean
                             .getEditContent());
-
 //                    Friend friend = DaoUtils.getFriendManagerInstance().get(itemBean
 // .getFriendId());
 //                    if (friend != null && friend.getId() > 0) {

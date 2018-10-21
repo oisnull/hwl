@@ -72,6 +72,20 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
         }
     }
 
+    public void updateFriendRemark(long friendId, String remark) {
+        for (int i = 0; i < records.size(); i++) {
+            if (records.get(i).getFromUserId() == friendId && records.get(i)
+                    .getRecordType() == IMConstant.CHAT_RECORD_TYPE_USER) {
+                if (!records.get(i).getFromUserName().equals(remark)) {
+                    records.get(i).setFromUserName(remark);
+                    records.get(i).setTitle(remark);
+                    notifyItemChanged(i);
+                    break;
+                }
+            }
+        }
+    }
+
     @Override
     public RecordAdapter.RecordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new RecordViewHolder((ChatRecordItemBinding) DataBindingUtil.inflate(inflater, R
