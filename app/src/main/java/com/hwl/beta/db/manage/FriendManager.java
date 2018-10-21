@@ -80,6 +80,14 @@ public class FriendManager extends BaseDao<Friend> {
         return daoSession.getFriendDao().loadByRowId(friendId);
     }
 
+    public Friend updateRemark(long friendId, String remark) {
+        Friend friend = get(friendId);
+        if (friend == null) return null;
+        friend.setRemark(remark);
+        save(friend);
+        return friend;
+    }
+
     public List<Friend> getList(List<Long> friendIds) {
         if (friendIds == null || friendIds.size() <= 0) return null;
         return daoSession.getFriendDao().queryBuilder()

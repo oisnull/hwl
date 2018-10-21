@@ -3,6 +3,7 @@ package com.hwl.beta.ui.ebus;
 import com.hwl.beta.db.entity.ChatRecordMessage;
 import com.hwl.beta.db.entity.ChatUserMessage;
 import com.hwl.beta.db.entity.Friend;
+import com.hwl.beta.ui.ebus.bean.EventUpdateFriendRemark;
 import com.hwl.beta.ui.ebus.bean.EventUserEditModel;
 import com.hwl.beta.utils.StringUtils;
 
@@ -81,8 +82,16 @@ public class EventBusUtil {
     }
 
     public static void sendFriendEvent(Friend friend) {
+        if (friend == null) return;
         sendEvent(new EventMessageModel
                 (EventBusConstant.EB_TYPE_FRIEND_ADD, friend));
+    }
+
+    public static void sendFriendUpdateRemarkEvent(long friendId, String remark) {
+        if (friendId <= 0) return;
+        EventUpdateFriendRemark messageModel = new EventUpdateFriendRemark(friendId, remark);
+        sendEvent(new EventMessageModel
+                (EventBusConstant.EB_TYPE_FRIEND_UPDATE_REMARK, messageModel));
     }
 
     public static void sendChatUserMessageEvent(ChatUserMessage userMessage) {

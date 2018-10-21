@@ -54,7 +54,7 @@
         <activity android:name=".ui.entry.ActivityRegister" />
         <activity android:name=".ui.entry.ActivityGetpwd" />
         <activity android:name=".ui.user.ActivityUserSearch" />
-        <!--<activity android:name=".ui.user.ActivityUserIndex" />-->
+        <activity android:name=".ui.user.ActivityUserIndex" />
         <!--<activity android:name=".ui.user.ActivityUserSetting" />-->
         <activity android:name=".ui.user.ActivityNewFriend" />
         <activity android:name=".ui.user.ActivityUserEdit" />

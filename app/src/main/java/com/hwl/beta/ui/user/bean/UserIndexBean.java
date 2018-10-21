@@ -1,5 +1,7 @@
 package com.hwl.beta.ui.user.bean;
 
+import com.hwl.beta.utils.StringUtils;
+
 import java.util.List;
 
 /**
@@ -14,7 +16,7 @@ public class UserIndexBean {
 
     private int idcard;
     private long userId;
-    private String showName;
+    private String userName;
     private String userImage;
     private String symbol;
     private String remark;
@@ -69,9 +71,9 @@ public class UserIndexBean {
     public UserIndexBean() {
     }
 
-    public UserIndexBean(long userId, String showName, String userImage) {
+    public UserIndexBean(long userId, String userName, String userImage) {
         this.userId = userId;
-        this.showName = showName;
+        this.userName = userName;
         this.userImage = userImage;
     }
 
@@ -83,12 +85,12 @@ public class UserIndexBean {
         this.userImage = userImage;
     }
 
-    public String getShowName() {
-        return showName;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setShowName(String showName) {
-        this.showName = showName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public long getUserId() {
@@ -121,5 +123,14 @@ public class UserIndexBean {
 
     public void setRegisterAddress(String registerAddress) {
         this.registerAddress = registerAddress;
+    }
+
+    public String getShowName() {
+        if (StringUtils.isNotBlank(this.remark))
+            return this.remark;
+        else if (StringUtils.isNotBlank(this.userName))
+            return this.userName;
+
+        return this.symbol;
     }
 }

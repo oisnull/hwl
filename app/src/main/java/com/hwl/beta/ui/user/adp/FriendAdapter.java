@@ -39,6 +39,21 @@ public class FriendAdapter extends BaseAdapter {
         pinyinComparator = new FriendComparator();
     }
 
+    public void updateFriendRemark(long friendId, String remark) {
+        if (friendId <= 0) return;
+        Friend friend = null;
+        for (int i = 0; i < users.size(); i++) {
+            if (friendId == users.get(i).getId()) {
+                friend = users.get(i);
+                friend.setRemark(remark);
+                break;
+            }
+        }
+        if (friend == null) return;
+        Collections.sort(users, pinyinComparator);
+        notifyDataSetChanged();
+    }
+
     public void addFriend(Friend friend) {
         if (friend == null) return;
         boolean isExists = false;

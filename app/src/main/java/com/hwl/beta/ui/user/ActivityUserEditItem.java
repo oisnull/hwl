@@ -11,7 +11,6 @@ import android.widget.RadioButton;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.UserActivityEditItemBinding;
 import com.hwl.beta.db.DaoUtils;
-import com.hwl.beta.db.entity.ChatRecordMessage;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.net.user.UserService;
@@ -19,7 +18,6 @@ import com.hwl.beta.net.user.body.SetFriendRemarkResponse;
 import com.hwl.beta.net.user.body.SetUserInfoResponse;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.ebus.EventBusUtil;
-import com.hwl.beta.ui.ebus.bean.EventUpdateFriendRemark;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.KeyBoardAction;
 import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
@@ -27,8 +25,6 @@ import com.hwl.beta.ui.convert.SexAction;
 import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.user.action.IUserEditItemListener;
 import com.hwl.beta.ui.user.bean.UserEditItemBean;
-
-import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by Administrator on 2018/1/26.
@@ -157,19 +153,24 @@ public class ActivityUserEditItem extends BaseActivity {
             NetDefaultObserver<SetFriendRemarkResponse>() {
                 @Override
                 protected void onSuccess(SetFriendRemarkResponse response) {
-                    //更新好友备注信息到本地
-                    Friend friend = DaoUtils.getFriendManagerInstance().get(itemBean.getFriendId());
-                    if (friend != null && friend.getId() > 0) {
-                        friend.setRemark(itemBean.getEditContent());
-                        DaoUtils.getFriendManagerInstance().save(friend);
-                        EventBus.getDefault().post(new EventUpdateFriendRemark(friend.getId(),
-                                friend
-                                        .getFirstLetter(), friend.getRemark()));
-                        ChatRecordMessage record = DaoUtils.getChatRecordMessageManagerInstance()
-                                .updateUserRecrdTitle(UserSP.getUserId(), friend.getId(), friend
-                                        .getRemark(), friend.getHeadImage());
-                        if (record != null) EventBus.getDefault().post(record);
-                    }
+                    DaoUtils.getFriendManagerInstance().updateRemark(itemBean.getFriendId(),
+                            itemBean.getEditContent());
+                    EventBusUtil.sendFriendUpdateRemarkEvent(itemBean.getFriendId(), itemBean
+                            .getEditContent());
+
+//                    Friend friend = DaoUtils.getFriendManagerInstance().get(itemBean
+// .getFriendId());
+//                    if (friend != null && friend.getId() > 0) {
+//                        friend.setRemark(itemBean.getEditContent());
+//                        DaoUtils.getFriendManagerInstance().save(friend);
+//                        EventBus.getDefault().post(new EventUpdateFriendRemark(friend.getId(),
+//                                friend
+//                                        .getFirstLetter(), friend.getRemark()));
+//                        ChatRecordMessage record = DaoUtils.getChatRecordMessageManagerInstance()
+//                                .updateUserRecrdTitle(UserSP.getUserId(), friend.getId(), friend
+//                                        .getRemark(), friend.getHeadImage());
+//                        if (record != null) EventBus.getDefault().post(record);
+//                    }
                     finish();
                     LoadingDialog.hide();
                 }

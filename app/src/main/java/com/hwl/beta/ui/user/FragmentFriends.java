@@ -1,6 +1,5 @@
 package com.hwl.beta.ui.user;
 
-import android.app.Activity;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,6 +18,7 @@ import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.ebus.EventBusConstant;
 import com.hwl.beta.ui.ebus.EventMessageModel;
+import com.hwl.beta.ui.ebus.bean.EventUpdateFriendRemark;
 import com.hwl.beta.ui.user.adp.FriendAdapter;
 import com.hwl.beta.ui.user.logic.FriendsLogic;
 import com.hwl.beta.ui.user.standard.FriendsStandard;
@@ -69,6 +69,12 @@ public class FragmentFriends extends BaseFragment {
             case EventBusConstant.EB_TYPE_FRIEND_ADD:
                 friendAdapter.addFriend((Friend) messageModel.getMessageModel());
                 break;
+            case EventBusConstant.EB_TYPE_FRIEND_UPDATE_REMARK:
+                EventUpdateFriendRemark friendRemark = (EventUpdateFriendRemark) messageModel
+                        .getMessageModel();
+                friendAdapter.updateFriendRemark(friendRemark.getFriendId(), friendRemark
+                        .getFriendRemark());
+                break;
         }
     }
 
@@ -104,8 +110,9 @@ public class FragmentFriends extends BaseFragment {
                         UITransfer.toNewFriendActivity(activity);
                         break;
                     default:
-//                    UITransfer.toUserIndexActivity(activity, friend.getId(), friend.getName(),
-//                            friend.getHeadImage());
+                        Friend friend = friendAdapter.getItem(position);
+                        UITransfer.toUserIndexActivity(activity, friend.getId(), friend.getName(),
+                                friend.getHeadImage());
                         break;
                 }
             }
@@ -116,7 +123,6 @@ public class FragmentFriends extends BaseFragment {
                 .OnTouchingLetterChangedListener() {
             @Override
             public void onTouchingLetterChanged(String letter) {
-                //Toast.makeText(getContext(), letter, Toast.LENGTH_SHORT);
                 int position = friendAdapter.getPositionForSection(letter.charAt(0));
                 if (position != -1) {
                     binding.lvFriends.setSelection(position);

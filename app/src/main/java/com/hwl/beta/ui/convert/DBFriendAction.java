@@ -51,6 +51,7 @@ public class DBFriendAction {
         friend.setUpdateTime(netFriendInfo.getUpdateTime());
         friend.setCircleBackImage(netFriendInfo.getCircleBackImage());
         friend.setLifeNotes(netFriendInfo.getLifeNotes());
+        friend.setIsFriend(true);
         return friend;
     }
 
@@ -68,6 +69,10 @@ public class DBFriendAction {
         friend.setCircleBackImage(userDetailsInfo.getCircleBackImage());
         friend.setLifeNotes(userDetailsInfo.getLifeNotes());
         return friend;
+    }
+
+    public static Friend convertToFriendInfo(long userId, String userName, String userHeadImage) {
+        return convertToFriendInfo(userId, userName, userHeadImage, false);
     }
 
     public static Friend convertToFriendInfo(long userId, String userName, String userHeadImage,
