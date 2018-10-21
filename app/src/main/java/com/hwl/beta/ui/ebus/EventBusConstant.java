@@ -8,7 +8,8 @@ public class EventBusConstant {
 
     public static final int EB_TYPE_FRIEND_REQUEST_UPDATE = 100;
     public static final int EB_TYPE_FRIEND_ADD = 101;
-    public static final int EB_TYPE_FRIEND_UPDATE_REMARK = 102;
+    public static final int EB_TYPE_FRIEND_DELETE = 102;
+    public static final int EB_TYPE_FRIEND_UPDATE_REMARK = 103;
     public static final int EB_TYPE_CHAT_USER_MESSAGE_UPDATE = 200;
     public static final int EB_TYPE_CHAT_RECORD_MESSAGE_UPDATE_SORT = 201;
     public static final int EB_TYPE_CHAT_RECORD_MESSAGE_UPDATE_NOSORT = 202;

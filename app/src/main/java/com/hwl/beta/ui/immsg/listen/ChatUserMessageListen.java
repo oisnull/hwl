@@ -75,6 +75,9 @@ public class ChatUserMessageListen extends
             // if (messageContent.getIsFriend()) {
             //     DaoUtils.getFriendManagerInstance().save(friend);
             // }
+            if (messageContent.getIsFriend()) {
+                EventBusUtil.sendFriendAddEvent(friend);
+            }
         }
 
         return friend;

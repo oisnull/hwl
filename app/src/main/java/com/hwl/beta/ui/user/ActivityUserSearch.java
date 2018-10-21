@@ -119,7 +119,7 @@ public class ActivityUserSearch extends BaseActivity {
             DialogUtils.showAddFriendDialog(activity, title, content, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    LoadingDialog.show(activity, "请求发送中...");
+                    LoadingDialog.show(activity, "好友请求发送中...");
                     KeyBoardAction.hideSoftInput(activity);
 
                     IMClientEntry.sendAddFriendMessage(user.getId(), content, new

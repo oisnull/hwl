@@ -64,7 +64,7 @@ public class NewFriendLogic implements NewFriendStandard {
                             DaoUtils.getFriendManagerInstance().save(friend);
                             DaoUtils.getFriendRequestManagerInstance().delete(friendRequest);
                             MessageCountSP.setFriendRequestReductionCount();
-                            EventBusUtil.sendFriendEvent(friend);
+                            EventBusUtil.sendFriendAddEvent(friend);
                             callback.success(true);
                             sendChatUserMessage(friend);
                         }

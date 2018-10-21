@@ -1,11 +1,23 @@
 package com.hwl.beta.ui.dialog;
 
+import android.app.Dialog;
 import android.support.v4.app.FragmentActivity;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import com.hwl.beta.R;
+import com.hwl.beta.sp.UserSP;
+import com.hwl.beta.ui.user.bean.UserIndexBean;
 
 public class DialogUtils {
     private static AddFriendDialogFragment addFriendDialogFragment;
     private static LocationDialogFragment locationDialogFragment;
+    private static Dialog userActionDialog;
 
     public static void showAddFriendDialog(FragmentActivity fragmentActivity, String title,
                                            String content, View.OnClickListener clickListener) {
@@ -28,7 +40,7 @@ public class DialogUtils {
 
     public static void showLocationDialog(FragmentActivity fragmentActivity, String title, String
             content, View.OnClickListener
-            clickListener) {
+                                                  clickListener) {
         if (locationDialogFragment == null) {
             locationDialogFragment = new LocationDialogFragment();
         }
@@ -43,6 +55,42 @@ public class DialogUtils {
         if (locationDialogFragment != null) {
             locationDialogFragment.dismiss();
             locationDialogFragment = null;
+        }
+    }
+
+    public static void showUserActionDialog(final FragmentActivity activity, View.OnClickListener
+            deleteUserClickListener, View.OnClickListener addBlackClickListener) {
+        userActionDialog = new Dialog(activity, R.style.BottomDialog);
+        LinearLayout root = (LinearLayout) LayoutInflater.from(activity).inflate(
+                R.layout.dialog_user_action, null);
+        //初始化视图
+        root.findViewById(R.id.btn_delete).setOnClickListener(deleteUserClickListener);
+        root.findViewById(R.id.btn_add_black).setOnClickListener(addBlackClickListener);
+        root.findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userActionDialog.dismiss();
+            }
+        });
+        userActionDialog.setContentView(root);
+        Window dialogWindow = userActionDialog.getWindow();
+        dialogWindow.setGravity(Gravity.BOTTOM);
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes(); // 获取对话框当前的参数值
+        lp.x = 0; // 新位置X坐标
+        lp.y = 0; // 新位置Y坐标
+        lp.width = activity.getResources().getDisplayMetrics().widthPixels; // 宽度
+        root.measure(0, 0);
+        lp.height = root.getMeasuredHeight();
+
+        lp.alpha = 9f; // 透明度
+        dialogWindow.setAttributes(lp);
+        userActionDialog.show();
+    }
+
+    public static void closeUserActionDialog() {
+        if (userActionDialog != null) {
+            userActionDialog.dismiss();
+            userActionDialog = null;
         }
     }
 }

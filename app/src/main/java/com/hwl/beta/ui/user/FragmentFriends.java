@@ -18,6 +18,7 @@ import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.ebus.EventBusConstant;
 import com.hwl.beta.ui.ebus.EventMessageModel;
+import com.hwl.beta.ui.ebus.bean.EventDeleteFriend;
 import com.hwl.beta.ui.ebus.bean.EventUpdateFriendRemark;
 import com.hwl.beta.ui.user.adp.FriendAdapter;
 import com.hwl.beta.ui.user.logic.FriendsLogic;
@@ -68,6 +69,10 @@ public class FragmentFriends extends BaseFragment {
                 break;
             case EventBusConstant.EB_TYPE_FRIEND_ADD:
                 friendAdapter.addFriend((Friend) messageModel.getMessageModel());
+                break;
+            case EventBusConstant.EB_TYPE_FRIEND_DELETE:
+                friendAdapter.deleteFriend(((EventDeleteFriend) messageModel.getMessageModel())
+                        .getFriendId());
                 break;
             case EventBusConstant.EB_TYPE_FRIEND_UPDATE_REMARK:
                 EventUpdateFriendRemark friendRemark = (EventUpdateFriendRemark) messageModel

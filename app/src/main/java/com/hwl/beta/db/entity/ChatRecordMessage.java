@@ -204,4 +204,26 @@ public class ChatRecordMessage extends BaseObservable implements Serializable {
     public boolean hasRecordId() {
         return this.recordId != null && this.recordId > 0;
     }
+
+    public String getRecordImage(long myUserId) {
+        if (this.fromUserId == myUserId)
+            return this.toUserHeadImage;
+        return this.fromUserHeadImage;
+    }
+
+    public boolean isShield() {
+        return isShield;
+    }
+
+    public void setShield(boolean shield) {
+        isShield = shield;
+    }
+
+    public List<String> getGroupUserImages() {
+        return groupUserImages;
+    }
+
+    public void setGroupUserImages(List<String> groupUserImages) {
+        this.groupUserImages = groupUserImages;
+    }
 }

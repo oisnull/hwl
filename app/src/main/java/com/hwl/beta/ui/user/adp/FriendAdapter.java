@@ -39,6 +39,16 @@ public class FriendAdapter extends BaseAdapter {
         pinyinComparator = new FriendComparator();
     }
 
+    public void deleteFriend(long friendId) {
+        for (int i = 0; i < users.size(); i++) {
+            if (friendId == users.get(i).getId()) {
+                this.users.remove(i);
+                break;
+            }
+        }
+        notifyDataSetChanged();
+    }
+
     public void updateFriendRemark(long friendId, String remark) {
         if (friendId <= 0) return;
         Friend friend = null;

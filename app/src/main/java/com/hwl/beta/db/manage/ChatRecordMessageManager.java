@@ -137,20 +137,22 @@ public class ChatRecordMessageManager extends BaseDao<ChatRecordMessage> {
         List<ChatRecordMessage> recordMessages = daoSession.getChatRecordMessageDao().loadAll();
         if (recordMessages != null && recordMessages.size() > 0) {
             for (int i = 0; i < recordMessages.size(); i++) {
-//                if (recordMessages.get(i).getRecordType() == MQConstant.CHAT_RECORD_TYPE_USER) {
-//                    long userId = UserSP.getUserId() == recordMessages.get(i).getFromUserId() ?
-// recordMessages.get(i).getToUserId() : recordMessages.get(i).getFromUserId();
-//                    recordMessages.get(i).setIsShield(DaoUtils
-// .getChatUserMessageManagerInstance().getChatUserSettingIsShield(userId));
-//                } else if (recordMessages.get(i).getRecordType() == MQConstant
-// .CHAT_RECORD_TYPE_GROUP) {
-//                    GroupInfo groupInfo = DaoUtils.getGroupInfoManagerInstance().get
-// (recordMessages.get(i).getGruopGuid());
-//                    if (groupInfo != null) {
-//                        recordMessages.get(i).setIsShield(groupInfo.getIsShield());
-//                        recordMessages.get(i).setGroupUserImages(groupInfo.getUserImages());
-//                    }
-//                }
+                if (recordMessages.get(i).getRecordType() == IMConstant.CHAT_RECORD_TYPE_USER) {
+                    long userId = UserSP.getUserId() == recordMessages.get(i).getFromUserId() ?
+                            recordMessages.get(i).getToUserId() : recordMessages.get(i)
+                            .getFromUserId();
+                    recordMessages.get(i).setShield(DaoUtils
+                            .getChatUserMessageManagerInstance().getChatUserSettingIsShield
+                                    (userId));
+                } else if (recordMessages.get(i).getRecordType() == IMConstant
+                        .CHAT_RECORD_TYPE_GROUP) {
+                    GroupInfo groupInfo = DaoUtils.getGroupInfoManagerInstance().get
+                            (recordMessages.get(i).getGroupGuid());
+                    if (groupInfo != null) {
+                        recordMessages.get(i).setShield(groupInfo.getIsShield());
+                        recordMessages.get(i).setGroupUserImages(groupInfo.getUserImages());
+                    }
+                }
             }
             return recordMessages;
         }

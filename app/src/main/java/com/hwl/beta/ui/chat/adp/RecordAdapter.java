@@ -14,11 +14,11 @@ import com.hwl.beta.badge.Badge;
 import com.hwl.beta.badge.QBadgeView;
 import com.hwl.beta.databinding.ChatRecordItemBinding;
 import com.hwl.beta.db.entity.ChatRecordMessage;
+import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.ChatRecordMessageComparator;
 import com.hwl.beta.ui.immsg.IMConstant;
 import com.hwl.beta.ui.widget.BadgeNumber;
 import com.hwl.beta.utils.DateUtils;
-import com.hwl.beta.utils.DisplayUtils;
 import com.hwl.beta.utils.StringUtils;
 
 import java.util.Collections;
@@ -36,7 +36,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
     private IAdapterListener adapterListener;
     private ChatRecordMessageComparator dateComparator;
     private int totalMessageCount = 0;
-    private int imageSize = 100;
+    private long myUserId;
 
     public RecordAdapter(Context context, List<ChatRecordMessage> records, IAdapterListener
             adapterListener) {
@@ -44,8 +44,8 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
         this.records = records;
         this.adapterListener = adapterListener;
         inflater = LayoutInflater.from(context);
-        imageSize = DisplayUtils.dp2px(context, imageSize);
         dateComparator = new ChatRecordMessageComparator();
+        myUserId = UserSP.getUserId();
     }
 
     public ChatRecordMessage getRecordMessage(int position) {
@@ -92,15 +92,15 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
             case IMConstant.CHAT_RECORD_TYPE_GROUP:
                 itemBinding.ivGroupImage.setVisibility(View.VISIBLE);
                 itemBinding.ivRecordImage.setVisibility(View.GONE);
-//                itemBinding.ivGroupImage.setImagesData(record.getGroupUserImages());
+                itemBinding.ivGroupImage.setImagesData(record.getGroupUserImages());
                 break;
             default:
                 itemBinding.ivGroupImage.setVisibility(View.GONE);
                 itemBinding.ivRecordImage.setVisibility(View.VISIBLE);
-//                Glide.with(context).load(record.getRecordImage())
-//                        .placeholder(R.drawable.empty_photo)
-//                        .error(R.drawable.empty_photo)
-//                        .into(itemBinding.ivRecordImage);
+                Glide.with(context).load(record.getRecordImage(myUserId))
+                        .placeholder(R.drawable.empty_photo)
+                        .error(R.drawable.empty_photo)
+                        .into(itemBinding.ivRecordImage);
                 break;
         }
 

@@ -96,7 +96,10 @@ public class FriendManager extends BaseDao<Friend> {
     }
 
     public List<Friend> getAll() {
-        return daoSession.getFriendDao().loadAll();
+        boolean isFriend = true;
+        return daoSession.getFriendDao().queryBuilder()
+                .where(FriendDao.Properties.IsFriend.eq(isFriend))
+                .list();
     }
 
 }
