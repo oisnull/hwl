@@ -7,7 +7,7 @@ public interface UserIndexStandard {
 
     UserIndexBean getUserInfo(long userId, String userName, String userImage);
 
-    void loadServerUserInfo(long userId, DefaultCallback<UserIndexBean, String> callback);
+    void loadServerUserInfo(long userId,String updateTime, DefaultCallback<UserIndexBean, String> callback);
 
     void deleteFriend(long userId, DefaultCallback callback);
 }

@@ -55,7 +55,11 @@ public class DBFriendAction {
         return friend;
     }
 
-    public static Friend convertToFriendInfo(UserDetailsInfo userDetailsInfo) {
+    public static Friend convertToFriendInfo(UserDetailsInfo userDetailsInfo){
+        convertToFriendInfo(userDetailsInfo,false);
+    }
+
+    public static Friend convertToFriendInfo(UserDetailsInfo userDetailsInfo,boolean isFriend) {
         Friend friend = new Friend();
         friend.setId(userDetailsInfo.getId());
         friend.setSymbol(userDetailsInfo.getSymbol());
@@ -68,6 +72,7 @@ public class DBFriendAction {
         friend.setUpdateTime(userDetailsInfo.getUpdateTime());
         friend.setCircleBackImage(userDetailsInfo.getCircleBackImage());
         friend.setLifeNotes(userDetailsInfo.getLifeNotes());
+        friend.setIsFriend(isFriend);
         return friend;
     }
 

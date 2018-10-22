@@ -50,7 +50,7 @@ public class EmotionDefaultPannel extends LinearLayout {
 
     ImageView ivChatEmotion;
     Button btnChatMessageSend;
-    EmotionEditText etChatMessage;//消息文本内容
+    EmotionEditText etChatMessage;
     NoHorizontalScrollerViewPager vpEmotionExtendContainer;
 
     public EmotionDefaultPannel(Context context, AttributeSet attrs) {
@@ -58,7 +58,6 @@ public class EmotionDefaultPannel extends LinearLayout {
         this.currContext = context;
         this.activity = ((FragmentActivity) currContext);
 
-        //初始化绑定组件
         init();
     }
 

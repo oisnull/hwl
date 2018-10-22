@@ -113,6 +113,7 @@ public class ActivityUserIndex extends BaseActivity {
                 });
 
         initData();
+        loadServerUserInfo();
     }
 
     @Override
@@ -138,40 +139,6 @@ public class ActivityUserIndex extends BaseActivity {
             }
         }
     }
-
-//    private void setCircles() {
-//        List<CircleExt> circleExts = DaoUtils.getCircleManagerInstance().getTop3Circles(userBean
-//                .getUserId());
-//        if (circleExts != null && circleExts.size() > 0) {
-//            List<String> imgs = new ArrayList<>();
-//            List<String> texts = new ArrayList<>();
-//            for (int i = 0; i < circleExts.size(); i++) {
-//                if (circleExts.get(i).getInfo() != null && circleExts.get(i).getInfo()
-//                        .getCircleId() > 0) {
-//                    texts.add(circleExts.get(i).getInfo().getContent());
-//                }
-//                if (circleExts.get(i).getImages() != null && circleExts.get(i).getImages().size()
-//                        > 0) {
-//                    for (int j = 0; j < circleExts.get(i).getImages().size(); j++) {
-//                        imgs.add(circleExts.get(i).getImages().get(j).getImageUrl());
-//                    }
-//                }
-//            }
-//            if (imgs.size() > 0) {
-//                userBean.setCircleImages(imgs);
-//            } else {
-//                userBean.setCircleTexts(texts);
-//            }
-//        }
-//    }
-
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//
-//        initData();
-//        loadFriendInfo();
-//    }
 
     private void initData() {
         ImageViewBean.loadImage(binding.ivHeader, userBean.getUserImage());
@@ -275,42 +242,26 @@ public class ActivityUserIndex extends BaseActivity {
         }
     }
 
-//    private void loadFriendInfo() {
-//        if (userBean.getIdcard() != UserIndexBean.IDCARD_FRIEND) return;
-//        UserService.getUserDetails(userBean.getUserId())
-//                .subscribe(new NetDefaultObserver<GetUserDetailsResponse>() {
-//                    @Override
-//                    protected void onSuccess(GetUserDetailsResponse response) {
-//                        if (response.getUserDetailsInfo() != null) {
-//
-//                            userBean.setShowName(response.getUserDetailsInfo().getName());
-//                            userBean.setUserImage(response.getUserDetailsInfo().getHeadImage());
-//                            userBean.setRegisterAddress(response.getUserDetailsInfo()
-// .getCountry());
-//                            userBean.setRemark(response.getUserDetailsInfo().getNameRemark());
-//                            userBean.setSymbol(response.getUserDetailsInfo().getSymbol());
-//                            userBean.setUserCircleBackImage(response.getUserDetailsInfo()
-//                                    .getCircleBackImage());
-//                            userBean.setUserLifeNotes(response.getUserDetailsInfo()
-// .getLifeNotes());
-//                            userBean.setCircleImages(response.getUserDetailsInfo()
-//                                    .getCircleImages());
-//                            userBean.setCircleTexts(response.getUserDetailsInfo()
-// .getCircleTexts());
-//
-//                            initData();
-//
-//                            if (friend != null) {
-//                                Friend tempFriend = DBFriendAction.convertToFriendInfo(response
-//                                        .getUserDetailsInfo());
-//                                if (!tempFriend.toString().equals(friend.toString())) {
-//                                    DaoUtils.getFriendManagerInstance().save(tempFriend);
-//                                }
-//                            }
-//                        }
-//                    }
-//                });
-//    }
+    private void loadServerUserInfo() {
+        indexStandard.loadServerUserInfo(userBean.getUserId(),new 
+            DefaultCallback<UserDetailsInfo, String>() {
+                @Override
+                public void success(UserDetailsInfo info) {
+                    if(!userBean.getUserImage().equals(info.getHeadImage())){
+                        ImageViewBean.loadImage(binding.ivHeader, info.getHeadImage());
+                    }
+                    if(!userBean.Symbol().equals(info.Symbol())){
+                        binding.tvSymbol.setText(userBean.getSymbol());
+                    }
+                    if(!userBean.getUserName().equals(info.getName())){
+                        binding.tvUsername.setText(info.getName());
+                    }
+                    if(!userBean.getRegisterAddress().equals(info.getCountry())){
+                        binding.tvArea.setText(info.getCountry());
+                    }
+                }
+            });
+   }
 
     public class UserIndexListener implements IUserIndexListener {
 

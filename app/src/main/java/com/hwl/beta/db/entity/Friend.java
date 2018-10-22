@@ -31,13 +31,15 @@ public class Friend extends BaseObservable implements Serializable {
     private String circleBackImage;
     private String country;
     private String province;
+    private boolean isFriend;
+    private String updateTime;
+
     @Transient
     private String messageCount;
     @Transient
     private int imageRes;
     @Transient
     private String showName;
-    private boolean isFriend;
 
     public String getShowName() {
         if (StringUtils.isNotBlank(this.remark))
@@ -47,8 +49,6 @@ public class Friend extends BaseObservable implements Serializable {
 
         return showName;
     }
-
-    private String updateTime;
 
     @Bindable
     public String getMessageCount() {
@@ -181,19 +181,27 @@ public class Friend extends BaseObservable implements Serializable {
         this.province = province;
     }
 
-    @Override
-    public String toString() {
-        return String.format("%s-%s-%s-%s-%s-%s-%s-%s-%s-%s", this.id, this.symbol, this.name,
-                this.remark, this.headImage, this.lifeNotes, this.sex, this.circleBackImage, this
-                        .country, this.province);
-    }
-
     public String getUpdateTime() {
         return this.updateTime;
     }
 
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public boolean getIsFriend() {
+        return this.isFriend;
+    }
+
+    public void setIsFriend(boolean isFriend) {
+        this.isFriend = isFriend;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s-%s-%s-%s-%s-%s-%s-%s-%s-%s", this.id, this.symbol, this.name,
+                this.remark, this.headImage, this.lifeNotes, this.sex, this.circleBackImage, this
+                        .country, this.province);
     }
 
     @Override
@@ -203,13 +211,5 @@ public class Friend extends BaseObservable implements Serializable {
             return this.getId() == f.getId();
         }
         return super.equals(obj);
-    }
-
-    public boolean getIsFriend() {
-        return this.isFriend;
-    }
-
-    public void setIsFriend(boolean isFriend) {
-        this.isFriend = isFriend;
     }
 }

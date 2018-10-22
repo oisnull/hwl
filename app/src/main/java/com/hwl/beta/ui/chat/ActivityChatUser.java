@@ -35,7 +35,6 @@ public class ActivityChatUser extends BaseActivity {
     FragmentActivity activity;
     ChatActivityUserBinding binding;
     ChatUserStandard chatUserStandard;
-    SmartRefreshLayout refreshLayout;
     ChatUserMessageAdapter messageAdapter;
     //   ChatUserEmotionPannelListener emotionPannelListener;
     Friend user;
@@ -43,38 +42,19 @@ public class ActivityChatUser extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.chat_activity_user);
-
         activity = this;
         chatUserStandard = new ChatUserLogic();
 
         user = chatUserStandard.getChatUserInfo(getIntent().getLongExtra("userid", 0), getIntent
                 ().getStringExtra("username"), getIntent().getStringExtra("userimage"));
         if (user == null) {
-            Toast.makeText(activity, "用户不存在", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "Chat user does not exist", Toast.LENGTH_SHORT).show();
             finish();
         }
 
+        binding = DataBindingUtil.setContentView(this, R.layout.chat_activity_user);
+
         initView();
-    }
-
-    private void loadMessages() {
-        chatUserStandard.loadLocalMessages(user.getId(), messageAdapter.getMinMessageId(), new DefaultCallback<List<ChatUserMessage>, String>() {
-            @Override
-            public void success(List<ChatUserMessage> msgs) {
-                if (msgs != null && msgs.size() > 0) {
-                    messageAdapter.addMessages(msgs);
-                } else {
-                    refreshLayout.setEnableRefresh(false);
-                }
-                refreshLayout.finishRefresh(true);
-            }
-
-            @Override
-            public void error(String errorMessage) {
-                refreshLayout.finishRefresh(false);
-            }
-        });
     }
 
     private void initView() {
@@ -100,9 +80,7 @@ public class ActivityChatUser extends BaseActivity {
         //    final EmotionControlPannel ecpEmotion = findViewById(R.id.ecp_emotion);
         //    ecpEmotion.setEmotionPannelListener(emotionPannelListener);
 
-        messageAdapter = new ChatUserMessageAdapter(activity, chatUserStandard
-                .getTopLocalMessages(user.getId()), new
-                ChatMessageItemListener());
+        messageAdapter = new ChatUserMessageAdapter(activity, chatUserStandard.getTopLocalMessages(user.getId()), new ChatMessageItemListener());
         binding.rvMessageContainer.setAdapter(messageAdapter);
         binding.rvMessageContainer.setLayoutManager(new LinearLayoutManager(activity));
         binding.rvMessageContainer.scrollToPosition(messageAdapter.getItemCount() - 1);
@@ -125,6 +103,25 @@ public class ActivityChatUser extends BaseActivity {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 loadMessages();
+            }
+        });
+    }
+
+    private void loadMessages() {
+        chatUserStandard.loadLocalMessages(user.getId(), messageAdapter.getMinMessageId(), new DefaultCallback<List<ChatUserMessage>, String>() {
+            @Override
+            public void success(List<ChatUserMessage> msgs) {
+                if (msgs != null && msgs.size() > 0) {
+                    messageAdapter.addMessages(msgs);
+                } else {
+                    binding.refreshLayout.setEnableRefresh(false);
+                }
+                binding.refreshLayout.finishRefresh(true);
+            }
+
+            @Override
+            public void error(String errorMessage) {
+                binding.refreshLayout.finishRefresh(false);
             }
         });
     }

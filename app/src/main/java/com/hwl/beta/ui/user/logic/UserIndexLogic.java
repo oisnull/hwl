@@ -46,12 +46,27 @@ public class UserIndexLogic implements UserIndexStandard {
         userBean.setSymbol(friend.getSymbol());
         userBean.setUserCircleBackImage(friend.getCircleBackImage());
         userBean.setUserLifeNotes(friend.getLifeNotes());
+        userBean.setUpdateTime(friend.getUpdateTime());
         return userBean;
     }
 
     @Override
-    public void loadServerUserInfo(long userId, DefaultCallback<UserIndexBean, String> callback) {
+    public void loadServerUserInfo(long userId,String updateTime, DefaultCallback<UserDetailsInfo, String> callback) {
+        if(userId==UserSP.getUserId()) return;
 
+        UserService.getUserDetails(userId)
+               .subscribe(new NetDefaultObserver<GetUserDetailsResponse>() {
+                   @Override
+                   protected void onSuccess(GetUserDetailsResponse response) {
+                       if (response.getUserDetailsInfo() != null) {
+                            callback.success(response.getUserDetailsInfo());
+                            if(!response.getUserDetailsInfo().getUpdateTime().equals(updateTime)){
+                                Friend newInfo = DBFriendAction.convertToFriendInfo(response.getUserDetailsInfo());
+                                DaoUtils.getFriendManagerInstance().save(newInfo);
+                            }
+                       }
+                   }
+               });
     }
 
     @Override
@@ -66,18 +81,6 @@ public class UserIndexLogic implements UserIndexStandard {
                             UserSP.deleteOneFriendCount();
                             EventBusUtil.sendFriendDeleteEvent(userId);
                             callback.success(true);
-//                            //删除好友聊天数据
-//                            ChatRecordMessage record = DaoUtils
-//                                    .getChatRecordMessageManagerInstance().deleteUserRecords
-//                                            (UserSP.getUserId(), userBean
-//                                                    .getUserId());
-//                            if (record != null) {
-//                                DaoUtils.getChatUserMessageManagerInstance()
-//                                        .deleteUserMessages(UserSP.getUserId(), userBean
-//                                                .getUserId());
-//                                EventBus.getDefault().post(new EventActionChatRecord
-//                                        (EventBusConstant.EB_TYPE_ACTINO_REMOVE, record));
-//                            }
                         } else {
                             onError("删除失败");
                         }

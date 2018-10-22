@@ -13,9 +13,6 @@ public class UserDetailsInfo {
     private String Province;
     private String CircleBackImage;
     private String LifeNotes;
-    /// <summary>
-    /// 是否是好友
-    /// </summary>
     private boolean IsFriend;
     private String FirstSpell;
     private String UpdateTime;

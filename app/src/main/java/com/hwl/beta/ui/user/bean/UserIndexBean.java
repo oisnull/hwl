@@ -25,6 +25,15 @@ public class UserIndexBean {
     private String userLifeNotes;
     private List<String> circleImages;
     private List<String> circleTexts;
+    private String updateTime;
+
+    public String getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
+    }
 
     public List<String> getCircleImages() {
         return circleImages;
