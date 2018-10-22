@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import com.hwl.beta.db.entity.ChatUserMessage;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.ui.chat.action.IChatMessageItemListener;
 import com.hwl.beta.ui.chat.adp.ChatUserMessageAdapter;
+import com.hwl.beta.ui.chat.imp.ChatUserEmotionPannelListener;
 import com.hwl.beta.ui.chat.logic.ChatUserLogic;
 import com.hwl.beta.ui.chat.standard.ChatUserStandard;
 import com.hwl.beta.ui.common.BaseActivity;
@@ -36,7 +38,7 @@ public class ActivityChatUser extends BaseActivity {
     ChatActivityUserBinding binding;
     ChatUserStandard chatUserStandard;
     ChatUserMessageAdapter messageAdapter;
-    //   ChatUserEmotionPannelListener emotionPannelListener;
+    ChatUserEmotionPannelListener emotionPannelListener;
     Friend user;
 
     @Override
@@ -76,25 +78,25 @@ public class ActivityChatUser extends BaseActivity {
                     }
                 });
 
-        //    emotionPannelListener = new ChatUserEmotionPannelListener(activity, user);
-        //    final EmotionControlPannel ecpEmotion = findViewById(R.id.ecp_emotion);
-        //    ecpEmotion.setEmotionPannelListener(emotionPannelListener);
+        emotionPannelListener = new ChatUserEmotionPannelListener(activity, user);
+        binding.ecpEmotion.setEmotionPannelListener(emotionPannelListener);
 
-        messageAdapter = new ChatUserMessageAdapter(activity, chatUserStandard.getTopLocalMessages(user.getId()), new ChatMessageItemListener());
+        messageAdapter = new ChatUserMessageAdapter(activity, chatUserStandard
+                .getTopLocalMessages(user.getId()), new ChatMessageItemListener());
         binding.rvMessageContainer.setAdapter(messageAdapter);
         binding.rvMessageContainer.setLayoutManager(new LinearLayoutManager(activity));
         binding.rvMessageContainer.scrollToPosition(messageAdapter.getItemCount() - 1);
-//        binding.rvMessageContainer.setOnTouchListener(new View.OnTouchListener() {
-//                @Override
-//                public boolean onTouch(View v, MotionEvent event) {
-//                    switch (event.getAction()) {
-//                        case MotionEvent.ACTION_DOWN:
-//                            ecpEmotion.hideEmotionFunction();
-//                            break;
-//                    }
-//                    return false;
-//                }
-//            });
+        binding.rvMessageContainer.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        binding.ecpEmotion.hideEmotionFunction();
+                        break;
+                }
+                return false;
+            }
+        });
 
         binding.refreshLayout.setEnableLoadMore(false);
         binding.refreshLayout.setEnableScrollContentWhenLoaded(false);
@@ -108,22 +110,23 @@ public class ActivityChatUser extends BaseActivity {
     }
 
     private void loadMessages() {
-        chatUserStandard.loadLocalMessages(user.getId(), messageAdapter.getMinMessageId(), new DefaultCallback<List<ChatUserMessage>, String>() {
-            @Override
-            public void success(List<ChatUserMessage> msgs) {
-                if (msgs != null && msgs.size() > 0) {
-                    messageAdapter.addMessages(msgs);
-                } else {
-                    binding.refreshLayout.setEnableRefresh(false);
-                }
-                binding.refreshLayout.finishRefresh(true);
-            }
+        chatUserStandard.loadLocalMessages(user.getId(), messageAdapter.getMinMessageId(), new
+                DefaultCallback<List<ChatUserMessage>, String>() {
+                    @Override
+                    public void success(List<ChatUserMessage> msgs) {
+                        if (msgs != null && msgs.size() > 0) {
+                            messageAdapter.addMessages(msgs);
+                        } else {
+                            binding.refreshLayout.setEnableRefresh(false);
+                        }
+                        binding.refreshLayout.finishRefresh(true);
+                    }
 
-            @Override
-            public void error(String errorMessage) {
-                binding.refreshLayout.finishRefresh(false);
-            }
-        });
+                    @Override
+                    public void error(String errorMessage) {
+                        binding.refreshLayout.finishRefresh(false);
+                    }
+                });
     }
 
 //    @Subscribe(threadMode = ThreadMode.MAIN)

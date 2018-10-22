@@ -4,8 +4,10 @@ import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.net.user.NetUserInfo;
+import com.hwl.beta.net.user.UserDetailsInfo;
 import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.DeleteFriendResponse;
+import com.hwl.beta.net.user.body.GetUserDetailsResponse;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
@@ -51,22 +53,26 @@ public class UserIndexLogic implements UserIndexStandard {
     }
 
     @Override
-    public void loadServerUserInfo(long userId,String updateTime, DefaultCallback<UserDetailsInfo, String> callback) {
-        if(userId==UserSP.getUserId()) return;
+    public void loadServerUserInfo(long userId, final String updateTime, final
+    DefaultCallback<UserDetailsInfo, String> callback) {
+        if (userId == UserSP.getUserId()) return;
 
         UserService.getUserDetails(userId)
-               .subscribe(new NetDefaultObserver<GetUserDetailsResponse>() {
-                   @Override
-                   protected void onSuccess(GetUserDetailsResponse response) {
-                       if (response.getUserDetailsInfo() != null) {
+                .subscribe(new NetDefaultObserver<GetUserDetailsResponse>() {
+                    @Override
+                    protected void onSuccess(GetUserDetailsResponse response) {
+                        if (response.getUserDetailsInfo() != null) {
                             callback.success(response.getUserDetailsInfo());
-                            if(!response.getUserDetailsInfo().getUpdateTime().equals(updateTime)){
-                                Friend newInfo = DBFriendAction.convertToFriendInfo(response.getUserDetailsInfo());
+                            if (response.getUserDetailsInfo().getUpdateTime() != null &&
+                                    !response.getUserDetailsInfo().getUpdateTime().equals
+                                            (updateTime)) {
+                                Friend newInfo = DBFriendAction.convertToFriendInfo(response
+                                        .getUserDetailsInfo());
                                 DaoUtils.getFriendManagerInstance().save(newInfo);
                             }
-                       }
-                   }
-               });
+                        }
+                    }
+                });
     }
 
     @Override

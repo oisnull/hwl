@@ -13,6 +13,7 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.UserActivityIndexBinding;
 import com.hwl.beta.emotion.widget.EmotionTextView;
+import com.hwl.beta.net.user.UserDetailsInfo;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.DefaultCallback;
@@ -243,25 +244,30 @@ public class ActivityUserIndex extends BaseActivity {
     }
 
     private void loadServerUserInfo() {
-        indexStandard.loadServerUserInfo(userBean.getUserId(),new 
-            DefaultCallback<UserDetailsInfo, String>() {
-                @Override
-                public void success(UserDetailsInfo info) {
-                    if(!userBean.getUserImage().equals(info.getHeadImage())){
-                        ImageViewBean.loadImage(binding.ivHeader, info.getHeadImage());
+        indexStandard.loadServerUserInfo(userBean.getUserId(), userBean.getUpdateTime(), new
+                DefaultCallback<UserDetailsInfo, String>() {
+                    @Override
+                    public void success(UserDetailsInfo info) {
+                        if (!userBean.getUserImage().equals(info.getHeadImage())) {
+                            ImageViewBean.loadImage(binding.ivHeader, info.getHeadImage());
+                        }
+                        if (!userBean.getSymbol().equals(info.getSymbol())) {
+                            binding.tvSymbol.setText(userBean.getSymbol());
+                        }
+                        if (!userBean.getUserName().equals(info.getName())) {
+                            binding.tvUsername.setText(info.getName());
+                        }
+                        if (!userBean.getRegisterAddress().equals(info.getCountry())) {
+                            binding.tvArea.setText(info.getCountry());
+                        }
                     }
-                    if(!userBean.Symbol().equals(info.Symbol())){
-                        binding.tvSymbol.setText(userBean.getSymbol());
+
+                    @Override
+                    public void error(String errorMessage) {
+
                     }
-                    if(!userBean.getUserName().equals(info.getName())){
-                        binding.tvUsername.setText(info.getName());
-                    }
-                    if(!userBean.getRegisterAddress().equals(info.getCountry())){
-                        binding.tvArea.setText(info.getCountry());
-                    }
-                }
-            });
-   }
+                });
+    }
 
     public class UserIndexListener implements IUserIndexListener {
 

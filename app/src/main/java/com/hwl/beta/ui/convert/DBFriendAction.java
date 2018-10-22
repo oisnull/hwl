@@ -55,11 +55,11 @@ public class DBFriendAction {
         return friend;
     }
 
-    public static Friend convertToFriendInfo(UserDetailsInfo userDetailsInfo){
-        convertToFriendInfo(userDetailsInfo,false);
+    public static Friend convertToFriendInfo(UserDetailsInfo userDetailsInfo) {
+        return convertToFriendInfo(userDetailsInfo, false);
     }
 
-    public static Friend convertToFriendInfo(UserDetailsInfo userDetailsInfo,boolean isFriend) {
+    public static Friend convertToFriendInfo(UserDetailsInfo userDetailsInfo, boolean isFriend) {
         Friend friend = new Friend();
         friend.setId(userDetailsInfo.getId());
         friend.setSymbol(userDetailsInfo.getSymbol());

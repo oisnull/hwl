@@ -33,11 +33,11 @@
             android:focusable="true"
             android:focusableInTouchMode="true" />
 
-        <!--<com.hwl.beta.emotion.EmotionControlPannel-->
-            <!--android:id="@+id/ecp_emotion"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--app:pannel_theme="0" />-->
+        <com.hwl.beta.emotion.EmotionControlPannel
+            android:id="@+id/ecp_emotion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:pannel_theme="0" />
 
     </LinearLayout>
 </layout>
