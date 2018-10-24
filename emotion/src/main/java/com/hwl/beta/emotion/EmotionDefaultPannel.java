@@ -2,18 +2,13 @@ package com.hwl.beta.emotion;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.Selection;
 import android.text.Spannable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -21,17 +16,12 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.hwl.beta.emotion.adapter.ChatExtendAdapter;
-import com.hwl.beta.emotion.audio.AudioRecorderButton;
 import com.hwl.beta.emotion.widget.EmotionEditText;
 
 import java.util.ArrayList;
@@ -43,8 +33,9 @@ import java.util.List;
 
 public class EmotionDefaultPannel extends LinearLayout {
 
-    final Context currContext;
-    final FragmentActivity activity;
+    Context currContext;
+    ViewGroup contentContainerView;
+    FragmentActivity activity;
     IDefaultEmotionListener defaultEmotionListener;
     IDefaultPannelListener pannelListener;
 
@@ -61,6 +52,10 @@ public class EmotionDefaultPannel extends LinearLayout {
         init();
     }
 
+    public void setContentContainerView(ViewGroup contentContainerView) {
+        this.contentContainerView = contentContainerView;
+    }
+
     public void setDefaultEmotionListener(IDefaultEmotionListener defaultEmotionListener) {
         this.defaultEmotionListener = defaultEmotionListener;
     }
@@ -75,7 +70,8 @@ public class EmotionDefaultPannel extends LinearLayout {
     }
 
     private void init() {
-        View view = LayoutInflater.from(currContext).inflate(R.layout.emotion_default_pannel, this, false);
+        View view = LayoutInflater.from(currContext).inflate(R.layout.emotion_default_pannel,
+                this, false);
 
         etChatMessage = view.findViewById(R.id.et_chat_message);
         ivChatEmotion = view.findViewById(R.id.iv_chat_emoticons);
@@ -96,7 +92,8 @@ public class EmotionDefaultPannel extends LinearLayout {
             }
         });
         emotionExtendFragments.add(emotionTemplateFragment);
-        vpEmotionExtendContainer.setAdapter(new EmotionExtendContainerPagerAdapter(activity.getSupportFragmentManager(), emotionExtendFragments));
+        vpEmotionExtendContainer.setAdapter(new EmotionExtendContainerPagerAdapter(activity
+                .getSupportFragmentManager(), emotionExtendFragments));
 
 
         etChatMessage.setOnTouchListener(new OnTouchListener() {
@@ -156,7 +153,8 @@ public class EmotionDefaultPannel extends LinearLayout {
     }
 
     public void setSystemKeyboard(boolean isOpen) {
-        InputMethodManager imm = (InputMethodManager) currContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) currContext.getSystemService(Context
+                .INPUT_METHOD_SERVICE);
         if (isOpen) {
             imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
         } else {
@@ -236,12 +234,14 @@ public class EmotionDefaultPannel extends LinearLayout {
          * 我们需要减去底部虚拟按键栏的高度（如果有的话）
          */
         if (Build.VERSION.SDK_INT >= 20) {
-            // When SDK Level >= 20 (Android L), the softInputHeight will contain the height of softButtonsBar (if has)
+            // When SDK Level >= 20 (Android L), the softInputHeight will contain the height of
+            // softButtonsBar (if has)
             softInputHeight = softInputHeight - getSoftButtonsBarHeight();
         }
 
         if (softInputHeight <= 0) {
-            //Log.d("EmotionControlPannel", "EmotionKeyboard--Warning: value of softInputHeight is below zero!");
+            //Log.d("EmotionControlPannel", "EmotionKeyboard--Warning: value of softInputHeight
+            // is below zero!");
             return 787;
         }
 //        //存一份到本地

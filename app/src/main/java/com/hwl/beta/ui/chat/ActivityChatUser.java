@@ -22,7 +22,6 @@ import com.hwl.beta.ui.chat.logic.ChatUserLogic;
 import com.hwl.beta.ui.chat.standard.ChatUserStandard;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.DefaultCallback;
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
@@ -38,7 +37,7 @@ public class ActivityChatUser extends BaseActivity {
     ChatActivityUserBinding binding;
     ChatUserStandard chatUserStandard;
     ChatUserMessageAdapter messageAdapter;
-    ChatUserEmotionPannelListener emotionPannelListener;
+//    ChatUserEmotionPannelListener emotionPannelListener;
     Friend user;
 
     @Override
@@ -78,8 +77,8 @@ public class ActivityChatUser extends BaseActivity {
                     }
                 });
 
-        emotionPannelListener = new ChatUserEmotionPannelListener(activity, user);
-        binding.ecpEmotion.setEmotionPannelListener(emotionPannelListener);
+//        emotionPannelListener = new ChatUserEmotionPannelListener(activity, user);
+//        binding.ecpEmotion.setEmotionPannelListener(emotionPannelListener);
 
         messageAdapter = new ChatUserMessageAdapter(activity, chatUserStandard
                 .getTopLocalMessages(user.getId()), new ChatMessageItemListener());
@@ -91,7 +90,7 @@ public class ActivityChatUser extends BaseActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        binding.ecpEmotion.hideEmotionFunction();
+//                        binding.ecpEmotion.hideEmotionFunction();
                         break;
                 }
                 return false;

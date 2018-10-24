@@ -21,6 +21,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -43,21 +44,20 @@ import java.util.List;
 
 public class EmotionControlPannel extends LinearLayout implements View.OnClickListener {
 
-    final Context currContext;
-    final FragmentActivity activity;
-    private IEmotionPannelListener emotionEvent;
-    private IDefaultEmotionListener defaultEmotionListener;
-    private int pannelTheme = EmotionPannelTheme.VOICE_TEXT_EMOTION;
-    //private int currentViewIndex = -1;
-    private TextView tvLoading;
-//    private byte messageType = 0;
+    Context currContext;
+    ViewGroup contentContainerView;
+    FragmentActivity activity;
+    IEmotionPannelListener emotionEvent;
+    IDefaultEmotionListener defaultEmotionListener;
+    int pannelTheme = EmotionPannelTheme.VOICE_TEXT_EMOTION;
+    TextView tvLoading;
 
-    ImageView ivChatVoice, ivChatKeyboard, ivChatEmotion, ivChatExtends;//语音，键盘，表情，扩展
-    AudioRecorderButton btnChatVoice;
-    Button btnChatMessageSend;//语音录制按钮,文本发送按钮
+    ImageView ivVoice, ivKeyboard, ivSysEmotion, ivExtendsEmotion;//语音，键盘，表情，扩展
+    AudioRecorderButton btnVoiceRecord;
+    Button btnMessageSend;//语音录制按钮,文本发送按钮
     EmotionEditText etChatMessage;//消息文本内容
-    GridView gvChatExtends;//功能扩展（照片，拍照，位置）
-    LinearLayout llEmotionExtends;//表情扩展
+    GridView gvExtendsEmotion;//功能扩展（照片，拍照，位置）
+    LinearLayout llSysEmotion;//表情扩展
     RecyclerView rvEmotionExtends;//表情扩展操作
 
     public EmotionControlPannel(Context context, AttributeSet attrs) {
@@ -74,6 +74,10 @@ public class EmotionControlPannel extends LinearLayout implements View.OnClickLi
         init();
 
         typedArray.recycle();
+    }
+
+    public void setContentContainerView(ViewGroup contentContainerView) {
+        this.contentContainerView = contentContainerView;
     }
 
     public void setEmotionPannelListener(IEmotionPannelListener emotionEvent) {
@@ -93,16 +97,16 @@ public class EmotionControlPannel extends LinearLayout implements View.OnClickLi
         View view = LayoutInflater.from(currContext).inflate(R.layout.emotion_control_pannel, this, false);
 
         tvLoading = view.findViewById(R.id.tv_loading);
-        ivChatVoice = view.findViewById(R.id.iv_chat_voice);
-        ivChatKeyboard = view.findViewById(R.id.iv_chat_keyboard);
-        btnChatVoice = view.findViewById(R.id.btn_chat_voice);
+        ivVoice = view.findViewById(R.id.iv_voice);
+        ivKeyboard = view.findViewById(R.id.iv_keyboard);
+        btnVoiceRecord = view.findViewById(R.id.btn_voice_record);
         etChatMessage = view.findViewById(R.id.et_chat_message);
-        ivChatEmotion = view.findViewById(R.id.iv_chat_emoticons);
-        ivChatExtends = view.findViewById(R.id.iv_chat_extends);
-        btnChatMessageSend = view.findViewById(R.id.btn_chat_message_send);
-        gvChatExtends = view.findViewById(R.id.gv_chat_extends);//发送功能扩展
-        gvChatExtends.setAdapter(new ChatExtendAdapter(currContext));//加载功能扩展
-        gvChatExtends.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ivSysEmotion = view.findViewById(R.id.iv_sys_emotion);
+        ivExtendsEmotion = view.findViewById(R.id.iv_extends_emotion);
+        btnMessageSend = view.findViewById(R.id.btn_message_send);
+        gvExtendsEmotion = view.findViewById(R.id.gv_extends_emotion);//发送功能扩展
+        gvExtendsEmotion.setAdapter(new ChatExtendAdapter(currContext));//加载功能扩展
+        gvExtendsEmotion.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //Toast.makeText(currContext, "当前图标：" + position, Toast.LENGTH_SHORT).show();
@@ -127,7 +131,7 @@ public class EmotionControlPannel extends LinearLayout implements View.OnClickLi
             }
         });
 
-        NoHorizontalScrollerViewPager vpEmotionExtendContainer = view.findViewById(R.id.vp_emotion_extend_container);
+        NoHorizontalScrollerViewPager vpSysEmotionContainer = view.findViewById(R.id.vp_sys_emotion_container);
         List<Fragment> emotionExtendFragments = new ArrayList<>(1);
         EmotionTemplateFragment emotionTemplateFragment = new EmotionTemplateFragment();
         emotionTemplateFragment.setDefaultEmotionListener(new IDefaultEmotionListener() {
@@ -162,27 +166,27 @@ public class EmotionControlPannel extends LinearLayout implements View.OnClickLi
             }
         });
         emotionExtendFragments.add(emotionTemplateFragment);
-        vpEmotionExtendContainer.setAdapter(new EmotionExtendContainerPagerAdapter(activity.getSupportFragmentManager(), emotionExtendFragments));
+        vpSysEmotionContainer.setAdapter(new EmotionExtendContainerPagerAdapter(activity.getSupportFragmentManager(), emotionExtendFragments));
 
         rvEmotionExtends = view.findViewById(R.id.rv_emotion_extends);
         rvEmotionExtends.setAdapter(new EmotionExtendHorizontalAdapter(currContext));
-        rvEmotionExtends.setHasFixedSize(true);//使RecyclerView保持固定的大小,这样会提高RecyclerView的性能
+        rvEmotionExtends.setHasFixedSize(true);
         rvEmotionExtends.setLayoutManager(new GridLayoutManager(activity, 1, GridLayoutManager.HORIZONTAL, false));
         if(pannelTheme==EmotionPannelTheme.EMOTION){
             rvEmotionExtends.setVisibility(GONE);
         }
 
-        llEmotionExtends = view.findViewById(R.id.ll_emtion_extends);
+        llSysEmotion = view.findViewById(R.id.ll_sys_emotion);
 
-        ivChatVoice.setOnClickListener(this);
-        ivChatKeyboard.setOnClickListener(this);
-        btnChatVoice.setOnClickListener(this);
+        ivVoice.setOnClickListener(this);
+        ivKeyboard.setOnClickListener(this);
+        btnVoiceRecord.setOnClickListener(this);
         etChatMessage.setOnClickListener(this);
-        ivChatEmotion.setOnClickListener(this);
-        ivChatExtends.setOnClickListener(this);
-        btnChatMessageSend.setOnClickListener(this);
+        ivSysEmotion.setOnClickListener(this);
+        ivExtendsEmotion.setOnClickListener(this);
+        btnMessageSend.setOnClickListener(this);
 
-        btnChatVoice.setAudioFinishRecorderListener(new AudioRecorderButton.AudioFinishRecorderListener() {
+        btnVoiceRecord.setAudioFinishRecorderListener(new AudioRecorderButton.AudioFinishRecorderListener() {
             @Override
             public void onFinish(float seconds, String filePath) {
                 if (emotionEvent != null) {
@@ -215,11 +219,11 @@ public class EmotionControlPannel extends LinearLayout implements View.OnClickLi
                 String content = ((EditText) v).getText().toString();
                 //Toast.makeText(activity,content,Toast.LENGTH_SHORT).show();
                 if (hasFocus) {
-                    gvChatExtends.setVisibility(View.GONE);
+                    gvExtendsEmotion.setVisibility(View.GONE);
                     if (content != null && content.length() > 0) {
-                        btnChatMessageSend.setVisibility(View.VISIBLE);
-                        ivChatExtends.setVisibility(View.GONE);
-                        llEmotionExtends.setVisibility(View.GONE);
+                        btnMessageSend.setVisibility(View.VISIBLE);
+                        ivExtendsEmotion.setVisibility(View.GONE);
+                        llSysEmotion.setVisibility(View.GONE);
                     }
                 } else {
 
@@ -237,11 +241,11 @@ public class EmotionControlPannel extends LinearLayout implements View.OnClickLi
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 0) {
-                    ivChatExtends.setVisibility(View.GONE);
-                    btnChatMessageSend.setVisibility(View.VISIBLE);
+                    ivExtendsEmotion.setVisibility(View.GONE);
+                    btnMessageSend.setVisibility(View.VISIBLE);
                 } else {
-                    ivChatExtends.setVisibility(View.VISIBLE);
-                    btnChatMessageSend.setVisibility(View.GONE);
+                    ivExtendsEmotion.setVisibility(View.VISIBLE);
+                    btnMessageSend.setVisibility(View.GONE);
                 }
             }
 
@@ -255,13 +259,13 @@ public class EmotionControlPannel extends LinearLayout implements View.OnClickLi
             default:
                 break;
             case EmotionPannelTheme.EMOTION:
-                ivChatVoice.setVisibility(View.GONE);
-                ivChatKeyboard.setVisibility(View.GONE);
-                btnChatVoice.setVisibility(View.GONE);
+                ivVoice.setVisibility(View.GONE);
+                ivKeyboard.setVisibility(View.GONE);
+                btnVoiceRecord.setVisibility(View.GONE);
                 etChatMessage.setVisibility(View.GONE);
-                ivChatExtends.setVisibility(View.GONE);
-                btnChatMessageSend.setVisibility(View.GONE);
-                llEmotionExtends.setVisibility(View.GONE);
+                ivExtendsEmotion.setVisibility(View.GONE);
+                btnMessageSend.setVisibility(View.GONE);
+                llSysEmotion.setVisibility(View.GONE);
                 break;
         }
 
@@ -271,90 +275,90 @@ public class EmotionControlPannel extends LinearLayout implements View.OnClickLi
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if (i == R.id.iv_chat_voice) {
-            ivChatVoice.setVisibility(View.GONE);
-            ivChatKeyboard.setVisibility(View.VISIBLE);
-            btnChatVoice.setVisibility(View.VISIBLE);
+        if (i == R.id.iv_voice) {
+            ivVoice.setVisibility(View.GONE);
+            ivKeyboard.setVisibility(View.VISIBLE);
+            btnVoiceRecord.setVisibility(View.VISIBLE);
             etChatMessage.setVisibility(View.GONE);
-            ivChatExtends.setVisibility(View.VISIBLE);
-            btnChatMessageSend.setVisibility(View.GONE);
-            gvChatExtends.setVisibility(View.GONE);
-            llEmotionExtends.setVisibility(View.GONE);
+            ivExtendsEmotion.setVisibility(View.VISIBLE);
+            btnMessageSend.setVisibility(View.GONE);
+            gvExtendsEmotion.setVisibility(View.GONE);
+            llSysEmotion.setVisibility(View.GONE);
             setSystemKeyboard(false);
             this.setEditTextFocus(false);
 
-        } else if (i == R.id.iv_chat_keyboard) {
-            ivChatVoice.setVisibility(View.VISIBLE);
-            ivChatKeyboard.setVisibility(View.GONE);
-            btnChatVoice.setVisibility(View.GONE);
+        } else if (i == R.id.iv_keyboard) {
+            ivVoice.setVisibility(View.VISIBLE);
+            ivKeyboard.setVisibility(View.GONE);
+            btnVoiceRecord.setVisibility(View.GONE);
             etChatMessage.setVisibility(View.VISIBLE);
-            ivChatExtends.setVisibility(View.VISIBLE);
-            btnChatMessageSend.setVisibility(View.GONE);
-            gvChatExtends.setVisibility(View.GONE);
-            llEmotionExtends.setVisibility(View.GONE);
+            ivExtendsEmotion.setVisibility(View.VISIBLE);
+            btnMessageSend.setVisibility(View.GONE);
+            gvExtendsEmotion.setVisibility(View.GONE);
+            llSysEmotion.setVisibility(View.GONE);
             this.setEditTextFocus(true);
             this.setSystemKeyboard(true);
 
-        } else if (i == R.id.btn_chat_voice) {
+        } else if (i == R.id.btn_voice_record) {
         } else if (i == R.id.et_chat_message) {
-            gvChatExtends.setVisibility(View.GONE);
-            llEmotionExtends.setVisibility(View.GONE);
+            gvExtendsEmotion.setVisibility(View.GONE);
+            llSysEmotion.setVisibility(View.GONE);
             //this.setEditTextFocus(false);
             String content = etChatMessage.getText() + "";
             //Toast.makeText(getApplicationContext(),content,Toast.LENGTH_SHORT).show();
             if (content != null && content.length() > 0) {
-                btnChatMessageSend.setVisibility(View.VISIBLE);
-                ivChatExtends.setVisibility(View.GONE);
+                btnMessageSend.setVisibility(View.VISIBLE);
+                ivExtendsEmotion.setVisibility(View.GONE);
             }
 
         } else if (i == R.id.iv_chat_emoticons) {
             if (pannelTheme == EmotionPannelTheme.EMOTION) {
                 this.setSystemKeyboard(false);
-                if (llEmotionExtends.getVisibility() == GONE) {
-                    llEmotionExtends.setVisibility(View.VISIBLE);
+                if (llSysEmotion.getVisibility() == GONE) {
+                    llSysEmotion.setVisibility(View.VISIBLE);
                 } else {
-                    llEmotionExtends.setVisibility(GONE);
+                    llSysEmotion.setVisibility(GONE);
                 }
-                ivChatVoice.setVisibility(View.GONE);
+                ivVoice.setVisibility(View.GONE);
                 etChatMessage.setVisibility(View.GONE);
-                ivChatExtends.setVisibility(View.GONE);
+                ivExtendsEmotion.setVisibility(View.GONE);
             } else {
                 //Toast.makeText(currContext, "chat emotion list", Toast.LENGTH_SHORT).show();
                 this.setSystemKeyboard(false);
                 this.setEditTextFocus(true);
 
-                llEmotionExtends.setVisibility(View.VISIBLE);
-                ivChatVoice.setVisibility(View.VISIBLE);
+                llSysEmotion.setVisibility(View.VISIBLE);
+                ivVoice.setVisibility(View.VISIBLE);
                 etChatMessage.setVisibility(View.VISIBLE);
-                ivChatExtends.setVisibility(View.VISIBLE);
+                ivExtendsEmotion.setVisibility(View.VISIBLE);
             }
-            ivChatKeyboard.setVisibility(View.GONE);
-            btnChatVoice.setVisibility(View.GONE);
-            btnChatMessageSend.setVisibility(View.GONE);
-            gvChatExtends.setVisibility(View.GONE);
+            ivKeyboard.setVisibility(View.GONE);
+            btnVoiceRecord.setVisibility(View.GONE);
+            btnMessageSend.setVisibility(View.GONE);
+            gvExtendsEmotion.setVisibility(View.GONE);
             if (emotionEvent != null) {
                 emotionEvent.onFunctionPop(getSupportSoftInputHeight());
             }
 
-        } else if (i == R.id.iv_chat_extends) {
+        } else if (i == R.id.iv_extends) {
             this.setSystemKeyboard(false);
             this.setEditTextFocus(false);
 
-            llEmotionExtends.setVisibility(View.GONE);
-            ivChatVoice.setVisibility(View.VISIBLE);
+            llSysEmotion.setVisibility(View.GONE);
+            ivVoice.setVisibility(View.VISIBLE);
             etChatMessage.setVisibility(View.VISIBLE);
-            ivChatKeyboard.setVisibility(View.GONE);
-            btnChatVoice.setVisibility(View.GONE);
-            ivChatExtends.setVisibility(View.VISIBLE);
-            btnChatMessageSend.setVisibility(View.GONE);
-            gvChatExtends.setVisibility(View.VISIBLE);
+            ivKeyboard.setVisibility(View.GONE);
+            btnVoiceRecord.setVisibility(View.GONE);
+            ivExtendsEmotion.setVisibility(View.VISIBLE);
+            btnMessageSend.setVisibility(View.GONE);
+            gvExtendsEmotion.setVisibility(View.VISIBLE);
             if (emotionEvent != null) {
                 emotionEvent.onFunctionPop(getSupportSoftInputHeight());
             }
 
         } else if (i == R.id.btn_chat_message_send) {
-            btnChatMessageSend.setVisibility(View.GONE);
-            ivChatExtends.setVisibility(View.VISIBLE);
+            btnMessageSend.setVisibility(View.GONE);
+            ivExtendsEmotion.setVisibility(View.VISIBLE);
 
             if (emotionEvent != null) {
                 if (emotionEvent.onSendMessageClick(etChatMessage.getText() + "")) {
@@ -384,8 +388,8 @@ public class EmotionControlPannel extends LinearLayout implements View.OnClickLi
     }
 
     public void hideEmotionFunction() {
-        gvChatExtends.setVisibility(View.GONE);
-        llEmotionExtends.setVisibility(View.GONE);
+        gvExtendsEmotion.setVisibility(View.GONE);
+        llSysEmotion.setVisibility(View.GONE);
         setSystemKeyboard(false);
         this.setEditTextFocus(false);
     }
@@ -444,41 +448,6 @@ public class EmotionControlPannel extends LinearLayout implements View.OnClickLi
         }
     }
 
-//    //http://blog.csdn.net/feixiangsmile/article/details/76726420?locationNum=10&fps=1
-//    private void deleteEmotion() {
-//        String content = etChatMessage.getText().toString();
-//        if (StringUtils.isBlank(content)) {
-//            return;
-//        }
-//        int start = etChatMessage.getSelectionStart();
-//        Log.d("deleteEmotion", start + "-当前光标的位置");
-//        String startContent = content.substring(0, start);
-//        String endContent = content.substring(start, content.length());
-//        String lastContent = content.substring(start - 1, start);
-//        int last = startContent.lastIndexOf("[");
-//        int lastChar = startContent.substring(0, startContent.length() - 1).lastIndexOf("]");
-//
-//        if ("]".equals(lastContent) && last > lastChar) {
-//            if (last != -1) {
-//                etChatMessage.setText(startContent.substring(0, last) + endContent);
-//                // 定位光标位置
-//                CharSequence info = etChatMessage.getText();
-//                if (info instanceof Spannable) {
-//                    Spannable spanText = (Spannable) info;
-//                    Selection.setSelection(spanText, last);
-//                }
-//                return;
-//            }
-//        }
-//        etChatMessage.setText(startContent.substring(0, start - 1) + endContent);
-//        // 定位光标位置
-//        CharSequence info = etChatMessage.getText();
-//        if (info instanceof Spannable) {
-//            Spannable spanText = (Spannable) info;
-//            Selection.setSelection(spanText, start - 1);
-//        }
-//    }
-
     /**
      * 获取软件盘的高度
      *
@@ -510,10 +479,6 @@ public class EmotionControlPannel extends LinearLayout implements View.OnClickLi
             //Log.d("EmotionControlPannel", "EmotionKeyboard--Warning: value of softInputHeight is below zero!");
             return 787;
         }
-//        //存一份到本地
-//        if (softInputHeight > 0) {
-//            sp.edit().putInt(SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, softInputHeight).apply();
-//        }
         return softInputHeight;
     }
 

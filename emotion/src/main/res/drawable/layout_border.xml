@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <stroke
         android:width="0.01dp"
-        android:color="@color/main_background" />
+        android:color="@color/red" />
     <solid
         android:color="@android:color/white"/>
     <padding
