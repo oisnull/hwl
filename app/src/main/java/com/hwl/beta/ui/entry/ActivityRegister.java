@@ -1,9 +1,9 @@
 package com.hwl.beta.ui.entry;
 
-import android.app.Activity;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Toast;
 
@@ -11,6 +11,7 @@ import com.hwl.beta.R;
 import com.hwl.beta.databinding.EntryActivityRegisterBinding;
 import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.ui.common.BaseActivity;
+import com.hwl.beta.ui.common.KeyBoardAction;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.im.common.DefaultAction;
 import com.hwl.im.common.DefaultConsumer;
@@ -25,7 +26,7 @@ import com.hwl.beta.ui.widget.TimeCount;
  */
 
 public class ActivityRegister extends BaseActivity {
-    Activity activity;
+    FragmentActivity activity;
     EntryActivityRegisterBinding binding;
     RegisterStandard registerStandard;
 
@@ -42,18 +43,7 @@ public class ActivityRegister extends BaseActivity {
         binding.setRegisterBean(registerStandard.getRegisterBean());
         binding.setAction(new RegisterListener());
 
-        binding.tbTitle
-                .setTitle("HWL注册")
-                .setImageRightHide()
-                .setImageLeftClick(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onBackPressed();
-                        activity.finish();
-                    }
-                });
-
-        initTime();
+        initView();
     }
 
     private void setSendViewStatus(int status) {
@@ -77,7 +67,30 @@ public class ActivityRegister extends BaseActivity {
         }
     }
 
-    private void initTime() {
+    private void initView() {
+        binding.tbTitle
+                .setTitle("HWL注册")
+                .setImageRightHide()
+                .setImageLeftClick(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onBackPressed();
+                        activity.finish();
+                    }
+                });
+
+        binding.etAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.etAccount.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        KeyBoardAction.getLocalSoftInputHeight(activity);
+                    }
+                }, 500L);
+            }
+        });
+
         timeCount = new TimeCount(CODETIMESECONDS * 1000, 1000, binding.btnCodeSend, new
                 TimeCount.TimeCountInterface() {
                     @Override
@@ -98,19 +111,19 @@ public class ActivityRegister extends BaseActivity {
     }
 
     private class RegisterListener implements IRegisterListener {
-        boolean isRuning = false;
+        boolean isRunning = false;
         RegisterBean registerBean = registerStandard.getRegisterBean();
 
         @Override
         public void onRegisterClick() {
-            if (isRuning) {
+            if (isRunning) {
                 return;
             }
-            isRuning = true;
+            isRunning = true;
             binding.btnRegister.setText("注 册 中...");
 
             if (!registerBean.checkParams()) {
-                isRuning = false;
+                isRunning = false;
                 binding.btnRegister.setText("注   册");
                 Toast.makeText(activity, registerBean.getMessageCode(), Toast.LENGTH_SHORT).show();
                 return;
@@ -126,7 +139,7 @@ public class ActivityRegister extends BaseActivity {
             }, new DefaultConsumer<String>() {
                 @Override
                 public void accept(String s) {
-                    isRuning = false;
+                    isRunning = false;
                     binding.btnRegister.setText("注   册");
                 }
             });

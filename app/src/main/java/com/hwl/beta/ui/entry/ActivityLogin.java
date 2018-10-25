@@ -1,12 +1,13 @@
 package com.hwl.beta.ui.entry;
 
-import android.app.Activity;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.view.View;
 import android.widget.Toast;
 
+import com.hwl.beta.ui.common.KeyBoardAction;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.im.common.DefaultAction;
 import com.hwl.im.common.DefaultConsumer;
@@ -23,7 +24,7 @@ import com.hwl.beta.ui.entry.bean.LoginBean;
 
 public class ActivityLogin extends FragmentActivity {
 
-    Activity activity;
+    FragmentActivity activity;
     EntryActivityLoginBinding binding;
     LoginLogic loginHandle;
     LoginBean loginBean;
@@ -33,26 +34,42 @@ public class ActivityLogin extends FragmentActivity {
         super.onCreate(savedInstanceState);
         activity = this;
         loginHandle = new LoginLogic();
-        loginBean=loginHandle.getLoginBean();
+        loginBean = loginHandle.getLoginBean();
         binding = DataBindingUtil.setContentView(this, R.layout.entry_activity_login);
         binding.setLoginBean(loginBean);
         binding.setAction(new LoginListener());
+
+        initView();
+    }
+
+    private void initView() {
         binding.tbTitle.setTitle(getResources().getString(R.string.login_activity_title))
                 .setImageLeftHide().setImageRightHide();
+        binding.etAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.etAccount.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        KeyBoardAction.getLocalSoftInputHeight(activity);
+                    }
+                }, 500L);
+            }
+        });
     }
 
     private class LoginListener implements ILoginListener {
-        boolean isRuning = false;
+        boolean isRunning = false;
 
         private void login() {
-            if (isRuning) {
+            if (isRunning) {
                 return;
             }
-            isRuning = true;
+            isRunning = true;
             binding.btnLogin.setText("登 录 中...");
 
             if (!loginBean.checkParams()) {
-                isRuning = false;
+                isRunning = false;
                 binding.btnLogin.setText("登   录");
                 Toast.makeText(activity, loginBean.getMessageCode(), Toast.LENGTH_SHORT).show();
                 return;
@@ -67,7 +84,7 @@ public class ActivityLogin extends FragmentActivity {
             }, new DefaultConsumer<String>() {
                 @Override
                 public void accept(String s) {
-                    isRuning = false;
+                    isRunning = false;
                     binding.btnLogin.setText("登   录");
                 }
             });
@@ -80,12 +97,12 @@ public class ActivityLogin extends FragmentActivity {
 
         @Override
         public void onRegisterClick() {
-             UITransfer.toRegisterActivity(activity);
+            UITransfer.toRegisterActivity(activity);
         }
 
         @Override
         public void onGetpwdClick() {
-             UITransfer.toGetpwdActivity(activity);
+            UITransfer.toGetpwdActivity(activity);
         }
 
         @Override

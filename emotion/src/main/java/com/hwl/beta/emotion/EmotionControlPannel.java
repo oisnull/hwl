@@ -49,8 +49,10 @@ public class EmotionControlPannel extends LinearLayout implements View.OnClickLi
     FragmentActivity activity;
     IEmotionPannelListener emotionEvent;
     IDefaultEmotionListener defaultEmotionListener;
-    int pannelTheme = EmotionPannelTheme.VOICE_TEXT_EMOTION;
     TextView tvLoading;
+
+    int softInputHeight=0;
+    int pannelTheme = EmotionPannelTheme.VOICE_TEXT_EMOTION;
 
     ImageView ivVoice, ivKeyboard, ivSysEmotion, ivExtendsEmotion;//语音，键盘，表情，扩展
     AudioRecorderButton btnVoiceRecord;

@@ -15,6 +15,7 @@ import com.hwl.beta.R;
 import com.hwl.beta.databinding.ChatActivityUserBinding;
 import com.hwl.beta.db.entity.ChatUserMessage;
 import com.hwl.beta.db.entity.Friend;
+import com.hwl.beta.sp.AppInstallStatus;
 import com.hwl.beta.ui.chat.action.IChatMessageItemListener;
 import com.hwl.beta.ui.chat.adp.ChatUserMessageAdapter;
 import com.hwl.beta.ui.chat.imp.ChatUserEmotionPannelListener;
@@ -37,7 +38,7 @@ public class ActivityChatUser extends BaseActivity {
     ChatActivityUserBinding binding;
     ChatUserStandard chatUserStandard;
     ChatUserMessageAdapter messageAdapter;
-//    ChatUserEmotionPannelListener emotionPannelListener;
+    //    ChatUserEmotionPannelListener emotionPannelListener;
     Friend user;
 
     @Override
@@ -78,7 +79,8 @@ public class ActivityChatUser extends BaseActivity {
                 });
 
 //        emotionPannelListener = new ChatUserEmotionPannelListener(activity, user);
-//        binding.ecpEmotion.setEmotionPannelListener(emotionPannelListener);
+        binding.ecpEmotion.setSoftInputHeight(AppInstallStatus.getSoftInputHeight())
+                .setContentContainerView(binding.rvMessageContainer);
 
         messageAdapter = new ChatUserMessageAdapter(activity, chatUserStandard
                 .getTopLocalMessages(user.getId()), new ChatMessageItemListener());
