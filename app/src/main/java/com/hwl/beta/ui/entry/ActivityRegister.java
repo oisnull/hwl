@@ -87,7 +87,7 @@ public class ActivityRegister extends BaseActivity {
                     public void run() {
                         KeyBoardAction.getLocalSoftInputHeight(activity);
                     }
-                }, 500L);
+                }, 800L);
             }
         });
 

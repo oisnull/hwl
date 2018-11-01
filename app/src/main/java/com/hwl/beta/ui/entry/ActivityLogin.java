@@ -53,7 +53,7 @@ public class ActivityLogin extends FragmentActivity {
                     public void run() {
                         KeyBoardAction.getLocalSoftInputHeight(activity);
                     }
-                }, 500L);
+                }, 800L);
             }
         });
     }

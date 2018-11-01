@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
+import com.hwl.beta.sp.AppInstallStatus;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.DefaultRefreshFooterCreator;
 import com.scwang.smartrefresh.layout.api.DefaultRefreshHeaderCreator;
@@ -26,7 +27,7 @@ public class HWLApp extends Application {
         super.onCreate();
         application = this;
 
-//        AppInstallStatus.setFrist();
+        AppInstallStatus.setFirst();
     }
 
     @Override

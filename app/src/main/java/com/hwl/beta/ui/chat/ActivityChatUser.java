@@ -79,8 +79,8 @@ public class ActivityChatUser extends BaseActivity {
                 });
 
 //        emotionPannelListener = new ChatUserEmotionPannelListener(activity, user);
-        binding.ecpEmotion.setSoftInputHeight(AppInstallStatus.getSoftInputHeight())
-                .setContentContainerView(binding.rvMessageContainer);
+        binding.ecpEmotion.setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
+                .setContentContainerView(binding.refreshLayout);
 
         messageAdapter = new ChatUserMessageAdapter(activity, chatUserStandard
                 .getTopLocalMessages(user.getId()), new ChatMessageItemListener());

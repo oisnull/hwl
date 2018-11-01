@@ -71,8 +71,8 @@
         <!--<activity android:name=".ui.chat.ActivityChatGroupSettingEdit" />-->
         <!--<activity android:name=".ui.chat.ActivityChatUserSetting" />-->
         <activity
-        android:name=".ui.chat.ActivityChatUser"
-        android:windowSoftInputMode="stateHidden" />
+            android:name=".ui.chat.ActivityChatUser"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <!--<activity android:name=".ui.near.ActivityNearPublish" />-->
         <!--<activity android:name=".ui.near.ActivityNearMessages" />-->
         <!--<activity android:name=".ui.near.ActivityNearDetail" />-->
