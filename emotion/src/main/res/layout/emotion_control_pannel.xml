@@ -101,61 +101,45 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="表情容器加载中..."
-            android:textColor="@color/color_b2b2b2" />
-
         <!--扩展功能：发照片，拍照片发，发位置信息等-->
-        <!--<GridView-->
-            <!--android:id="@+id/gv_extends_emotion"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="200dp"-->
-            <!--android:gravity="center_horizontal"-->
-            <!--android:listSelector="@android:color/transparent"-->
-            <!--android:numColumns="4"-->
-            <!--android:padding="10dp"-->
-            <!--android:visibility="gone"></GridView>-->
+        <GridView
+            android:id="@+id/gv_extends_emotion"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:gravity="center_horizontal"
+            android:listSelector="@android:color/transparent"
+            android:numColumns="4"
+            android:padding="10dp"
+            android:visibility="gone" />
 
         <!--默认表情和扩展表情列表-->
-        <!--<LinearLayout-->
-            <!--android:id="@+id/ll_sys_emotion"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:orientation="vertical"-->
-            <!--android:visibility="gone">-->
+        <LinearLayout
+            android:id="@+id/ll_sys_emotion"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:visibility="gone">
 
-            <!--<com.hwl.beta.emotion.NoHorizontalScrollerViewPager-->
-                <!--android:id="@+id/vp_sys_emotion_container"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="200dp"-->
-                <!--android:layout_weight="1"-->
-                <!--android:visibility="visible" />-->
+            <com.hwl.beta.emotion.NoHorizontalScrollerViewPager
+                android:id="@+id/vp_sys_emotion_container"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_weight="1"
+                android:visibility="visible" />
 
-            <!--<LinearLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="0.5dp"-->
-                <!--android:background="@color/main_background" />-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/main_background" />
 
-            <!--<android.support.v7.widget.RecyclerView-->
-                <!--android:id="@+id/rv_emotion_extends"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="40dp"-->
-                <!--android:orientation="horizontal" />-->
-        <!--</LinearLayout>-->
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_emotion_extends"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="horizontal" />
+        </LinearLayout>
 
     </LinearLayout>
-
-    <!--<TextView-->
-        <!--android:id="@+id/tv_loading"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:gravity="center"-->
-        <!--android:text="加载中..."-->
-        <!--android:textColor="@color/color_b2b2b2"-->
-        <!--android:visibility="gone" />-->
 
 </LinearLayout>
