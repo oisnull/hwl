@@ -14,11 +14,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.hwl.beta.emotion.adapter.ChatExtendAdapter;
 import com.hwl.beta.emotion.audio.AudioRecorderButton;
 import com.hwl.beta.emotion.widget.EmotionEditText;
 
@@ -103,7 +105,8 @@ public class EmotionControlPannelV2 extends LinearLayout implements View.OnClick
         ivSysEmotion.setOnClickListener(this);
         ivExtendsEmotion.setOnClickListener(this);
         btnMessageSend.setOnClickListener(this);
-        bindSysEmotionData();
+        this.bindSysEmotionData();
+        this.bindExtendsEmotionData();
 
         etChatMessage.setOnTouchListener(new OnTouchListener() {
             @Override
@@ -158,6 +161,34 @@ public class EmotionControlPannelV2 extends LinearLayout implements View.OnClick
 
     }
 
+    private void bindExtendsEmotionData() {
+        gvExtendsEmotion.setAdapter(new ChatExtendAdapter(context));//加载功能扩展
+        gvExtendsEmotion.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Toast.makeText(currContext, "当前图标：" + position, Toast.LENGTH_SHORT).show();
+                if (emotionEvent != null) {
+//                    switch (position) {
+//                        case 0:
+//                            emotionEvent.onSelectImageClick();
+//                            break;
+//                        case 1:
+//                            emotionEvent.onCameraClick();
+//                            break;
+//                        case 2:
+//                            emotionEvent.onPositionClick();
+//                            break;
+//                        case 3:
+//                            emotionEvent.onSelectVideoClick();
+//                            break;
+//                        default:
+//                            break;
+//                    }
+                }
+            }
+        });
+    }
+
     @Override
     public void onClick(View v) {
         int id = v.getId();
@@ -195,22 +226,13 @@ public class EmotionControlPannelV2 extends LinearLayout implements View.OnClick
         gvExtendsEmotion.setVisibility(View.GONE);
         llSysEmotion.setVisibility(View.GONE);
 
-        showSoftInput();
-        if (isShowEmotionContainer()) {
-            lockContentHeight();//显示软件盘时，锁定内容高度，防止跳闪。
-            hideEmotionContainer(true);//隐藏表情布局，显示软件盘
-
-            //软件盘显示后，释放内容高度
-            etChatMessage.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    unlockContentHeightDelayed();
-                }
-            }, 200L);
-        }
+        lockContentHeight();//显示软件盘时，锁定内容高度，防止跳闪。
+        hideEmotionContainer(true);//隐藏表情布局，显示软件盘
+        unlockContentHeightDelayed();
     }
 
     private void showSysEmotion() {
+        if (llSysEmotion.isShown()) return;
         ivVoice.setVisibility(View.VISIBLE);
         etChatMessage.setVisibility(View.VISIBLE);
         ivExtendsEmotion.setVisibility(View.VISIBLE);
@@ -219,34 +241,11 @@ public class EmotionControlPannelV2 extends LinearLayout implements View.OnClick
         btnMessageSend.setVisibility(View.GONE);
         gvExtendsEmotion.setVisibility(View.GONE);
         llSysEmotion.setVisibility(View.VISIBLE);
-
-        if (isShowEmotionContainer()) {
-            lockContentHeight();//显示软件盘时，锁定内容高度，防止跳闪。
-            hideEmotionContainer(true);//隐藏表情布局，显示软件盘
-            unlockContentHeightDelayed();//软件盘显示后，释放内容高度
-        } else {
-            if (isSoftInputShown()) {//同上
-                lockContentHeight();
-                hideSoftInput();
-                etChatMessage.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        showEmotionContainer();
-                    }
-                }, 200L);
-                unlockContentHeightDelayed();
-            } else {
-                etChatMessage.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        showEmotionContainer();
-                    }
-                }, 200L);
-            }
-        }
+        this.emotionContainerHeightAction();
     }
 
     private void showExtendsEmotion() {
+        if (gvExtendsEmotion.isShown()) return;
         ivVoice.setVisibility(View.VISIBLE);
         etChatMessage.setVisibility(View.VISIBLE);
         ivKeyboard.setVisibility(View.GONE);
@@ -255,6 +254,7 @@ public class EmotionControlPannelV2 extends LinearLayout implements View.OnClick
         btnMessageSend.setVisibility(View.GONE);
         gvExtendsEmotion.setVisibility(View.VISIBLE);
         llSysEmotion.setVisibility(View.GONE);
+        this.emotionContainerHeightAction();
     }
 
     private void lockContentHeight() {
@@ -289,6 +289,45 @@ public class EmotionControlPannelV2 extends LinearLayout implements View.OnClick
                 showSoftInput();
             }
         }
+    }
+
+    private void emotionContainerHeightAction() {
+        if (isShowEmotionContainer()) return;
+        if (isSoftInputShown()) {
+            lockContentHeight();
+            hideSoftInput();
+            unlockContentHeightDelayed();
+        }
+        etChatMessage.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showEmotionContainer();
+            }
+        }, 200L);
+//        if (!isShowEmotionContainer()) {
+////            lockContentHeight();
+//////            hideEmotionContainer(false);
+////            unlockContentHeightDelayed();
+////        } else {
+//            if (isSoftInputShown()) {//同上
+//                lockContentHeight();
+//                hideSoftInput();
+//                etChatMessage.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        showEmotionContainer();
+//                    }
+//                }, 200L);
+//                unlockContentHeightDelayed();
+//            } else {
+//                etChatMessage.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        showEmotionContainer();
+//                    }
+//                }, 200L);
+//            }
+//        }
     }
 
     private boolean isShowEmotionContainer() {

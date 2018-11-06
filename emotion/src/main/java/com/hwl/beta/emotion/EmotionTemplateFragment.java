@@ -55,7 +55,7 @@ public class EmotionTemplateFragment extends Fragment {
         // item的间距
         padding = DisplayUtils.dp2px(getActivity(), 10);
         // 动态计算item的宽度和高度
-        itemWidth = DisplayUtils.dp2px(getActivity(), 40);//(screenWidth - padding * 8) / 7;
+        itemWidth = (screenWidth - padding * 8) / 7;//DisplayUtils.dp2px(getActivity(), 40);
         //动态计算gridview的总高度
         gvHeight = itemWidth * 3 + padding * 6;
     }
