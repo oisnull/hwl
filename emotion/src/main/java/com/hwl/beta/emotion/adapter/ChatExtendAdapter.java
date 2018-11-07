@@ -16,12 +16,10 @@ import com.hwl.beta.emotion.R;
 
 public class ChatExtendAdapter extends BaseAdapter {
     final Context context;
-    //图片的文字标题
     private static final String[] titles = new String[]
-            {"图片", "拍照", "位置", "视频"};
-    //图片ID数组
+            {"图片", "拍照", "位置", "视频", "收藏"};
     private static final int[] icons = new int[]{
-            R.drawable.chat_photo, R.drawable.chat_take_photo, R.drawable.chat_location, R.drawable.chat_video
+            R.drawable.chat_photo, R.drawable.chat_take_photo, R.drawable.chat_location, R.drawable.chat_video, R.drawable.chat_video
     };
 
     public ChatExtendAdapter(Context context) {

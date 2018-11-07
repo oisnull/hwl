@@ -29,13 +29,13 @@ public class EmotionExtendHorizontalAdapter extends RecyclerView.Adapter<Emotion
         ExtendImageModel model1 = new ExtendImageModel();
         model1.selected = false;
         model1.title = "默认表情";
-        model1.resource = R.drawable.ic_emotion_add;
+        model1.resource = R.drawable.ic_emotion_default;
         images.add(model1);
 
         ExtendImageModel model2 = new ExtendImageModel();
         model2.selected = true;
         model2.title = "添加";
-        model2.resource = R.drawable.ic_emotion_default;
+        model2.resource = R.drawable.ic_emotion_add;
         images.add(model2);
     }
 
@@ -49,7 +49,6 @@ public class EmotionExtendHorizontalAdapter extends RecyclerView.Adapter<Emotion
     public void onBindViewHolder(ViewHolder holder, int position) {
         ExtendImageModel img = images.get(position);
 
-        //动态计算底部tab的宽度。
         int width = ScreenUtils.getScreenWidth(context);
         float itemW = width / 6;
         ViewGroup.LayoutParams lp = holder.ivExtend.getLayoutParams();

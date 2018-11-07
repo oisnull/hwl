@@ -24,7 +24,7 @@ import java.util.List;
 
 public class EmotionTemplateFragment extends Fragment {
     private static final String TAG = "EmotionTemplateFragment";
-    private int screenWidth;//当前activity屏幕的宽度
+    private int screenWidth;
     private int padding;
     private int itemWidth;
     private int gvHeight;

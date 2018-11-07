@@ -37,7 +37,7 @@ public class EmotionControlPannelV2 extends LinearLayout implements View.OnClick
     InputMethodManager softInputManager;
     FragmentActivity activity;
 
-    IEmotionPannelListener emotionEvent;
+    IEmotionPannelListener emotionPannelListener;
     IDefaultEmotionListener defaultEmotionListener;
 
     ViewGroup contentContainerView;
@@ -58,13 +58,11 @@ public class EmotionControlPannelV2 extends LinearLayout implements View.OnClick
         this.context = context;
         this.activity = ((FragmentActivity) context);
 
-        //获取扩展属性的定义，并设置默认值
         TypedArray typedArray = context.obtainStyledAttributes(attrs
                 , R.styleable.EmotionControlPannel);
         this.pannelTheme = typedArray.getInteger(R.styleable.EmotionControlPannel_pannel_theme,
                 EmotionPannelTheme.EMOTION_ALL);
 
-        //初始化绑定组件
         initView();
 
         typedArray.recycle();
@@ -78,6 +76,11 @@ public class EmotionControlPannelV2 extends LinearLayout implements View.OnClick
     public EmotionControlPannelV2 setContentContainerView(ViewGroup contentContainerView) {
         this.contentContainerView = contentContainerView;
         return this;
+    }
+
+    public EmotionControlPannelV2 setEmotionPannelListener(IEmotionPannelListener emotionPannelListener) {
+       this.emotionPannelListener = emotionPannelListener;
+       return this;
     }
 
     private void initView() {
@@ -97,6 +100,7 @@ public class EmotionControlPannelV2 extends LinearLayout implements View.OnClick
         llSysEmotion = view.findViewById(R.id.ll_sys_emotion);
         llEmotionContainer = view.findViewById(R.id.ll_emotion_container);
         vpSysEmotionContainer = view.findViewById(R.id.vp_sys_emotion_container);
+        rvEmotionExtends = view.findViewById(R.id.rv_emotion_extends);
 
         ivVoice.setOnClickListener(this);
         ivKeyboard.setOnClickListener(this);
@@ -105,9 +109,6 @@ public class EmotionControlPannelV2 extends LinearLayout implements View.OnClick
         ivSysEmotion.setOnClickListener(this);
         ivExtendsEmotion.setOnClickListener(this);
         btnMessageSend.setOnClickListener(this);
-        this.bindSysEmotionData();
-        this.bindExtendsEmotionData();
-
         etChatMessage.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -117,6 +118,10 @@ public class EmotionControlPannelV2 extends LinearLayout implements View.OnClick
                 return false;
             }
         });
+        
+        this.bindSysEmotionData();
+        this.bindExtendsEmotionData();
+        this.bindBottonEmotionActionBar();
 
         this.addView(view);
     }
@@ -162,31 +167,39 @@ public class EmotionControlPannelV2 extends LinearLayout implements View.OnClick
     }
 
     private void bindExtendsEmotionData() {
-        gvExtendsEmotion.setAdapter(new ChatExtendAdapter(context));//加载功能扩展
+        gvExtendsEmotion.setAdapter(new ChatExtendAdapter(context));
         gvExtendsEmotion.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Toast.makeText(currContext, "当前图标：" + position, Toast.LENGTH_SHORT).show();
-                if (emotionEvent != null) {
-//                    switch (position) {
-//                        case 0:
-//                            emotionEvent.onSelectImageClick();
-//                            break;
-//                        case 1:
-//                            emotionEvent.onCameraClick();
-//                            break;
-//                        case 2:
-//                            emotionEvent.onPositionClick();
-//                            break;
-//                        case 3:
-//                            emotionEvent.onSelectVideoClick();
-//                            break;
-//                        default:
-//                            break;
-//                    }
+                if (emotionPannelListener != null) {
+                   switch (position) {
+                       case 0:
+                       emotionPannelListener.onSelectImageClick();
+                           break;
+                       case 1: 
+                       emotionPannelListener.onCameraClick();
+                           break;
+                       case 2:
+                       emotionPannelListener.onPositionClick();
+                           break;
+                       case 3:
+                       emotionPannelListener.onSelectVideoClick();
+                           break;
+                       default:
+                           break;
+                   }
                 }
             }
         });
+    }
+
+    private void bindBottonEmotionActionBar(){
+       rvEmotionExtends.setAdapter(new EmotionExtendHorizontalAdapter(context));
+       rvEmotionExtends.setHasFixedSize(true);
+       rvEmotionExtends.setLayoutManager(new GridLayoutManager(activity, 1, GridLayoutManager.HORIZONTAL, false));
+    //    if(pannelTheme==EmotionPannelTheme.EMOTION){
+    //        rvEmotionExtends.setVisibility(GONE);
+    //    }
     }
 
     @Override
@@ -226,8 +239,8 @@ public class EmotionControlPannelV2 extends LinearLayout implements View.OnClick
         gvExtendsEmotion.setVisibility(View.GONE);
         llSysEmotion.setVisibility(View.GONE);
 
-        lockContentHeight();//显示软件盘时，锁定内容高度，防止跳闪。
-        hideEmotionContainer(true);//隐藏表情布局，显示软件盘
+        lockContentHeight();
+        hideEmotionContainer(true);
         unlockContentHeightDelayed();
     }
 
@@ -309,7 +322,7 @@ public class EmotionControlPannelV2 extends LinearLayout implements View.OnClick
 //////            hideEmotionContainer(false);
 ////            unlockContentHeightDelayed();
 ////        } else {
-//            if (isSoftInputShown()) {//同上
+//            if (isSoftInputShown()) {
 //                lockContentHeight();
 //                hideSoftInput();
 //                etChatMessage.postDelayed(new Runnable() {
@@ -334,9 +347,6 @@ public class EmotionControlPannelV2 extends LinearLayout implements View.OnClick
         return llEmotionContainer.isShown();
     }
 
-    /**
-     * 编辑框获取焦点，并显示软件盘
-     */
     private void showSoftInput() {
         etChatMessage.requestFocus();
         etChatMessage.post(new Runnable() {
@@ -347,9 +357,6 @@ public class EmotionControlPannelV2 extends LinearLayout implements View.OnClick
         });
     }
 
-    /**
-     * 隐藏软件盘
-     */
     private void hideSoftInput() {
         softInputManager.hideSoftInputFromWindow(etChatMessage.getWindowToken(), 0);
     }
