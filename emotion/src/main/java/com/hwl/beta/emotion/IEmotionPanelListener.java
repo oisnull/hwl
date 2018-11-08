@@ -4,7 +4,7 @@ package com.hwl.beta.emotion;
  * Created by Administrator on 2018/4/6.
  */
 
-public interface IEmotionPannelListener {
+public interface IEmotionPanelListener {
     boolean onSendMessageClick(String text);
 
     void onSendSoundClick(float seconds, String filePath);

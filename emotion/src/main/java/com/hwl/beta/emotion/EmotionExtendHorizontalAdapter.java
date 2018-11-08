@@ -17,23 +17,33 @@ import java.util.List;
  * Created by Administrator on 2018/1/5.
  */
 
-public class EmotionExtendHorizontalAdapter extends RecyclerView.Adapter<EmotionExtendHorizontalAdapter.ViewHolder> {
+public class EmotionExtendHorizontalAdapter extends RecyclerView
+        .Adapter<EmotionExtendHorizontalAdapter.ViewHolder> {
 
-    final Context context;
+    Context context;
     List<ExtendImageModel> images;
+    ItemListener itemListener;
 
-    public EmotionExtendHorizontalAdapter(Context context) {
+    public EmotionExtendHorizontalAdapter(Context context, ItemListener itemListener) {
         this.context = context;
+        this.itemListener = itemListener;
 
         images = new ArrayList<>();
         ExtendImageModel model1 = new ExtendImageModel();
-        model1.selected = false;
+        model1.selected = true;
         model1.title = "默认表情";
         model1.resource = R.drawable.ic_emotion_default;
         images.add(model1);
 
+//        ExtendImageModel model3 = new ExtendImageModel();
+//        model3.selected = false;
+//        model3.title = "自定义表情";
+//        model3.resource = R.drawable.ic_emotion_default;
+//        images.add(model3);
+
         ExtendImageModel model2 = new ExtendImageModel();
-        model2.selected = true;
+        model2.selected = false;
+        model2.isEnableSelected = false;
         model2.title = "添加";
         model2.resource = R.drawable.ic_emotion_add;
         images.add(model2);
@@ -41,12 +51,13 @@ public class EmotionExtendHorizontalAdapter extends RecyclerView.Adapter<Emotion
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.emotion_extend_item, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.emotion_extend_item, parent,
+                false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         ExtendImageModel img = images.get(position);
 
         int width = ScreenUtils.getScreenWidth(context);
@@ -55,10 +66,49 @@ public class EmotionExtendHorizontalAdapter extends RecyclerView.Adapter<Emotion
         lp.width = (int) itemW;
 
         holder.ivExtend.setImageResource(img.resource);
-        if (img.selected) {
-            holder.ivExtend.setBackgroundColor(context.getResources().getColor(R.color.main_background));
+        this.setItemSelectStatus(holder.ivExtend, img.selected);
+
+        holder.ivExtend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateItemSelectStatus(position);
+                if (itemListener != null) {
+                    switch (position) {
+                        case 0:
+                            itemListener.onDefaultItemClick();
+                            break;
+//                        case 1:
+//                            itemListener.onCustomizeItemClick();
+//                            break;
+                        default:
+                            itemListener.onAddItemClick();
+                            break;
+                    }
+                }
+            }
+        });
+    }
+
+    private void updateItemSelectStatus(int position) {
+        if (!images.get(position).isEnableSelected) return;
+        for (int i = 0; i < images.size(); i++) {
+            ExtendImageModel img = images.get(i);
+            if (i == position && img.isEnableSelected) {
+                img.selected = true;
+            } else {
+                img.selected = false;
+            }
+        }
+
+        notifyDataSetChanged();
+    }
+
+    private void setItemSelectStatus(ImageView ivExtend, boolean isSelected) {
+        if (isSelected) {
+            ivExtend.setBackgroundColor(context.getResources().getColor(R.color
+                    .main_background));
         } else {
-            holder.ivExtend.setBackgroundColor(Color.TRANSPARENT);
+            ivExtend.setBackgroundColor(Color.TRANSPARENT);
         }
     }
 
@@ -79,6 +129,15 @@ public class EmotionExtendHorizontalAdapter extends RecyclerView.Adapter<Emotion
     public class ExtendImageModel {
         public String title;//说明文本
         public int resource;//图标
+        public boolean isEnableSelected = true;
         public boolean selected = false;//是否被选中
+    }
+
+    public interface ItemListener {
+        void onCustomizeItemClick();
+
+        void onDefaultItemClick();
+
+        void onAddItemClick();
     }
 }

@@ -47,12 +47,12 @@
 //    Context currContext;
 //    ViewGroup contentContainerView;
 //    FragmentActivity activity;
-//    IEmotionPannelListener emotionEvent;
+//    IEmotionPanelListener emotionEvent;
 //    IDefaultEmotionListener defaultEmotionListener;
 //    TextView tvLoading;
 //
 //    int softInputHeight=0;
-//    int pannelTheme = EmotionPannelTheme.VOICE_TEXT_EMOTION;
+//    int pannelTheme = EmotionPanelTheme.VOICE_TEXT_EMOTION;
 //
 //    ImageView ivVoice, ivKeyboard, ivSysEmotion, ivExtendsEmotion;//语音，键盘，表情，扩展
 //    AudioRecorderButton btnVoiceRecord;
@@ -70,7 +70,7 @@
 //        //获取扩展属性的定义，并设置默认值
 //        TypedArray typedArray = context.obtainStyledAttributes(attrs
 //                , R.styleable.EmotionControlPannel);
-//        this.pannelTheme = typedArray.getInteger(R.styleable.EmotionControlPannel_pannel_theme, EmotionPannelTheme.VOICE_TEXT_EMOTION);
+//        this.pannelTheme = typedArray.getInteger(R.styleable.EmotionControlPannel_pannel_theme, EmotionPanelTheme.VOICE_TEXT_EMOTION);
 //
 //        //初始化绑定组件
 //        init();
@@ -82,7 +82,7 @@
 //        this.contentContainerView = contentContainerView;
 //    }
 //
-//    public void setEmotionPannelListener(IEmotionPannelListener emotionEvent) {
+//    public void setEmotionPannelListener(IEmotionPanelListener emotionEvent) {
 //        this.emotionEvent = emotionEvent;
 //    }
 //
@@ -139,7 +139,7 @@
 //        emotionTemplateFragment.setDefaultEmotionListener(new IDefaultEmotionListener() {
 //            @Override
 //            public void onDefaultItemClick(String name) {
-//                if (pannelTheme == EmotionPannelTheme.EMOTION) {
+//                if (pannelTheme == EmotionPanelTheme.EMOTION) {
 ////                    Toast.makeText(activity,name,Toast.LENGTH_SHORT).show();
 //                    if(defaultEmotionListener!=null){
 //                        defaultEmotionListener.onDefaultItemClick(name);
@@ -158,7 +158,7 @@
 //
 //            @Override
 //            public void onDefaultItemDeleteClick() {
-//                if (pannelTheme == EmotionPannelTheme.EMOTION) {
+//                if (pannelTheme == EmotionPanelTheme.EMOTION) {
 //                    if(defaultEmotionListener!=null){
 //                        defaultEmotionListener.onDefaultItemDeleteClick();
 //                    }
@@ -174,7 +174,7 @@
 //        rvEmotionExtends.setAdapter(new EmotionExtendHorizontalAdapter(currContext));
 //        rvEmotionExtends.setHasFixedSize(true);
 //        rvEmotionExtends.setLayoutManager(new GridLayoutManager(activity, 1, GridLayoutManager.HORIZONTAL, false));
-//        if(pannelTheme==EmotionPannelTheme.EMOTION){
+//        if(pannelTheme==EmotionPanelTheme.EMOTION){
 //            rvEmotionExtends.setVisibility(GONE);
 //        }
 //
@@ -257,10 +257,10 @@
 //        });
 //
 //        switch (pannelTheme) {
-//            case EmotionPannelTheme.VOICE_TEXT_EMOTION:
+//            case EmotionPanelTheme.VOICE_TEXT_EMOTION:
 //            default:
 //                break;
-//            case EmotionPannelTheme.EMOTION:
+//            case EmotionPanelTheme.EMOTION:
 //                ivVoice.setVisibility(View.GONE);
 //                ivKeyboard.setVisibility(View.GONE);
 //                btnVoiceRecord.setVisibility(View.GONE);
@@ -314,7 +314,7 @@
 //            }
 //
 //        } else if (i == R.id.iv_chat_emoticons) {
-//            if (pannelTheme == EmotionPannelTheme.EMOTION) {
+//            if (pannelTheme == EmotionPanelTheme.EMOTION) {
 //                this.setSystemKeyboard(false);
 //                if (llSysEmotion.getVisibility() == GONE) {
 //                    llSysEmotion.setVisibility(View.VISIBLE);

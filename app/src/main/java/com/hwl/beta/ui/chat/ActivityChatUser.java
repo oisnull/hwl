@@ -6,9 +6,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import com.hwl.beta.R;
@@ -18,7 +18,6 @@ import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.sp.AppInstallStatus;
 import com.hwl.beta.ui.chat.action.IChatMessageItemListener;
 import com.hwl.beta.ui.chat.adp.ChatUserMessageAdapter;
-import com.hwl.beta.ui.chat.imp.ChatUserEmotionPannelListener;
 import com.hwl.beta.ui.chat.logic.ChatUserLogic;
 import com.hwl.beta.ui.chat.standard.ChatUserStandard;
 import com.hwl.beta.ui.common.BaseActivity;
@@ -38,7 +37,7 @@ public class ActivityChatUser extends BaseActivity {
     ChatActivityUserBinding binding;
     ChatUserStandard chatUserStandard;
     ChatUserMessageAdapter messageAdapter;
-    //    ChatUserEmotionPannelListener emotionPannelListener;
+    //    ChatUserEmotionPanelListener emotionPanelListener;
     Friend user;
 
     @Override
@@ -106,6 +105,14 @@ public class ActivityChatUser extends BaseActivity {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 loadMessages();
+            }
+        });
+        binding.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                binding.ecpEmotion.setContentContainerHeight(binding.refreshLayout.getHeight());
+//                Toast.makeText(activity, binding.refreshLayout.getHeight() + "", Toast
+//                        .LENGTH_SHORT).show();
             }
         });
     }

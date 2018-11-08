@@ -10,7 +10,7 @@
 //import com.hwl.beta.db.entity.ChatGroupMessage;
 //import com.hwl.beta.db.entity.ChatRecordMessage;
 //import com.hwl.beta.db.entity.GroupInfo;
-//import com.hwl.beta.emotion.IEmotionPannelListener;
+//import com.hwl.beta.emotion.IEmotionPanelListener;
 //import com.hwl.beta.emotion.audio.AudioPlay;
 //import com.hwl.beta.emotion.audio.AudioRecorderButton;
 //import com.hwl.beta.mq.MQConstant;
@@ -48,7 +48,7 @@
 // * Created by Administrator on 2018/4/6.
 // */
 //
-//public class ChatGroupEmotionPannelListener implements IEmotionPannelListener {
+//public class ChatGroupEmotionPannelListener implements IEmotionPanelListener {
 //
 //    Activity activity;
 //    GroupInfo groupInfo;

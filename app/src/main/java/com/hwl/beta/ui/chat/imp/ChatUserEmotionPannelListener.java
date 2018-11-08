@@ -8,7 +8,7 @@ import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.ChatRecordMessage;
 import com.hwl.beta.db.entity.ChatUserMessage;
 import com.hwl.beta.db.entity.Friend;
-import com.hwl.beta.emotion.IEmotionPannelListener;
+import com.hwl.beta.emotion.IEmotionPanelListener;
 import com.hwl.beta.emotion.audio.AudioPlay;
 import com.hwl.beta.emotion.audio.AudioRecorderButton;
 import com.hwl.beta.net.ResponseBase;
@@ -45,7 +45,7 @@ import okhttp3.ResponseBody;
  * Created by Administrator on 2018/4/6.
  */
 
-public class ChatUserEmotionPannelListener implements IEmotionPannelListener {
+public class ChatUserEmotionPannelListener implements IEmotionPanelListener {
 
     Activity activity;
     Friend user;

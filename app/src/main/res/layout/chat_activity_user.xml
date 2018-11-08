@@ -24,11 +24,16 @@
                 android:layout_height="wrap_content" />
         </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
-        <com.hwl.beta.emotion.EmotionControlPannelV2
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:background="@color/red" />-->
+
+        <com.hwl.beta.emotion.EmotionControlPanelV2
             android:id="@+id/ecp_emotion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:pannel_theme="0" />
+            app:panel_theme="0" />
 
     </LinearLayout>
 </layout>

@@ -4,7 +4,7 @@ package com.hwl.beta.emotion;
  * Created by Administrator on 2018/1/4.
  */
 
-public class EmotionPannelTheme {
+public class EmotionPanelTheme {
 
     //面板模式定义
     public static final int VOICE_TEXT_EMOTION = 0;//全部都可以发送

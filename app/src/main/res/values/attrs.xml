@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="EmotionControlPannel">
-        <attr name="pannel_theme" format="integer" />
+    <declare-styleable name="EmotionControlPanel">
+        <attr name="panel_theme" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="WarpLinearLayout">
