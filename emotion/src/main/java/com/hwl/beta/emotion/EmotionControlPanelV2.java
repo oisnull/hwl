@@ -36,13 +36,11 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
     InputMethodManager softInputManager;
     FragmentActivity activity;
 
-    IEmotionPanelListener emotionPannelListener;
-    IDefaultEmotionListener defaultEmotionListener;
-
     ViewGroup contentContainerView;
     int panelTheme = EmotionPanelTheme.EMOTION_ALL;
     int localSoftInputHeight = 0;
     int contentContainerHeight = 0;
+    PanelListener panelListener;
 
     ImageView ivVoice, ivKeyboard, ivSysEmotion, ivExtendsEmotion;//语音，键盘，表情，扩展
     AudioRecorderButton btnVoiceRecord;
@@ -84,9 +82,8 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
         return this;
     }
 
-    public EmotionControlPanelV2 setLocalSoftInputHeight(IEmotionPanelListener
-                                                                 emotionPanelListener) {
-        this.emotionPannelListener = emotionPanelListener;
+    public EmotionControlPanelV2 setEmotionPanelListener(PanelListener panelListener) {
+        this.panelListener = panelListener;
         return this;
     }
 
@@ -113,10 +110,20 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
         ivVoice.setOnClickListener(this);
         ivKeyboard.setOnClickListener(this);
         btnVoiceRecord.setOnClickListener(this);
-        etChatMessage.setOnClickListener(this);
         ivSysEmotion.setOnClickListener(this);
         ivExtendsEmotion.setOnClickListener(this);
         btnMessageSend.setOnClickListener(this);
+        
+        this.bindEditTextEvents();
+        this.bindSysEmotionData();
+        this.bindExtendsEmotionData();
+        this.bindButtonEmotionActionBar();
+
+        this.addView(view);
+    }
+
+    private void bindEditTextEvents(){
+        etChatMessage.setOnClickListener(this);
         etChatMessage.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -126,12 +133,38 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
                 return false;
             }
         });
+        etChatMessage.setSoftKeyListener(new OnKeyListener() {
+           @Override
+           public boolean onKey(View v, int keyCode, KeyEvent event) {
+               if (event.KEYCODE_DEL == KeyEvent.KEYCODE_DEL) {
+                    EmotionUtils.deleteEmotion(etChatMessage);
+               }
+               return false;
+           }
+        });
+        etChatMessage.addTextChangedListener(new TextWatcher() {
 
-        this.bindSysEmotionData();
-        this.bindExtendsEmotionData();
-        this.bindButtonEmotionActionBar();
+           @Override
+           public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+           }
 
-        this.addView(view);
+           @Override
+           public void onTextChanged(CharSequence s, int start, int before, int count) {
+                showSendButton(s.length() > 0);
+           }
+
+           @Override
+           public void afterTextChanged(Editable s) {
+           }
+        });
+        etChatMessage.setOnFocusChangeListener(new OnFocusChangeListener() {
+           @Override
+           public void onFocusChange(View v, boolean hasFocus) {
+               String content = ((EditText) v).getText().toString();
+               //Toast.makeText(activity,content,Toast.LENGTH_SHORT).show();
+               showSendButton(hasFocus&&content != null && content.length() > 0);
+           }
+        });
     }
 
     private void bindSysEmotionData() {
@@ -140,32 +173,34 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
         emotionTemplateFragment.setDefaultEmotionListener(new IDefaultEmotionListener() {
             @Override
             public void onDefaultItemClick(String name) {
-                if (panelTheme == EmotionPanelTheme.EMOTION) {
-//                    Toast.makeText(activity,name,Toast.LENGTH_SHORT).show();
-                    if (defaultEmotionListener != null) {
-                        defaultEmotionListener.onDefaultItemClick(name);
-                    }
-                } else {
-//                    int start = etChatMessage.getSelectionStart();
-//                    etChatMessage.setText(etChatMessage.getText().insert(start, name));
-//                    CharSequence info = etChatMessage.getText();
-//                    if (info instanceof Spannable) {
-//                        Spannable spanText = (Spannable) info;
-//                        Selection.setSelection(spanText, start + name.length());
-//                    }
-//                    addEmotion(etChatMessage,name);
-                }
+                EmotionUtils.addEmotion(etChatMessage,name);
+//                 if (panelTheme == EmotionPanelTheme.EMOTION) {
+// //                    Toast.makeText(activity,name,Toast.LENGTH_SHORT).show();
+//                     // if (defaultEmotionListener != null) {
+//                     //     defaultEmotionListener.onDefaultItemClick(name);
+//                     // }
+//                 } else {
+// //                    int start = etChatMessage.getSelectionStart();
+// //                    etChatMessage.setText(etChatMessage.getText().insert(start, name));
+// //                    CharSequence info = etChatMessage.getText();
+// //                    if (info instanceof Spannable) {
+// //                        Spannable spanText = (Spannable) info;
+// //                        Selection.setSelection(spanText, start + name.length());
+// //                    }
+// //                    addEmotion(etChatMessage,name);
+//                 }
             }
 
             @Override
             public void onDefaultItemDeleteClick() {
-                if (panelTheme == EmotionPanelTheme.EMOTION) {
-                    if (defaultEmotionListener != null) {
-                        defaultEmotionListener.onDefaultItemDeleteClick();
-                    }
-                } else {
-//                    deleteEmotion(etChatMessage);
-                }
+                EmotionUtils.deleteEmotion(etChatMessage);
+//                 if (panelTheme == EmotionPanelTheme.EMOTION) {
+//                     // if (defaultEmotionListener != null) {
+//                     //     defaultEmotionListener.onDefaultItemDeleteClick();
+//                     // }
+//                 } else {
+// //                    deleteEmotion(etChatMessage);
+//                 }
             }
         });
         emotionExtendFragments.add(emotionTemplateFragment);
@@ -179,19 +214,22 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
         gvExtendsEmotion.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (emotionPannelListener != null) {
+                if (panelListener != null) {
                     switch (position) {
                         case 0:
-                            emotionPannelListener.onSelectImageClick();
+                            panelListener.onSelectImageClick();
                             break;
                         case 1:
-                            emotionPannelListener.onCameraClick();
+                            panelListener.onCameraClick();
                             break;
                         case 2:
-                            emotionPannelListener.onPositionClick();
+                            panelListener.onPositionClick();
                             break;
                         case 3:
-                            emotionPannelListener.onSelectVideoClick();
+                            panelListener.onSelectVideoClick();
+                            break;
+                        case 4:
+                            panelListener.onSelectFavoriteClick();
                             break;
                         default:
                             break;
@@ -236,6 +274,21 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
             showSysEmotion();
         } else if (id == R.id.iv_extends_emotion) {
             showExtendsEmotion();
+        } else if (id == R.id.btn_message_send) {
+            showSendButton(true);
+            if (panelListener != null&&panelListener.onSendMessageClick(etChatMessage.getText() + "")) {
+                etChatMessage.setText("");
+            }
+        }
+    }
+
+    private void showSendButton(boolean isShow){
+        if (isShow) {
+            ivExtendsEmotion.setVisibility(View.GONE);
+            btnMessageSend.setVisibility(View.VISIBLE);
+        } else {
+            ivExtendsEmotion.setVisibility(View.VISIBLE);
+            btnMessageSend.setVisibility(View.GONE);
         }
     }
 
@@ -253,7 +306,15 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
         hideEmotionContainer();
     }
 
-    private void showKeyboard() {
+    public void hideEmotionPanel() {
+        this.showKeyboard(false);
+    }
+
+    private void showKeyboard(){
+        this.showKeyboard(true);
+    }
+
+    private void showKeyboard(boolean isShowPanel) {
         ivVoice.setVisibility(View.VISIBLE);
         ivKeyboard.setVisibility(View.GONE);
         btnVoiceRecord.setVisibility(View.GONE);
@@ -263,10 +324,15 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
         gvExtendsEmotion.setVisibility(View.GONE);
         llSysEmotion.setVisibility(View.GONE);
 
-        lockContentHeight();
-        showSoftInput();
-        hideEmotionContainer();
-        unlockContentHeightDelayed();
+        if(isShowPanel){
+            lockContentHeight();
+            showSoftInput();
+            hideEmotionContainer();
+            unlockContentHeightDelayed();
+        }else{
+            hideSoftInput();
+            hideEmotionContainer();
+        }
     }
 
     private void showSysEmotion() {
@@ -340,5 +406,25 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
 
     private void hideSoftInput() {
         softInputManager.hideSoftInputFromWindow(etChatMessage.getWindowToken(), 0);
+    }
+
+    public interface PanelListener {
+        boolean onSendMessageClick(String text);
+    
+        void onSendSoundClick(float seconds, String filePath);
+    
+        boolean onSendExtendsClick();
+    
+        void onSelectImageClick();
+    
+        void onSelectVideoClick();
+    
+        void onSelectFavoriteClick();
+    
+        void onCameraClick();
+    
+        void onPositionClick();
+    
+        void onFunctionPop(int popHeigth);
     }
 }

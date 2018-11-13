@@ -33,20 +33,21 @@ public class EmotionExtendHorizontalAdapter extends RecyclerView
         model1.selected = true;
         model1.title = "默认表情";
         model1.resource = R.drawable.ic_emotion_default;
-        images.add(model1);
-
-//        ExtendImageModel model3 = new ExtendImageModel();
-//        model3.selected = false;
-//        model3.title = "自定义表情";
-//        model3.resource = R.drawable.ic_emotion_default;
-//        images.add(model3);
 
         ExtendImageModel model2 = new ExtendImageModel();
         model2.selected = false;
         model2.isEnableSelected = false;
         model2.title = "添加";
         model2.resource = R.drawable.ic_emotion_add;
+
+        // ExtendImageModel model3 = new ExtendImageModel();
+        // model3.selected = false;
+        // model3.title = "收藏表情";
+        // model3.resource = R.drawable.ic_emotion_default;
+
         images.add(model2);
+        images.add(model1);
+        // images.add(model3);
     }
 
     @Override
@@ -75,13 +76,13 @@ public class EmotionExtendHorizontalAdapter extends RecyclerView
                 if (itemListener != null) {
                     switch (position) {
                         case 0:
-                            itemListener.onDefaultItemClick();
-                            break;
-//                        case 1:
-//                            itemListener.onCustomizeItemClick();
-//                            break;
-                        default:
                             itemListener.onAddItemClick();
+                            break;
+                        case 1:
+                            itemListener.onDefaultItemClick();
+                           break;
+                        default:
+                            itemListener.onCustomizeItemClick();
                             break;
                     }
                 }

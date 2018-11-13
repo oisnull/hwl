@@ -4,20 +4,20 @@ package com.hwl.beta.emotion;
  * Created by Administrator on 2018/4/6.
  */
 
-public interface IEmotionPanelListener {
-    boolean onSendMessageClick(String text);
+// public interface IEmotionPanelListener {
+//     boolean onSendMessageClick(String text);
 
-    void onSendSoundClick(float seconds, String filePath);
+//     void onSendSoundClick(float seconds, String filePath);
 
-    boolean onSendExtendsClick();
+//     boolean onSendExtendsClick();
 
-    void onSelectImageClick();
+//     void onSelectImageClick();
 
-    void onSelectVideoClick();
+//     void onSelectVideoClick();
 
-    void onCameraClick();
+//     void onCameraClick();
 
-    void onPositionClick();
+//     void onPositionClick();
 
-    void onFunctionPop(int popHeigth);
-}
+//     void onFunctionPop(int popHeigth);
+// }

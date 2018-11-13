@@ -133,6 +133,46 @@ public class ChatUserEmotionPannelListener implements IEmotionPanelListener {
                 (), 0, 0);
     }
 
+    private ChatUserMessage getChatMessage(long messageId, int contentType, String content, String
+    localPath, long size, long playTime){
+        ChatUserMessage message = new ChatUserMessage();
+        if (messageId > 0) {
+            message.setMsgId(messageId);
+        }
+        message.setFromUserId(UserSP.getUserId());
+        message.setFromUserName(UserSP.getUserShowName());
+        message.setFromUserHeadImage(UserSP.getUserHeadImage());
+        message.setContentType(contentType);
+        message.setContent(content);
+        message.setLocalUrl(localPath);
+//        message.setPreviewUrl(previewUrl);
+//        message.setOriginalUrl(originalUrl);
+        message.setPlayTime(playTime);
+        message.setSize(size);
+        message.setSendTime(new Date());
+        message.setToUserId(user.getId());
+        message.setSendStatus(IMConstant.CHAT_SEND_SENDING);
+        return message;
+    }
+
+    private ChatRecordMessage getChatRecordMessage(ChatUserMessage userMessage){
+        ChatRecordMessage record = new ChatRecordMessage();
+        record.setRecordType(IMConstant.CHAT_RECORD_TYPE_USER);
+//      record.setRecordImage(user.getHeadImage());
+        record.setFromUserId(UserSP.getUserId());
+        record.setFromUserName(UserSP.getUserShowName());
+        record.setFromUserHeadImage(UserSP.getUserHeadImage());
+        record.setToUserId(user.getId());
+        record.setToUserName(user.getName());
+        record.setToUserHeadImage(user.getHeadImage());
+        record.setTitle(record.getToUserName());
+        record.setContentType(userMessage.getContentType());
+        record.setContent(StringUtils.cutString(message.getContent(), 25));
+        record.setSendTime(userMessage.getSendTime());
+        // record = DaoUtils.getChatRecordMessageManagerInstance().save(record);
+        return record;
+    }
+
     private void sendChatMessage(final long messageId, int contentType, String content, String
             localPath, long size, long playTime) {
         final ChatUserMessage message = new ChatUserMessage();
@@ -333,7 +373,6 @@ public class ChatUserEmotionPannelListener implements IEmotionPanelListener {
                         if (response != null && response.getResponseBody() != null && response
                                 .getResponseBody().isSuccess()) {
                             UpResxResponse res = response.getResponseBody();
-                            //上传成功,更新发送状态,并发送消息
                             if (StringUtils.isBlank(res.getPreviewUrl())) {
                                 message.setPreviewUrl(res.getOriginalUrl());
                             } else {

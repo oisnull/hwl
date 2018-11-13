@@ -37,7 +37,6 @@ public class ActivityChatUser extends BaseActivity {
     ChatActivityUserBinding binding;
     ChatUserStandard chatUserStandard;
     ChatUserMessageAdapter messageAdapter;
-    //    ChatUserEmotionPanelListener emotionPanelListener;
     Friend user;
 
     @Override
@@ -77,10 +76,6 @@ public class ActivityChatUser extends BaseActivity {
                     }
                 });
 
-//        emotionPannelListener = new ChatUserEmotionPannelListener(activity, user);
-        binding.ecpEmotion.setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
-                .setContentContainerView(binding.refreshLayout);
-
         messageAdapter = new ChatUserMessageAdapter(activity, chatUserStandard
                 .getTopLocalMessages(user.getId()), new ChatMessageItemListener());
         binding.rvMessageContainer.setAdapter(messageAdapter);
@@ -89,14 +84,16 @@ public class ActivityChatUser extends BaseActivity {
         binding.rvMessageContainer.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-//                        binding.ecpEmotion.hideEmotionFunction();
-                        break;
+                if(event.getAction()==MotionEvent.ACTION_DOWN){
+                    binding.ecpEmotion.hideEmotionPanel();
                 }
                 return false;
             }
         });
+
+        //emotionPannelListener = new ChatUserEmotionPannelListener(activity, user);
+        binding.ecpEmotion.setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
+                .setContentContainerView(binding.refreshLayout);
 
         binding.refreshLayout.setEnableLoadMore(false);
         binding.refreshLayout.setEnableScrollContentWhenLoaded(false);
