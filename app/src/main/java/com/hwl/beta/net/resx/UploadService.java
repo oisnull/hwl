@@ -47,13 +47,13 @@ public class UploadService {
 //                .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public static Observable<ResponseBase<UpResxResponse>> upAudio(File file) {
+    public static Observable<ResponseBase<UpResxResponse>> upVoice(File file) {
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         MultipartBody.Part body = MultipartBody.Part.createFormData("audio", file.getName(), requestFile);
         return RetrofitUtils.createResxApi(IUploadService.class)
-                .upAudio(body, UserSP.getUserToken())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .upVoice(body, UserSP.getUserToken())
+                .subscribeOn(Schedulers.io());
+                // .observeOn(AndroidSchedulers.mainThread());
     }
 
     //chunkIndex 分块索引
@@ -85,7 +85,7 @@ public class UploadService {
 
         @Multipart
         @POST("resx/audio")
-        Observable<ResponseBase<UpResxResponse>> upAudio(@Part MultipartBody.Part file, @Query("token") String token);
+        Observable<ResponseBase<UpResxResponse>> upVoice(@Part MultipartBody.Part file, @Query("token") String token);
 
         @POST("resx/video")
         Observable<ResponseBase<UpResxResponse>> upVideo(@Body MultipartBody file, @Query("token") String token);

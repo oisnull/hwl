@@ -297,7 +297,7 @@
 //    }
 //
 //    private Observable<Boolean> upAndSendAudio(final ChatGroupMessage message) {
-//        return UploadService.upAudio(new File(message.getLocalUrl()))
+//        return UploadService.upVoice(new File(message.getLocalUrl()))
 //                .map(new Function<ResponseBase<UpResxResponse>, Boolean>() {
 //                    @Override
 //                    public Boolean apply(ResponseBase<UpResxResponse> response) throws Exception {

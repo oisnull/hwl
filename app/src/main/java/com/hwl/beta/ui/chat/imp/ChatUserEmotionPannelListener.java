@@ -49,12 +49,14 @@ public class ChatUserEmotionPannelListener implements IEmotionPanelListener {
 
     Activity activity;
     Friend user;
-    //    File cameraTempFile;
+    ChatUserMessageAdapter messageAdapter;
+
     AudioPlay audioPlay;
 
-    public ChatUserEmotionPannelListener(Activity activity, Friend user) {
+    public ChatUserEmotionPannelListener(Activity activity, Friend user,ChatUserMessageAdapter messageAdapter) {
         this.activity = activity;
         this.user = user;
+        this.messageAdapter = messageAdapter;
     }
 
     @Override
@@ -106,33 +108,6 @@ public class ChatUserEmotionPannelListener implements IEmotionPanelListener {
 
     }
 
-    public void resendMessage(ChatUserMessage message) {
-        if (message == null) return;
-        this.sendChatMessage(message.getMsgId(), message.getContentType(), message.getContent(),
-                message.getLocalUrl(), message.getContent().length(), message.getPlayTime());
-    }
-
-    public void sendChatUserVideoMessage(String localPath) {
-        this.sendChatMessage(0, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VIDEO, "视频", localPath, 0, 0);
-    }
-
-    public void sendChatUserImageMessage() {
-        sendChatUserImageMessage(StorageUtils.getTempImageFilePath());
-//        if (cameraTempFile != null && cameraTempFile.exists()) {
-//            sendChatUserImageMessage(cameraTempFile.getPath());
-//        }
-//        cameraTempFile = null;
-    }
-
-    public void sendChatUserImageMessage(String localPath) {
-        File file = CompressChatImage.chatImage(activity, localPath);
-        if (file == null) {//说明压缩失败
-            file = new File(localPath);//直接发原图
-        }
-        sendChatMessage(0, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_IMAGE, "图片", file.getAbsolutePath
-                (), 0, 0);
-    }
-
     private ChatUserMessage getChatMessage(long messageId, int contentType, String content, String
     localPath, long size, long playTime){
         ChatUserMessage message = new ChatUserMessage();
@@ -169,8 +144,173 @@ public class ChatUserEmotionPannelListener implements IEmotionPanelListener {
         record.setContentType(userMessage.getContentType());
         record.setContent(StringUtils.cutString(message.getContent(), 25));
         record.setSendTime(userMessage.getSendTime());
-        // record = DaoUtils.getChatRecordMessageManagerInstance().save(record);
         return record;
+    }
+
+    private void sendChatMessage(long messageId, int contentType, String content, String
+    localPath, long size, long playTime){
+        //1, build chat message model and chat record model and storage to local db
+        //2, check user relationship and hint current user
+        //3, if exists resx and upload it to server
+        //4, get result
+
+        Observable.create(new ObservableOnSubscribe() {
+            public void subscribe(ObservableEmitter emitter) throws Exception {
+                ChatUserMessage userMessage=this.getChatMessage(messageId,contentType,content,localPath,size,playTime);
+                long msgId = DaoUtils.getChatUserMessageManagerInstance().save(userMessage);
+                if (msgId > 0) {
+                    userMessage.setMsgId(msgId);
+                    ChatRecordMessage recordMessage = DaoUtils.getChatRecordMessageManagerInstance().save(this.getChatRecordMessage(userMessage));
+                    //EventBus.getDefault().post(record);
+                    emitter.onNext(userMessage);
+                }else{
+                    emitter.onCompleted();
+                }
+            }
+        })
+        .doOnNext(new Function<ChatUserMessage,ObservableSource<ChatUserMessage>>() {
+            @Override
+            public ObservableSource<ChatUserMessage> apply(ChatUserMessage userMessage) throws Exception {
+                switch (userMessage.getContentType()) {
+                    case IMConstant.CHAT_MESSAGE_CONTENT_TYPE_IMAGE:
+                        return upImage(userMessage);
+                    case IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VOICE:
+                        return upVoice(userMessage);
+                    case IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VIDEO:
+                        return upVideo(userMessage);
+                    case IMConstant.CHAT_MESSAGE_CONTENT_TYPE_TEXT:
+                        return Observable.just(userMessage);
+                }
+            }
+        })
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Consumer<ChatUserMessage>() {
+            @Override
+            public void accept(ChatUserMessage userMessage) {
+                
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) {
+                
+            }
+        });
+    }
+
+    public Observable<ChatUserMessage> upImage(final ChatUserMessage message) {
+        return UploadService.upImage(new File(message.getLocalUrl()), ResxType.CHATIMAGE)
+                .map(new Function<ResponseBase<UpResxResponse>,ChatUserMessage>() {
+                    @Override
+                    public ChatUserMessage apply(ResponseBase<UpResxResponse> response) throws Exception {
+                        if (response != null && response.getResponseBody() != null && response.getResponseBody().isSuccess()) {
+                            UpResxResponse res = response.getResponseBody();
+                            message.setOriginalUrl(res.getOriginalUrl());
+                            message.setPreviewUrl(StringUtils.isBlank(res.getPreviewUrl())?res.getOriginalUrl():res.getPreviewUrl());
+                            message.setImageWidth(res.getWidth());
+                            message.setImageHeight(res.getHeight());
+                            message.setSize(res.getOriginalSize());
+                            return Observable.just(message);
+                        }else{
+                            throw new Exception("Chat image resx upload failure");
+                        }
+                    }
+                });
+    }
+
+    private Observable<ChatUserMessage> upVoice(final ChatUserMessage message) {
+        return UploadService.upVoice(new File(message.getLocalUrl()))
+                .map(new Function<ResponseBase<UpResxResponse>, ChatUserMessage>() {
+                    @Override
+                    public ChatUserMessage apply(ResponseBase<UpResxResponse> response) throws Exception {
+                        if (response != null && response.getResponseBody() != null && response.getResponseBody().isSuccess()) {
+                            UpResxResponse res = response.getResponseBody();
+                            message.setOriginalUrl(StringUtils.isBlank(res.getPreviewUrl())?res.getOriginalUrl():res.getPreviewUrl());
+                            message.setSize(res.getOriginalSize());
+                            return Observable.just(message);
+                        } else{
+                            throw new Exception("Chat voice resx upload failure");
+                        }
+                    }
+                });
+    }
+
+    private Observable<ChatUserMessage> upVideo(final ChatUserMessage message) {
+        return new UpVideoChunk(message.getLocalUrl())
+                .process()
+                .map(new Function<UpVideoChunk.Model, ChatUserMessage>() {
+                    @Override
+                    public ChatUserMessage apply(UpVideoChunk.Model model) throws Exception {
+                        if (model.isSuccess) {
+                            message.setPreviewUrl(model.previewUrl);
+                            message.setOriginalUrl(model.originalUrl);
+                            message.setSize(model.originalSize);
+                            return Observable.just(message);
+                        } else{
+                            throw new Exception("Chat video resx upload failure");
+                        }
+                    }
+                });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public void resendMessage(ChatUserMessage message) {
+        if (message == null) return;
+        this.sendChatMessage(message.getMsgId(), message.getContentType(), message.getContent(),
+                message.getLocalUrl(), message.getContent().length(), message.getPlayTime());
+    }
+
+    public void sendChatUserVideoMessage(String localPath) {
+        this.sendChatMessage(0, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VIDEO, "视频", localPath, 0, 0);
+    }
+
+    public void sendChatUserImageMessage() {
+        sendChatUserImageMessage(StorageUtils.getTempImageFilePath());
+//        if (cameraTempFile != null && cameraTempFile.exists()) {
+//            sendChatUserImageMessage(cameraTempFile.getPath());
+//        }
+//        cameraTempFile = null;
+    }
+
+    public void sendChatUserImageMessage(String localPath) {
+        File file = CompressChatImage.chatImage(activity, localPath);
+        if (file == null) {//说明压缩失败
+            file = new File(localPath);//直接发原图
+        }
+        sendChatMessage(0, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_IMAGE, "图片", file.getAbsolutePath
+                (), 0, 0);
     }
 
     private void sendChatMessage(final long messageId, int contentType, String content, String
@@ -305,7 +445,6 @@ public class ChatUserEmotionPannelListener implements IEmotionPanelListener {
                                 .getResponseBody().isSuccess()) {
                             UpResxResponse res = response.getResponseBody();
                             if (chunkIndex >= chunkCount) {
-                                //这里表示的是发送的是最后一块数据
                                 chunkIndex = 1;
                                 chunkCount = 1;
                                 tempFileUrl = "";
@@ -326,7 +465,7 @@ public class ChatUserEmotionPannelListener implements IEmotionPanelListener {
     }
 
     private Observable<Boolean> upAndSendAudio(final ChatUserMessage message) {
-        return UploadService.upAudio(new File(message.getLocalUrl()))
+        return UploadService.upVoice(new File(message.getLocalUrl()))
                 .map(new Function<ResponseBase<UpResxResponse>, Boolean>() {
                     @Override
                     public Boolean apply(ResponseBase<UpResxResponse> response) throws Exception {
@@ -343,24 +482,6 @@ public class ChatUserEmotionPannelListener implements IEmotionPanelListener {
                         } else {
                             return false;
                         }
-                    }
-                })
-                .concatMap(new Function<Boolean, ObservableSource<? extends Boolean>>() {
-                    @Override
-                    public ObservableSource<? extends Boolean> apply(Boolean succ) throws
-                            Exception {
-                        if (succ) {
-//                            return ChatMessageSend.sendChatUserMessage(
-//                                    message.getMsgId(),
-//                                    message.getToUserId(),
-//                                    message.getContentType(),
-//                                    message.getContent(),
-//                                    message.getPreviewUrl(),
-//                                    message.getOriginalUrl(),
-//                                    message.getSize(),
-//                                    message.getPlayTime());
-                        }
-                        return Observable.just(false);
                     }
                 });
     }
@@ -386,24 +507,6 @@ public class ChatUserEmotionPannelListener implements IEmotionPanelListener {
                         } else {
                             return false;
                         }
-                    }
-                })
-                .concatMap(new Function<Boolean, ObservableSource<? extends Boolean>>() {
-                    @Override
-                    public ObservableSource<? extends Boolean> apply(Boolean succ) throws
-                            Exception {
-                        if (succ) {
-//                            return ChatMessageSend.sendChatUserMessage(
-//                                    message.getMsgId(),
-//                                    message.getToUserId(),
-//                                    message.getContentType(),
-//                                    message.getContent(),
-//                                    message.getPreviewUrl(),
-//                                    message.getOriginalUrl(),
-//                                    message.getSize(),
-//                                    message.getPlayTime());
-                        }
-                        return Observable.just(false);
                     }
                 });
     }
