@@ -49,14 +49,14 @@ public class ChatUserEmotionPannelListener implements IEmotionPanelListener {
 
     Activity activity;
     Friend user;
-    ChatUserMessageAdapter messageAdapter;
+    // ChatUserMessageAdapter messageAdapter;
 
     AudioPlay audioPlay;
 
-    public ChatUserEmotionPannelListener(Activity activity, Friend user,ChatUserMessageAdapter messageAdapter) {
+    public ChatUserEmotionPannelListener(Activity activity, Friend user) {
         this.activity = activity;
         this.user = user;
-        this.messageAdapter = messageAdapter;
+        // this.messageAdapter = messageAdapter;
     }
 
     @Override
@@ -147,12 +147,12 @@ public class ChatUserEmotionPannelListener implements IEmotionPanelListener {
         return record;
     }
 
-    private void sendChatMessage(long messageId, int contentType, String content, String
-    localPath, long size, long playTime){
+    private void sendChatMessage(long messageId, int contentType, String content, String localPath, long size, long playTime){
         //1, build chat message model and chat record model and storage to local db
         //2, check user relationship and hint current user
         //3, if exists resx and upload it to server
-        //4, get result
+        //4, send chat message
+        //5, get result
 
         Observable.create(new ObservableOnSubscribe() {
             public void subscribe(ObservableEmitter emitter) throws Exception {
@@ -171,6 +171,12 @@ public class ChatUserEmotionPannelListener implements IEmotionPanelListener {
         .doOnNext(new Function<ChatUserMessage,ObservableSource<ChatUserMessage>>() {
             @Override
             public ObservableSource<ChatUserMessage> apply(ChatUserMessage userMessage) throws Exception {
+                return validateUser(userMessage);
+            }
+        })
+        .doOnNext(new Function<ChatUserMessage,ObservableSource<ChatUserMessage>>() {
+            @Override
+            public ObservableSource<ChatUserMessage> apply(ChatUserMessage userMessage) throws Exception {
                 switch (userMessage.getContentType()) {
                     case IMConstant.CHAT_MESSAGE_CONTENT_TYPE_IMAGE:
                         return upImage(userMessage);
@@ -183,8 +189,14 @@ public class ChatUserEmotionPannelListener implements IEmotionPanelListener {
                 }
             }
         })
+        .doOnNext(new Function<ChatUserMessage,ObservableSource<ChatUserMessage>>() {
+            @Override
+            public ObservableSource<ChatUserMessage> apply(ChatUserMessage userMessage) throws Exception {
+                return sendChatUserMessage(userMessage);
+            }
+        })
         .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
+        // .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Consumer<ChatUserMessage>() {
             @Override
             public void accept(ChatUserMessage userMessage) {
@@ -198,7 +210,25 @@ public class ChatUserEmotionPannelListener implements IEmotionPanelListener {
         });
     }
 
-    public Observable<ChatUserMessage> upImage(final ChatUserMessage message) {
+    private Observable<ChatUserMessage> validateUser(final ChatUserMessage message){
+        return UserService.getUserRelationInfo(message.getToUserId())
+                    .map(new Function<ResponseBase<GetUserRelationInfoResponse>,ChatUserMessage>() {
+                        @Override
+                        public ChatUserMessage apply(ResponseBase<GetUserRelationInfoResponse> response) throws Exception {
+                            if (response != null && response.getResponseBody() != null) {
+                                GetUserRelationInfoResponse res = response.getResponseBody();
+                                if(res.getIsInBlackList()){
+                                    return Observable.just(null);
+                                }
+                                return Observable.just(message);
+                            }else{
+                                throw new Exception("Validate chat user failure");
+                            }
+                        }
+                    });
+    }
+
+    private Observable<ChatUserMessage> upImage(final ChatUserMessage message) {
         return UploadService.upImage(new File(message.getLocalUrl()), ResxType.CHATIMAGE)
                 .map(new Function<ResponseBase<UpResxResponse>,ChatUserMessage>() {
                     @Override
@@ -253,6 +283,40 @@ public class ChatUserEmotionPannelListener implements IEmotionPanelListener {
                 });
     }
 
+    private Observable<ChatUserMessage> sendChatUserMessage(final ChatUserMessage message){
+        return Observable.create(new ObservableOnSubscribe() {
+            public void subscribe(ObservableEmitter emitter) throws Exception {
+
+                IMDefaultSendOperateListener sendOperateListener=new IMDefaultSendOperateListener("ChatUser") {
+                    @Override
+                    public void success1() {
+                        emitter.onNext(message);
+                    }
+
+                    @Override
+                    public void failed1() {
+                        emitter.onError("Send chat user message failure");
+                    }
+                };
+
+                switch (userMessage.getContentType()) {
+                    case IMConstant.CHAT_MESSAGE_CONTENT_TYPE_IMAGE:
+                        IMClientEntry.sendChatUserImageMessage(message.getToUserId(),message.getPreviewUrl(),message.getImageWidth(),message.getImageHeight(),message.getSize(),sendOperateListener);
+                        break;
+                    case IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VOICE:
+                        IMClientEntry.sendChatUserVoiceMessage(message.getToUserId(),message.getPreviewUrl(),message.getSize(),message.getPlayTime(),sendOperateListener);
+                        break;
+                    case IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VIDEO:
+                        IMClientEntry.sendChatUserVideoMessage(message.getToUserId(),message.getPreviewUrl(),message.getImageWidth(),message.getImageHeight(),message.getSize(),message.getPlayTime(),sendOperateListener);
+                        break;
+                    case IMConstant.CHAT_MESSAGE_CONTENT_TYPE_TEXT:
+                        IMClientEntry.sendChatUserTextMessage(message.getToUserId(),message.getContent(),true,sendOperateListener);
+                        break;
+                }
+
+            }
+        });
+    }
 
 
 

@@ -241,6 +241,18 @@ public class UserService {
         return response;
     }
 
+    public static Observable<ResponseBase<GetUserRelationInfoResponse>> getUserRelationInfo(long relationUserId) {
+        GetUserRelationInfoRequest requestBody = new GetUserRelationInfoRequest();
+        requestBody.setUserId(UserSP.getUserId());
+        requestBody.setRelationUserId(relationUserId);
+        Observable<ResponseBase<GetUserRelationInfoResponse>> response = RetrofitUtils.createApi(IUserService.class)
+                .getUserRelationInfo(new RequestBase(UserSP.getUserToken(), requestBody))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        return response;
+    }
+    
+
     private interface IUserService {
         @POST("api/UserLogin")
         Observable<ResponseBase<UserLoginResponse>> userLogin(@Body RequestBase<UserLoginRequest>
@@ -293,5 +305,8 @@ public class UserService {
 
         @POST("api/GetUserDetails")
         Observable<ResponseBase<GetUserDetailsResponse>> getUserDetails(@Body RequestBase<GetUserDetailsRequest> request);
+
+        @POST("api/GetUserRelationInfo")
+        Observable<ResponseBase<GetUserRelationInfoResponse>> getUserRelationInfo(@Body RequestBase<GetUserRelationInfoRequest> request);
     }
 }
