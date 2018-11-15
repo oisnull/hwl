@@ -48,30 +48,31 @@ public class EmotionEditText extends android.support.v7.widget.AppCompatEditText
     }
 
     private CharSequence replace(CharSequence text) {
-        try {
-            SpannableStringBuilder builder = new SpannableStringBuilder(text);
-            Pattern pattern = Pattern.compile(EmotionUtils.REGEXDEFAULTEMOTION);
-            Matcher matcher = pattern.matcher(text);
-            while (matcher.find()) {
-                if (EmotionUtils.getDefaultEmotionMap().containsKey(matcher.group())) {
-                    int id = EmotionUtils.getDefaultEmotionMap().get(matcher.group());
-//                    Drawable drawable = getResources().getDrawable(id);
-//                    drawable.setBounds(0, 0, 25, 25);
-//                    builder.setSpan(new ImageSpan(drawable), matcher.start(), matcher.end(),
-//                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    Bitmap bitmap = BitmapFactory.decodeResource(
-                            getResources(), id);
-                    if (bitmap != null) {
-                        ImageSpan span = new ImageSpan(getContext(), bitmap);
-                        builder.setSpan(span, matcher.start(), matcher.end(),
-                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-                }
-            }
-            return builder;
-        } catch (Exception e) {
-            return text;
-        }
+        return EmotionUtils.replaceEmotionText(getContext(), text);
+//        try {
+//            SpannableStringBuilder builder = new SpannableStringBuilder(text);
+//            Pattern pattern = Pattern.compile(EmotionUtils.REGEXDEFAULTEMOTION);
+//            Matcher matcher = pattern.matcher(text);
+//            while (matcher.find()) {
+//                if (EmotionUtils.getDefaultEmotionMap().containsKey(matcher.group())) {
+//                    int id = EmotionUtils.getDefaultEmotionMap().get(matcher.group());
+////                    Drawable drawable = getResources().getDrawable(id);
+////                    drawable.setBounds(0, 0, 25, 25);
+////                    builder.setSpan(new ImageSpan(drawable), matcher.start(), matcher.end(),
+////                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                    Bitmap bitmap = BitmapFactory.decodeResource(
+//                            getResources(), id);
+//                    if (bitmap != null) {
+//                        ImageSpan span = new ImageSpan(getContext(), bitmap);
+//                        builder.setSpan(span, matcher.start(), matcher.end(),
+//                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                    }
+//                }
+//            }
+//            return builder;
+//        } catch (Exception e) {
+//            return text;
+//        }
     }
 
     @Override
@@ -89,7 +90,7 @@ public class EmotionEditText extends android.support.v7.widget.AppCompatEditText
         public boolean sendKeyEvent(KeyEvent event) {
             if (keyListener != null) {
                 return keyListener.onKey(EmotionEditText.this, event.getKeyCode(), event);
-            }else{
+            } else {
                 return super.sendKeyEvent(event);
             }
         }

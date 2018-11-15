@@ -1,88 +1,114 @@
 package com.hwl.beta.net.resx;
 
-public class UpVideoChunk{
+import com.hwl.beta.net.ResponseBase;
+import com.hwl.beta.net.resx.body.UpResxResponse;
+import com.hwl.beta.utils.FileUtils;
+
+import java.io.File;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.functions.Function;
+
+public class UpVideoChunk {
     private int chunkIndex;
     private int chunkCount;
     private String tempFileUrl;
 
     private String localPath;
-    private UpProcessListener processLisener;
+    private UpProcessListener processListener;
 
-    public UpVideoChunk(String localPath){
-        this(localPath,null);
+    public UpVideoChunk(String localPath) {
+        this(localPath, null);
     }
 
-    public UpVideoChunk(String localPath,UpProcessListener processLisener){
-        this.localPath=localPath;
-        this.processLisener=processLisener;
+    public UpVideoChunk(String localPath, UpProcessListener processListener) {
+        this.localPath = localPath;
+        this.processListener = processListener;
         this.initParams();
     }
 
-    private void initParams(){
+    private void initParams() {
         chunkIndex = 1;
         chunkCount = 1;
         tempFileUrl = "";
     }
 
-    public Observable<Model> process() {
+    public Observable<VideoModel> process() {
         File file = new File(this.localPath);
         chunkCount = (int) Math.ceil(file.length() / (float) UploadService.CHUNKED_LENGTH);
         if (chunkCount <= 0) {
-            return Observable.just(new Model());
+            return Observable.just(new VideoModel());
         }
-        if(this.processLisener!=null)
-            this.processLisener.chunkStart(chunkCount);
+        if (this.processListener != null)
+            this.processListener.chunkStart(chunkCount);
         return upload(file);
     }
 
-    private byte[] getUploadBlock(File file){
-        return FileUtils.getBlock((chunkIndex - 1) * UploadService.CHUNKED_LENGTH, file, UploadService.CHUNKED_LENGTH);
+    private byte[] getUploadBlock(File file) {
+        return FileUtils.getBlock((chunkIndex - 1) * UploadService.CHUNKED_LENGTH, file,
+                UploadService.CHUNKED_LENGTH);
     }
 
-    private Observable<Model> upload(final File file) {
-        byte[] mBlock = this.getUploadBlock(file);
+    private Observable<VideoModel> upload(final File file) {
+        final byte[] mBlock = this.getUploadBlock(file);
         return UploadService.upVideo(mBlock, file.getName(), chunkIndex, chunkCount, tempFileUrl)
-                .map(new Function<ResponseBase<UpResxResponse>, Boolean>() {
+                .concatMap(new Function<ResponseBase<UpResxResponse>,
+                        ObservableSource<VideoModel>>() {
                     @Override
-                    public Boolean apply(ResponseBase<UpResxResponse> response) throws Exception {
-                        if (response != null && response.getResponseBody() != null && response.getResponseBody().isSuccess()) {
+                    public ObservableSource<VideoModel> apply(ResponseBase<UpResxResponse>
+                                                                      response) throws
+                            Exception {
+                        if (response != null && response.getResponseBody() != null && response
+                                .getResponseBody().isSuccess()) {
                             UpResxResponse res = response.getResponseBody();
                             if (chunkIndex >= chunkCount) {//last chunk data
                                 initParams();
-                                if(this.processLisener!=null)
-                                    this.processLisener.chunkEnd(chunkCount,chunkIndex,mBlock.length,res.getOriginalUrl(),res.getPreviewUrl(),res.getOriginalSize());
-                                Model model=new Model();
-                                model.isSuccess=true;
-                                model.originalUrl=res.getOriginalUrl();
-                                model.previewUrl=res.getPreviewUrl();
-                                model.originalSize=res.getOriginalSize();
+                                if (processListener != null)
+                                    processListener.chunkEnd(chunkCount, chunkIndex, mBlock
+                                                    .length, res.getOriginalUrl(), res
+                                                    .getPreviewUrl(),
+                                            res.getOriginalSize());
+                                VideoModel model = new VideoModel();
+                                model.isSuccess = true;
+                                model.originalUrl = res.getOriginalUrl();
+                                model.previewUrl = res.getPreviewUrl();
+                                model.originalSize = (int) res.getOriginalSize();
                                 return Observable.just(model);
                             } else {
                                 tempFileUrl = res.getOriginalUrl();
-                                if(this.processLisener!=null)
-                                    this.processLisener.chunkProcess(chunkCount,chunkIndex,mBlock.length,res.getPreviewUrl());
+                                if (processListener != null)
+                                    processListener.chunkProcess(chunkCount, chunkIndex, mBlock
+                                            .length, res.getPreviewUrl());
                                 chunkIndex++;
                                 return upload(file);
                             }
-                        }else{
-                            if(this.processLisener!=null)
-                                this.processLisener.error(chunkCount,chunkIndex,"Upload video failure");
+                        } else {
+                            if (processListener != null)
+                                processListener.error(chunkCount, chunkIndex, "Upload video " +
+                                        "failure");
+                            return Observable.just(new VideoModel());
                         }
                     }
                 });
     }
 
-    public class Model{
+    public class VideoModel {
         public Boolean isSuccess = false;
         public String originalUrl;
-        public long originalSize;
+        public int originalSize;
         public String previewUrl;
     }
 
-    public interface UpProcessListener{
+    public interface UpProcessListener {
         void chunkStart(int chunkCount);
-        void chunkProcess(int chunkCount,int currentChunkIndex,int chunkBlockSize,String currentChunkUrl);
-        void chunkEnd(int chunkCount,int currentChunkIndex,int chunkBlockSize,String originalUrl,String previewUrl,long originalSize);
-        void error(int chunkCount,int currentChunkIndex,String errorMessage);
+
+        void chunkProcess(int chunkCount, int currentChunkIndex, int chunkBlockSize, String
+                currentChunkUrl);
+
+        void chunkEnd(int chunkCount, int currentChunkIndex, int chunkBlockSize, String
+                originalUrl, String previewUrl, long originalSize);
+
+        void error(int chunkCount, int currentChunkIndex, String errorMessage);
     }
 }

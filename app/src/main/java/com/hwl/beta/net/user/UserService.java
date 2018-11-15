@@ -11,6 +11,8 @@ import com.hwl.beta.net.user.body.GetFriendsRequest;
 import com.hwl.beta.net.user.body.GetFriendsResponse;
 import com.hwl.beta.net.user.body.GetUserDetailsRequest;
 import com.hwl.beta.net.user.body.GetUserDetailsResponse;
+import com.hwl.beta.net.user.body.GetUserRelationInfoRequest;
+import com.hwl.beta.net.user.body.GetUserRelationInfoResponse;
 import com.hwl.beta.net.user.body.ResetUserPasswordRequest;
 import com.hwl.beta.net.user.body.ResetUserPasswordResponse;
 import com.hwl.beta.net.user.body.SearchUserRequest;
@@ -47,40 +49,49 @@ import retrofit2.http.POST;
 
 public class UserService {
 
-    public static Observable<ResponseBase<UserLoginResponse>> userLogin(String email, String mobile, String password) {
+    public static Observable<ResponseBase<UserLoginResponse>> userLogin(String email, String
+            mobile, String password) {
         UserLoginRequest requestBody = new UserLoginRequest();
         requestBody.setEmail(email);
         requestBody.setMobile(mobile);
         requestBody.setPassword(password);
-        Observable<ResponseBase<UserLoginResponse>> response = RetrofitUtils.createApi(IUserService.class)
+        Observable<ResponseBase<UserLoginResponse>> response = RetrofitUtils.createApi
+                (IUserService.class)
                 .userLogin(new RequestBase(requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         return response;
     }
 
-    public static Observable<ResponseBase<UserRegisterResponse>> userRegister(String email, String mobile, String password, String passwordOK, String code) {
+    public static Observable<ResponseBase<UserRegisterResponse>> userRegister(String email,
+                                                                              String mobile,
+                                                                              String password,
+                                                                              String passwordOK,
+                                                                              String code) {
         UserRegisterRequest requestBody = new UserRegisterRequest();
         requestBody.setEmail(email);
         requestBody.setMobile(mobile);
         requestBody.setPassword(password);
         requestBody.setPasswordOK(passwordOK);
         requestBody.setCheckCode(code);
-        Observable<ResponseBase<UserRegisterResponse>> response = RetrofitUtils.createApi(IUserService.class)
+        Observable<ResponseBase<UserRegisterResponse>> response = RetrofitUtils.createApi
+                (IUserService.class)
                 .userRegister(new RequestBase(requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         return response;
     }
 
-    public static Observable<ResponseBase<SetUserPasswordResponse>> setUserPassword(String email, String mobile, String password, String passwordOK, String code) {
+    public static Observable<ResponseBase<SetUserPasswordResponse>> setUserPassword(String email,
+                                                                                    String mobile, String password, String passwordOK, String code) {
         SetUserPasswordRequest requestBody = new SetUserPasswordRequest();
         requestBody.setEmail(email);
         requestBody.setMobile(mobile);
         requestBody.setPassword(password);
         requestBody.setPasswordOK(passwordOK);
         requestBody.setCheckCode(code);
-        Observable<ResponseBase<SetUserPasswordResponse>> response = RetrofitUtils.createApi(IUserService.class)
+        Observable<ResponseBase<SetUserPasswordResponse>> response = RetrofitUtils.createApi
+                (IUserService.class)
                 .setUserPassword(new RequestBase(requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -93,15 +104,18 @@ public class UserService {
         requestBody.setOldPassword(oldPassword);
         requestBody.setPassword(password);
         requestBody.setPasswordOK(passwordOK);
-        Observable<ResponseBase<ResetUserPasswordResponse>> response = RetrofitUtils.createApi(IUserService.class)
+        Observable<ResponseBase<ResetUserPasswordResponse>> response = RetrofitUtils.createApi
+                (IUserService.class)
                 .resetUserPassword(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         return response;
     }
 
-    public static Observable<ResponseBase<SetUserPosResponse>> setUserPos(SetUserPosRequest requestBody) {
-        Observable<ResponseBase<SetUserPosResponse>> response = RetrofitUtils.createApi(IUserService.class)
+    public static Observable<ResponseBase<SetUserPosResponse>> setUserPos(SetUserPosRequest
+                                                                                  requestBody) {
+        Observable<ResponseBase<SetUserPosResponse>> response = RetrofitUtils.createApi
+                (IUserService.class)
                 .setUserPos(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -112,19 +126,22 @@ public class UserService {
         SearchUserRequest requestBody = new SearchUserRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setUserKey(userKey);
-        Observable<ResponseBase<SearchUserResponse>> response = RetrofitUtils.createApi(IUserService.class)
+        Observable<ResponseBase<SearchUserResponse>> response = RetrofitUtils.createApi
+                (IUserService.class)
                 .searchUser(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         return response;
     }
 
-    public static Observable<ResponseBase<AddFriendResponse>> addFriend(long addUserId, String remark) {
+    public static Observable<ResponseBase<AddFriendResponse>> addFriend(long addUserId, String
+            remark) {
         AddFriendRequest requestBody = new AddFriendRequest();
         requestBody.setMyUserId(UserSP.getUserId());
         requestBody.setFriendUserId(addUserId);
         requestBody.setMyRemark(remark);
-        Observable<ResponseBase<AddFriendResponse>> response = RetrofitUtils.createApi(IUserService.class)
+        Observable<ResponseBase<AddFriendResponse>> response = RetrofitUtils.createApi
+                (IUserService.class)
                 .addFriend(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -135,7 +152,8 @@ public class UserService {
         SetUserSymbolRequest requestBody = new SetUserSymbolRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setSymbol(symbol);
-        Observable<ResponseBase<SetUserInfoResponse>> response = RetrofitUtils.createApi(IUserService.class)
+        Observable<ResponseBase<SetUserInfoResponse>> response = RetrofitUtils.createApi
+                (IUserService.class)
                 .setUserSymbol(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -146,7 +164,8 @@ public class UserService {
         SetUserNameRequest requestBody = new SetUserNameRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setUserName(userName);
-        Observable<ResponseBase<SetUserInfoResponse>> response = RetrofitUtils.createApi(IUserService.class)
+        Observable<ResponseBase<SetUserInfoResponse>> response = RetrofitUtils.createApi
+                (IUserService.class)
                 .setUserName(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -157,7 +176,8 @@ public class UserService {
         SetUserLifeNotesRequest requestBody = new SetUserLifeNotesRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setLifeNotes(lifeNotes);
-        Observable<ResponseBase<SetUserInfoResponse>> response = RetrofitUtils.createApi(IUserService.class)
+        Observable<ResponseBase<SetUserInfoResponse>> response = RetrofitUtils.createApi
+                (IUserService.class)
                 .setUserLifeNotes(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -168,7 +188,8 @@ public class UserService {
         SetUserSexRequest requestBody = new SetUserSexRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setUserSex(sex);
-        Observable<ResponseBase<SetUserInfoResponse>> response = RetrofitUtils.createApi(IUserService.class)
+        Observable<ResponseBase<SetUserInfoResponse>> response = RetrofitUtils.createApi
+                (IUserService.class)
                 .setUserSex(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -179,18 +200,21 @@ public class UserService {
         SetUserHeadImageRequest requestBody = new SetUserHeadImageRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setHeadImageUrl(headImageUrl);
-        Observable<ResponseBase<SetUserInfoResponse>> response = RetrofitUtils.createApi(IUserService.class)
+        Observable<ResponseBase<SetUserInfoResponse>> response = RetrofitUtils.createApi
+                (IUserService.class)
                 .setUserHeadImage(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         return response;
     }
 
-    public static Observable<ResponseBase<SetUserCircleBackImageResponse>> setUserCircleBackImage(String circleBackImageUrl) {
+    public static Observable<ResponseBase<SetUserCircleBackImageResponse>> setUserCircleBackImage
+            (String circleBackImageUrl) {
         SetUserCircleBackImageRequest requestBody = new SetUserCircleBackImageRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setCircleBackImageUrl(circleBackImageUrl);
-        Observable<ResponseBase<SetUserCircleBackImageResponse>> response = RetrofitUtils.createApi(IUserService.class)
+        Observable<ResponseBase<SetUserCircleBackImageResponse>> response = RetrofitUtils
+                .createApi(IUserService.class)
                 .setUserCircleBackImage(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -202,7 +226,8 @@ public class UserService {
         requestBody.setMyUserId(UserSP.getUserId());
         requestBody.setFriendUserId(friendId);
         requestBody.setFriendUserRemark(remark);
-        Observable<ResponseBase<SetFriendRemarkResponse>> response = RetrofitUtils.createApi(IUserService.class)
+        Observable<ResponseBase<SetFriendRemarkResponse>> response = RetrofitUtils.createApi
+                (IUserService.class)
                 .setFriendRemark(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -212,7 +237,8 @@ public class UserService {
     public static Observable<ResponseBase<GetFriendsResponse>> getFriends() {
         GetFriendsRequest requestBody = new GetFriendsRequest();
         requestBody.setUserId(UserSP.getUserId());
-        Observable<ResponseBase<GetFriendsResponse>> response = RetrofitUtils.createApi(IUserService.class)
+        Observable<ResponseBase<GetFriendsResponse>> response = RetrofitUtils.createApi
+                (IUserService.class)
                 .getFriends(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -223,7 +249,8 @@ public class UserService {
         DeleteFriendRequest requestBody = new DeleteFriendRequest();
         requestBody.setMyUserId(UserSP.getUserId());
         requestBody.setFriendUserId(friendUserId);
-        Observable<ResponseBase<DeleteFriendResponse>> response = RetrofitUtils.createApi(IUserService.class)
+        Observable<ResponseBase<DeleteFriendResponse>> response = RetrofitUtils.createApi
+                (IUserService.class)
                 .deleteFriend(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -234,7 +261,8 @@ public class UserService {
         GetUserDetailsRequest requestBody = new GetUserDetailsRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setGetUserId(viewUserId);
-        Observable<ResponseBase<GetUserDetailsResponse>> response = RetrofitUtils.createApi(IUserService.class)
+        Observable<ResponseBase<GetUserDetailsResponse>> response = RetrofitUtils.createApi
+                (IUserService.class)
                 .getUserDetails(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -245,13 +273,14 @@ public class UserService {
         GetUserRelationInfoRequest requestBody = new GetUserRelationInfoRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setRelationUserId(relationUserId);
-        Observable<ResponseBase<GetUserRelationInfoResponse>> response = RetrofitUtils.createApi(IUserService.class)
+        Observable<ResponseBase<GetUserRelationInfoResponse>> response = RetrofitUtils.createApi
+                (IUserService.class)
                 .getUserRelationInfo(new RequestBase(UserSP.getUserToken(), requestBody))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
+//                .observeOn(AndroidSchedulers.mainThread());
         return response;
     }
-    
+
 
     private interface IUserService {
         @POST("api/UserLogin")
@@ -292,7 +321,8 @@ public class UserService {
         Observable<ResponseBase<SetUserInfoResponse>> setUserSymbol(@Body RequestBase<SetUserSymbolRequest> request);
 
         @POST("api/AddFriend")
-        Observable<ResponseBase<AddFriendResponse>> addFriend(@Body RequestBase<AddFriendRequest> request);
+        Observable<ResponseBase<AddFriendResponse>> addFriend(@Body RequestBase<AddFriendRequest>
+                                                                      request);
 
         @POST("api/GetFriends")
         Observable<ResponseBase<GetFriendsResponse>> getFriends(@Body RequestBase<GetFriendsRequest> request);

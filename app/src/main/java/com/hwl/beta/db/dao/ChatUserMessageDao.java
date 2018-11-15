@@ -36,8 +36,8 @@ public class ChatUserMessageDao extends AbstractDao<ChatUserMessage, Long> {
         public final static Property OriginalUrl = new Property(9, String.class, "originalUrl", false, "ORIGINAL_URL");
         public final static Property ImageHeight = new Property(10, int.class, "imageHeight", false, "IMAGE_HEIGHT");
         public final static Property ImageWidth = new Property(11, int.class, "imageWidth", false, "IMAGE_WIDTH");
-        public final static Property Size = new Property(12, long.class, "size", false, "SIZE");
-        public final static Property PlayTime = new Property(13, long.class, "playTime", false, "PLAY_TIME");
+        public final static Property Size = new Property(12, int.class, "size", false, "SIZE");
+        public final static Property PlayTime = new Property(13, int.class, "playTime", false, "PLAY_TIME");
         public final static Property SendStatus = new Property(14, int.class, "sendStatus", false, "SEND_STATUS");
         public final static Property SendTime = new Property(15, java.util.Date.class, "sendTime", false, "SEND_TIME");
     }
@@ -205,8 +205,8 @@ public class ChatUserMessageDao extends AbstractDao<ChatUserMessage, Long> {
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // originalUrl
             cursor.getInt(offset + 10), // imageHeight
             cursor.getInt(offset + 11), // imageWidth
-            cursor.getLong(offset + 12), // size
-            cursor.getLong(offset + 13), // playTime
+            cursor.getInt(offset + 12), // size
+            cursor.getInt(offset + 13), // playTime
             cursor.getInt(offset + 14), // sendStatus
             cursor.isNull(offset + 15) ? null : new java.util.Date(cursor.getLong(offset + 15)) // sendTime
         );
@@ -227,8 +227,8 @@ public class ChatUserMessageDao extends AbstractDao<ChatUserMessage, Long> {
         entity.setOriginalUrl(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
         entity.setImageHeight(cursor.getInt(offset + 10));
         entity.setImageWidth(cursor.getInt(offset + 11));
-        entity.setSize(cursor.getLong(offset + 12));
-        entity.setPlayTime(cursor.getLong(offset + 13));
+        entity.setSize(cursor.getInt(offset + 12));
+        entity.setPlayTime(cursor.getInt(offset + 13));
         entity.setSendStatus(cursor.getInt(offset + 14));
         entity.setSendTime(cursor.isNull(offset + 15) ? null : new java.util.Date(cursor.getLong(offset + 15)));
      }

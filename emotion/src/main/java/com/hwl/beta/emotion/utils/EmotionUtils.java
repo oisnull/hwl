@@ -1,8 +1,20 @@
 package com.hwl.beta.emotion.utils;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.text.Selection;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
+import android.text.style.ImageSpan;
+
 import com.hwl.beta.emotion.R;
+import com.hwl.beta.emotion.widget.EmotionEditText;
 
 import java.util.LinkedHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Administrator on 2018/1/3.
@@ -138,7 +150,7 @@ public class EmotionUtils {
         return defaultEmotions;
     }
 
-    public static void addEmotion(EmotionEditText emotionEditText,String emotionName){
+    public static void addEmotion(EmotionEditText emotionEditText, String emotionName){
        int start = emotionEditText.getSelectionStart();
        emotionEditText.setText(emotionEditText.getText().insert(start, emotionName));
        CharSequence info = emotionEditText.getText();
@@ -179,7 +191,7 @@ public class EmotionUtils {
        }
    }
 
-   public static CharSequence replaceEmotionText(CharSequence text) {
+   public static CharSequence replaceEmotionText(Context context, CharSequence text) {
     try {
         SpannableStringBuilder builder = new SpannableStringBuilder(text);
         Pattern pattern = Pattern.compile(REGEXDEFAULTEMOTION);
@@ -191,10 +203,9 @@ public class EmotionUtils {
 //                    drawable.setBounds(0, 0, 25, 25);
 //                    builder.setSpan(new ImageSpan(drawable), matcher.start(), matcher.end(),
 //                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                Bitmap bitmap = BitmapFactory.decodeResource(
-                        getResources(), id);
+                Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), id);
                 if (bitmap != null) {
-                    ImageSpan span = new ImageSpan(getContext(), bitmap);
+                    ImageSpan span = new ImageSpan(context, bitmap);
                     builder.setSpan(span, matcher.start(), matcher.end(),
                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
