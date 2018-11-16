@@ -43,14 +43,11 @@ public class ChatUserEmotionPannelListener implements EmotionControlPanelV2.Pane
 
     Activity activity;
     Friend user;
-    // ChatUserMessageAdapter messageAdapter;
-
     AudioPlay audioPlay;
 
     public ChatUserEmotionPannelListener(Activity activity, Friend user) {
         this.activity = activity;
         this.user = user;
-        // this.messageAdapter = messageAdapter;
     }
 
     @Override

@@ -368,7 +368,10 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
     private void lockContentHeight() {
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) contentContainerView
                 .getLayoutParams();
-        params.height = this.contentContainerHeight;
+        Toast.makeText(context, contentContainerView.getHeight() + "-contentHeight=" + this
+                .contentContainerHeight, Toast.LENGTH_SHORT).show();
+        params.height = contentContainerView.getHeight() > this.contentContainerHeight ? this
+                .contentContainerHeight : contentContainerView.getHeight();
         params.weight = 0.0F;
     }
 
