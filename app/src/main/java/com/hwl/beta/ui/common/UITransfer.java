@@ -21,7 +21,6 @@ import com.hwl.beta.ui.TestActivity;
 //import com.hwl.beta.ui.chat.ActivityChatGroupSetting;
 //import com.hwl.beta.ui.chat.ActivityChatGroupSettingEdit;
 //import com.hwl.beta.ui.chat.ActivityChatUser;
-//import com.hwl.beta.ui.chat.ActivityChatUserSetting;
 //import com.hwl.beta.ui.circle.ActivityCircleCommentPublish;
 //import com.hwl.beta.ui.circle.ActivityCircleDetail;
 //import com.hwl.beta.ui.circle.ActivityCircleIndex;
@@ -31,6 +30,7 @@ import com.hwl.beta.ui.TestActivity;
 import com.hwl.beta.ui.TestActivityIm;
 import com.hwl.beta.ui.TestActivityLocation;
 import com.hwl.beta.ui.chat.ActivityChatUser;
+import com.hwl.beta.ui.chat.ActivityChatUserSetting;
 import com.hwl.beta.ui.dialog.ReloginDialogFragment;
 //import com.hwl.beta.ui.entry.ActivityGetpwd;
 //import com.hwl.beta.ui.entry.ActivityMain;
@@ -437,15 +437,15 @@ public class UITransfer {
 //        intent.putExtra("content", content);
 //        context.startActivityForResult(intent, editType);
 //    }
-//
-//    public static void toChatUserSettingActivity(Activity context, long userId, String userName,
-//                                                 String userImage) {
-//        Intent intent = new Intent(context, ActivityChatUserSetting.class);
-//        intent.putExtra("userid", userId);
-//        intent.putExtra("username", userName);
-//        intent.putExtra("userimage", userImage);
-//        context.startActivity(intent);
-//    }
+
+    public static void toChatUserSettingActivity(Activity context, long userId, String userName,
+                                                 String userImage) {
+        Intent intent = new Intent(context, ActivityChatUserSetting.class);
+        intent.putExtra("userid", userId);
+        intent.putExtra("username", userName);
+        intent.putExtra("userimage", userImage);
+        context.startActivity(intent);
+    }
 
     /**
      * 调用第三方浏览器打开

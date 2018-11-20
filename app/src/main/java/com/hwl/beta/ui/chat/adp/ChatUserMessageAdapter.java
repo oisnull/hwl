@@ -155,7 +155,7 @@ public class ChatUserMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             viewHolder.setItemBinding(itemListener, new ChatImageViewBean(message
                     .getFromUserHeadImage()), position, message.getContent(), null, DateUtils
                     .getChatShowTime
-                    (message.getSendTime()));
+                            (message.getSendTime()));
         } else if (holder instanceof ChatMessageReceivedImageViewHolder) {
             ChatMessageReceivedImageViewHolder viewHolder =
                     (ChatMessageReceivedImageViewHolder) holder;
@@ -164,21 +164,21 @@ public class ChatUserMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             viewHolder.setItemBinding(itemListener, new ChatImageViewBean(message
                     .getFromUserHeadImage(), showUrl), position, null, DateUtils.getChatShowTime
                     (message
-                    .getSendTime()));
+                            .getSendTime()));
         } else if (holder instanceof ChatMessageReceivedVoiceViewHolder) {
             ChatMessageReceivedVoiceViewHolder viewHolder =
                     (ChatMessageReceivedVoiceViewHolder) holder;
             viewHolder.setItemBinding(itemListener, new ChatImageViewBean(message
                     .getFromUserHeadImage()), position, message.getPlayTime(), null, DateUtils
                     .getChatShowTime
-                    (message.getSendTime()));
+                            (message.getSendTime()));
         } else if (holder instanceof ChatMessageReceivedVideoViewHolder) {
             ChatMessageReceivedVideoViewHolder viewHolder =
                     (ChatMessageReceivedVideoViewHolder) holder;
             viewHolder.setItemBinding(itemListener, new ChatImageViewBean(message
                     .getFromUserHeadImage(), message.getPreviewUrl()), position, null, DateUtils
                     .getChatShowTime
-                    (message.getSendTime()));
+                            (message.getSendTime()));
         } else if (holder instanceof ChatMessageReceivedWelcomeTipViewHolder) {
             ChatMessageReceivedWelcomeTipViewHolder viewHolder =
                     (ChatMessageReceivedWelcomeTipViewHolder) holder;
@@ -220,7 +220,7 @@ public class ChatUserMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
-    public void addMessage(ChatUserMessage msg) {
+    public void updateMessage(ChatUserMessage msg) {
         if (msg == null) return;
         int position = messages.indexOf(msg);
         if (position == -1) {
@@ -233,10 +233,14 @@ public class ChatUserMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
-    public void addMessages(List<ChatUserMessage> msgs) {
-        if (msgs == null || msgs.size() <= 0) return;
-        messages.addAll(0, msgs);
+    public void addMessages(List<ChatUserMessage> messages) {
+        if (messages == null || messages.size() <= 0) return;
+        messages.addAll(0, messages);
         //        notifyItemRangeInserted(0, messages.size()-1);
+    }
+
+    public ChatUserMessage getChatUserMessage(int position) {
+        return messages.get(position);
     }
 
     public long getMinMessageId() {

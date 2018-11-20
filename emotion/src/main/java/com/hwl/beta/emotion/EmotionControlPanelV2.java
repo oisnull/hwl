@@ -47,6 +47,8 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
     int contentContainerHeight = 0;
     PanelListener panelListener;
 
+    Runnable onPanelHeightChanged;
+
     ImageView ivVoice, ivKeyboard, ivSysEmotion, ivExtendsEmotion;//语音，键盘，表情，扩展
     AudioRecorderButton btnVoiceRecord;
     Button btnMessageSend;//语音录制按钮,文本发送按钮
@@ -92,6 +94,11 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
         return this;
     }
 
+    public EmotionControlPanelV2 setOnPanelHeightChanged(Runnable onPanelHeightChanged) {
+        this.onPanelHeightChanged = onPanelHeightChanged;
+        return this;
+    }
+
     private void initView() {
         View view = LayoutInflater.from(context).inflate(R.layout.emotion_control_pannel, this,
                 false);
@@ -133,10 +140,8 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//                    Toast.makeText(context, etChatMessage.getHeight() + "", Toast.LENGTH_SHORT)
-//                            .show();
-
                     showKeyboard();
+                    onPanelHeightChanged.run();
                 }
                 return false;
             }
@@ -266,6 +271,7 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
                 etChatMessage.setText("");
             }
         }
+        onPanelHeightChanged.run();
     }
 
     private void showSendButton(boolean isShow) {
@@ -368,8 +374,6 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
     private void lockContentHeight() {
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) contentContainerView
                 .getLayoutParams();
-        Toast.makeText(context, contentContainerView.getHeight() + "-contentHeight=" + this
-                .contentContainerHeight, Toast.LENGTH_SHORT).show();
         params.height = contentContainerView.getHeight() > this.contentContainerHeight ? this
                 .contentContainerHeight : contentContainerView.getHeight();
         params.weight = 0.0F;

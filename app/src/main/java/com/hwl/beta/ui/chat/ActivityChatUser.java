@@ -1,5 +1,7 @@
 package com.hwl.beta.ui.chat;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,13 +20,19 @@ import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.sp.AppInstallStatus;
 import com.hwl.beta.ui.chat.action.IChatMessageItemListener;
 import com.hwl.beta.ui.chat.adp.ChatUserMessageAdapter;
+import com.hwl.beta.ui.chat.imp.ChatUserEmotionPanelListener;
 import com.hwl.beta.ui.chat.logic.ChatUserLogic;
 import com.hwl.beta.ui.chat.standard.ChatUserStandard;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.DefaultCallback;
+import com.hwl.beta.ui.common.UITransfer;
+import com.hwl.beta.ui.ebus.EventBusConstant;
+import com.hwl.beta.ui.ebus.EventMessageModel;
+import com.hwl.beta.ui.imgselect.bean.ImageBean;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,6 +45,7 @@ public class ActivityChatUser extends BaseActivity {
     ChatActivityUserBinding binding;
     ChatUserStandard chatUserStandard;
     ChatUserMessageAdapter messageAdapter;
+    ChatUserEmotionPanelListener emotionPanelListener;
     Friend user;
 
     @Override
@@ -65,8 +74,8 @@ public class ActivityChatUser extends BaseActivity {
                 .setImageRightClick(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //    UITransfer.toChatUserSettingActivity(activity, user.getId(), user
-                        // .getShowName(), user.getHeadImage());
+                        UITransfer.toChatUserSettingActivity(activity, user.getId(), user
+                                .getShowName(), user.getHeadImage());
                     }
                 })
                 .setImageLeftClick(new View.OnClickListener() {
@@ -84,16 +93,24 @@ public class ActivityChatUser extends BaseActivity {
         binding.rvMessageContainer.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction()==MotionEvent.ACTION_DOWN){
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     binding.ecpEmotion.hideEmotionPanel();
                 }
                 return false;
             }
         });
 
-        //emotionPannelListener = new ChatUserEmotionPannelListener(activity, user);
+        emotionPanelListener = new ChatUserEmotionPanelListener(activity, user);
         binding.ecpEmotion.setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
-                .setContentContainerView(binding.refreshLayout);
+                .setContentContainerView(binding.refreshLayout)
+                .setEmotionPanelListener(emotionPanelListener)
+                .setOnPanelHeightChanged(new Runnable() {
+                    @Override
+                    public void run() {
+                        binding.rvMessageContainer.scrollToPosition(messageAdapter.getItemCount()
+                                - 1);
+                    }
+                });
 
         binding.refreshLayout.setEnableLoadMore(false);
         binding.refreshLayout.setEnableScrollContentWhenLoaded(false);
@@ -134,6 +151,22 @@ public class ActivityChatUser extends BaseActivity {
                 });
     }
 
+    @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
+
+
+    @Override
+    protected void receiveStickyEventMessage(EventMessageModel messageModel) {
+        switch (messageModel.getMessageType()) {
+            case EventBusConstant.EB_TYPE_CHAT_USER_MESSAGE_UPDATE:
+                messageAdapter.updateMessage((ChatUserMessage) messageModel.getMessageModel());
+                binding.rvMessageContainer.scrollToPosition(messageAdapter.getItemCount()
+                        - 1);
+                break;
+        }
+    }
 //    @Subscribe(threadMode = ThreadMode.MAIN)
 //    public void updateMessage(ChatUserMessage message) {
 //        if (message == null) return;
@@ -163,40 +196,40 @@ public class ActivityChatUser extends BaseActivity {
 //        }
 //    }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (resultCode == Activity.RESULT_OK) {
-//            switch (requestCode) {
-//                case 1:
-//                    ArrayList<ImageBean> list = data.getExtras().getParcelableArrayList
-// ("selectimages");
-//                    //Toast.makeText(activity, list.size() + " 张图片！", Toast.LENGTH_SHORT).show();
-//                    for (int i = 0; i < list.size(); i++) {
-//                        emotionPannelListener.sendChatUserImageMessage(list.get(i).getPath());
-//                    }
-//                    break;
-//                case 2:
-//                    emotionPannelListener.sendChatUserImageMessage();
-//                    break;
-//                case 3:
-//                    //Toast.makeText(activity, data.getStringExtra("videopath"), Toast
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case 1:
+                    ArrayList<ImageBean> list = data.getExtras().getParcelableArrayList
+                            ("selectimages");
+                    //Toast.makeText(activity, list.size() + " 张图片！", Toast.LENGTH_SHORT).show();
+                    for (int i = 0; i < list.size(); i++) {
+                        emotionPanelListener.sendChatUserImageMessage(list.get(i).getPath());
+                    }
+                    break;
+                case 2:
+                    emotionPanelListener.sendChatUserImageMessage();
+                    break;
+                case 3:
+                    //Toast.makeText(activity, data.getStringExtra("videopath"), Toast
 // .LENGTH_SHORT).show();
-//                    emotionPannelListener.sendChatUserVideoMessage(data.getStringExtra
-// ("videopath"));
-//                    break;
-//            }
-//        }
-//    }
+                    emotionPanelListener.sendChatUserVideoMessage(data.getStringExtra
+                            ("videopath"));
+                    break;
+            }
+        }
+    }
 
     public class ChatMessageItemListener implements IChatMessageItemListener {
 //        AudioPlay audioPlay;
 
         @Override
         public void onHeadImageClick(int position) {
-            //    ChatUserMessage message = messages.get(position);
-            //    UITransfer.toUserIndexActivity(activity, message.getFromUserId(), message
-            // .getFromUserName(), message.getFromUserHeadImage());
+            ChatUserMessage message = messageAdapter.getChatUserMessage(position);
+            UITransfer.toUserIndexActivity(activity, message.getFromUserId(), message
+                    .getFromUserName(), message.getFromUserHeadImage());
         }
 
         @Override
@@ -205,7 +238,7 @@ public class ActivityChatUser extends BaseActivity {
             //    popup.getMenuInflater().inflate(R.menu.popup_message_menu, popup.getMenu());
             //    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             //        public boolean onMenuItemClick(MenuItem item) {
-            //            ChatUserMessage message = messages.get(position);
+            //ChatUserMessage message = messageAdapter.getChatUserMessage(position);
             //            switch (item.getItemId()) {
             //                case R.id.pop_copy:
             //                    ClipboardAction.copy(activity, message.getContent());

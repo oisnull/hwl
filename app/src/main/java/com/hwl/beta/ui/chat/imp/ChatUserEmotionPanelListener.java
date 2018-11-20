@@ -8,7 +8,6 @@ import com.hwl.beta.db.entity.ChatRecordMessage;
 import com.hwl.beta.db.entity.ChatUserMessage;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.emotion.EmotionControlPanelV2;
-import com.hwl.beta.emotion.audio.AudioPlay;
 import com.hwl.beta.net.ResponseBase;
 import com.hwl.beta.net.resx.ResxType;
 import com.hwl.beta.net.resx.UpVideoChunk;
@@ -18,10 +17,13 @@ import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.GetUserRelationInfoResponse;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.UITransfer;
+import com.hwl.beta.ui.ebus.EventBusUtil;
+import com.hwl.beta.ui.imgcompress.CompressChatImage;
 import com.hwl.beta.ui.imgselect.bean.ImageSelectType;
 import com.hwl.beta.ui.immsg.IMClientEntry;
 import com.hwl.beta.ui.immsg.IMConstant;
 import com.hwl.beta.ui.immsg.IMDefaultSendOperateListener;
+import com.hwl.beta.utils.StorageUtils;
 import com.hwl.beta.utils.StringUtils;
 
 import java.io.File;
@@ -31,6 +33,8 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -39,13 +43,13 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Administrator on 2018/4/6.
  */
 
-public class ChatUserEmotionPannelListener implements EmotionControlPanelV2.PanelListener {
+public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.PanelListener {
 
     Activity activity;
     Friend user;
-    AudioPlay audioPlay;
+//    AudioPlay audioPlay;
 
-    public ChatUserEmotionPannelListener(Activity activity, Friend user) {
+    public ChatUserEmotionPanelListener(Activity activity, Friend user) {
         this.activity = activity;
         this.user = user;
     }
@@ -53,8 +57,8 @@ public class ChatUserEmotionPannelListener implements EmotionControlPanelV2.Pane
     @Override
     public boolean onSendMessageClick(String text) {
         if (StringUtils.isBlank(text)) return false;
-//        this.sendChatMessage(0, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_TEXT, text, null, text
-//                .length(), 0);
+        this.sendChatMessage(0, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_TEXT, text, null, text
+                .length(), 0);
         return true;
     }
 
@@ -87,10 +91,6 @@ public class ChatUserEmotionPannelListener implements EmotionControlPanelV2.Pane
 
     @Override
     public void onCameraClick() {
-//        cameraTempFile = new File(ActivityImageSelect.getTempFileName());
-//        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(cameraTempFile));
-//        activity.startActivityForResult(cameraIntent, 2);
         UITransfer.toSystemCamera(activity, 2);
     }
 
@@ -102,6 +102,31 @@ public class ChatUserEmotionPannelListener implements EmotionControlPanelV2.Pane
     @Override
     public void onFunctionPop(int popHeigth) {
 
+    }
+
+    public void resendMessage(ChatUserMessage message) {
+        if (message == null) return;
+        this.sendChatMessage(message.getMsgId(), message.getContentType(), message.getContent(),
+                message.getLocalUrl(), message.getContent().length(), message.getPlayTime());
+    }
+
+    public void sendChatUserVideoMessage(String localPath) {
+        this.sendChatMessage(0, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VIDEO, "[视频]", localPath, 0,
+                0);
+    }
+
+    public void sendChatUserImageMessage() {
+        this.sendChatUserImageMessage(StorageUtils.getTempImageFilePath());
+    }
+
+    public void sendChatUserImageMessage(String localPath) {
+        File file = CompressChatImage.chatImage(activity, localPath);
+        if (file == null) {
+            file = new File(localPath);
+        }
+        this.sendChatMessage(0, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_IMAGE, "[图片]", file
+                .getAbsolutePath
+                        (), 0, 0);
     }
 
     private ChatUserMessage getChatMessage(long messageId, int contentType, String content, String
@@ -151,33 +176,34 @@ public class ChatUserEmotionPannelListener implements EmotionControlPanelV2.Pane
         //4, send chat message
         //5, get result
 
+        final ChatUserMessage chatUserMessage = getChatMessage(messageId, contentType, content,
+                localPath, size, playTime);
         Observable.create(new ObservableOnSubscribe() {
             public void subscribe(ObservableEmitter emitter) throws Exception {
-                ChatUserMessage userMessage = getChatMessage(messageId, contentType, content,
-                        localPath, size, playTime);
-                long msgId = DaoUtils.getChatUserMessageManagerInstance().save(userMessage);
+                long msgId = DaoUtils.getChatUserMessageManagerInstance().save(chatUserMessage);
                 if (msgId > 0) {
-                    userMessage.setMsgId(msgId);
+                    chatUserMessage.setMsgId(msgId);
                     ChatRecordMessage recordMessage = DaoUtils
                             .getChatRecordMessageManagerInstance().save(getChatRecordMessage
-                                    (userMessage));
-                    //EventBus.getDefault().post(record);
-                    emitter.onNext(userMessage);
+                                    (chatUserMessage));
+                    EventBusUtil.sendChatUserMessageEvent(chatUserMessage);
+                    EventBusUtil.sendChatRecordMessageSortEvent(recordMessage);
+                    emitter.onNext(chatUserMessage);
                 } else {
                     emitter.onComplete();
                 }
             }
         })
-                .map(new Function<ChatUserMessage, ObservableSource<ChatUserMessage>>() {
+                .flatMap(new Function<ChatUserMessage, Observable<ChatUserMessage>>() {
                     @Override
-                    public ObservableSource<ChatUserMessage> apply(ChatUserMessage userMessage)
+                    public Observable<ChatUserMessage> apply(ChatUserMessage userMessage)
                             throws Exception {
                         return validateUser(userMessage);
                     }
                 })
-                .map(new Function<ChatUserMessage, ObservableSource<ChatUserMessage>>() {
+                .flatMap(new Function<ChatUserMessage, Observable<ChatUserMessage>>() {
                     @Override
-                    public ObservableSource<ChatUserMessage> apply(ChatUserMessage userMessage)
+                    public Observable<ChatUserMessage> apply(ChatUserMessage userMessage)
                             throws Exception {
                         switch (userMessage.getContentType()) {
                             case IMConstant.CHAT_MESSAGE_CONTENT_TYPE_IMAGE:
@@ -193,9 +219,9 @@ public class ChatUserEmotionPannelListener implements EmotionControlPanelV2.Pane
                         }
                     }
                 })
-                .map(new Function<ChatUserMessage, ObservableSource<ChatUserMessage>>() {
+                .flatMap(new Function<ChatUserMessage, Observable<ChatUserMessage>>() {
                     @Override
-                    public ObservableSource<ChatUserMessage> apply(ChatUserMessage userMessage)
+                    public Observable<ChatUserMessage> apply(ChatUserMessage userMessage)
                             throws Exception {
                         return sendChatUserMessage(userMessage);
                     }
@@ -205,18 +231,23 @@ public class ChatUserEmotionPannelListener implements EmotionControlPanelV2.Pane
                 .subscribe(new Consumer<ChatUserMessage>() {
                     @Override
                     public void accept(ChatUserMessage userMessage) {
-
+                        userMessage.setSendStatus(IMConstant.CHAT_SEND_SUCCESS);
+                        DaoUtils.getChatUserMessageManagerInstance().save(userMessage);
+                        EventBusUtil.sendChatUserMessageEvent(userMessage);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) {
-
+                        chatUserMessage.setSendStatus(IMConstant.CHAT_SEND_FAILD);
+                        DaoUtils.getChatUserMessageManagerInstance().save(chatUserMessage);
+                        EventBusUtil.sendChatUserMessageEvent(chatUserMessage);
                     }
                 });
     }
 
     private Observable<ChatUserMessage> validateUser(final ChatUserMessage message) {
-        return UserService.getUserRelationInfo(message.getToUserId())
+        return UserService.getUserRelationInfo(message
+                .getToUserId())
                 .map(new Function<ResponseBase<GetUserRelationInfoResponse>, ChatUserMessage>() {
                     @Override
                     public ChatUserMessage apply(ResponseBase<GetUserRelationInfoResponse>
@@ -232,6 +263,8 @@ public class ChatUserEmotionPannelListener implements EmotionControlPanelV2.Pane
                         }
                     }
                 });
+//        observable.subscribe();
+//        return Observable.just(message);
     }
 
     private Observable<ChatUserMessage> upImage(final ChatUserMessage message) {
@@ -248,7 +281,7 @@ public class ChatUserEmotionPannelListener implements EmotionControlPanelV2.Pane
                                     .getOriginalUrl() : res.getPreviewUrl());
                             message.setImageWidth(res.getWidth());
                             message.setImageHeight(res.getHeight());
-                            message.setSize((int)res.getOriginalSize());
+                            message.setSize((int) res.getOriginalSize());
                             return message;
                         } else {
                             throw new Exception("Chat image resx upload failure");
@@ -316,9 +349,9 @@ public class ChatUserEmotionPannelListener implements EmotionControlPanelV2.Pane
                     case IMConstant.CHAT_MESSAGE_CONTENT_TYPE_IMAGE:
                         IMClientEntry.sendChatUserImageMessage(userMessage.getToUserId(),
                                 userMessage
-                                .getPreviewUrl(), userMessage.getImageWidth(), userMessage
+                                        .getPreviewUrl(), userMessage.getImageWidth(), userMessage
                                         .getImageHeight
-                                (), userMessage.getSize(), sendOperateListener);
+                                                (), userMessage.getSize(), sendOperateListener);
                         break;
                     case IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VOICE:
                         IMClientEntry.sendChatUserVoiceMessage(userMessage.getToUserId(),
@@ -330,9 +363,10 @@ public class ChatUserEmotionPannelListener implements EmotionControlPanelV2.Pane
                     case IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VIDEO:
                         IMClientEntry.sendChatUserVideoMessage(userMessage.getToUserId(),
                                 userMessage
-                                .getPreviewUrl(), userMessage.getImageWidth(), userMessage
+                                        .getPreviewUrl(), userMessage.getImageWidth(), userMessage
                                         .getImageHeight
-                                (), userMessage.getSize(), userMessage.getPlayTime(),
+                                                (), userMessage.getSize(), userMessage
+                                        .getPlayTime(),
                                 sendOperateListener);
                         break;
                     case IMConstant.CHAT_MESSAGE_CONTENT_TYPE_TEXT:
@@ -344,35 +378,6 @@ public class ChatUserEmotionPannelListener implements EmotionControlPanelV2.Pane
             }
         });
     }
-
-//    public void resendMessage(ChatUserMessage message) {
-//        if (message == null) return;
-//        this.sendChatMessage(message.getMsgId(), message.getContentType(), message.getContent(),
-//                message.getLocalUrl(), message.getContent().length(), message.getPlayTime());
-//    }
-//
-//    public void sendChatUserVideoMessage(String localPath) {
-//        this.sendChatMessage(0, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VIDEO, "视频", localPath, 0,
-// 0);
-//    }
-
-//    public void sendChatUserImageMessage() {
-//        sendChatUserImageMessage(StorageUtils.getTempImageFilePath());
-////        if (cameraTempFile != null && cameraTempFile.exists()) {
-////            sendChatUserImageMessage(cameraTempFile.getPath());
-////        }
-////        cameraTempFile = null;
-//    }
-//
-//    public void sendChatUserImageMessage(String localPath) {
-//        File file = CompressChatImage.chatImage(activity, localPath);
-//        if (file == null) {//说明压缩失败
-//            file = new File(localPath);//直接发原图
-//        }
-////        sendChatMessage(0, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_IMAGE, "图片", file
-// .getAbsolutePath
-////                (), 0, 0);
-//    }
 
 //    private void sendChatMessage(final long messageId, int contentType, String content, String
 //            localPath, long size, long playTime) {
