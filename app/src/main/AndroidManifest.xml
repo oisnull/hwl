@@ -66,7 +66,7 @@
         <activity android:name=".ui.imgselect.ActivityImageBrowse" />
         <!--<activity android:name=".ui.video.ActivityVideoPlay" />-->
         <!--<activity android:name=".ui.video.ActivityVideoSelect" />-->
-        <!--<activity android:name=".ui.chat.ActivityChatGroup" />-->
+        <activity android:name=".ui.chat.ActivityChatGroup" />
         <!--<activity android:name=".ui.chat.ActivityChatGroupSetting" />-->
         <!--<activity android:name=".ui.chat.ActivityChatGroupSettingEdit" />-->
         <activity android:name=".ui.chat.ActivityChatUserSetting" />
@@ -91,7 +91,7 @@
         <!--<activity android:name=".ui.circle.ActivityCircleUserIndex" />-->
         <!--<activity android:name=".ui.circle.ActivityCircleDetail" />-->
         <!--<activity android:name=".ui.circle.ActivityCircleMessages" />-->
-        <!--<activity android:name=".ui.group.ActivityGroup" />-->
+        <activity android:name=".ui.group.ActivityGroup" />
         <!--<activity android:name=".ui.group.ActivityGroupAdd" />-->
         <activity android:name="com.yalantis.ucrop.UCropActivity" />
 

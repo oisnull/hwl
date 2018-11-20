@@ -109,7 +109,7 @@ public class FragmentFriends extends BaseFragment {
 //                        UITransfer.toCircleIndexActivity(activity);
                         break;
                     case -2:
-//                        UITransfer.toGroupActivity(activity);
+                        UITransfer.toGroupActivity(activity);
                         break;
                     case -3:
                         UITransfer.toNewFriendActivity(activity);

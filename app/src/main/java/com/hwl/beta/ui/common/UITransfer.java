@@ -17,7 +17,7 @@ import com.hwl.beta.db.ext.NearCircleExt;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.TestActivity;
-//import com.hwl.beta.ui.chat.ActivityChatGroup;
+import com.hwl.beta.ui.chat.ActivityChatGroup;
 //import com.hwl.beta.ui.chat.ActivityChatGroupSetting;
 //import com.hwl.beta.ui.chat.ActivityChatGroupSettingEdit;
 //import com.hwl.beta.ui.chat.ActivityChatUser;
@@ -40,7 +40,7 @@ import com.hwl.beta.ui.entry.ActivityLogin;
 import com.hwl.beta.ui.entry.ActivityMain;
 import com.hwl.beta.ui.entry.ActivityRegister;
 //import com.hwl.beta.ui.entry.ActivityWelcome;
-//import com.hwl.beta.ui.group.ActivityGroup;
+import com.hwl.beta.ui.group.ActivityGroup;
 //import com.hwl.beta.ui.group.ActivityGroupAdd;
 import com.hwl.beta.ui.imgselect.ActivityImageBrowse;
 import com.hwl.beta.ui.imgselect.ActivityImageSelect;
@@ -274,13 +274,13 @@ public class UITransfer {
 //            context.startActivityForResult(intent, requestCode);
 //        }
 //    }
-//
-//    public static void toChatGroupActivity(Context context, String groupGuid) {
-//        Intent intent = new Intent(context, ActivityChatGroup.class);
-//        intent.putExtra("groupguid", groupGuid);
-//        context.startActivity(intent);
-//    }
-//
+
+    public static void toChatGroupActivity(Context context, String groupGuid) {
+        Intent intent = new Intent(context, ActivityChatGroup.class);
+        intent.putExtra("groupguid", groupGuid);
+        context.startActivity(intent);
+    }
+
 //    public static void toNearPublishActivity(Activity context) {
 //        Intent intent = new Intent(context, ActivityNearPublish.class);
 //        context.startActivity(intent);
@@ -380,12 +380,12 @@ public class UITransfer {
 //        Intent intent = new Intent(context, ActivityCircleMessages.class);
 //        context.startActivity(intent);
 //    }
-//
-//    public static void toGroupActivity(Activity context) {
-//        Intent intent = new Intent(context, ActivityGroup.class);
-//        context.startActivity(intent);
-//    }
-//
+
+    public static void toGroupActivity(Activity context) {
+        Intent intent = new Intent(context, ActivityGroup.class);
+        context.startActivity(intent);
+    }
+
 //    public static void toGroupAddActivity(Activity context) {
 //        toGroupAddActivity(context, ActivityGroupAdd.TYPE_CREATE, null);
 //    }

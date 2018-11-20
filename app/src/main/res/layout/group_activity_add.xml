@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="friendAdapter"
+            type="com.hwl.beta.ui.group.adp.GroupAddAdapter"></variable>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_background"
+        android:orientation="vertical">
+
+        <com.hwl.beta.ui.widget.TitleBar
+            android:id="@+id/tb_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/lv_friends"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:adapter="@{friendAdapter}" />
+
+            <TextView
+                android:id="@+id/tv_letter"
+                android:layout_width="50.0dip"
+                android:layout_height="50.0dip"
+                android:layout_gravity="center"
+                android:background="@color/main"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dp_35"
+                android:visibility="invisible" />
+
+            <com.hwl.beta.ui.widget.SideBar
+                android:id="@+id/sidrbar_letter"
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right|center" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+</layout>
