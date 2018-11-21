@@ -17,6 +17,8 @@ import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.GetUserRelationInfoResponse;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.UITransfer;
+import com.hwl.beta.ui.common.exception.CustomException;
+import com.hwl.beta.ui.common.exception.ExceptionCode;
 import com.hwl.beta.ui.ebus.EventBusUtil;
 import com.hwl.beta.ui.imgcompress.CompressChatImage;
 import com.hwl.beta.ui.imgselect.bean.ImageSelectType;
@@ -235,6 +237,9 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) {
+                        if (throwable instanceof CustomException) {
+                            chatUserMessage.setStatusDesc(throwable.getMessage());
+                        }
                         chatUserMessage.setSendStatus(IMConstant.CHAT_SEND_FAILD);
                         DaoUtils.getChatUserMessageManagerInstance().save(chatUserMessage);
                         EventBusUtil.sendChatUserMessageEvent(chatUserMessage);
@@ -252,16 +257,14 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
                         if (response != null && response.getResponseBody() != null) {
                             GetUserRelationInfoResponse res = response.getResponseBody();
                             if (res.getIsInBlackList()) {
-                                throw new Exception("User is in black list");
+                                throw new CustomException(ExceptionCode.ChatCodeUserBlack);
                             }
                             return message;
                         } else {
-                            throw new Exception("Validate chat user failure");
+                            throw new CustomException(ExceptionCode.ChatCodeUserValidateFailure);
                         }
                     }
                 });
-//        observable.subscribe();
-//        return Observable.just(message);
     }
 
     private Observable<ChatUserMessage> upImage(final ChatUserMessage message) {
@@ -339,6 +342,12 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
                             @Override
                             public void failed1() {
                                 emitter.onError(new Exception("Send chat user message failure"));
+                            }
+
+                            @Override
+                            public void unconnect() {
+                                emitter.onError(new CustomException(ExceptionCode
+                                        .IMServiceDisconnect));
                             }
                         };
 

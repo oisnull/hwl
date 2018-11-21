@@ -27,9 +27,7 @@ public class GroupUserInfoDao extends AbstractDao<GroupUserInfo, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property GroupGuid = new Property(1, String.class, "groupGuid", false, "GROUP_GUID");
         public final static Property UserId = new Property(2, long.class, "userId", false, "USER_ID");
-        public final static Property UserName = new Property(3, String.class, "userName", false, "USER_NAME");
-        public final static Property UserHeadImage = new Property(4, String.class, "userHeadImage", false, "USER_HEAD_IMAGE");
-        public final static Property AddTime = new Property(5, java.util.Date.class, "addTime", false, "ADD_TIME");
+        public final static Property AddTime = new Property(3, java.util.Date.class, "addTime", false, "ADD_TIME");
     }
 
 
@@ -48,9 +46,7 @@ public class GroupUserInfoDao extends AbstractDao<GroupUserInfo, Long> {
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"GROUP_GUID\" TEXT," + // 1: groupGuid
                 "\"USER_ID\" INTEGER NOT NULL ," + // 2: userId
-                "\"USER_NAME\" TEXT," + // 3: userName
-                "\"USER_HEAD_IMAGE\" TEXT," + // 4: userHeadImage
-                "\"ADD_TIME\" INTEGER);"); // 5: addTime
+                "\"ADD_TIME\" INTEGER);"); // 3: addTime
     }
 
     /** Drops the underlying database table. */
@@ -74,19 +70,9 @@ public class GroupUserInfoDao extends AbstractDao<GroupUserInfo, Long> {
         }
         stmt.bindLong(3, entity.getUserId());
  
-        String userName = entity.getUserName();
-        if (userName != null) {
-            stmt.bindString(4, userName);
-        }
- 
-        String userHeadImage = entity.getUserHeadImage();
-        if (userHeadImage != null) {
-            stmt.bindString(5, userHeadImage);
-        }
- 
         java.util.Date addTime = entity.getAddTime();
         if (addTime != null) {
-            stmt.bindLong(6, addTime.getTime());
+            stmt.bindLong(4, addTime.getTime());
         }
     }
 
@@ -105,19 +91,9 @@ public class GroupUserInfoDao extends AbstractDao<GroupUserInfo, Long> {
         }
         stmt.bindLong(3, entity.getUserId());
  
-        String userName = entity.getUserName();
-        if (userName != null) {
-            stmt.bindString(4, userName);
-        }
- 
-        String userHeadImage = entity.getUserHeadImage();
-        if (userHeadImage != null) {
-            stmt.bindString(5, userHeadImage);
-        }
- 
         java.util.Date addTime = entity.getAddTime();
         if (addTime != null) {
-            stmt.bindLong(6, addTime.getTime());
+            stmt.bindLong(4, addTime.getTime());
         }
     }
 
@@ -132,9 +108,7 @@ public class GroupUserInfoDao extends AbstractDao<GroupUserInfo, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // groupGuid
             cursor.getLong(offset + 2), // userId
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // userName
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // userHeadImage
-            cursor.isNull(offset + 5) ? null : new java.util.Date(cursor.getLong(offset + 5)) // addTime
+            cursor.isNull(offset + 3) ? null : new java.util.Date(cursor.getLong(offset + 3)) // addTime
         );
         return entity;
     }
@@ -144,9 +118,7 @@ public class GroupUserInfoDao extends AbstractDao<GroupUserInfo, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setGroupGuid(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setUserId(cursor.getLong(offset + 2));
-        entity.setUserName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setUserHeadImage(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setAddTime(cursor.isNull(offset + 5) ? null : new java.util.Date(cursor.getLong(offset + 5)));
+        entity.setAddTime(cursor.isNull(offset + 3) ? null : new java.util.Date(cursor.getLong(offset + 3)));
      }
     
     @Override

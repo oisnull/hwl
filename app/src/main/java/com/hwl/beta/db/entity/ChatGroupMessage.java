@@ -32,15 +32,17 @@ public class ChatGroupMessage implements Serializable {
     private int size;
     private int playTime;
     private int sendStatus;
+    private String statusDesc;
     @OrderBy("sendTime desc")
     private Date sendTime;
 
-    @Generated(hash = 1135793849)
+    @Generated(hash = 354387963)
     public ChatGroupMessage(Long msgId, String groupGuid, String groupName,
             String groupImage, long fromUserId, String fromUserName,
             String fromUserHeadImage, int contentType, String content,
             String localUrl, String previewUrl, String originalUrl, int imageHeight,
-            int imageWidth, int size, int playTime, int sendStatus, Date sendTime) {
+            int imageWidth, int size, int playTime, int sendStatus,
+            String statusDesc, Date sendTime) {
         this.msgId = msgId;
         this.groupGuid = groupGuid;
         this.groupName = groupName;
@@ -58,6 +60,7 @@ public class ChatGroupMessage implements Serializable {
         this.size = size;
         this.playTime = playTime;
         this.sendStatus = sendStatus;
+        this.statusDesc = statusDesc;
         this.sendTime = sendTime;
     }
 
@@ -216,5 +219,13 @@ public class ChatGroupMessage implements Serializable {
 
     public void setSendTime(Date sendTime) {
         this.sendTime = sendTime;
+    }
+
+    public String getStatusDesc() {
+        return this.statusDesc;
+    }
+
+    public void setStatusDesc(String statusDesc) {
+        this.statusDesc = statusDesc;
     }
 }

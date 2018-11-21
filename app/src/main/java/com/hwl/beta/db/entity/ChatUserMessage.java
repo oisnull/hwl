@@ -30,15 +30,16 @@ public class ChatUserMessage implements Serializable {
     private int size;
     private int playTime;
     private int sendStatus;
+    private String statusDesc;
     @OrderBy("sendTime desc")
     private Date sendTime;
 
-    @Generated(hash = 668240343)
+    @Generated(hash = 1689191365)
     public ChatUserMessage(Long msgId, long fromUserId, String fromUserName,
             String fromUserHeadImage, long toUserId, int contentType,
             String content, String localUrl, String previewUrl, String originalUrl,
             int imageHeight, int imageWidth, int size, int playTime, int sendStatus,
-            Date sendTime) {
+            String statusDesc, Date sendTime) {
         this.msgId = msgId;
         this.fromUserId = fromUserId;
         this.fromUserName = fromUserName;
@@ -54,6 +55,7 @@ public class ChatUserMessage implements Serializable {
         this.size = size;
         this.playTime = playTime;
         this.sendStatus = sendStatus;
+        this.statusDesc = statusDesc;
         this.sendTime = sendTime;
     }
 
@@ -196,5 +198,13 @@ public class ChatUserMessage implements Serializable {
 
     public void setSendTime(Date sendTime) {
         this.sendTime = sendTime;
+    }
+
+    public String getStatusDesc() {
+        return this.statusDesc;
+    }
+
+    public void setStatusDesc(String statusDesc) {
+        this.statusDesc = statusDesc;
     }
 }

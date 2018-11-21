@@ -35,6 +35,7 @@ public class GroupInfo extends BaseObservable {
     @OrderBy("buildTime desc")
     private Date buildTime;
     private String updateTime;
+    private boolean isSystem;
 
     private String myUserName;
     private String groupBackImage;
@@ -45,11 +46,11 @@ public class GroupInfo extends BaseObservable {
     public GroupInfo() {
     }
 
-    @Generated(hash = 312376364)
+    @Generated(hash = 139467964)
     public GroupInfo(Long id, String groupGuid, String groupName, String groupImage,
             int groupUserCount, long buildUserId, List<String> userImages, String groupNote,
-            Date buildTime, String updateTime, String myUserName, String groupBackImage,
-            boolean isShield, boolean isDismiss) {
+            Date buildTime, String updateTime, boolean isSystem, String myUserName,
+            String groupBackImage, boolean isShield, boolean isDismiss) {
         this.id = id;
         this.groupGuid = groupGuid;
         this.groupName = groupName;
@@ -60,6 +61,7 @@ public class GroupInfo extends BaseObservable {
         this.groupNote = groupNote;
         this.buildTime = buildTime;
         this.updateTime = updateTime;
+        this.isSystem = isSystem;
         this.myUserName = myUserName;
         this.groupBackImage = groupBackImage;
         this.isShield = isShield;
@@ -182,6 +184,14 @@ public class GroupInfo extends BaseObservable {
 
     public void setIsDismiss(boolean isDismiss) {
         this.isDismiss = isDismiss;
+    }
+
+    public boolean getIsSystem() {
+        return this.isSystem;
+    }
+
+    public void setIsSystem(boolean isSystem) {
+        this.isSystem = isSystem;
     }
 
 }

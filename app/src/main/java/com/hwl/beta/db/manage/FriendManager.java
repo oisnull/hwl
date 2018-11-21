@@ -10,6 +10,11 @@ import com.hwl.beta.utils.StringUtils;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * Created by Administrator on 2018/1/28.
  */
@@ -37,7 +42,14 @@ public class FriendManager extends BaseDao<Friend> {
         daoSession.getFriendDao().insertOrReplace(friend);
     }
 
-    public void save(List<Friend> friends) {
+    public void saveList(List<Friend> friends) {
+        if (friends == null || friends.size() <= 0) return;
+        for (int i = 0; i < friends.size(); i++) {
+            save(friends.get(i));
+        }
+    }
+
+    public void addList(List<Friend> friends) {
         if (friends == null || friends.size() <= 0) return;
         for (int i = 0; i < friends.size(); i++) {
             setFirstLetter(friends.get(i));
@@ -95,11 +107,29 @@ public class FriendManager extends BaseDao<Friend> {
                 .list();
     }
 
-    public List<Friend> getAll() {
+    public List<Friend> getAllFriends() {
         boolean isFriend = true;
         return daoSession.getFriendDao().queryBuilder()
                 .where(FriendDao.Properties.IsFriend.eq(isFriend))
                 .list();
+    }
+
+    public void addListAsync(List<Friend> friends) {
+        if (friends == null || friends.size() <= 0) return;
+        Observable.fromIterable(friends)
+                .filter(new Predicate<Friend>() {
+                    @Override
+                    public boolean test(Friend friend) {
+                        return !isExists(friend.getId());
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Consumer<Friend>() {
+                    @Override
+                    public void accept(Friend friend) {
+                        save(friend);
+                    }
+                });
     }
 
 }

@@ -19,99 +19,124 @@
             type="String"></variable>
 
         <variable
+            name="statusDesc"
+            type="String"></variable>
+
+        <variable
             name="action"
             type="com.hwl.beta.ui.chat.action.IChatMessageItemListener"></variable>
     </data>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_10">
-
-        <ImageView
-            android:id="@+id/iv_userhead"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:onClick="@{(view)->action.onHeadImageClick(position)}"
-            android:src="@drawable/empty_photo"
-            app:imageUrl="@{image.imageUrl}" />
-
-        <TextView
-            android:id="@+id/tv_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/iv_userhead"
-            android:layout_marginRight="@dimen/dp_15"
-            android:layout_toLeftOf="@+id/iv_userhead"
-            android:paddingBottom="5dp"
-            android:text="@{userName}"
-            android:textSize="@dimen/dp_12"
-            android:visibility="gone" />
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/rl_video_container"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_username"
-            android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@+id/iv_userhead"
-            android:layout_toStartOf="@+id/iv_userhead"
-            android:background="@drawable/chatto_bg_focused">
+            android:padding="@dimen/dp_10">
 
             <ImageView
-                android:id="@+id/iv_video_content"
+                android:id="@+id/iv_userhead"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:onClick="@{(view)->action.onHeadImageClick(position)}"
+                android:src="@drawable/empty_photo"
+                app:imageUrl="@{image.imageUrl}" />
+
+            <TextView
+                android:id="@+id/tv_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="5dp"
-                android:adjustViewBounds="true"
-                android:maxHeight="160dp"
-                android:maxWidth="160dp"
-                android:minHeight="50dp"
-                android:minWidth="50dp"
-                android:onLongClick="@{(view)->action.onChatItemLongClick(view,position)}"
+                android:layout_alignTop="@+id/iv_userhead"
+                android:layout_marginRight="@dimen/dp_15"
+                android:layout_toLeftOf="@+id/iv_userhead"
                 android:paddingBottom="5dp"
-                android:paddingLeft="5dp"
-                android:paddingTop="5dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/empty_photo"
-                app:chatImageUrl="@{image.chatImageUrl}" />
+                android:text="@{userName}"
+                android:textSize="@dimen/dp_12"
+                android:visibility="gone" />
 
-            <ImageButton
-                android:id="@+id/btn_video_play"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+            <RelativeLayout
+                android:id="@+id/rl_video_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_username"
+                android:layout_marginRight="5dp"
+                android:layout_toStartOf="@+id/iv_userhead"
+                android:layout_toLeftOf="@+id/iv_userhead"
+                android:background="@drawable/chatto_bg_focused">
+
+                <ImageView
+                    android:id="@+id/iv_video_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
+                    android:adjustViewBounds="true"
+                    android:maxWidth="160dp"
+                    android:maxHeight="160dp"
+                    android:minWidth="50dp"
+                    android:minHeight="50dp"
+                    android:onLongClick="@{(view)->action.onChatItemLongClick(view,position)}"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/empty_photo"
+                    app:chatImageUrl="@{image.chatImageUrl}" />
+
+                <ImageButton
+                    android:id="@+id/btn_video_play"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/video_play"
+                    android:onClick="@{(view)->action.onVideoItemClick(position)}" />
+            </RelativeLayout>
+
+            <ProgressBar
+                android:id="@+id/pb_message_status"
+                style="?android:attr/progressBarStyleSmallInverse"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_centerInParent="true"
-                android:background="@drawable/video_play"
-                android:onClick="@{(view)->action.onVideoItemClick(position)}" />
+                android:layout_marginRight="10dp"
+                android:layout_toStartOf="@+id/rl_video_container"
+                android:layout_toLeftOf="@+id/rl_video_container"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/iv_message_status_fail"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="10dp"
+                android:layout_toStartOf="@+id/rl_video_container"
+                android:layout_toLeftOf="@+id/rl_video_container"
+                android:focusable="false"
+                android:onClick="@{(view)->action.onFaildStatusClick(view,position)}"
+                android:src="@drawable/msg_status_fail"
+                android:visibility="gone" />
+
         </RelativeLayout>
 
-        <ProgressBar
-            android:id="@+id/pb_message_status"
-            style="?android:attr/progressBarStyleSmallInverse"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_centerInParent="true"
-            android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@+id/rl_video_container"
-            android:layout_toStartOf="@+id/rl_video_container"
-            android:visibility="gone" />
+        <TextView
+            android:id="@+id/tv_status_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:background="@drawable/bg_message_time"
+            android:padding="@dimen/dp_8"
+            android:text="@{statusDesc}"
+            android:textColor="@color/white"
+            android:textSize="@dimen/dp_12"
+            android:visibility="@{android.text.TextUtils.isEmpty(statusDesc)?android.view.View.GONE:android.view.View.VISIBLE}" />
 
-        <ImageView
-            android:id="@+id/iv_message_status_fail"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_centerInParent="true"
-            android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@+id/rl_video_container"
-            android:layout_toStartOf="@+id/rl_video_container"
-            android:focusable="false"
-            android:onClick="@{(view)->action.onFaildStatusClick(view,position)}"
-            android:src="@drawable/msg_status_fail"
-            android:visibility="gone" />
-
-    </RelativeLayout>
+    </LinearLayout>
 </layout>

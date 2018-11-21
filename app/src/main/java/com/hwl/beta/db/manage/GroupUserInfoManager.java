@@ -29,14 +29,14 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
 
     public List<String> getTopUserImages(String groupGuid) {
         int count = 10;
-        String sql = "select " + GroupUserInfoDao.Properties.UserHeadImage.columnName + " from " + GroupUserInfoDao.TABLENAME
-                + " where " + GroupUserInfoDao.Properties.GroupGuid.columnName + " = '" + groupGuid + "'"
-                + " limit " + count;
-        Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
+//        String sql = "select " + GroupUserInfoDao.Properties.UserHeadImage.columnName + " from " + GroupUserInfoDao.TABLENAME
+//                + " where " + GroupUserInfoDao.Properties.GroupGuid.columnName + " = '" + groupGuid + "'"
+//                + " limit " + count;
+//        Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
         List<String> images = new ArrayList<>(count);
-        while (cursor.moveToNext()) {
-            images.add(cursor.getString(0));
-        }
+//        while (cursor.moveToNext()) {
+//            images.add(cursor.getString(0));
+//        }
         return images;
     }
 
@@ -77,7 +77,7 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
         Observable.fromIterable(userInfos)
                 .map(new Function<GroupUserInfo, GroupUserInfo>() {
                     @Override
-                    public GroupUserInfo apply(GroupUserInfo groupUserInfo) throws Exception {
+                    public GroupUserInfo apply(GroupUserInfo groupUserInfo) {
                         if (get(groupUserInfo.getGroupGuid(), groupUserInfo.getUserId()) == null) {
                             return groupUserInfo;
                         }
@@ -110,7 +110,7 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
             for (int i = 0; i < friends.size(); i++) {
                 for (int j = 0; j < groupUserInfos.size(); j++) {
                     if (friends.get(i).getId() == groupUserInfos.get(j).getUserId()) {
-                        groupUserInfos.get(j).setUserName(friends.get(i).getShowName());
+//                        groupUserInfos.get(j).setUserName(friends.get(i).getShowName());
                     }
                 }
             }
@@ -122,7 +122,7 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
     public GroupUserInfo setUserName(String groupGuid, long userId, String userName) {
         GroupUserInfo userInfo = get(groupGuid, userId);
         if (userInfo != null) {
-            userInfo.setUserName(userName);
+//            userInfo.setUserName(userName);
             daoSession.getGroupUserInfoDao().update(userInfo);
         }
         return userInfo;

@@ -26,7 +26,7 @@ import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.sp.AppInstallStatus;
 import com.hwl.beta.ui.chat.action.IChatMessageItemListener;
 import com.hwl.beta.ui.chat.adp.ChatGroupMessageAdapter;
-import com.hwl.beta.ui.chat.imp.ChatGroupEmotionPannelListener;
+import com.hwl.beta.ui.chat.imp.ChatGroupEmotionPanelListener;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.ClipboardAction;
 import com.hwl.beta.ui.common.UITransfer;
@@ -64,7 +64,7 @@ public class ActivityChatGroup extends BaseActivity {
     RecyclerView rvMessageContainer;
     List<ChatGroupMessage> messages = null;
     ChatGroupMessageAdapter messageAdapter;
-    ChatGroupEmotionPannelListener emotionPanelListener;
+    ChatGroupEmotionPanelListener emotionPanelListener;
     TitleBar tbTitle;
     int pageSize = 10;
 
@@ -117,7 +117,7 @@ public class ActivityChatGroup extends BaseActivity {
                     }
                 });
 
-        emotionPanelListener = new ChatGroupEmotionPannelListener(activity, groupInfo);
+        emotionPanelListener = new ChatGroupEmotionPanelListener(activity, groupInfo);
         binding.ecpEmotion.setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
                 .setContentContainerView(binding.refreshLayout)
                 .setEmotionPanelListener(emotionPanelListener)

@@ -23,14 +23,14 @@ import java.io.File;
  * Created by Administrator on 2018/4/6.
  */
 
-public class ChatGroupEmotionPannelListener implements EmotionControlPanelV2.PanelListener {
+public class ChatGroupEmotionPanelListener implements EmotionControlPanelV2.PanelListener {
 
     Activity activity;
     GroupInfo groupInfo;
     //    File cameraTempFile;
     AudioPlay audioPlay;
 
-    public ChatGroupEmotionPannelListener(Activity activity, GroupInfo groupInfo) {
+    public ChatGroupEmotionPanelListener(Activity activity, GroupInfo groupInfo) {
         this.activity = activity;
         this.groupInfo = groupInfo;
     }

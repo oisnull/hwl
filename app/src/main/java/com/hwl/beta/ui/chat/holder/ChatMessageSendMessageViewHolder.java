@@ -25,7 +25,8 @@ public class ChatMessageSendMessageViewHolder extends RecyclerView.ViewHolder {
                                ChatImageViewBean image,
                                int position,
                                String userName,
-                               String content) {
+                               String content,
+                               String statusDesc) {
         this.itemBinding.setAction(itemListener);
         this.itemBinding.setImage(image);
         this.itemBinding.setPosition(position);
@@ -36,6 +37,7 @@ public class ChatMessageSendMessageViewHolder extends RecyclerView.ViewHolder {
             this.itemBinding.tvUsername.setVisibility(View.VISIBLE);
             this.itemBinding.setUserName(userName);
         }
+        this.itemBinding.setStatusDesc(statusDesc);
     }
 
     public ChatSendMessageItemBinding getItemBinding() {

@@ -41,7 +41,8 @@ public class ChatGroupMessageDao extends AbstractDao<ChatGroupMessage, Long> {
         public final static Property Size = new Property(14, int.class, "size", false, "SIZE");
         public final static Property PlayTime = new Property(15, int.class, "playTime", false, "PLAY_TIME");
         public final static Property SendStatus = new Property(16, int.class, "sendStatus", false, "SEND_STATUS");
-        public final static Property SendTime = new Property(17, java.util.Date.class, "sendTime", false, "SEND_TIME");
+        public final static Property StatusDesc = new Property(17, String.class, "statusDesc", false, "STATUS_DESC");
+        public final static Property SendTime = new Property(18, java.util.Date.class, "sendTime", false, "SEND_TIME");
     }
 
 
@@ -74,7 +75,8 @@ public class ChatGroupMessageDao extends AbstractDao<ChatGroupMessage, Long> {
                 "\"SIZE\" INTEGER NOT NULL ," + // 14: size
                 "\"PLAY_TIME\" INTEGER NOT NULL ," + // 15: playTime
                 "\"SEND_STATUS\" INTEGER NOT NULL ," + // 16: sendStatus
-                "\"SEND_TIME\" INTEGER);"); // 17: sendTime
+                "\"STATUS_DESC\" TEXT," + // 17: statusDesc
+                "\"SEND_TIME\" INTEGER);"); // 18: sendTime
     }
 
     /** Drops the underlying database table. */
@@ -144,9 +146,14 @@ public class ChatGroupMessageDao extends AbstractDao<ChatGroupMessage, Long> {
         stmt.bindLong(16, entity.getPlayTime());
         stmt.bindLong(17, entity.getSendStatus());
  
+        String statusDesc = entity.getStatusDesc();
+        if (statusDesc != null) {
+            stmt.bindString(18, statusDesc);
+        }
+ 
         java.util.Date sendTime = entity.getSendTime();
         if (sendTime != null) {
-            stmt.bindLong(18, sendTime.getTime());
+            stmt.bindLong(19, sendTime.getTime());
         }
     }
 
@@ -211,9 +218,14 @@ public class ChatGroupMessageDao extends AbstractDao<ChatGroupMessage, Long> {
         stmt.bindLong(16, entity.getPlayTime());
         stmt.bindLong(17, entity.getSendStatus());
  
+        String statusDesc = entity.getStatusDesc();
+        if (statusDesc != null) {
+            stmt.bindString(18, statusDesc);
+        }
+ 
         java.util.Date sendTime = entity.getSendTime();
         if (sendTime != null) {
-            stmt.bindLong(18, sendTime.getTime());
+            stmt.bindLong(19, sendTime.getTime());
         }
     }
 
@@ -242,7 +254,8 @@ public class ChatGroupMessageDao extends AbstractDao<ChatGroupMessage, Long> {
             cursor.getInt(offset + 14), // size
             cursor.getInt(offset + 15), // playTime
             cursor.getInt(offset + 16), // sendStatus
-            cursor.isNull(offset + 17) ? null : new java.util.Date(cursor.getLong(offset + 17)) // sendTime
+            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // statusDesc
+            cursor.isNull(offset + 18) ? null : new java.util.Date(cursor.getLong(offset + 18)) // sendTime
         );
         return entity;
     }
@@ -266,7 +279,8 @@ public class ChatGroupMessageDao extends AbstractDao<ChatGroupMessage, Long> {
         entity.setSize(cursor.getInt(offset + 14));
         entity.setPlayTime(cursor.getInt(offset + 15));
         entity.setSendStatus(cursor.getInt(offset + 16));
-        entity.setSendTime(cursor.isNull(offset + 17) ? null : new java.util.Date(cursor.getLong(offset + 17)));
+        entity.setStatusDesc(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
+        entity.setSendTime(cursor.isNull(offset + 18) ? null : new java.util.Date(cursor.getLong(offset + 18)));
      }
     
     @Override

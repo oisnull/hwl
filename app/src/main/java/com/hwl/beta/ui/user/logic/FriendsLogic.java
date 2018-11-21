@@ -41,7 +41,7 @@ public class FriendsLogic implements FriendsStandard {
     }
 
     private List<Friend> getLocalFriends() {
-        List<Friend> friends = DaoUtils.getFriendManagerInstance().getAll();
+        List<Friend> friends = DaoUtils.getFriendManagerInstance().getAllFriends();
         if (friends == null) {
             friends = new ArrayList<>();
         }
@@ -88,7 +88,7 @@ public class FriendsLogic implements FriendsStandard {
                         .getUserFriendInfos());
                 if (serverFriends != null) {
                     serverFriends.removeAll(localFriends);
-                    DaoUtils.getFriendManagerInstance().save(serverFriends);
+                    DaoUtils.getFriendManagerInstance().saveList(serverFriends);
                 }
                 callback.success(serverFriends);
             }

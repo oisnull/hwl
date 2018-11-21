@@ -11,6 +11,7 @@ import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.DefaultCallback;
+import com.hwl.beta.ui.convert.DBFriendAction;
 import com.hwl.im.common.DefaultConsumer;
 import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.convert.DBGroupAction;
@@ -96,17 +97,16 @@ public class MainLogic implements MainStandard {
     }
 
     private void addLocalGroupInfo(SetUserPosResponse res) {
-        if (res.getGroupUserInfos() != null && res.getGroupUserInfos
-                ().size() > 0) {
-            GroupInfo groupInfo = DBGroupAction
-                    .convertToNearGroupInfo(res.getUserGroupGuid(), res.getGroupUserInfos().size
-                            (), DBGroupAction
-                            .convertToGroupUserImages(res.getGroupUserInfos()));
+        if (res.getGroupUserInfos() != null && res.getGroupUserInfos().size() > 0) {
+            GroupInfo groupInfo = DBGroupAction.convertToNearGroupInfo(
+                    res.getUserGroupGuid(),
+                    res.getGroupUserInfos().size(),
+                    DBGroupAction.convertToGroupUserImages(res.getGroupUserInfos()));
             DaoUtils.getGroupInfoManagerInstance().add(groupInfo);
             DaoUtils.getGroupUserInfoManagerInstance()
                     .addListAsync(DBGroupAction.convertToGroupUserInfos(res.getGroupUserInfos()));
-//            EventBus.getDefault().post(new EventActionGroup
-//                    (EventBusConstant.EB_TYPE_GROUP_IMAGE_UPDATE, groupInfo));
+            DaoUtils.getFriendManagerInstance().addListAsync(DBFriendAction
+                    .convertGroupUserToFriendInfos(res.getGroupUserInfos()));
         }
     }
 }

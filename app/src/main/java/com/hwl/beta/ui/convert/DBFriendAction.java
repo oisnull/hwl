@@ -3,6 +3,7 @@ package com.hwl.beta.ui.convert;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.db.entity.FriendRequest;
+import com.hwl.beta.net.user.NetGroupUserInfo;
 import com.hwl.beta.net.user.NetUserFriendInfo;
 import com.hwl.beta.net.user.UserDetailsInfo;
 import com.hwl.beta.utils.StringUtils;
@@ -53,6 +54,18 @@ public class DBFriendAction {
         friend.setLifeNotes(netFriendInfo.getLifeNotes());
         friend.setIsFriend(true);
         return friend;
+    }
+
+    public static List<Friend> convertGroupUserToFriendInfos(List<NetGroupUserInfo>
+                                                                     netGroupUserInfos) {
+        if (netGroupUserInfos == null) return null;
+        List<Friend> friends = new ArrayList<>(netGroupUserInfos.size());
+        for (int i = 0; i < netGroupUserInfos.size(); i++) {
+            friends.add(convertToFriendInfo(netGroupUserInfos.get(i).getUserId(),
+                    netGroupUserInfos.get(i).getUserName(), netGroupUserInfos.get(i)
+                            .getUserHeadImage()));
+        }
+        return friends;
     }
 
     public static Friend convertToFriendInfo(UserDetailsInfo userDetailsInfo) {
