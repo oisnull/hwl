@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.hwl.beta.R;
@@ -125,8 +126,6 @@ public class ActivityChatUser extends BaseActivity {
             @Override
             public void onGlobalLayout() {
                 binding.ecpEmotion.setContentContainerHeight(binding.refreshLayout.getHeight());
-//                Toast.makeText(activity, binding.refreshLayout.getHeight() + "", Toast
-//                        .LENGTH_SHORT).show();
             }
         });
     }
@@ -299,9 +298,9 @@ public class ActivityChatUser extends BaseActivity {
 
         @Override
         public void onAudioItemClick(View view, int position) {
-            //    ChatUserMessage message = messages.get(position);
-            //    emotionPannelListener.playAudio((ImageView) view.findViewById(R.id.iv_audio),
-            // message);
+                ChatUserMessage message = messageAdapter.getChatUserMessage(position);
+                emotionPanelListener.playAudio((ImageView) view.findViewById(R.id.iv_audio),
+             message);
         }
 
         @Override

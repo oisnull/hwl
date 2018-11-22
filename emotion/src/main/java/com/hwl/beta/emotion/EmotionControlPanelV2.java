@@ -126,6 +126,16 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
         ivExtendsEmotion.setOnClickListener(this);
         btnMessageSend.setOnClickListener(this);
 
+        btnVoiceRecord.setAudioFinishRecorderListener(new AudioRecorderButton
+                .AudioFinishRecorderListener() {
+            @Override
+            public void onFinish(float seconds, String filePath) {
+                if (panelListener != null) {
+                    panelListener.onSendSoundClick(seconds, filePath);
+                }
+            }
+        });
+
         this.bindEditTextEvents();
         this.bindSysEmotionData();
         this.bindExtendsEmotionData();

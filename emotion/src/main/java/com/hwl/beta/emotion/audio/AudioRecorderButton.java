@@ -1,5 +1,6 @@
 package com.hwl.beta.emotion.audio;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Environment;
 import android.os.Handler;
@@ -7,6 +8,8 @@ import android.os.Message;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.hwl.beta.emotion.utils.PermissionsUtils;
 
 /**
  * Created by Administrator on 2018/2/28.
@@ -34,7 +37,7 @@ public class AudioRecorderButton extends android.support.v7.widget.AppCompatButt
     public AudioRecorderButton(Context context) {
         this(context, null);
     }
-    public AudioRecorderButton(Context context, AttributeSet attrs) {
+    public AudioRecorderButton(final Context context, AttributeSet attrs) {
         super(context, attrs);
         mDialogManager = new AudioDialogManager(getContext());
         mAudioManager = new AudioRecorderManager(getAudioStoreDir());
@@ -43,8 +46,10 @@ public class AudioRecorderButton extends android.support.v7.widget.AppCompatButt
         setOnLongClickListener(new OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                mReady = true;
-                mAudioManager.prepareAudio();
+                if(PermissionsUtils.checkVoice((Activity) context)){
+                    mReady = true;
+                    mAudioManager.prepareAudio();
+                }
                 return false;
             }
         });
