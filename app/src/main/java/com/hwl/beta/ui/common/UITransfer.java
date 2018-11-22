@@ -58,8 +58,8 @@ import com.hwl.beta.ui.user.ActivityUserEditItem;
 import com.hwl.beta.ui.user.ActivityUserIndex;
 import com.hwl.beta.ui.user.ActivityUserSearch;
 //import com.hwl.beta.ui.user.ActivityUserSetting;
-//import com.hwl.beta.ui.video.ActivityVideoPlay;
-//import com.hwl.beta.ui.video.ActivityVideoSelect;
+import com.hwl.beta.ui.video.ActivityVideoPlay;
+import com.hwl.beta.ui.video.ActivityVideoSelect;
 import com.hwl.beta.ui.entry.ActivityWelcome;
 import com.hwl.beta.ui.immsg.IMClientEntry;
 import com.hwl.beta.utils.StorageUtils;
@@ -254,26 +254,26 @@ public class UITransfer {
         context.startActivity(intent);
     }
 
-//    public static void toVideoSelectActivity(Activity context, int requestCode) {
-//        Intent intent = new Intent(context, ActivityVideoSelect.class);
-//        context.startActivityForResult(intent, requestCode);
-//    }
-//
-//    public static void toVideoPlayActivity(Activity context, int videoMode, String videoPath) {
-//        toVideoPlayActivity(context, videoMode, videoPath, 0);
-//    }
-//
-//    public static void toVideoPlayActivity(Activity context, int videoMode, String videoPath, int
-//            requestCode) {
-//        Intent intent = new Intent(context, ActivityVideoPlay.class);
-//        intent.putExtra("videopath", videoPath);
-//        intent.putExtra("videomode", videoMode);
-//        if (requestCode <= 0) {
-//            context.startActivity(intent);
-//        } else {
-//            context.startActivityForResult(intent, requestCode);
-//        }
-//    }
+    public static void toVideoSelectActivity(Activity context, int requestCode) {
+        Intent intent = new Intent(context, ActivityVideoSelect.class);
+        context.startActivityForResult(intent, requestCode);
+    }
+
+    public static void toVideoPlayActivity(Activity context, int videoMode, String videoPath) {
+        toVideoPlayActivity(context, videoMode, videoPath, 0);
+    }
+
+    public static void toVideoPlayActivity(Activity context, int videoMode, String videoPath, int
+            requestCode) {
+        Intent intent = new Intent(context, ActivityVideoPlay.class);
+        intent.putExtra("videopath", videoPath);
+        intent.putExtra("videomode", videoMode);
+        if (requestCode <= 0) {
+            context.startActivity(intent);
+        } else {
+            context.startActivityForResult(intent, requestCode);
+        }
+    }
 
     public static void toChatGroupActivity(Context context, String groupGuid) {
         Intent intent = new Intent(context, ActivityChatGroup.class);

@@ -21,6 +21,7 @@ import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.sp.AppInstallStatus;
 import com.hwl.beta.ui.chat.action.IChatMessageItemListener;
 import com.hwl.beta.ui.chat.adp.ChatUserMessageAdapter;
+import com.hwl.beta.ui.chat.bean.ChatImageViewBean;
 import com.hwl.beta.ui.chat.imp.ChatUserEmotionPanelListener;
 import com.hwl.beta.ui.chat.logic.ChatUserLogic;
 import com.hwl.beta.ui.chat.standard.ChatUserStandard;
@@ -30,6 +31,7 @@ import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.ebus.EventBusConstant;
 import com.hwl.beta.ui.ebus.EventMessageModel;
 import com.hwl.beta.ui.imgselect.bean.ImageBean;
+import com.hwl.beta.ui.video.ActivityVideoPlay;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
@@ -290,17 +292,17 @@ public class ActivityChatUser extends BaseActivity {
 
         @Override
         public void onVideoItemClick(int position) {
-            //    ChatUserMessage message = messages.get(position);
-            //    String showUrl = ChatImageViewBean.getShowUrl(message.getLocalUrl(), null,
-            // message.getOriginalUrl());
-            //    UITransfer.toVideoPlayActivity(activity, ActivityVideoPlay.MODE_VIEW, showUrl);
+            ChatUserMessage message = messageAdapter.getChatUserMessage(position);
+            String showUrl = ChatImageViewBean.getShowUrl(message.getLocalUrl(), null,
+                    message.getOriginalUrl());
+            UITransfer.toVideoPlayActivity(activity, ActivityVideoPlay.MODE_VIEW, showUrl);
         }
 
         @Override
         public void onAudioItemClick(View view, int position) {
-                ChatUserMessage message = messageAdapter.getChatUserMessage(position);
-                emotionPanelListener.playAudio((ImageView) view.findViewById(R.id.iv_audio),
-             message);
+            ChatUserMessage message = messageAdapter.getChatUserMessage(position);
+            emotionPanelListener.playAudio((ImageView) view.findViewById(R.id.iv_audio),
+                    message);
         }
 
         @Override

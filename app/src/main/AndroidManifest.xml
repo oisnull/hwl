@@ -64,8 +64,8 @@
         <!--<activity android:name=".ui.user.ActivityUserPasswordReset" />-->
         <activity android:name=".ui.imgselect.ActivityImageSelect" />
         <activity android:name=".ui.imgselect.ActivityImageBrowse" />
-        <!--<activity android:name=".ui.video.ActivityVideoPlay" />-->
-        <!--<activity android:name=".ui.video.ActivityVideoSelect" />-->
+        <activity android:name=".ui.video.ActivityVideoPlay" />
+        <activity android:name=".ui.video.ActivityVideoSelect" />
         <activity android:name=".ui.chat.ActivityChatGroup" />
         <!--<activity android:name=".ui.chat.ActivityChatGroupSetting" />-->
         <!--<activity android:name=".ui.chat.ActivityChatGroupSettingEdit" />-->

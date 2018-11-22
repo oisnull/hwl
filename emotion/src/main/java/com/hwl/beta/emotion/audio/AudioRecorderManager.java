@@ -1,6 +1,7 @@
 package com.hwl.beta.emotion.audio;
 
 import android.media.MediaRecorder;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,9 +16,12 @@ public class AudioRecorderManager {
     private String mCurrentFilePath;
     private static AudioRecorderManager mInstance;
     private boolean isPrepared;
-    public AudioRecorderManager(String dir){
+
+    public AudioRecorderManager(String dir) {
         mDir = dir;
-    };
+    }
+
+    ;
 
     /**
      * 回调准备完毕
@@ -28,11 +32,11 @@ public class AudioRecorderManager {
 
     public AudioStateListener mListener;
 
-    public void setOnAudioStateListener(AudioStateListener listener){
+    public void setOnAudioStateListener(AudioStateListener listener) {
         mListener = listener;
     }
 
-    public static AudioRecorderManager getInstance(String dir){
+    public static AudioRecorderManager getInstance(String dir) {
         if (mInstance == null) {
             synchronized (AudioRecorderManager.class) {
                 if (mInstance == null) {
@@ -51,10 +55,9 @@ public class AudioRecorderManager {
             isPrepared = false;
             File dir = new File(mDir);
             if (!dir.exists()) {
-                dir.mkdir();
+                dir.mkdirs();
             }
             String fileName = generateFileName();
-
             File file = new File(dir, fileName);
 
             mCurrentFilePath = file.getAbsolutePath();
@@ -81,7 +84,7 @@ public class AudioRecorderManager {
     }
 
     private String generateFileName() {
-        return new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()) + getRandom(6)+".amr";
+        return new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()) + getRandom(6) + ".amr";
     }
 
     private static String getRandom(int i) {
@@ -99,7 +102,7 @@ public class AudioRecorderManager {
         if (isPrepared) {
             //获得最大的振幅getMaxAmplitude() 1-32767
             try {
-                return maxLevel * mMediaRecorder.getMaxAmplitude()/32768+1;
+                return maxLevel * mMediaRecorder.getMaxAmplitude() / 32768 + 1;
             } catch (Exception e) {
 
             }
@@ -108,19 +111,28 @@ public class AudioRecorderManager {
     }
 
     public void release() {
-        mMediaRecorder.stop();
-        mMediaRecorder.release();
-        mMediaRecorder = null;
+        if (mMediaRecorder != null) {
+            try {
+                mMediaRecorder.stop();
+            } catch (IllegalStateException e) {
+                //e.printStackTrace();
+                mMediaRecorder = null;
+                mMediaRecorder = new MediaRecorder();
+            }
+            mMediaRecorder.release();
+            mMediaRecorder = null;
+        }
     }
 
-    public void cancel(){
+    public void cancel() {
         release();
-        if(mCurrentFilePath!=null) {
+        if (mCurrentFilePath != null) {
             File file = new File(mCurrentFilePath);
             file.delete();
             mCurrentFilePath = null;
         }
     }
+
     public String getCurrentFilePath() {
         return mCurrentFilePath;
     }

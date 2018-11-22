@@ -88,12 +88,12 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
 
     @Override
     public void onSelectVideoClick() {
-//        UITransfer.toVideoSelectActivity(activity, 3);
+        UITransfer.toVideoSelectActivity(activity, 3);
     }
 
     @Override
     public void onSelectFavoriteClick() {
-
+        Toast.makeText(activity, "发送收藏信息功能稍后开放", Toast.LENGTH_SHORT).show();
     }
 
     @Override

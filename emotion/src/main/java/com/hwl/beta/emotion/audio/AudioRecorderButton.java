@@ -49,6 +49,8 @@ public class AudioRecorderButton extends android.support.v7.widget.AppCompatButt
                 if(PermissionsUtils.checkVoice((Activity) context)){
                     mReady = true;
                     mAudioManager.prepareAudio();
+                }else{
+                    mReady = false;
                 }
                 return false;
             }
