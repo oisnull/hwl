@@ -16,24 +16,14 @@ public class AudioRecorderManager {
     private String mCurrentFilePath;
     private static AudioRecorderManager mInstance;
     private boolean isPrepared;
+    private RecordListener recordListener;
 
     public AudioRecorderManager(String dir) {
         mDir = dir;
     }
 
-    ;
-
-    /**
-     * 回调准备完毕
-     */
-    public interface AudioStateListener {
-        void wellPrepared();
-    }
-
-    public AudioStateListener mListener;
-
-    public void setOnAudioStateListener(AudioStateListener listener) {
-        mListener = listener;
+    public void setRecordListener(RecordListener recordListener) {
+        this.recordListener = recordListener;
     }
 
     public static AudioRecorderManager getInstance(String dir) {
@@ -75,11 +65,9 @@ public class AudioRecorderManager {
             mMediaRecorder.start();
             //准备结束
             isPrepared = true;
-            if (mListener != null) {
-                mListener.wellPrepared();
-            }
+            recordListener.success(file.getPath());
         } catch (IOException e) {
-            e.printStackTrace();
+            recordListener.error(e.getMessage());
         }
     }
 
@@ -135,5 +123,11 @@ public class AudioRecorderManager {
 
     public String getCurrentFilePath() {
         return mCurrentFilePath;
+    }
+
+    public interface RecordListener {
+        void success(String path);
+
+        void error(String error);
     }
 }

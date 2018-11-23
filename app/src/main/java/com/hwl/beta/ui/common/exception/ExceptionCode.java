@@ -3,7 +3,13 @@ package com.hwl.beta.ui.common.exception;
 public enum ExceptionCode {
     IMServiceDisconnect(1, "The im service is disconnected."),
     ChatCodeUserValidateFailure(2, "Validate chat user failure"),
-    ChatCodeUserBlack(3, "User is in black list");
+    ChatCodeUserBlack(3, "User is in black list"),
+    ChatSendUserMessageFailure(4,"Send chat user message failure"),
+    ChatVideoRescUploadFailure(5,"Chat video resx upload failure"),
+    ChatVoiceRescUploadFailure(6,"Chat voice resx upload failure"),
+    ChatImageRescUploadFailure(7,"Chat image resx upload failure"),
+    ChatSendGroupMessageFailure(8,"Send chat group message failure"),
+    ChatMessageContentTypeError(9,"Chat message content type error");
 
     private String desc;
     private int index;

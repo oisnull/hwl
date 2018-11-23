@@ -8,13 +8,18 @@ import android.os.Message;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
+import com.hwl.beta.emotion.utils.FileUtils;
 import com.hwl.beta.emotion.utils.PermissionsUtils;
+
+import java.io.File;
 
 /**
  * Created by Administrator on 2018/2/28.
  */
-public class AudioRecorderButton extends android.support.v7.widget.AppCompatButton implements AudioRecorderManager.AudioStateListener {
+public class AudioRecorderButton extends android.support.v7.widget.AppCompatButton implements
+        AudioRecorderManager.RecordListener {
 
     //手指滑动 距离
     private static final int DISTANCE_Y_CANCEL = 50;
@@ -37,19 +42,20 @@ public class AudioRecorderButton extends android.support.v7.widget.AppCompatButt
     public AudioRecorderButton(Context context) {
         this(context, null);
     }
+
     public AudioRecorderButton(final Context context, AttributeSet attrs) {
         super(context, attrs);
         mDialogManager = new AudioDialogManager(getContext());
-        mAudioManager = new AudioRecorderManager(getAudioStoreDir());
-        mAudioManager.setOnAudioStateListener(this);
+        mAudioManager = new AudioRecorderManager(getAudioStoreDir(context));
+        mAudioManager.setRecordListener(this);
         //按钮长按 准备录音 包括start
         setOnLongClickListener(new OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if(PermissionsUtils.checkVoice((Activity) context)){
+                if (PermissionsUtils.checkVoice((Activity) context)) {
                     mReady = true;
                     mAudioManager.prepareAudio();
-                }else{
+                } else {
                     mReady = false;
                 }
                 return false;
@@ -57,39 +63,51 @@ public class AudioRecorderButton extends android.support.v7.widget.AppCompatButt
         });
     }
 
-    public static String getAudioStoreDir(){
-        //需要判断 是否存在， 是否可读。
-        return Environment.getExternalStorageDirectory() + "/hwl_audios/";
+//    public static String getAudioStoreDir() {
+//        //需要判断 是否存在， 是否可读。
+//        return Environment.getExternalStorageDirectory() + "/hwl_audios/";
+//        return FileUtils.getCachePath();
+//    }
+
+    public static String getAudioStoreDir(Context context) {
+        String dir = "hwl_audios";
+        String directoryPath = "";
+        if (android.os.Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            directoryPath = context.getExternalFilesDir(dir).getAbsolutePath();
+        } else {
+            directoryPath = context.getFilesDir() + File.separator + dir;
+        }
+        File file = new File(directoryPath);
+        if (!file.exists()) {//判断文件目录是否存在
+            file.mkdirs();
+        }
+        return directoryPath;
     }
 
-    // public static String getAudioStoreDir(Context context) {
-    //     String dir="hwl_audios";
-    //     String directoryPath="";
-    //     if (MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ) {//判断外部存储是否可用 
-    //         directoryPath =context.getExternalFilesDir(dir).getAbsolutePath();
-    //     }else{//没外部存储就使用内部存储  
-    //         directoryPath=context.getFilesDir()+File.separator+dir;
-    //     }
-    //     File file = new File(directoryPath);
-    //     if(!file.exists()){//判断文件目录是否存在
-    //         file.mkdirs();
-    //     }
-    //     return directoryPath;
-    // }
+    @Override
+    public void success(String path) {
+        mHandler.sendEmptyMessage(MSG_AUDIO_PREPARED);
+    }
+
+    @Override
+    public void error(String error) {
+        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+    }
 
     /**
      * 录音完成后的回调
      */
-    public interface AudioFinishRecorderListener{
+    public interface AudioFinishRecorderListener {
         //时长  和 文件
         void onFinish(float seconds, String filePath);
     }
 
     private AudioFinishRecorderListener mListener;
 
-    public void setAudioFinishRecorderListener (AudioFinishRecorderListener listener){
+    public void setAudioFinishRecorderListener(AudioFinishRecorderListener listener) {
         mListener = listener;
     }
+
     //获取音量大小的Runnable
     private Runnable mGetVoiceLevelRunnable = new Runnable() {
         @Override
@@ -114,27 +132,22 @@ public class AudioRecorderButton extends android.support.v7.widget.AppCompatButt
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case MSG_AUDIO_PREPARED :
+                case MSG_AUDIO_PREPARED:
                     mDialogManager.showRecordingDialog();
                     isRecording = true;
 
                     new Thread(mGetVoiceLevelRunnable).start();
                     break;
-                case MSG_VOICE_CHANGED :
+                case MSG_VOICE_CHANGED:
                     mDialogManager.updateVoiceLevel(mAudioManager.getVoiceLevel(7));
 
                     break;
-                case MSG_DIALOG_DIMISS :
+                case MSG_DIALOG_DIMISS:
                     mDialogManager.dimissDialog();
                     break;
             }
         }
     };
-
-    @Override
-    public void wellPrepared() {
-        mHandler.sendEmptyMessage(MSG_AUDIO_PREPARED);
-    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -164,17 +177,17 @@ public class AudioRecorderButton extends android.support.v7.widget.AppCompatButt
                 }
                 //触发了onlongclick 没准备好，但是已经prepared 已经start
                 //所以消除文件夹
-                if(!isRecording||mTime<0.6f){
+                if (!isRecording || mTime < 0.6f) {
                     mDialogManager.tooShort();
                     mAudioManager.cancel();
                     mHandler.sendEmptyMessageDelayed(MSG_DIALOG_DIMISS, 1300);
-                }else if(mCurState==STATE_RECORDING){//正常录制结束
+                } else if (mCurState == STATE_RECORDING) {//正常录制结束
                     mDialogManager.dimissDialog();
                     mAudioManager.release();
                     if (mListener != null) {
-                        mListener.onFinish(mTime,mAudioManager.getCurrentFilePath());
+                        mListener.onFinish(mTime, mAudioManager.getCurrentFilePath());
                     }
-                }else if (mCurState == STATE_RECORDING) {
+                } else if (mCurState == STATE_RECORDING) {
                     mDialogManager.dimissDialog();
                     //release
                     //callbacktoAct

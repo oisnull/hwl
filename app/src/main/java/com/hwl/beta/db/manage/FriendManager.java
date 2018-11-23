@@ -69,14 +69,24 @@ public class FriendManager extends BaseDao<Friend> {
 
     public boolean deleteFriend(long friendId) {
         if (friendId <= 0) return false;
-        if (isExists(friendId)) {
+        if (isExistsFriend(friendId)) {
             daoSession.getFriendDao().deleteByKey(friendId);
             return true;
         }
         return false;
     }
 
-    public boolean isExists(long friendId) {
+    public boolean isExistsFriend(long friendId) {
+        if (friendId <= 0) return false;
+
+        Friend friend = get(friendId);
+        if (friend != null && friend.getId() > 0 && friend.getIsFriend()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isExistsUser(long friendId) {
         if (friendId <= 0) return false;
 
         Friend friend = get(friendId);
@@ -120,7 +130,7 @@ public class FriendManager extends BaseDao<Friend> {
                 .filter(new Predicate<Friend>() {
                     @Override
                     public boolean test(Friend friend) {
-                        return !isExists(friend.getId());
+                        return !isExistsUser(friend.getId());
                     }
                 })
                 .subscribeOn(Schedulers.io())

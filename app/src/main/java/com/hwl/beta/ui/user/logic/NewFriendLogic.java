@@ -48,7 +48,8 @@ public class NewFriendLogic implements NewFriendStandard {
             callback.error("friendName is empty");
             return;
         }
-        if (DaoUtils.getFriendManagerInstance().isExists(friendRequest.getFriendId())) {
+
+        if (DaoUtils.getFriendManagerInstance().isExistsFriend(friendRequest.getFriendId())) {
             DaoUtils.getFriendRequestManagerInstance().delete(friendRequest);
             callback.success(true);
             return;
@@ -93,7 +94,7 @@ public class NewFriendLogic implements NewFriendStandard {
                                 (friend, content);
                         ChatRecordMessage chatRecordMessage = DBChatMessageAction
                                 .convertToRecordMessage
-                                (friend, content);
+                                        (friend, content);
 
                         DaoUtils.getChatUserMessageManagerInstance().save(chatUserMessage);
                         DaoUtils.getChatRecordMessageManagerInstance().save(chatRecordMessage);

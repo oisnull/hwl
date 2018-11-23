@@ -283,7 +283,7 @@ public class IMClientEntry {
 //                previewUrl, imageWidth, imageHeight, size, playTime, operateListener);
 //    }
 
-    private static void sendChatGroupMessage(final String groupGuid, final int contentType, final
+    public static void sendChatGroupMessage(final String groupGuid, final int contentType, final
     String content, final String previewUrl, final int imageWidth, final int imageHeight, final
                                              int size, final int
                                                      playTime, final IMDefaultSendOperateListener

@@ -1,6 +1,7 @@
 package com.hwl.beta.ui.immsg.send;
 
 import com.hwl.beta.sp.UserSP;
+import com.hwl.beta.utils.StringUtils;
 import com.hwl.im.common.DefaultConsumer;
 import com.hwl.im.imaction.AbstractMessageSendExecutor;
 import com.hwl.imcore.improto.ImChatGroupMessageContent;
@@ -19,8 +20,8 @@ public class ChatGroupMessageSend extends AbstractMessageSendExecutor {
                 .setFromUserImage(UserSP.getUserHeadImage())
                 .setToGrouopGuid(groupGuid)
                 .setContentType(contentType)
-                .setContent(content)
-                .setPreviewUrl(previewUrl)
+                .setContent(StringUtils.nullStrToEmpty(content))
+                .setPreviewUrl(StringUtils.nullStrToEmpty(previewUrl))
                 .setImageWidth(imageWidth)
                 .setImageHeight(imageHeight)
                 .setSize(size)

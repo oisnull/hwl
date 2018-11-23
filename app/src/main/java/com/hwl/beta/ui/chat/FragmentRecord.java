@@ -77,8 +77,8 @@ public class FragmentRecord extends BaseFragment {
                                 }
                                 break;
                             case IMConstant.CHAT_RECORD_TYPE_GROUP:
-                                //UITransfer.toChatGroupActivity(activity, recordMessage
-                                // .getGruopGuid());
+                                UITransfer.toChatGroupActivity(activity, recordMessage
+                                        .getGroupGuid());
                                 break;
                         }
                     }
@@ -203,7 +203,8 @@ public class FragmentRecord extends BaseFragment {
                 recordAdapter.updateRecord((ChatRecordMessage) messageModel.getMessageModel());
                 break;
             case EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_UPDATE_NOSORT:
-                recordAdapter.updateRecord((ChatRecordMessage) messageModel.getMessageModel(),false);
+                recordAdapter.updateRecord((ChatRecordMessage) messageModel.getMessageModel(),
+                        false);
                 break;
             case EventBusConstant.EB_TYPE_NETWORK_CONNECT_UPDATE:
                 binding.llNetworkNone.setVisibility(View.GONE);

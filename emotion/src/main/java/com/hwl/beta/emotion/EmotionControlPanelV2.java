@@ -439,6 +439,6 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
 
         void onPositionClick();
 
-        void onFunctionPop(int popHeigth);
+        void onFunctionPop(int popHeight);
     }
 }

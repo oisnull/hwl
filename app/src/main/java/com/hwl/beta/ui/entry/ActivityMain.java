@@ -176,7 +176,7 @@ public class ActivityMain extends BaseActivity {
                         UITransfer.toUserSearchActivity(activity);
                         break;
                     case R.id.pop_near_group:
-//                        UITransfer.toChatGroupActivity(activity, UserPosSP.getGroupGuid());
+                        UITransfer.toChatGroupActivity(activity, UserPosSP.getGroupGuid());
                         break;
                     case R.id.pop_near_message:
 //                        UITransfer.toNearMessagesActivity(activity);

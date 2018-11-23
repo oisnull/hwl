@@ -256,6 +256,10 @@ public class ChatGroupMessageAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
+    public ChatGroupMessage getChatGroupMessage(int position) {
+        return messages.get(position);
+    }
+
     @Override
     public int getItemCount() {
         return messages.size();

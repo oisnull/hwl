@@ -1,5 +1,6 @@
 package com.hwl.beta.ui.ebus;
 
+import com.hwl.beta.db.entity.ChatGroupMessage;
 import com.hwl.beta.db.entity.ChatRecordMessage;
 import com.hwl.beta.db.entity.ChatUserMessage;
 import com.hwl.beta.db.entity.Friend;
@@ -104,6 +105,11 @@ public class EventBusUtil {
     public static void sendChatUserMessageEvent(ChatUserMessage userMessage) {
         sendEvent(new EventMessageModel
                 (EventBusConstant.EB_TYPE_CHAT_USER_MESSAGE_UPDATE, userMessage));
+    }
+
+    public static void sendChatGroupMessageEvent(ChatGroupMessage groupMessage) {
+        sendEvent(new EventMessageModel
+                (EventBusConstant.EB_TYPE_CHAT_GROUP_MESSAGE_UPDATE, groupMessage));
     }
 
     public static void sendChatRecordMessageSortEvent(ChatRecordMessage recordMessage) {

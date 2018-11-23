@@ -26,8 +26,8 @@ public final class FileUtils {
 	 */
 	private static String getSavePath(long saveSize) {
 	    String savePath = null;
-	    if (StorageUtil.getExternaltStorageAvailableSpace() > saveSize) {//扩展存储设备>预留空间
-	        savePath = StorageUtil.getExternalStorageDirectory();
+	    if (StorageUtils.getExternaltStorageAvailableSpace() > saveSize) {//扩展存储设备>预留空间
+	        savePath = StorageUtils.getExternalStorageDirectory();
 	        File saveFile = new File(savePath);
 	        if (!saveFile.exists()) {
 	            saveFile.mkdirs();
@@ -35,8 +35,8 @@ public final class FileUtils {
 	            saveFile.delete();
 	            saveFile.mkdirs();
 	        }
-	    } else if (StorageUtil.getSdcard2StorageAvailableSpace() > saveSize) {//sdcard2外部存储空间>预留空间
-	        savePath = StorageUtil.getSdcard2StorageDirectory();
+	    } else if (StorageUtils.getSdcard2StorageAvailableSpace() > saveSize) {//sdcard2外部存储空间>预留空间
+	        savePath = StorageUtils.getSdcard2StorageDirectory();
 	        File saveFile = new File(savePath);
 	        if (!saveFile.exists()) {
 	            saveFile.mkdirs();
@@ -44,8 +44,8 @@ public final class FileUtils {
 	            saveFile.delete();
 	            saveFile.mkdirs();
 	        }
-	    } else if (StorageUtil.getEmmcStorageAvailableSpace() > saveSize) {//可用的 EMMC 内部存储空间>预留空间
-	        savePath = StorageUtil.getEmmcStorageDirectory();
+	    } else if (StorageUtils.getEmmcStorageAvailableSpace() > saveSize) {//可用的 EMMC 内部存储空间>预留空间
+	        savePath = StorageUtils.getEmmcStorageDirectory();
 	        File saveFile = new File(savePath);
 	        if (!saveFile.exists()) {
 	            saveFile.mkdirs();
@@ -53,8 +53,8 @@ public final class FileUtils {
 	            saveFile.delete();
 	            saveFile.mkdirs();
 	        }
-	    } else if (StorageUtil.getOtherExternaltStorageAvailableSpace()>saveSize) {//其他外部存储可用空间>预留空间
-	        savePath = StorageUtil.getOtherExternalStorageDirectory();
+	    } else if (StorageUtils.getOtherExternaltStorageAvailableSpace()>saveSize) {//其他外部存储可用空间>预留空间
+	        savePath = StorageUtils.getOtherExternalStorageDirectory();
 	        File saveFile = new File(savePath);
 	        if (!saveFile.exists()) {
 	            saveFile.mkdirs();
@@ -62,8 +62,8 @@ public final class FileUtils {
 	            saveFile.delete();
 	            saveFile.mkdirs();
 	        }
-	    }else if (StorageUtil.getInternalStorageAvailableSpace() > saveSize) {//内部存储目录>预留空间
-	        savePath = StorageUtil.getInternalStorageDirectory() + File.separator;
+	    }else if (StorageUtils.getInternalStorageAvailableSpace() > saveSize) {//内部存储目录>预留空间
+	        savePath = StorageUtils.getInternalStorageDirectory() + File.separator;
 	    }
 	    return savePath;
 	}

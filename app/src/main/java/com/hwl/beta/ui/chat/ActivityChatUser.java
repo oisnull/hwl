@@ -1,12 +1,14 @@
 package com.hwl.beta.ui.chat;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.MotionEvent;
 import android.view.View;
@@ -70,8 +72,6 @@ public class ActivityChatUser extends BaseActivity {
     }
 
     private void initView() {
-        chatUserStandard.clearRecordMessageCount(user.getId());
-
         binding.tbTitle.setTitle(user.getShowName())
                 .setImageRightResource(R.drawable.ic_setting)
                 .setImageRightClick(new View.OnClickListener() {
@@ -157,7 +157,6 @@ public class ActivityChatUser extends BaseActivity {
         return true;
     }
 
-
     @Override
     protected void receiveStickyEventMessage(EventMessageModel messageModel) {
         switch (messageModel.getMessageType()) {
@@ -226,6 +225,7 @@ public class ActivityChatUser extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        chatUserStandard.clearRecordMessageCount(user.getId());
         emotionPanelListener.stopAudio();
     }
 
@@ -318,7 +318,7 @@ public class ActivityChatUser extends BaseActivity {
                            @Override
                            public void onClick(DialogInterface dialog, int which) {
                                view.setVisibility(View.GONE);
-                               emotionPanelListener.resendMessage(messages.get(position));
+                               emotionPanelListener.resendMessage(messageAdapter.getChatUserMessage(position));
                                dialog.dismiss();
                            }
                        })
