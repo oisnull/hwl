@@ -223,8 +223,13 @@ public class ActivityChatUser extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        emotionPanelListener.stopAudio();
+    }
+
     public class ChatMessageItemListener implements IChatMessageItemListener {
-//        AudioPlay audioPlay;
 
         @Override
         public void onHeadImageClick(int position) {
@@ -307,18 +312,18 @@ public class ActivityChatUser extends BaseActivity {
 
         @Override
         public void onFaildStatusClick(final View view, final int position) {
-            //    new AlertDialog.Builder(activity)
-            //            .setMessage("重新发送")
-            //            .setPositiveButton("发送", new DialogInterface.OnClickListener() {
-            //                @Override
-            //                public void onClick(DialogInterface dialog, int which) {
-            //                    view.setVisibility(View.GONE);
-            //                    emotionPannelListener.resendMessage(messages.get(position));
-            //                    dialog.dismiss();
-            //                }
-            //            })
-            //            .setNegativeButton("取消", null)
-            //            .show();
+               new AlertDialog.Builder(activity)
+                       .setMessage("重新发送")
+                       .setPositiveButton("发送", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialog, int which) {
+                               view.setVisibility(View.GONE);
+                               emotionPanelListener.resendMessage(messages.get(position));
+                               dialog.dismiss();
+                           }
+                       })
+                       .setNegativeButton("取消", null)
+                       .show();
         }
     }
 }

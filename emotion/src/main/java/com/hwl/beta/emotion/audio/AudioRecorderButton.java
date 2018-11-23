@@ -62,6 +62,21 @@ public class AudioRecorderButton extends android.support.v7.widget.AppCompatButt
         return Environment.getExternalStorageDirectory() + "/hwl_audios/";
     }
 
+    // public static String getAudioStoreDir(Context context) {
+    //     String dir="hwl_audios";
+    //     String directoryPath="";
+    //     if (MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ) {//判断外部存储是否可用 
+    //         directoryPath =context.getExternalFilesDir(dir).getAbsolutePath();
+    //     }else{//没外部存储就使用内部存储  
+    //         directoryPath=context.getFilesDir()+File.separator+dir;
+    //     }
+    //     File file = new File(directoryPath);
+    //     if(!file.exists()){//判断文件目录是否存在
+    //         file.mkdirs();
+    //     }
+    //     return directoryPath;
+    // }
+
     /**
      * 录音完成后的回调
      */

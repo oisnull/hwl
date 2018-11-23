@@ -46,7 +46,6 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
     int localSoftInputHeight = 0;
     int contentContainerHeight = 0;
     PanelListener panelListener;
-
     Runnable onPanelHeightChanged;
 
     ImageView ivVoice, ivKeyboard, ivSysEmotion, ivExtendsEmotion;//语音，键盘，表情，扩展

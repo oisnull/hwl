@@ -13,8 +13,6 @@ public class PermissionsUtils {
 
     public static boolean checkCamera(Activity activity) {
         isHas = false;
-//        , Manifest.permission
-//                .MOUNT_UNMOUNT_FILESYSTEMS
         RxPermissions rxPermissions = new RxPermissions(activity);
         rxPermissions
                 .request(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE,

@@ -65,14 +65,14 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
     @Override
     public boolean onSendMessageClick(String text) {
         if (StringUtils.isBlank(text)) return false;
-        this.sendChatMessage(0, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_TEXT, text, null, text
+        this.sendChatMessage(IMConstant.CHAT_MESSAGE_CONTENT_TYPE_TEXT, text, null, text
                 .length(), 0);
         return true;
     }
 
     @Override
     public void onSendSoundClick(float seconds, String filePath) {
-        this.sendChatMessage(0, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VOICE, "[语音]", filePath, 0,
+        this.sendChatMessage(IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VOICE, "[语音]", filePath, 0,
                 (int) seconds);
     }
 
@@ -113,12 +113,12 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
 
     public void resendMessage(ChatUserMessage message) {
         if (message == null) return;
-        this.sendChatMessage(message.getMsgId(), message.getContentType(), message.getContent(),
-                message.getLocalUrl(), message.getContent().length(), message.getPlayTime());
+        message.setSendStatus(IMConstant.CHAT_SEND_SENDING);
+        this.sendChatMessage(message);
     }
 
     public void sendChatUserVideoMessage(String localPath) {
-        this.sendChatMessage(0, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VIDEO, "[视频]", localPath, 0,
+        this.sendChatMessage(IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VIDEO, "[视频]", localPath, 0,
                 0);
     }
 
@@ -131,17 +131,13 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
         if (file == null) {
             file = new File(localPath);
         }
-        this.sendChatMessage(0, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_IMAGE, "[图片]", file
+        this.sendChatMessage(IMConstant.CHAT_MESSAGE_CONTENT_TYPE_IMAGE, "[图片]", file
                 .getAbsolutePath
                         (), 0, 0);
     }
 
-    private ChatUserMessage getChatMessage(long messageId, int contentType, String content, String
-            localPath, int size, int playTime) {
+    private ChatUserMessage getChatMessage(int contentType, String content, String localPath, int size, int playTime) {
         ChatUserMessage message = new ChatUserMessage();
-        if (messageId > 0) {
-            message.setMsgId(messageId);
-        }
         message.setFromUserId(UserSP.getUserId());
         message.setFromUserName(UserSP.getUserShowName());
         message.setFromUserHeadImage(UserSP.getUserHeadImage());
@@ -175,16 +171,17 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
         return record;
     }
 
-    private void sendChatMessage(final long messageId, final int contentType, final String
-            content, final String localPath, final int size, final int playTime) {
+    private void sendChatMessage(final int contentType, final String content, final String localPath, final int size, final int playTime){
+        this.sendChatMessage(getChatMessage(contentType, content,localPath, size, playTime));
+    }
+
+    private void sendChatMessage(final ChatUserMessage chatUserMessage) {
         //1, build chat message model and chat record model and storage to local db
         //2, check user relationship and hint current user
         //3, if exists resx and upload it to server
         //4, send chat message
         //5, get result
 
-        final ChatUserMessage chatUserMessage = getChatMessage(messageId, contentType, content,
-                localPath, size, playTime);
         Observable.create(new ObservableOnSubscribe() {
             public void subscribe(ObservableEmitter emitter) throws Exception {
                 long msgId = DaoUtils.getChatUserMessageManagerInstance().save(chatUserMessage);
@@ -212,6 +209,10 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
                     @Override
                     public Observable<ChatUserMessage> apply(ChatUserMessage userMessage)
                             throws Exception {
+                        //Image: localUrl,originalUrl,previewUrl
+                        //Voice: localUrl,originalUrl
+                        //Video: localUrl,originalUrl,previewUrl
+                        //Text:  None
                         switch (userMessage.getContentType()) {
                             case IMConstant.CHAT_MESSAGE_CONTENT_TYPE_IMAGE:
                                 return upImage(userMessage);
@@ -276,6 +277,10 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
     }
 
     private Observable<ChatUserMessage> upImage(final ChatUserMessage message) {
+        if(!StringUtils.isEmpty(message.getOriginalUrl())){
+            return Observable.just(message);
+        }
+
         return UploadService.upImage(new File(message.getLocalUrl()), ResxType.CHATIMAGE)
                 .map(new Function<ResponseBase<UpResxResponse>, ChatUserMessage>() {
                     @Override
@@ -285,8 +290,7 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
                                 .getResponseBody().isSuccess()) {
                             UpResxResponse res = response.getResponseBody();
                             message.setOriginalUrl(res.getOriginalUrl());
-                            message.setPreviewUrl(StringUtils.isBlank(res.getPreviewUrl()) ? res
-                                    .getOriginalUrl() : res.getPreviewUrl());
+                            message.setPreviewUrl(res.getPreviewUrl());
                             message.setImageWidth(res.getWidth());
                             message.setImageHeight(res.getHeight());
                             message.setSize((int) res.getOriginalSize());
@@ -299,6 +303,10 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
     }
 
     private Observable<ChatUserMessage> upVoice(final ChatUserMessage message) {
+        if(!StringUtils.isEmpty(message.getOriginalUrl())){
+            return Observable.just(message);
+        }
+
         return UploadService.upVoice(new File(message.getLocalUrl()))
                 .map(new Function<ResponseBase<UpResxResponse>, ChatUserMessage>() {
                     @Override
@@ -307,8 +315,7 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
                         if (response != null && response.getResponseBody() != null && response
                                 .getResponseBody().isSuccess()) {
                             UpResxResponse res = response.getResponseBody();
-                            message.setOriginalUrl(StringUtils.isBlank(res.getPreviewUrl()) ? res
-                                    .getOriginalUrl() : res.getPreviewUrl());
+                            message.setOriginalUrl(res.getOriginalUrl());
                             message.setSize((int) res.getOriginalSize());
                             return message;
                         } else {
@@ -319,14 +326,18 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
     }
 
     private Observable<ChatUserMessage> upVideo(final ChatUserMessage message) {
+        if(!StringUtils.isEmpty(message.getOriginalUrl())){
+            return Observable.just(message);
+        }
+
         return new UpVideoChunk(message.getLocalUrl())
                 .process()
                 .map(new Function<UpVideoChunk.VideoModel, ChatUserMessage>() {
                     @Override
                     public ChatUserMessage apply(UpVideoChunk.VideoModel model) throws Exception {
                         if (model.isSuccess) {
-                            message.setPreviewUrl(model.previewUrl);
                             message.setOriginalUrl(model.originalUrl);
+                            message.setPreviewUrl(model.previewUrl);
                             message.setSize(model.originalSize);
                             return message;
                         } else {
@@ -434,6 +445,12 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
             }
             audioPlay = new AudioPlay(iv, playDirection);
             audioPlay.start(showUrl, message.getPlayTime());
+        }
+    }
+
+    public void stopAudio(){
+        if(audioPlay!=null){
+            audioPlay.stop();
         }
     }
 }
