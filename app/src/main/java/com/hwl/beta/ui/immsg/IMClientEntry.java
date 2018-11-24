@@ -210,6 +210,7 @@ public class IMClientEntry {
     public static void sendChatUserTextMessage(Long toUserId, String content, boolean isFriend,
                                                IMDefaultSendOperateListener operateListener) {
         sendChatUserMessage(toUserId, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_TEXT, content, null,
+                null,
                 0, 0, content.length(), 0, isFriend, operateListener);
     }
 
@@ -234,15 +235,17 @@ public class IMClientEntry {
 //    }
 
     public static void sendChatUserMessage(final Long toUserId, final int contentType, final
-    String content, final String previewUrl, final int imageWidth, final int imageHeight, final
+    String content, final String originalUrl, final String previewUrl, final int imageWidth,
+                                           final int imageHeight, final
                                            int size, final int playTime,
                                            IMDefaultSendOperateListener operateListener) {
-        sendChatUserMessage(toUserId, contentType, content, previewUrl, imageWidth,
+        sendChatUserMessage(toUserId, contentType, content, originalUrl, previewUrl, imageWidth,
                 imageHeight, size, playTime, false, operateListener);
     }
 
     public static void sendChatUserMessage(final Long toUserId, final int contentType, final
-    String content, final String previewUrl, final int imageWidth, final int imageHeight, final
+    String content, final String originalUrl, final String previewUrl, final int imageWidth,
+                                           final int imageHeight, final
                                            int size, final int playTime, final boolean isFriend,
                                            final
                                            IMDefaultSendOperateListener operateListener) {
@@ -250,7 +253,8 @@ public class IMClientEntry {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
                 ChatUserMessageSend request = new ChatUserMessageSend(toUserId, contentType,
-                        content, previewUrl, imageWidth, imageHeight, size, playTime, isFriend,
+                        content, originalUrl, previewUrl, imageWidth, imageHeight, size,
+                        playTime, isFriend,
                         sendCallback);
                 messageOperate.send(request);
             }
@@ -284,15 +288,17 @@ public class IMClientEntry {
 //    }
 
     public static void sendChatGroupMessage(final String groupGuid, final int contentType, final
-    String content, final String previewUrl, final int imageWidth, final int imageHeight, final
-                                             int size, final int
-                                                     playTime, final IMDefaultSendOperateListener
-                                                     operateListener) {
+    String content, final String originalUrl, final String previewUrl, final int imageWidth,
+                                            final int imageHeight, final
+                                            int size, final int
+                                                    playTime, final IMDefaultSendOperateListener
+                                                    operateListener) {
         commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
                 ChatGroupMessageSend request = new ChatGroupMessageSend(groupGuid, contentType,
-                        content, previewUrl, imageWidth, imageHeight, size, playTime, sendCallback);
+                        content, originalUrl, previewUrl, imageWidth, imageHeight, size,
+                        playTime, sendCallback);
                 messageOperate.send(request);
             }
         });

@@ -374,11 +374,8 @@ public class ChatGroupEmotionPanelListener implements EmotionControlPanelV2.Pane
                         };
 
                 IMClientEntry.sendChatGroupMessage(groupMessage.getGroupGuid(), groupMessage
-                                .getContentType(), groupMessage.getContent(), StringUtils.isEmpty
-                                (groupMessage
-                                        .getPreviewUrl()) ? groupMessage.getOriginalUrl() :
-                                groupMessage
-                                        .getPreviewUrl(),
+                                .getContentType(), groupMessage.getContent(), groupMessage
+                                .getOriginalUrl(), groupMessage.getPreviewUrl(),
                         groupMessage.getImageWidth(), groupMessage.getImageHeight(), groupMessage
                                 .getSize(), groupMessage.getPlayTime(), sendOperateListener);
             }

@@ -4,6 +4,7 @@ import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.ChatRecordMessage;
 import com.hwl.beta.db.entity.ChatUserMessage;
 import com.hwl.beta.db.entity.Friend;
+import com.hwl.beta.ui.common.MessageNotifyManage;
 import com.hwl.beta.ui.convert.DBFriendAction;
 import com.hwl.beta.ui.ebus.EventBusUtil;
 import com.hwl.beta.ui.immsg.IMConstant;
@@ -36,8 +37,8 @@ public class ChatUserMessageListen extends
         message.setToUserId(messageContent.getToUserId());
         message.setContentType(messageContent.getContentType());
         message.setContent(messageContent.getContent());
+        message.setOriginalUrl(messageContent.getOriginalUrl());
         message.setPreviewUrl(messageContent.getPreviewUrl());
-//        message.setOriginalUrl(messageContent.getPreviewUrl());
         message.setImageWidth(messageContent.getImageWidth());
         message.setImageHeight(messageContent.getImageHeight());
         message.setPlayTime(messageContent.getPlayTime());
@@ -62,6 +63,8 @@ public class ChatUserMessageListen extends
 
         EventBusUtil.sendChatUserMessageEvent(message);
         EventBusUtil.sendChatRecordMessageSortEvent(record);
+        MessageNotifyManage.play(DaoUtils.getChatUserMessageManagerInstance()
+                .getChatUserSettingIsShield(friend.getId()));
     }
 
     private Friend getFriendInfo() {

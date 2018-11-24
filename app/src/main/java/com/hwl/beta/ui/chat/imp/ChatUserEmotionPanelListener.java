@@ -376,11 +376,8 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
                         };
 
                 IMClientEntry.sendChatUserMessage(userMessage.getToUserId(), userMessage
-                                .getContentType(), userMessage.getContent(), StringUtils.isEmpty
-                                (userMessage
-                                        .getPreviewUrl()) ? userMessage.getOriginalUrl() :
-                                userMessage
-                                        .getPreviewUrl(),
+                                .getContentType(), userMessage.getContent(), userMessage
+                                .getOriginalUrl(), userMessage.getPreviewUrl(),
                         userMessage.getImageWidth(), userMessage.getImageHeight(), userMessage
                                 .getSize(), userMessage.getPlayTime(), sendOperateListener);
             }

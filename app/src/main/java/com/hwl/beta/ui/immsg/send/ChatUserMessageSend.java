@@ -16,7 +16,7 @@ public class ChatUserMessageSend extends AbstractMessageSendExecutor {
     ImChatUserMessageContent messageContent;
     DefaultConsumer<Boolean> sendCallback;
     
-    public ChatUserMessageSend(Long toUserId,int contentType, String content,String previewUrl,int imageWidth,int imageHeight,int size,int playTime,boolean isFriend,DefaultConsumer<Boolean> sendCallback) {
+    public ChatUserMessageSend(Long toUserId,int contentType, String content,String originalUrl,String previewUrl,int imageWidth,int imageHeight,int size,int playTime,boolean isFriend,DefaultConsumer<Boolean> sendCallback) {
         messageContent = ImChatUserMessageContent.newBuilder().setFromUserId(UserSP.getUserId())
                 .setIsFriend(isFriend)
                 .setFromUserName(UserSP.getUserShowName())
@@ -24,6 +24,7 @@ public class ChatUserMessageSend extends AbstractMessageSendExecutor {
                 .setToUserId(toUserId)
                 .setContentType(contentType)
                 .setContent(StringUtils.nullStrToEmpty(content))
+                .setOriginalUrl(StringUtils.nullStrToEmpty(originalUrl))
                 .setPreviewUrl(StringUtils.nullStrToEmpty(previewUrl))
                 .setImageWidth(imageWidth)
                 .setImageHeight(imageHeight)

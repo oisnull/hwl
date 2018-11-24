@@ -14,36 +14,47 @@ public class ChatGroupMessageSend extends AbstractMessageSendExecutor {
     ImChatGroupMessageContent messageContent;
     DefaultConsumer<Boolean> sendCallback;
 
-    public ChatGroupMessageSend(String groupGuid,int contentType, String content,String previewUrl,int imageWidth,int imageHeight,int size,int playTime,DefaultConsumer<Boolean> sendCallback) {
+    public ChatGroupMessageSend(String groupGuid, int contentType, String content, String
+            originalUrl, String previewUrl, int imageWidth, int imageHeight, int size, int
+            playTime, DefaultConsumer<Boolean> sendCallback) {
         messageContent = ImChatGroupMessageContent.newBuilder().setFromUserId(UserSP.getUserId())
                 .setFromUserName(UserSP.getUserShowName())
                 .setFromUserImage(UserSP.getUserHeadImage())
-                .setToGrouopGuid(groupGuid)
+                .setToGroupGuid(groupGuid)
                 .setContentType(contentType)
                 .setContent(StringUtils.nullStrToEmpty(content))
+                .setOriginalUrl(StringUtils.nullStrToEmpty(originalUrl))
                 .setPreviewUrl(StringUtils.nullStrToEmpty(previewUrl))
                 .setImageWidth(imageWidth)
                 .setImageHeight(imageHeight)
                 .setSize(size)
                 .setPlayTime(playTime)
                 .build();
-        this.sendCallback=sendCallback;
+        this.sendCallback = sendCallback;
     }
 
-    // public ChatGroupMessageSend(String groupGuid, String content,DefaultConsumer<Boolean> sendCallback) {
-    //     this(groupGuid,IMConstant.CHAT_MESSAGE_CONTENT_TYPE_WORD,content,null,0,0,content.length(),0,sendCallback);
+    // public ChatGroupMessageSend(String groupGuid, String content,DefaultConsumer<Boolean>
+    // sendCallback) {
+    //     this(groupGuid,IMConstant.CHAT_MESSAGE_CONTENT_TYPE_WORD,content,null,0,0,content
+    // .length(),0,sendCallback);
     // }
 
-    // public ChatGroupMessageSend(String groupGuid, String previewUrl,int imageWidth,int imageHeight,int size,DefaultConsumer<Boolean> sendCallback) {
-    //     this(groupGuid,IMConstant.CHAT_MESSAGE_CONTENT_TYPE_IMAGE,"[图片]",previewUrl,imageWidth,imageHeight,size,0,sendCallback);
+    // public ChatGroupMessageSend(String groupGuid, String previewUrl,int imageWidth,int
+    // imageHeight,int size,DefaultConsumer<Boolean> sendCallback) {
+    //     this(groupGuid,IMConstant.CHAT_MESSAGE_CONTENT_TYPE_IMAGE,"[图片]",previewUrl,
+    // imageWidth,imageHeight,size,0,sendCallback);
     // }
 
-    // public ChatGroupMessageSend(String groupGuid, String previewUrl,int size,int playTime,DefaultConsumer<Boolean> sendCallback) {
-    //     this(groupGuid,IMConstant.CHAT_MESSAGE_CONTENT_TYPE_SOUND,"[语音]",previewUrl,0,0,size,playTime,sendCallback);
+    // public ChatGroupMessageSend(String groupGuid, String previewUrl,int size,int playTime,
+    // DefaultConsumer<Boolean> sendCallback) {
+    //     this(groupGuid,IMConstant.CHAT_MESSAGE_CONTENT_TYPE_SOUND,"[语音]",previewUrl,0,0,size,
+    // playTime,sendCallback);
     // }
 
-    // public ChatGroupMessageSend(String groupGuid, String previewUrl,int imageWidth,int imageHeight,int size,int playTime,DefaultConsumer<Boolean> sendCallback) {
-    //     this(groupGuid,IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VIDEO,"[视频]",previewUrl,imageWidth,imageHeight,size,playTime,sendCallback);
+    // public ChatGroupMessageSend(String groupGuid, String previewUrl,int imageWidth,int
+    // imageHeight,int size,int playTime,DefaultConsumer<Boolean> sendCallback) {
+    //     this(groupGuid,IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VIDEO,"[视频]",previewUrl,
+    // imageWidth,imageHeight,size,playTime,sendCallback);
     // }
 
     @Override
@@ -54,11 +65,12 @@ public class ChatGroupMessageSend extends AbstractMessageSendExecutor {
     @Override
     public void setRequestBody(ImMessageRequest.Builder request) {
         request.setChatGroupMessageRequest(
-                ImChatGroupMessageRequest.newBuilder().setChatGroupMessageContent(messageContent).build());
+                ImChatGroupMessageRequest.newBuilder().setChatGroupMessageContent(messageContent)
+                        .build());
     }
 
-	@Override
-	public DefaultConsumer<Boolean> sendStatusCallback() {
-		return sendCallback;
-	}
+    @Override
+    public DefaultConsumer<Boolean> sendStatusCallback() {
+        return sendCallback;
+    }
 }

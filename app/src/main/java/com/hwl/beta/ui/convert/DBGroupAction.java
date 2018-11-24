@@ -67,17 +67,18 @@ public class DBGroupAction {
         if (userInfos == null || userInfos.size() <= 0) return null;
         List<GroupUserInfo> groupUserInfos = new ArrayList<>(userInfos.size());
         for (int i = 0; i < userInfos.size(); i++) {
-            groupUserInfos.add(convertToGroupUserInfo(userInfos.get(i)));
+            groupUserInfos.add(convertToGroupUserInfo(userInfos.get(i).getGroupGuid(), userInfos
+                    .get(i).getUserId()));
         }
         return groupUserInfos;
     }
 
-    public static GroupUserInfo convertToGroupUserInfo(NetGroupUserInfo groupUserInfo) {
+    public static GroupUserInfo convertToGroupUserInfo(String groupGuid, long userId) {
         GroupUserInfo userInfo = new GroupUserInfo();
-        userInfo.setUserId(groupUserInfo.getUserId());
+        userInfo.setGroupGuid(groupGuid);
 //        userInfo.setUserName(groupUserInfo.getUserName());
 //        userInfo.setUserHeadImage(groupUserInfo.getUserHeadImage());
-        userInfo.setGroupGuid(groupUserInfo.getGroupGuid());
+        userInfo.setUserId(userId);
         userInfo.setAddTime(new Date());
         return userInfo;
     }
