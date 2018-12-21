@@ -33,8 +33,7 @@ public class IMClientEntry {
     private static boolean isIMThreadRuning = false;
     private final static ClientMessageOperate messageOperate = new ClientMessageOperate();
     private final static IMClientLauncher launcher = new IMClientLauncher(AppConfig.IM_HOST,
-            AppConfig
-                    .IM_PORT);
+            AppConfig.IM_PORT);
 
     static {
         initListenExecutor();
@@ -43,6 +42,13 @@ public class IMClientEntry {
     }
 
     private static void initListenExecutor() {
+		messageOperate.registerClientAckExecutor(new Function<String,MessageSendExecutor>() {
+            @Override
+            public MessageSendExecutor apply(String messageId) {
+                return new ClientAckMessageSend(messageId);
+            }
+        }
+		
         messageOperate.registerListenExecutor(ImMessageType.ChatUser, new ChatUserMessageListen());
         messageOperate.registerListenExecutor(ImMessageType.ChatGroup, new ChatGroupMessageListen
                 ());
