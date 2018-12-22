@@ -30,6 +30,8 @@ public class EventBusConstant {
     public static final int EB_TYPE_GROUP_IMAGE_UPDATE = 700;
     public static final int EB_TYPE_TOKEN_INVALID_RELOGIN = 800;
     public static final int EB_TYPE_CHAT_GROUP_MESSAGE_UPDATE = 900;
+    public static final int EB_TYPE_GROUP_ACTION_ADD= 1000;
+    public static final int EB_TYPE_GROUP_ACTION_DELETE= 1001;
 
     public static final int EB_TYPE_ACTINO_ADD = 20000;
     public static final int EB_TYPE_ACTINO_REMOVE = 20001;

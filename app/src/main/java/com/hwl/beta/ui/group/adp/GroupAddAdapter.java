@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 
 import com.hwl.beta.R;
+import com.hwl.beta.databinding.UserActionItemBinding;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.db.entity.GroupUserInfo;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
@@ -23,11 +24,12 @@ public class GroupAddAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
     private List<Friend> users;
-//    private UserActionItemBinding itemBinding;
+    private UserActionItemBinding itemBinding;
     private IGroupAddItemListener itemListener;
     private List<GroupUserInfo> groupUsers;
 
-    public GroupAddAdapter(Context context, List<Friend> users, IGroupAddItemListener itemListener) {
+    public GroupAddAdapter(Context context, List<Friend> users, IGroupAddItemListener
+            itemListener) {
         this.context = context;
         this.users = users;
         this.itemListener = itemListener;
@@ -55,42 +57,43 @@ public class GroupAddAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-//        if (convertView == null) {
-//            itemBinding = DataBindingUtil.inflate(inflater, R.layout.user_action_item, parent, false);
-//            convertView = itemBinding.getRoot();
-//            convertView.setTag(itemBinding);
-//        } else {
-//            itemBinding = (UserActionItemBinding) convertView.getTag();
-//        }
-//        final Friend user = users.get(position);
-//        itemBinding.setUser(user);
-//        itemBinding.setImage(new ImageViewBean(user.getHeadImage()));
-//
-//        if (user.getId() <= 0) {
-//            itemBinding.tvLetter.setVisibility(View.GONE);
-//        } else {
-//            int section = user.getFirstLetter().charAt(0);
-//            //如果当前位置等于该分类首字母的Char的位置 ，则认为是第一次出现
-//            if (position == getPositionForSection(section)) {
-//                itemBinding.tvLetter.setVisibility(View.VISIBLE);
-//            } else {
-//                itemBinding.tvLetter.setVisibility(View.GONE);
-//            }
-//        }
-//
-//        if (groupUsers != null && groupUsers.size() > 0 && isExistsGroupUser(user.getId())) {
-//            itemBinding.tvSelect.setVisibility(View.VISIBLE);
-//            itemBinding.cbSelect.setVisibility(View.GONE);
-//        } else {
-//            itemBinding.tvSelect.setVisibility(View.GONE);
-//            itemBinding.cbSelect.setVisibility(View.VISIBLE);
-//            itemBinding.cbSelect.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    itemListener.onCheckBoxClick(v, user, position);
-//                }
-//            });
-//        }
+        if (convertView == null) {
+            itemBinding = DataBindingUtil.inflate(inflater, R.layout.user_action_item, parent,
+                    false);
+            convertView = itemBinding.getRoot();
+            convertView.setTag(itemBinding);
+        } else {
+            itemBinding = (UserActionItemBinding) convertView.getTag();
+        }
+        final Friend user = users.get(position);
+        itemBinding.setUser(user);
+        itemBinding.setImage(new ImageViewBean(user.getHeadImage()));
+
+        if (user.getId() <= 0) {
+            itemBinding.tvLetter.setVisibility(View.GONE);
+        } else {
+            int section = user.getFirstLetter().charAt(0);
+            //如果当前位置等于该分类首字母的Char的位置 ，则认为是第一次出现
+            if (position == getPositionForSection(section)) {
+                itemBinding.tvLetter.setVisibility(View.VISIBLE);
+            } else {
+                itemBinding.tvLetter.setVisibility(View.GONE);
+            }
+        }
+
+        if (groupUsers != null && groupUsers.size() > 0 && isExistsGroupUser(user.getId())) {
+            itemBinding.tvSelect.setVisibility(View.VISIBLE);
+            itemBinding.cbSelect.setVisibility(View.GONE);
+        } else {
+            itemBinding.tvSelect.setVisibility(View.GONE);
+            itemBinding.cbSelect.setVisibility(View.VISIBLE);
+            itemBinding.cbSelect.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    itemListener.onCheckBoxClick(v, user, position);
+                }
+            });
+        }
         return convertView;
     }
 

@@ -7,10 +7,12 @@ import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.db.entity.GroupInfo;
 import com.hwl.beta.db.entity.GroupUserInfo;
 import com.hwl.beta.sp.UserPosSP;
+import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.MessageNotifyManage;
 import com.hwl.beta.ui.convert.DBFriendAction;
 import com.hwl.beta.ui.convert.DBGroupAction;
 import com.hwl.beta.ui.ebus.EventBusUtil;
+import com.hwl.beta.ui.group.logic.GroupAction;
 import com.hwl.beta.ui.immsg.IMConstant;
 import com.hwl.beta.utils.StringUtils;
 import com.hwl.im.imaction.AbstractMessageListenExecutor;
@@ -19,7 +21,9 @@ import com.hwl.imcore.improto.ImChatGroupMessageResponse;
 import com.hwl.imcore.improto.ImMessageResponse;
 import com.hwl.imcore.improto.ImMessageType;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ChatGroupMessageListen extends
         AbstractMessageListenExecutor<ImChatGroupMessageResponse> {
@@ -31,9 +35,7 @@ public class ChatGroupMessageListen extends
         super.executeCore(messageType, response);
         messageContent = response.getChatGroupMessageContent();
 
-        GroupInfo groupInfo = DaoUtils.getGroupInfoManagerInstance().get(messageContent
-                .getToGroupGuid());
-        if (groupInfo == null) return;
+        GroupInfo groupInfo = this.getGroupInfo();
 
         Friend fromUser = this.getFriendInfo();
 
@@ -111,7 +113,28 @@ public class ChatGroupMessageListen extends
 //                }
             }
         }
+    }
 
+    /***
+     *  如果用户重新安装app，组数据是不会存在，此时在接收离线消息时会接收失败
+     *  所以这里需要重新从服务器加载当前用户组的数据
+     */
+    private GroupInfo getGroupInfo() {
+        //本地不存在组则创建一个
+        GroupInfo groupInfo = DaoUtils.getGroupInfoManagerInstance().get(messageContent
+                .getToGroupGuid());
+        if (groupInfo == null) {
+            //从服务器加载群组数据
+            GroupAction.loadServerGroupInfo(messageContent.getToGroupGuid());
+            groupInfo = new GroupInfo();
+            groupInfo.setGroupGuid(messageContent.getToGroupGuid());
+            groupInfo.setGroupName(" --- ");
+            List<String> userImages = new ArrayList<>(1);
+            userImages.add(messageContent.getFromUserImage());
+            userImages.add(UserSP.getUserHeadImage());
+            groupInfo.setUserImages(userImages);
+        }
+        return groupInfo;
     }
 
     @Override

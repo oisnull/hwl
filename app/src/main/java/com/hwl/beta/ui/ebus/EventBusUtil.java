@@ -4,6 +4,7 @@ import com.hwl.beta.db.entity.ChatGroupMessage;
 import com.hwl.beta.db.entity.ChatRecordMessage;
 import com.hwl.beta.db.entity.ChatUserMessage;
 import com.hwl.beta.db.entity.Friend;
+import com.hwl.beta.db.entity.GroupInfo;
 import com.hwl.beta.ui.ebus.bean.EventDeleteFriend;
 import com.hwl.beta.ui.ebus.bean.EventUpdateFriendRemark;
 import com.hwl.beta.ui.ebus.bean.EventUserEditModel;
@@ -120,5 +121,9 @@ public class EventBusUtil {
     public static void sendChatRecordMessageNoSortEvent(ChatRecordMessage recordMessage) {
         sendEvent(new EventMessageModel
                 (EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_UPDATE_SORT, recordMessage));
+    }
+
+    public static void sendGroupAddEvent(GroupInfo groupInfo) {
+        sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_GROUP_ACTION_ADD, groupInfo));
     }
 }

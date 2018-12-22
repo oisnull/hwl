@@ -14,7 +14,6 @@ import com.hwl.beta.utils.StringUtils;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -98,6 +97,7 @@ public class ChatRecordMessageManager extends BaseDao<ChatRecordMessage> {
             existsRecord.setToUserHeadImage(request.getToUserHeadImage());
 
             existsRecord.setGroupName(request.getGroupName());
+            existsRecord.setGroupUserImages(request.getGroupUserImages());
 
             if (request.getFromUserId() != UserSP.getUserId()) {
                 existsRecord.setUnreadCount(existsRecord.getUnreadCount() + 1);

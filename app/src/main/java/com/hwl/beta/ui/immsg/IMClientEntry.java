@@ -10,6 +10,7 @@ import com.hwl.beta.ui.immsg.listen.UserValidateListen;
 import com.hwl.beta.ui.immsg.send.AddFriendMessageSend;
 import com.hwl.beta.ui.immsg.send.ChatGroupMessageSend;
 import com.hwl.beta.ui.immsg.send.ChatUserMessageSend;
+import com.hwl.beta.ui.immsg.send.ClientAckMessageSend;
 import com.hwl.beta.ui.immsg.send.TestConnectionMessageSend;
 import com.hwl.beta.ui.immsg.send.UserValidateSend;
 import com.hwl.beta.utils.NetworkUtils;
@@ -20,9 +21,12 @@ import com.hwl.beta.ui.immsg.listen.ChatGroupMessageListen;
 import com.hwl.beta.ui.immsg.listen.ChatUserMessageListen;
 import com.hwl.beta.ui.immsg.send.HeartBeatMessageSend;
 import com.hwl.im.common.DefaultConsumer;
+import com.hwl.im.imaction.MessageSendExecutor;
 import com.hwl.im.immode.MessageRequestHeadOperate;
 import com.hwl.imcore.improto.ImMessageType;
 import com.hwl.imcore.improto.ImTestConnectionMessageResponse;
+
+import io.reactivex.functions.Function;
 
 public class IMClientEntry {
 
@@ -30,7 +34,7 @@ public class IMClientEntry {
 //    static int CHECK_TIME_INTERNAL = 5 * 1000; // s
 
     private static Thread imThread = null;
-    private static boolean isIMThreadRuning = false;
+    private static boolean isIMThreadRunning = false;
     private final static ClientMessageOperate messageOperate = new ClientMessageOperate();
     private final static IMClientLauncher launcher = new IMClientLauncher(AppConfig.IM_HOST,
             AppConfig.IM_PORT);
@@ -42,13 +46,13 @@ public class IMClientEntry {
     }
 
     private static void initListenExecutor() {
-		messageOperate.registerClientAckExecutor(new Function<String,MessageSendExecutor>() {
+        messageOperate.registerClientAckExecutor(new Function<String, MessageSendExecutor>() {
             @Override
             public MessageSendExecutor apply(String messageId) {
                 return new ClientAckMessageSend(messageId);
             }
-        }
-		
+        });
+
         messageOperate.registerListenExecutor(ImMessageType.ChatUser, new ChatUserMessageListen());
         messageOperate.registerListenExecutor(ImMessageType.ChatGroup, new ChatGroupMessageListen
                 ());
@@ -74,8 +78,8 @@ public class IMClientEntry {
             return;
         }
 
-        if (isIMThreadRuning) return;
-        isIMThreadRuning = true;
+        if (isIMThreadRunning) return;
+        isIMThreadRunning = true;
 
         log.info("Client listen : start connect to server " + launcher.getServerAddress() + " ...");
         imThread = new Thread() {
@@ -88,12 +92,12 @@ public class IMClientEntry {
     }
 
     public static void disconnectServer() {
-        isIMThreadRuning = false;
+        isIMThreadRunning = false;
         imThread = null;
         launcher.stop();
     }
 
-    private static void commomExec(final IMDefaultSendOperateListener operateListener, final
+    private static void commonExec(final IMDefaultSendOperateListener operateListener, final
     DefaultConsumer<DefaultConsumer<Boolean>> sendConsumer) {
         if (!launcher.isConnected()) {
             operateListener.unconnect();
@@ -120,7 +124,7 @@ public class IMClientEntry {
 
     private static void sendUserValidateMessage(final IMDefaultSendOperateListener
                                                         operateListener) {
-        commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+        commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
                 UserValidateSend request = new UserValidateSend(sendCallback);
@@ -146,7 +150,7 @@ public class IMClientEntry {
     private static void sendHeartBeatMessage() {
         final IMDefaultSendOperateListener operateListener = new IMDefaultSendOperateListener
                 ("HeartBeatMessage");
-        commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+        commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
                 HeartBeatMessageSend request = new HeartBeatMessageSend(sendCallback);
@@ -175,7 +179,7 @@ public class IMClientEntry {
     public static void sendTestConnectMessage(final
                                               IMDefaultSendOperateListener<ImTestConnectionMessageResponse>
                                                       operateListener) {
-        commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+        commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
                 TestConnectionMessageSend request = new TestConnectionMessageSend(sendCallback);
@@ -198,7 +202,7 @@ public class IMClientEntry {
 
     public static void sendAddFriendMessage(final long toUserId, final String content, final
     IMDefaultSendOperateListener operateListener) {
-        commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+        commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
                 AddFriendMessageSend request = new AddFriendMessageSend(toUserId, content,
@@ -255,7 +259,7 @@ public class IMClientEntry {
                                            int size, final int playTime, final boolean isFriend,
                                            final
                                            IMDefaultSendOperateListener operateListener) {
-        commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+        commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
                 ChatUserMessageSend request = new ChatUserMessageSend(toUserId, contentType,
@@ -299,7 +303,7 @@ public class IMClientEntry {
                                             int size, final int
                                                     playTime, final IMDefaultSendOperateListener
                                                     operateListener) {
-        commomExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+        commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
                 ChatGroupMessageSend request = new ChatGroupMessageSend(groupGuid, contentType,

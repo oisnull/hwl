@@ -41,7 +41,7 @@ import com.hwl.beta.ui.entry.ActivityMain;
 import com.hwl.beta.ui.entry.ActivityRegister;
 //import com.hwl.beta.ui.entry.ActivityWelcome;
 import com.hwl.beta.ui.group.ActivityGroup;
-//import com.hwl.beta.ui.group.ActivityGroupAdd;
+import com.hwl.beta.ui.group.ActivityGroupAdd;
 import com.hwl.beta.ui.imgselect.ActivityImageBrowse;
 import com.hwl.beta.ui.imgselect.ActivityImageSelect;
 //import com.hwl.beta.ui.near.ActivityCommentPublish;
@@ -386,16 +386,16 @@ public class UITransfer {
         context.startActivity(intent);
     }
 
-//    public static void toGroupAddActivity(Activity context) {
-//        toGroupAddActivity(context, ActivityGroupAdd.TYPE_CREATE, null);
-//    }
-//
-//    public static void toGroupAddActivity(Activity context, int actionType, String groupGuid) {
-//        Intent intent = new Intent(context, ActivityGroupAdd.class);
-//        intent.putExtra("actiontype", actionType);
-//        intent.putExtra("groupguid", groupGuid);
-//        context.startActivity(intent);
-//    }
+    public static void toGroupAddActivity(Activity context) {
+        toGroupAddActivity(context, ActivityGroupAdd.TYPE_CREATE, null);
+    }
+
+    public static void toGroupAddActivity(Activity context, int actionType, String groupGuid) {
+        Intent intent = new Intent(context, ActivityGroupAdd.class);
+        intent.putExtra("actiontype", actionType);
+        intent.putExtra("groupguid", groupGuid);
+        context.startActivity(intent);
+    }
 
     public static void toReloginDialog(FragmentActivity fragmentActivity) {
         toReloginDialog(fragmentActivity, null);

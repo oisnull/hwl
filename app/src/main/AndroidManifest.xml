@@ -91,7 +91,7 @@
         <!--<activity android:name=".ui.circle.ActivityCircleDetail" />-->
         <!--<activity android:name=".ui.circle.ActivityCircleMessages" />-->
         <activity android:name=".ui.group.ActivityGroup" />
-        <!--<activity android:name=".ui.group.ActivityGroupAdd" />-->
+        <activity android:name=".ui.group.ActivityGroupAdd" />
         <activity android:name="com.yalantis.ucrop.UCropActivity" />
 
         <meta-data

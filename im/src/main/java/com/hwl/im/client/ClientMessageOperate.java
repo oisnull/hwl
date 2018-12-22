@@ -3,12 +3,14 @@ package com.hwl.im.client;
 import com.hwl.im.imaction.MessageListenExecutor;
 import com.hwl.im.imaction.MessageSendExecutor;
 import com.hwl.im.immode.MessageOperate;
+import com.hwl.im.immode.MessageResponseHeadOperate;
 import com.hwl.imcore.improto.ImMessageContext;
 import com.hwl.imcore.improto.ImMessageType;
 
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.netty.channel.Channel;
+import io.reactivex.functions.Function;
 
 public final class ClientMessageOperate {
 
@@ -19,11 +21,12 @@ public final class ClientMessageOperate {
     }
 
     private Channel serverChannel = null;
-    private ConcurrentHashMap<ImMessageType, MessageListenExecutor> listenExecutors = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<ImMessageType, MessageListenExecutor> listenExecutors = new
+            ConcurrentHashMap<>();
     private Runnable disconnectCallback = null;
-    private Function<String,MessageSendExecutor> clientAckExecutor = null;
+    private Function<String, MessageSendExecutor> clientAckExecutor = null;
 
-    public void registerClientAckExecutor(Consumer<String> clientAckExecutor) {
+    public void registerClientAckExecutor(Function<String, MessageSendExecutor> clientAckExecutor) {
         this.clientAckExecutor = clientAckExecutor;
     }
 
@@ -68,8 +71,14 @@ public final class ClientMessageOperate {
 
     private void sendAckMessage(ImMessageContext messageContext) {
         if (this.clientAckExecutor != null && MessageResponseHeadOperate.isAck(messageContext)) {
-			MessageSendExecutor sendExecutor = this.clientAckExecutor.apply(MessageResponseHeadOperate.getMessageId(messageContext));
-			this.send(sendExecutor);
+            try {
+                MessageSendExecutor sendExecutor = this.clientAckExecutor.apply
+                        (MessageResponseHeadOperate
+                        .getMessageId(messageContext));
+                this.send(sendExecutor);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

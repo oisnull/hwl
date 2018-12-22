@@ -183,6 +183,7 @@ public class ChatGroupEmotionPanelListener implements EmotionControlPanelV2.Pane
         record.setRecordType(IMConstant.CHAT_RECORD_TYPE_GROUP);
         record.setGroupGuid(message.getGroupGuid());
         record.setGroupName(message.getGroupName());
+        record.setGroupUserImages(groupInfo.getUserImages());
 //        record.setRecordImage(message.getGroupImage());
         record.setFromUserId(message.getFromUserId());
         record.setFromUserName(message.getFromUserName());

@@ -14,6 +14,15 @@ public class NetGroupInfo {
     private Date BuildDate;
     private String UpdateDate;
     private List<NetGroupUserInfo> GroupUsers;
+    private List<String> GroupUserImages;
+
+    public List<String> getGroupUserImages() {
+        return GroupUserImages;
+    }
+
+    public void setGroupUserImages(List<String> groupUserImages) {
+        GroupUserImages = groupUserImages;
+    }
 
     public String getGroupGuid() {
         return GroupGuid;

@@ -35,6 +35,15 @@ public class NetUserInfo {
     private int[] RegisterPosIdList;
     private String[] RegisterPosList;
     private int FriendCount;
+    private int GroupCount;
+
+    public int getGroupCount() {
+        return GroupCount;
+    }
+
+    public void setGroupCount(int groupCount) {
+        GroupCount = groupCount;
+    }
 
     public int getFriendCount() {
         return FriendCount;

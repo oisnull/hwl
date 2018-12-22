@@ -36,9 +36,11 @@ public class GroupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         switch (viewType) {
             default:
             case 0:
-                return new GroupHeadItemViewHolder((GroupHeadItemBinding) DataBindingUtil.inflate(inflater, R.layout.group_head_item, parent, false));
+                return new GroupHeadItemViewHolder((GroupHeadItemBinding) DataBindingUtil.inflate
+                        (inflater, R.layout.group_head_item, parent, false));
             case 1:
-                return new GroupItemViewHolder((GroupItemBinding) DataBindingUtil.inflate(inflater, R.layout.group_item, parent, false));
+                return new GroupItemViewHolder((GroupItemBinding) DataBindingUtil.inflate
+                        (inflater, R.layout.group_item, parent, false));
         }
     }
 
@@ -67,5 +69,34 @@ public class GroupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public int getItemCount() {
         return groups.size();
+    }
+
+    public int getGroupCount() {
+        int count = 0;
+        for (int i = 0; i < groups.size(); i++) {
+            if (!groups.get(i).getIsSystem()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public void addGroup(GroupInfo groupInfo) {
+        if (groupInfo == null) return;
+
+        groups.add(groupInfo);
+        notifyDataSetChanged();
+    }
+
+    public void addGroups(List<GroupInfo> groupInfos) {
+        if (groupInfos == null || groupInfos.size() <= 0) return;
+
+        groupInfos.removeAll(groups);
+        groups.addAll(groupInfos);
+        notifyDataSetChanged();
+    }
+
+    public List<GroupInfo> getGroups() {
+        return groups;
     }
 }

@@ -11,6 +11,8 @@ import com.hwl.beta.net.group.body.DeleteGroupRequest;
 import com.hwl.beta.net.group.body.DeleteGroupResponse;
 import com.hwl.beta.net.group.body.DeleteGroupUserRequest;
 import com.hwl.beta.net.group.body.DeleteGroupUserResponse;
+import com.hwl.beta.net.group.body.GetGroupAndUsersRequest;
+import com.hwl.beta.net.group.body.GetGroupAndUsersResponse;
 import com.hwl.beta.net.group.body.GetGroupsRequest;
 import com.hwl.beta.net.group.body.GetGroupsResponse;
 import com.hwl.beta.net.group.body.GroupUsersRequest;
@@ -34,40 +36,59 @@ public class GroupService {
     public static Observable<ResponseBase<GetGroupsResponse>> getGroups() {
         GetGroupsRequest requestBody = new GetGroupsRequest();
         requestBody.setUserId(UserSP.getUserId());
-        Observable<ResponseBase<GetGroupsResponse>> response = RetrofitUtils.createApi(IGroupService.class)
+        Observable<ResponseBase<GetGroupsResponse>> response = RetrofitUtils.createApi
+                (IGroupService.class)
                 .getGroups(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         return response;
     }
 
+    public static Observable<ResponseBase<GetGroupAndUsersResponse>> getGroupAndUsers(String groupGuid) {
+        GetGroupAndUsersRequest requestBody = new GetGroupAndUsersRequest();
+        requestBody.setUserId(UserSP.getUserId());
+        requestBody.setGroupGuid(groupGuid);
+        Observable<ResponseBase<GetGroupAndUsersResponse>> response = RetrofitUtils.createApi
+                (IGroupService.class)
+                .getGroupAndUsers(new RequestBase(UserSP.getUserToken(), requestBody))
+                .subscribeOn(Schedulers.io());
+//                .observeOn(AndroidSchedulers.mainThread());
+        return response;
+    }
+
     public static Observable<ResponseBase<GroupUsersResponse>> groupUsers(String groupGuid) {
         GroupUsersRequest requestBody = new GroupUsersRequest();
         requestBody.setGroupGuid(groupGuid);
-        Observable<ResponseBase<GroupUsersResponse>> response = RetrofitUtils.createApi(IGroupService.class)
+        Observable<ResponseBase<GroupUsersResponse>> response = RetrofitUtils.createApi
+                (IGroupService.class)
                 .groupUsers(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io());
 //                .observeOn(AndroidSchedulers.mainThread());
         return response;
     }
 
-    public static Observable<ResponseBase<AddGroupResponse>> addGroup(String groupName, List<Long> groupUserIds) {
+    public static Observable<ResponseBase<AddGroupResponse>> addGroup(String groupName,
+                                                                      List<Long> groupUserIds) {
         AddGroupRequest requestBody = new AddGroupRequest();
         requestBody.setBuildUserId(UserSP.getUserId());
         requestBody.setGroupName(groupName);
         requestBody.setGroupUserIds(groupUserIds);
-        Observable<ResponseBase<AddGroupResponse>> response = RetrofitUtils.createApi(IGroupService.class)
+        Observable<ResponseBase<AddGroupResponse>> response = RetrofitUtils.createApi
+                (IGroupService.class)
                 .addGroup(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         return response;
     }
 
-    public static Observable<ResponseBase<AddGroupUsersResponse>> addGroupUsers(String groupGuid, List<Long> groupUserIds) {
+    public static Observable<ResponseBase<AddGroupUsersResponse>> addGroupUsers(String groupGuid,
+                                                                                List<Long>
+                                                                                        groupUserIds) {
         AddGroupUsersRequest requestBody = new AddGroupUsersRequest();
         requestBody.setGroupGuid(groupGuid);
         requestBody.setGroupUserIds(groupUserIds);
-        Observable<ResponseBase<AddGroupUsersResponse>> response = RetrofitUtils.createApi(IGroupService.class)
+        Observable<ResponseBase<AddGroupUsersResponse>> response = RetrofitUtils.createApi
+                (IGroupService.class)
                 .addGroupUsers(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -78,31 +99,36 @@ public class GroupService {
         DeleteGroupRequest requestBody = new DeleteGroupRequest();
         requestBody.setBuildUserId(UserSP.getUserId());
         requestBody.setGroupGuid(groupGuid);
-        Observable<ResponseBase<DeleteGroupResponse>> response = RetrofitUtils.createApi(IGroupService.class)
+        Observable<ResponseBase<DeleteGroupResponse>> response = RetrofitUtils.createApi
+                (IGroupService.class)
                 .deleteGroup(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         return response;
     }
 
-    public static Observable<ResponseBase<SetGroupNameResponse>> setGroupName(String groupGuid, String groupName) {
+    public static Observable<ResponseBase<SetGroupNameResponse>> setGroupName(String groupGuid,
+                                                                              String groupName) {
         SetGroupNameRequest requestBody = new SetGroupNameRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setGroupGuid(groupGuid);
         requestBody.setGroupName(groupName);
-        Observable<ResponseBase<SetGroupNameResponse>> response = RetrofitUtils.createApi(IGroupService.class)
+        Observable<ResponseBase<SetGroupNameResponse>> response = RetrofitUtils.createApi
+                (IGroupService.class)
                 .setGroupName(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         return response;
     }
 
-    public static Observable<ResponseBase<SetGroupNoteResponse>> setGroupNote(String groupGuid, String groupNote) {
+    public static Observable<ResponseBase<SetGroupNoteResponse>> setGroupNote(String groupGuid,
+                                                                              String groupNote) {
         SetGroupNoteRequest requestBody = new SetGroupNoteRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setGroupGuid(groupGuid);
         requestBody.setGroupNote(groupNote);
-        Observable<ResponseBase<SetGroupNoteResponse>> response = RetrofitUtils.createApi(IGroupService.class)
+        Observable<ResponseBase<SetGroupNoteResponse>> response = RetrofitUtils.createApi
+                (IGroupService.class)
                 .setGroupNote(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -113,7 +139,8 @@ public class GroupService {
         DeleteGroupUserRequest requestBody = new DeleteGroupUserRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setGroupGuid(groupGuid);
-        Observable<ResponseBase<DeleteGroupUserResponse>> response = RetrofitUtils.createApi(IGroupService.class)
+        Observable<ResponseBase<DeleteGroupUserResponse>> response = RetrofitUtils.createApi
+                (IGroupService.class)
                 .deleteGroupUser(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -125,11 +152,16 @@ public class GroupService {
         Observable<ResponseBase<GetGroupsResponse>> getGroups(@Body RequestBase<GetGroupsRequest>
                                                                       request);
 
+        @POST("api/GetGroupAndUsers")
+        Observable<ResponseBase<GetGroupAndUsersResponse>> getGroupAndUsers(@Body RequestBase<GetGroupAndUsersRequest>
+                                                                                    request);
+
         @POST("api/GroupUsers")
         Observable<ResponseBase<GroupUsersResponse>> groupUsers(@Body RequestBase<GroupUsersRequest> request);
 
         @POST("api/AddGroup")
-        Observable<ResponseBase<AddGroupResponse>> addGroup(@Body RequestBase<AddGroupRequest> request);
+        Observable<ResponseBase<AddGroupResponse>> addGroup(@Body RequestBase<AddGroupRequest>
+                                                                    request);
 
         @POST("api/AddGroupUsers")
         Observable<ResponseBase<AddGroupUsersResponse>> addGroupUsers(@Body RequestBase<AddGroupUsersRequest> request);

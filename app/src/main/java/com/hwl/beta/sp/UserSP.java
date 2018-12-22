@@ -26,6 +26,7 @@ public class UserSP {
     private static final String USER_REGISTERPOSIDLIST = "RegisterPosIdList";
     private static final String USER_REGISTERPOSLIST = "RegisterPosList";
     private static final String USER_FRIENDCOUNT = "FriendCount";
+    private static final String USER_GROUPCOUNT = "GroupCount";
 
     private static SharedPreferences getSP() {
         return HWLApp.getContext().getSharedPreferences(USERPREFERENCE, Context.MODE_PRIVATE);
@@ -80,6 +81,10 @@ public class UserSP {
 
     public static int getFriendCount() {
         return getSP().getInt(USER_FRIENDCOUNT, 0);
+    }
+
+    public static int getGroupCount() {
+        return getSP().getInt(USER_GROUPCOUNT, 0);
     }
 
     public static String getUserToken() {
@@ -147,6 +152,7 @@ public class UserSP {
         editor.putLong(USER_ID, user.getId());
         editor.putInt(USER_USERSEX, user.getUserSex());
         editor.putInt(USER_FRIENDCOUNT, user.getFriendCount());
+        editor.putInt(USER_GROUPCOUNT, user.getGroupCount());
 
         editor.putString(USER_SYMBOL, user.getSymbol());
         editor.putString(USER_EMAIL, user.getEmail());
