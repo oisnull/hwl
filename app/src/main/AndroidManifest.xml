@@ -66,8 +66,8 @@
         <activity android:name=".ui.video.ActivityVideoSelect" />
         <activity android:name=".ui.chat.ActivityChatGroup"
             android:windowSoftInputMode="stateHidden|adjustResize" />
-        <!--<activity android:name=".ui.chat.ActivityChatGroupSetting" />-->
-        <!--<activity android:name=".ui.chat.ActivityChatGroupSettingEdit" />-->
+        <activity android:name=".ui.chat.ActivityChatGroupSetting" />
+        <activity android:name=".ui.chat.ActivityChatGroupSettingEdit" />
         <activity android:name=".ui.chat.ActivityChatUserSetting" />
         <activity
             android:name=".ui.chat.ActivityChatUser"

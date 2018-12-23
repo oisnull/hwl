@@ -18,4 +18,14 @@ public class AppConfig {
 
     //net api
     public final static String NET_API_DEBUG_TAG = "hwl-api";
+
+    /**
+     * chat group setting
+     * chat group setting edit
+     * add chat group user
+     * chat user setting
+     *
+     * add im server disconncet message send
+     *
+     * */
 }

@@ -18,8 +18,8 @@ import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.TestActivity;
 import com.hwl.beta.ui.chat.ActivityChatGroup;
-//import com.hwl.beta.ui.chat.ActivityChatGroupSetting;
-//import com.hwl.beta.ui.chat.ActivityChatGroupSettingEdit;
+import com.hwl.beta.ui.chat.ActivityChatGroupSetting;
+import com.hwl.beta.ui.chat.ActivityChatGroupSettingEdit;
 //import com.hwl.beta.ui.chat.ActivityChatUser;
 //import com.hwl.beta.ui.circle.ActivityCircleCommentPublish;
 //import com.hwl.beta.ui.circle.ActivityCircleDetail;
@@ -422,21 +422,21 @@ public class UITransfer {
         reloginDialogFragment.show(fragmentActivity.getSupportFragmentManager(),
                 "ReloginDialogFragment");
     }
-//
-//    public static void toChatGroupSettingActivity(Activity context, String groupGuid) {
-//        Intent intent = new Intent(context, ActivityChatGroupSetting.class);
-//        intent.putExtra("groupguid", groupGuid);
-//        context.startActivity(intent);
-//    }
-//
-//    public static void toChatGroupSettingEditActivity(Activity context, String groupGuid, int
-//            editType, String content) {
-//        Intent intent = new Intent(context, ActivityChatGroupSettingEdit.class);
-//        intent.putExtra("groupguid", groupGuid);
-//        intent.putExtra("edittype", editType);
-//        intent.putExtra("content", content);
-//        context.startActivityForResult(intent, editType);
-//    }
+
+    public static void toChatGroupSettingActivity(Activity context, String groupGuid) {
+        Intent intent = new Intent(context, ActivityChatGroupSetting.class);
+        intent.putExtra("groupguid", groupGuid);
+        context.startActivity(intent);
+    }
+
+    public static void toChatGroupSettingEditActivity(Activity context, String groupGuid, int
+            editType, String content) {
+        Intent intent = new Intent(context, ActivityChatGroupSettingEdit.class);
+        intent.putExtra("groupguid", groupGuid);
+        intent.putExtra("edittype", editType);
+        intent.putExtra("content", content);
+        context.startActivityForResult(intent, editType);
+    }
 
     public static void toChatUserSettingActivity(Activity context, long userId, String userName,
                                                  String userImage) {

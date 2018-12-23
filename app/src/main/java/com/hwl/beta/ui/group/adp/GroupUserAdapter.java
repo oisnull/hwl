@@ -15,11 +15,11 @@
 //
 //import java.util.List;
 //
-//public class GroupUserAdapter extends BaseAdapter {
+//public class ChatGroupUserAdapter extends BaseAdapter {
 //    private LayoutInflater inflater;
 //    private List<GroupUserInfo> users;
 //
-//    public GroupUserAdapter(Context context, List<GroupUserInfo> users) {
+//    public ChatGroupUserAdapter(Context context, List<GroupUserInfo> users) {
 //        this.users = users;
 //        inflater = LayoutInflater.from(context);
 //    }
