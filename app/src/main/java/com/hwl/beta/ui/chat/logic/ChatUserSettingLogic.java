@@ -1,25 +1,10 @@
 package com.hwl.beta.ui.chat.logic;
 
 import com.hwl.beta.db.DaoUtils;
-import com.hwl.beta.db.entity.ChatRecordMessage;
-import com.hwl.beta.db.entity.ChatUserMessage;
+import com.hwl.beta.db.entity.ChatUserSetting;
 import com.hwl.beta.db.entity.Friend;
-import com.hwl.beta.sp.UserSP;
-import com.hwl.beta.ui.chat.standard.ChatUserStandard;
+import com.hwl.beta.ui.chat.standard.ChatUserSettingStandard;
 import com.hwl.beta.ui.common.DefaultCallback;
-import com.hwl.beta.ui.convert.DBFriendAction;
-import com.hwl.beta.ui.ebus.EventBusUtil;
-
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 public class ChatUserSettingLogic implements ChatUserSettingStandard {
     static int pageSize = 10;
