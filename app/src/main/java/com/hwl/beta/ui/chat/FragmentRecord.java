@@ -218,6 +218,9 @@ public class FragmentRecord extends BaseFragment {
                 recordAdapter.updateFriendRemark(friendRemark.getFriendId(), friendRemark
                         .getFriendRemark());
                 break;
+            case EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_CLEAR:
+                recordAdapter.removeRecord((Long) messageModel.getMessageModel());
+                break;
         }
     }
 

@@ -7,7 +7,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.hwl.beta.R;
@@ -73,6 +72,17 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
         }
     }
 
+    public void removeRecord(long recordId) {
+        if (recordId <= 0) return;
+        for (int i = 0; i < records.size(); i++) {
+            if (records.get(i).getRecordId() == recordId) {
+                records.remove(i);
+                notifyDataSetChanged();
+                break;
+            }
+        }
+    }
+
     public void updateFriendRemark(long friendId, String remark) {
         for (int i = 0; i < records.size(); i++) {
             if (records.get(i).getFromUserId() == friendId && records.get(i)
@@ -100,8 +110,12 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
         itemBinding.setRecord(record);
         itemBinding.setPosition(position);
         itemBinding.tvTime.setText(DateUtils.getChatShowTime(record.getSendTime()));
-//        itemBinding.ivNotify.setVisibility(record.getIsShield() ? View.VISIBLE : View.GONE);
-        holder.badge.setBadgeNumber(record.getUnreadCount());
+        itemBinding.ivNotify.setVisibility(record.isShield() ? View.VISIBLE : View.GONE);
+        if (record.isShield()) {
+            holder.badge.setBadgeText("");
+        } else {
+            holder.badge.setBadgeNumber(record.getUnreadCount());
+        }
 
         switch (record.getRecordType()) {
             case IMConstant.CHAT_RECORD_TYPE_GROUP:

@@ -14,5 +14,5 @@ public interface ChatUserSettingStandard {
 	
 	void searchMessage(long viewUserId,String key,DefaultCallback<Boolean,String> callback);
 	
-	void clearMessage(long viewUserId,DefaultCallback<Boolean,String> callback);
+	void clearMessage(long viewUserId);
 }

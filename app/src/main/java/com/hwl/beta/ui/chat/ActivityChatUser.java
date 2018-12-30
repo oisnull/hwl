@@ -165,6 +165,9 @@ public class ActivityChatUser extends BaseActivity {
                 binding.rvMessageContainer.scrollToPosition(messageAdapter.getItemCount()
                         - 1);
                 break;
+            case EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_CLEAR:
+                finish();
+                break;
         }
     }
 //    @Subscribe(threadMode = ThreadMode.MAIN)
@@ -312,18 +315,19 @@ public class ActivityChatUser extends BaseActivity {
 
         @Override
         public void onFaildStatusClick(final View view, final int position) {
-               new AlertDialog.Builder(activity)
-                       .setMessage("重新发送")
-                       .setPositiveButton("发送", new DialogInterface.OnClickListener() {
-                           @Override
-                           public void onClick(DialogInterface dialog, int which) {
-                               view.setVisibility(View.GONE);
-                               emotionPanelListener.resendMessage(messageAdapter.getChatUserMessage(position));
-                               dialog.dismiss();
-                           }
-                       })
-                       .setNegativeButton("取消", null)
-                       .show();
+            new AlertDialog.Builder(activity)
+                    .setMessage("重新发送")
+                    .setPositiveButton("发送", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            view.setVisibility(View.GONE);
+                            emotionPanelListener.resendMessage(messageAdapter.getChatUserMessage
+                                    (position));
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("取消", null)
+                    .show();
         }
     }
 }
