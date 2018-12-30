@@ -58,12 +58,12 @@ public class ChatGroupUserAdapter extends BaseAdapter {
             viewHolder.tvName.setText("");
         } else {
             viewHolder.ivHeader.setBackgroundResource(0);
-//            ImageViewBean.loadImage(viewHolder.ivHeader, user.getUserHeadImage());
-//            if (StringUtils.isBlank(user.getUserName())) {
-//                viewHolder.tvName.setText("--");
-//            } else {
-//                viewHolder.tvName.setText(StringUtils.cutString(user.getUserName(), 5));
-//            }
+            ImageViewBean.loadImage(viewHolder.ivHeader, user.getUserImage());
+            if (StringUtils.isBlank(user.getUserName())) {
+                viewHolder.tvName.setText("--");
+            } else {
+                viewHolder.tvName.setText(StringUtils.cutString(user.getUserName(), 5));
+            }
         }
         return convertView;
     }

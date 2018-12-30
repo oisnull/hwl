@@ -4,6 +4,7 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.OrderBy;
+import org.greenrobot.greendao.annotation.Transient;
 
 import java.util.Date;
 
@@ -18,6 +19,27 @@ public class GroupUserInfo {
     private long userId;
     @OrderBy("addTime desc")
     private Date addTime;
+
+    @Transient
+    private String userName;
+    @Transient
+    private String userImage;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserImage() {
+        return userImage;
+    }
+
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
+    }
 
     @Generated(hash = 2110531183)
     public GroupUserInfo(Long id, String groupGuid, long userId, Date addTime) {

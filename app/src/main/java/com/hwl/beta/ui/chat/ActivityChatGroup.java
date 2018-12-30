@@ -170,6 +170,9 @@ public class ActivityChatGroup extends BaseActivity {
                 binding.rvMessageContainer.scrollToPosition(messageAdapter.getItemCount()
                         - 1);
                 break;
+            case EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_CLEAR:
+                finish();
+                break;
         }
     }
 

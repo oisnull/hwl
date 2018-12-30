@@ -112,7 +112,8 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
         itemBinding.tvTime.setText(DateUtils.getChatShowTime(record.getSendTime()));
         itemBinding.ivNotify.setVisibility(record.isShield() ? View.VISIBLE : View.GONE);
         if (record.isShield()) {
-            holder.badge.setBadgeText("");
+            if (record.getUnreadCount() > 0)
+                holder.badge.setBadgeText("");
         } else {
             holder.badge.setBadgeNumber(record.getUnreadCount());
         }

@@ -29,8 +29,10 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
 
     public List<String> getTopUserImages(String groupGuid) {
         int count = 10;
-//        String sql = "select " + GroupUserInfoDao.Properties.UserHeadImage.columnName + " from " + GroupUserInfoDao.TABLENAME
-//                + " where " + GroupUserInfoDao.Properties.GroupGuid.columnName + " = '" + groupGuid + "'"
+//        String sql = "select " + GroupUserInfoDao.Properties.UserHeadImage.columnName + " from
+// " + GroupUserInfoDao.TABLENAME
+//                + " where " + GroupUserInfoDao.Properties.GroupGuid.columnName + " = '" +
+// groupGuid + "'"
 //                + " limit " + count;
 //        Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
         List<String> images = new ArrayList<>(count);
@@ -41,7 +43,8 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
     }
 
     public List<Long> getUserIdList(String groupGuid) {
-        String sql = "select " + GroupUserInfoDao.Properties.UserId.columnName + " from " + GroupUserInfoDao.TABLENAME + " where "
+        String sql = "select " + GroupUserInfoDao.Properties.UserId.columnName + " from " +
+                GroupUserInfoDao.TABLENAME + " where "
                 + GroupUserInfoDao.Properties.GroupGuid.columnName + " = '" + groupGuid + "'";
         List<Long> ids = new ArrayList<>();
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
@@ -110,7 +113,8 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
             for (int i = 0; i < friends.size(); i++) {
                 for (int j = 0; j < groupUserInfos.size(); j++) {
                     if (friends.get(i).getId() == groupUserInfos.get(j).getUserId()) {
-//                        groupUserInfos.get(j).setUserName(friends.get(i).getShowName());
+                        groupUserInfos.get(j).setUserName(friends.get(i).getShowName());
+                        groupUserInfos.get(j).setUserImage(friends.get(i).getHeadImage());
                     }
                 }
             }
@@ -130,13 +134,15 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
 
     public void deleteGroupUserInfo(String groupGuid) {
         String sql = "delete from " + GroupUserInfoDao.TABLENAME +
-                " where " + GroupUserInfoDao.Properties.GroupGuid.columnName + " = '" + groupGuid + "'";
+                " where " + GroupUserInfoDao.Properties.GroupGuid.columnName + " = '" + groupGuid
+                + "'";
         daoSession.getDatabase().execSQL(sql);
     }
 
     public void deleteGroupUserInfo(String groupGuid, long userId) {
         String sql = "delete from " + GroupUserInfoDao.TABLENAME +
-                " where " + GroupUserInfoDao.Properties.GroupGuid.columnName + " = '" + groupGuid + "'" +
+                " where " + GroupUserInfoDao.Properties.GroupGuid.columnName + " = '" + groupGuid
+                + "'" +
                 " and " + GroupUserInfoDao.Properties.UserId.columnName + "=" + userId;
         daoSession.getDatabase().execSQL(sql);
     }

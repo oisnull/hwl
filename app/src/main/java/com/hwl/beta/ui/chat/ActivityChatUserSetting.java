@@ -37,15 +37,19 @@ public class ActivityChatUserSetting extends BaseActivity {
         user = settingStandard.getUserInfo(getIntent().getLongExtra("userid", 0), getIntent()
                 .getStringExtra("username"), getIntent().getStringExtra("userimage"));
 
-        if (user.getId() <= 0) {
-            Toast.makeText(activity, "用户参数错误", Toast.LENGTH_SHORT).show();
-            finish();
-        }
+        checkParam();
 
         userSetting = settingStandard.getChatUserSetting(user.getId());
         binding = DataBindingUtil.setContentView(activity, R.layout.chat_activity_user_setting);
 
         initView();
+    }
+
+    private void checkParam() {
+        if (user.getId() <= 0) {
+            Toast.makeText(activity, "用户参数错误", Toast.LENGTH_SHORT).show();
+            finish();
+        }
     }
 
     private void initView() {

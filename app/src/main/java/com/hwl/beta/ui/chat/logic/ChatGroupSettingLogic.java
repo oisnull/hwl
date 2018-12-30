@@ -13,12 +13,13 @@ import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.ui.chat.standard.ChatGroupSettingStandard;
 import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
+import com.hwl.beta.ui.ebus.EventBusUtil;
+
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class ChatGroupSettingLogic implements ChatGroupSettingStandard {
-    static int pageSize = 10;
 
     @Override
     public GroupInfo getGroupInfo(String groupGuid) {
@@ -65,9 +66,8 @@ public class ChatGroupSettingLogic implements ChatGroupSettingStandard {
         ChatRecordMessage recordMessage = DaoUtils.getChatRecordMessageManagerInstance()
                 .getGroupRecord(group.getGroupGuid());
         if (recordMessage != null) {
-//                recordMessage.setIsShield(group.getIsShield());
-//                EventBus.getDefault().post(new EventActionChatRecord(EventBusConstant
-// .EB_TYPE_CHAT_RECORD_UPDATE_SHIELD, recordMessage));
+            recordMessage.setShield(group.getIsShield());
+            EventBusUtil.sendChatRecordMessageNoSortEvent(recordMessage);
         }
     }
 
@@ -78,10 +78,13 @@ public class ChatGroupSettingLogic implements ChatGroupSettingStandard {
     }
 
     @Override
-    public void clearMessage(String groupGuid, DefaultCallback<Boolean, String> callback) {
+    public void clearMessage(String groupGuid) {
         DaoUtils.getChatGroupMessageManagerInstance().deleteMessages(groupGuid);
-//                            EventBus.getDefault().post(new EventActionGroup(EventBusConstant
-// .EB_TYPE_ACTINO_CLEAR, group));
+        ChatRecordMessage recordMessage = DaoUtils.getChatRecordMessageManagerInstance()
+                .deleteGroupRecord(groupGuid);
+        if (recordMessage == null) return;
+
+        EventBusUtil.sendChatRecordMessageClearEvent(recordMessage.getRecordId());
     }
 
     @Override

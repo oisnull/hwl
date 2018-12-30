@@ -17,7 +17,7 @@ public interface ChatGroupSettingStandard {
 	
 	void searchMessage(String groupGuid,String key,DefaultCallback<Boolean,String> callback);
 	
-	void clearMessage(String groupGuid,DefaultCallback<Boolean,String> callback);
+	void clearMessage(String groupGuid);
 	
 	void exitGroup(String groupGuid,DefaultCallback<Boolean,String> callback);
 	
