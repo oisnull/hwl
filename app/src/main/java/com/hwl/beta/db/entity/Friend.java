@@ -24,6 +24,7 @@ public class Friend extends BaseObservable implements Serializable {
     private String symbol;
     private String name;
     private String remark;
+    private String groupRemark;
     private String firstLetter;
     private String headImage;
     private String lifeNotes;
@@ -70,14 +71,15 @@ public class Friend extends BaseObservable implements Serializable {
         this.imageRes = imageRes;
     }
 
-    @Generated(hash = 1809963805)
-    public Friend(long id, String symbol, String name, String remark, String firstLetter,
-            String headImage, String lifeNotes, int sex, String circleBackImage, String country,
-            String province, boolean isFriend, String updateTime) {
+    @Generated(hash = 502452610)
+    public Friend(long id, String symbol, String name, String remark, String groupRemark,
+            String firstLetter, String headImage, String lifeNotes, int sex, String circleBackImage,
+            String country, String province, boolean isFriend, String updateTime) {
         this.id = id;
         this.symbol = symbol;
         this.name = name;
         this.remark = remark;
+        this.groupRemark = groupRemark;
         this.firstLetter = firstLetter;
         this.headImage = headImage;
         this.lifeNotes = lifeNotes;
@@ -211,5 +213,13 @@ public class Friend extends BaseObservable implements Serializable {
             return this.getId() == f.getId();
         }
         return super.equals(obj);
+    }
+
+    public String getGroupRemark() {
+        return this.groupRemark;
+    }
+
+    public void setGroupRemark(String groupRemark) {
+        this.groupRemark = groupRemark;
     }
 }

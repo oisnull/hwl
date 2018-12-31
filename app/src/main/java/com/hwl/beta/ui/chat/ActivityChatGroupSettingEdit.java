@@ -1,7 +1,6 @@
 package com.hwl.beta.ui.chat;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,6 +19,9 @@ import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.dialog.LoadingDialog;
+import com.hwl.beta.ui.ebus.EventBusUtil;
+import com.hwl.beta.ui.immsg.IMClientEntry;
+import com.hwl.beta.ui.immsg.IMDefaultSendOperateListener;
 import com.hwl.beta.utils.StringUtils;
 
 public class ActivityChatGroupSettingEdit extends BaseActivity {
@@ -34,7 +36,8 @@ public class ActivityChatGroupSettingEdit extends BaseActivity {
         super.onCreate(savedInstanceState);
         activity = this;
 
-        binding = DataBindingUtil.setContentView(activity, R.layout.chat_activity_group_setting_edit);
+        binding = DataBindingUtil.setContentView(activity, R.layout
+                .chat_activity_group_setting_edit);
 
         initView();
     }
@@ -56,7 +59,7 @@ public class ActivityChatGroupSettingEdit extends BaseActivity {
                                 setGroupName();
                                 break;
                             case 3:
-                                setGrouMyName();
+                                setGroupUserRemark();
                                 break;
                         }
                     }
@@ -94,28 +97,34 @@ public class ActivityChatGroupSettingEdit extends BaseActivity {
         }
     }
 
-    private void setGrouMyName() {
+    private void setGroupUserRemark() {
         if (content == null) {
             content = "";
         }
-        if (content.equals(binding.etContent.getText()+ "")) {
+        if (content.equals(binding.etContent.getText() + "")) {
             finish();
             return;
         }
         content = binding.etContent.getText() + "";
         DaoUtils.getGroupInfoManagerInstance().setGroupMyName(groupGuid, content);
-        DaoUtils.getGroupUserInfoManagerInstance().setUserName(groupGuid, UserSP.getUserId(), content);
-        Intent intent = new Intent();
-        intent.putExtra("content", content);
-        setResult(Activity.RESULT_OK, intent);
-        finish();
+        DaoUtils.getGroupUserInfoManagerInstance().setUserName(groupGuid, UserSP.getUserId(),
+                content);
+        IMClientEntry.sendChatGroupUserRemarkSettingMessage(groupGuid, content, new
+                IMDefaultSendOperateListener("EditGroupNoteMessage") {
+
+                    @Override
+                    public void success1() {
+                        EventBusUtil.sendChatGroupNameSettingEvent(groupGuid, content);
+                        finish();
+                    }
+                });
     }
 
     private void setGroupNote() {
         if (content == null) {
             content = "";
         }
-        if (content.equals(binding.etGroupNote.getText()+ "")) {
+        if (content.equals(binding.etGroupNote.getText() + "")) {
             finish();
             return;
         }
@@ -132,6 +141,7 @@ public class ActivityChatGroupSettingEdit extends BaseActivity {
                 .subscribe(new NetDefaultObserver<SetGroupNoteResponse>() {
                     @Override
                     protected void onSuccess(SetGroupNoteResponse response) {
+                        LoadingDialog.hide();
                         if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
                             sendEditGroupNoteMessage();
                         } else {
@@ -149,18 +159,23 @@ public class ActivityChatGroupSettingEdit extends BaseActivity {
 
     private void sendEditGroupNoteMessage() {
         DaoUtils.getGroupInfoManagerInstance().setGroupNote(groupGuid, content);
-//        GroupActionMessageSend.sendEditGroupNoteMessage(groupGuid, content, UserSP.getUserName() + " 修改了群公告").subscribe();
-        Intent intent = new Intent();
-        intent.putExtra("content", content);
-        setResult(Activity.RESULT_OK, intent);
-        finish();
+//        String message = UserSP.getUserName() + " 修改了群公告 , " + content;
+        IMClientEntry.sendChatGroupNoteSettingMessage(groupGuid, content, new
+                IMDefaultSendOperateListener("EditGroupNoteMessage") {
+
+                    @Override
+                    public void success1() {
+                        EventBusUtil.sendChatGroupNoteSettingEvent(groupGuid, content);
+                        finish();
+                    }
+                });
     }
 
     private void setGroupName() {
         if (content == null) {
             content = "";
         }
-        if (content.equals(binding.etContent.getText()+ "")) {
+        if (content.equals(binding.etContent.getText() + "")) {
             finish();
             return;
         }
@@ -186,11 +201,16 @@ public class ActivityChatGroupSettingEdit extends BaseActivity {
                         LoadingDialog.hide();
                         if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
                             DaoUtils.getGroupInfoManagerInstance().setGroupName(groupGuid, content);
-//                            GroupActionMessageSend.sendEditGroupNameMessage(groupGuid, content, UserSP.getUserName() + " 修改了群名称").subscribe();
-                            Intent intent = new Intent();
-                            intent.putExtra("content", content);
-                            setResult(Activity.RESULT_OK, intent);
-                            finish();
+                            IMClientEntry.sendChatGroupNameSettingMessage(groupGuid, content, new
+                                    IMDefaultSendOperateListener("EditGroupNameMessage") {
+
+                                        @Override
+                                        public void success1() {
+                                            EventBusUtil.sendChatGroupNameSettingEvent(groupGuid,
+                                                    content);
+                                            finish();
+                                        }
+                                    });
                         } else {
                             onError("修改群名称失败");
                         }

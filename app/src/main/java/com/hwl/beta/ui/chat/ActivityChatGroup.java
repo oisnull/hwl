@@ -32,6 +32,7 @@ import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.ebus.EventBusConstant;
 import com.hwl.beta.ui.ebus.EventMessageModel;
+import com.hwl.beta.ui.ebus.bean.EventChatGroupSetting;
 import com.hwl.beta.ui.imgselect.bean.ImageBean;
 import com.hwl.beta.ui.video.ActivityVideoPlay;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -172,6 +173,12 @@ public class ActivityChatGroup extends BaseActivity {
                 break;
             case EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_CLEAR:
                 finish();
+                break;
+            case EventBusConstant.EB_TYPE_CHAT_GROUP_NAME_SETTING:
+                EventChatGroupSetting groupSetting = (EventChatGroupSetting) messageModel.getMessageModel();
+                if (!groupSetting.getGroupGuid().equals(groupInfo.getGroupGuid())) return;
+                groupInfo.setGroupName(groupSetting.getGroupName());
+                binding.tbTitle.setTitle(groupInfo.getGroupName());
                 break;
         }
     }

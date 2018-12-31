@@ -30,6 +30,9 @@ import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.dialog.LoadingDialog;
+import com.hwl.beta.ui.ebus.EventBusConstant;
+import com.hwl.beta.ui.ebus.EventMessageModel;
+import com.hwl.beta.ui.ebus.bean.EventChatGroupSetting;
 
 public class ActivityChatGroupSetting extends BaseActivity {
 
@@ -149,6 +152,29 @@ public class ActivityChatGroupSetting extends BaseActivity {
     }
 
     @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
+
+    @Override
+    protected void receiveEventMessage(EventMessageModel messageModel) {
+        EventChatGroupSetting groupSetting = (EventChatGroupSetting) messageModel.getMessageModel();
+        if (!groupSetting.getGroupGuid().equals(group.getGroupGuid())) return;
+
+        switch (messageModel.getMessageType()) {
+            case EventBusConstant.EB_TYPE_CHAT_GROUP_NOTE_SETTING:
+                group.setGroupNote(groupSetting.getGroupNote());
+                break;
+            case EventBusConstant.EB_TYPE_CHAT_GROUP_NAME_SETTING:
+                group.setGroupName(groupSetting.getGroupName());
+                break;
+            case EventBusConstant.EB_TYPE_CHAT_GROUP_USER_REMARK_SETTING:
+                group.setMyUserName(groupSetting.getGroupUserRemark());
+                break;
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 //        if (resultCode == Activity.RESULT_OK) {
@@ -240,7 +266,8 @@ public class ActivityChatGroupSetting extends BaseActivity {
 //                            GroupService.deleteGroupUser(group.getGroupGuid())
 //                                    .subscribe(new NetDefaultObserver<DeleteGroupUserResponse>() {
 //                                        @Override
-//                                        protected void onSuccess(DeleteGroupUserResponse response) {
+//                                        protected void onSuccess(DeleteGroupUserResponse
+// response) {
 //                                            LoadingDialog.hide();
 //                                            if (response.getStatus() == NetConstant
 //                                                    .RESULT_SUCCESS) {

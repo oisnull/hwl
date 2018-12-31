@@ -4,6 +4,7 @@ import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.ChatGroupMessage;
 import com.hwl.beta.db.entity.ChatRecordMessage;
 import com.hwl.beta.db.entity.GroupInfo;
+import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.ui.chat.standard.ChatGroupStandard;
 import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.ebus.EventBusUtil;
@@ -25,7 +26,14 @@ public class ChatGroupLogic implements ChatGroupStandard {
 
     @Override
     public GroupInfo getChatGroupInfo(String groupGuid) {
-        return DaoUtils.getGroupInfoManagerInstance().get(groupGuid);
+        GroupInfo groupInfo = DaoUtils.getGroupInfoManagerInstance().get(groupGuid);
+        if (groupInfo == null && UserPosSP.getGroupGuid().equals(groupGuid)) {
+            groupInfo = new GroupInfo();
+            groupInfo.setGroupName(UserPosSP.getNearDesc());
+            groupInfo.setGroupGuid(groupGuid);
+            DaoUtils.getGroupInfoManagerInstance().add(groupInfo);
+        }
+        return groupInfo;
     }
 
     @Override

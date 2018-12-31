@@ -83,6 +83,18 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
         }
     }
 
+    public void updateGroupName(String groupGuid, String groupName) {
+        if(StringUtils.isEmpty(groupGuid)) return;
+        for (int i = 0; i < records.size(); i++) {
+            if (groupGuid.equals(records.get(i).getGroupGuid())) {
+                records.get(i).setGroupName(groupName);
+                records.get(i).setTitle(groupName);
+                notifyItemChanged(i);
+                break;
+            }
+        }
+    }
+
     public void updateFriendRemark(long friendId, String remark) {
         for (int i = 0; i < records.size(); i++) {
             if (records.get(i).getFromUserId() == friendId && records.get(i)

@@ -20,6 +20,7 @@ import com.hwl.beta.ui.common.BaseFragment;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.ebus.EventBusConstant;
 import com.hwl.beta.ui.ebus.EventMessageModel;
+import com.hwl.beta.ui.ebus.bean.EventChatGroupSetting;
 import com.hwl.beta.ui.ebus.bean.EventUpdateFriendRemark;
 import com.hwl.beta.ui.immsg.IMConstant;
 import com.hwl.beta.utils.NetworkUtils;
@@ -220,6 +221,12 @@ public class FragmentRecord extends BaseFragment {
                 break;
             case EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_CLEAR:
                 recordAdapter.removeRecord((Long) messageModel.getMessageModel());
+                break;
+            case EventBusConstant.EB_TYPE_CHAT_GROUP_NAME_SETTING:
+                EventChatGroupSetting groupSetting = (EventChatGroupSetting) messageModel
+                        .getMessageModel();
+                recordAdapter.updateGroupName(groupSetting.getGroupGuid(), groupSetting
+                        .getGroupName());
                 break;
         }
     }

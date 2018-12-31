@@ -28,15 +28,16 @@ public class FriendDao extends AbstractDao<Friend, Long> {
         public final static Property Symbol = new Property(1, String.class, "symbol", false, "SYMBOL");
         public final static Property Name = new Property(2, String.class, "name", false, "NAME");
         public final static Property Remark = new Property(3, String.class, "remark", false, "REMARK");
-        public final static Property FirstLetter = new Property(4, String.class, "firstLetter", false, "FIRST_LETTER");
-        public final static Property HeadImage = new Property(5, String.class, "headImage", false, "HEAD_IMAGE");
-        public final static Property LifeNotes = new Property(6, String.class, "lifeNotes", false, "LIFE_NOTES");
-        public final static Property Sex = new Property(7, int.class, "sex", false, "SEX");
-        public final static Property CircleBackImage = new Property(8, String.class, "circleBackImage", false, "CIRCLE_BACK_IMAGE");
-        public final static Property Country = new Property(9, String.class, "country", false, "COUNTRY");
-        public final static Property Province = new Property(10, String.class, "province", false, "PROVINCE");
-        public final static Property IsFriend = new Property(11, boolean.class, "isFriend", false, "IS_FRIEND");
-        public final static Property UpdateTime = new Property(12, String.class, "updateTime", false, "UPDATE_TIME");
+        public final static Property GroupRemark = new Property(4, String.class, "groupRemark", false, "GROUP_REMARK");
+        public final static Property FirstLetter = new Property(5, String.class, "firstLetter", false, "FIRST_LETTER");
+        public final static Property HeadImage = new Property(6, String.class, "headImage", false, "HEAD_IMAGE");
+        public final static Property LifeNotes = new Property(7, String.class, "lifeNotes", false, "LIFE_NOTES");
+        public final static Property Sex = new Property(8, int.class, "sex", false, "SEX");
+        public final static Property CircleBackImage = new Property(9, String.class, "circleBackImage", false, "CIRCLE_BACK_IMAGE");
+        public final static Property Country = new Property(10, String.class, "country", false, "COUNTRY");
+        public final static Property Province = new Property(11, String.class, "province", false, "PROVINCE");
+        public final static Property IsFriend = new Property(12, boolean.class, "isFriend", false, "IS_FRIEND");
+        public final static Property UpdateTime = new Property(13, String.class, "updateTime", false, "UPDATE_TIME");
     }
 
 
@@ -56,15 +57,16 @@ public class FriendDao extends AbstractDao<Friend, Long> {
                 "\"SYMBOL\" TEXT," + // 1: symbol
                 "\"NAME\" TEXT," + // 2: name
                 "\"REMARK\" TEXT," + // 3: remark
-                "\"FIRST_LETTER\" TEXT," + // 4: firstLetter
-                "\"HEAD_IMAGE\" TEXT," + // 5: headImage
-                "\"LIFE_NOTES\" TEXT," + // 6: lifeNotes
-                "\"SEX\" INTEGER NOT NULL ," + // 7: sex
-                "\"CIRCLE_BACK_IMAGE\" TEXT," + // 8: circleBackImage
-                "\"COUNTRY\" TEXT," + // 9: country
-                "\"PROVINCE\" TEXT," + // 10: province
-                "\"IS_FRIEND\" INTEGER NOT NULL ," + // 11: isFriend
-                "\"UPDATE_TIME\" TEXT);"); // 12: updateTime
+                "\"GROUP_REMARK\" TEXT," + // 4: groupRemark
+                "\"FIRST_LETTER\" TEXT," + // 5: firstLetter
+                "\"HEAD_IMAGE\" TEXT," + // 6: headImage
+                "\"LIFE_NOTES\" TEXT," + // 7: lifeNotes
+                "\"SEX\" INTEGER NOT NULL ," + // 8: sex
+                "\"CIRCLE_BACK_IMAGE\" TEXT," + // 9: circleBackImage
+                "\"COUNTRY\" TEXT," + // 10: country
+                "\"PROVINCE\" TEXT," + // 11: province
+                "\"IS_FRIEND\" INTEGER NOT NULL ," + // 12: isFriend
+                "\"UPDATE_TIME\" TEXT);"); // 13: updateTime
     }
 
     /** Drops the underlying database table. */
@@ -93,41 +95,46 @@ public class FriendDao extends AbstractDao<Friend, Long> {
             stmt.bindString(4, remark);
         }
  
+        String groupRemark = entity.getGroupRemark();
+        if (groupRemark != null) {
+            stmt.bindString(5, groupRemark);
+        }
+ 
         String firstLetter = entity.getFirstLetter();
         if (firstLetter != null) {
-            stmt.bindString(5, firstLetter);
+            stmt.bindString(6, firstLetter);
         }
  
         String headImage = entity.getHeadImage();
         if (headImage != null) {
-            stmt.bindString(6, headImage);
+            stmt.bindString(7, headImage);
         }
  
         String lifeNotes = entity.getLifeNotes();
         if (lifeNotes != null) {
-            stmt.bindString(7, lifeNotes);
+            stmt.bindString(8, lifeNotes);
         }
-        stmt.bindLong(8, entity.getSex());
+        stmt.bindLong(9, entity.getSex());
  
         String circleBackImage = entity.getCircleBackImage();
         if (circleBackImage != null) {
-            stmt.bindString(9, circleBackImage);
+            stmt.bindString(10, circleBackImage);
         }
  
         String country = entity.getCountry();
         if (country != null) {
-            stmt.bindString(10, country);
+            stmt.bindString(11, country);
         }
  
         String province = entity.getProvince();
         if (province != null) {
-            stmt.bindString(11, province);
+            stmt.bindString(12, province);
         }
-        stmt.bindLong(12, entity.getIsFriend() ? 1L: 0L);
+        stmt.bindLong(13, entity.getIsFriend() ? 1L: 0L);
  
         String updateTime = entity.getUpdateTime();
         if (updateTime != null) {
-            stmt.bindString(13, updateTime);
+            stmt.bindString(14, updateTime);
         }
     }
 
@@ -151,41 +158,46 @@ public class FriendDao extends AbstractDao<Friend, Long> {
             stmt.bindString(4, remark);
         }
  
+        String groupRemark = entity.getGroupRemark();
+        if (groupRemark != null) {
+            stmt.bindString(5, groupRemark);
+        }
+ 
         String firstLetter = entity.getFirstLetter();
         if (firstLetter != null) {
-            stmt.bindString(5, firstLetter);
+            stmt.bindString(6, firstLetter);
         }
  
         String headImage = entity.getHeadImage();
         if (headImage != null) {
-            stmt.bindString(6, headImage);
+            stmt.bindString(7, headImage);
         }
  
         String lifeNotes = entity.getLifeNotes();
         if (lifeNotes != null) {
-            stmt.bindString(7, lifeNotes);
+            stmt.bindString(8, lifeNotes);
         }
-        stmt.bindLong(8, entity.getSex());
+        stmt.bindLong(9, entity.getSex());
  
         String circleBackImage = entity.getCircleBackImage();
         if (circleBackImage != null) {
-            stmt.bindString(9, circleBackImage);
+            stmt.bindString(10, circleBackImage);
         }
  
         String country = entity.getCountry();
         if (country != null) {
-            stmt.bindString(10, country);
+            stmt.bindString(11, country);
         }
  
         String province = entity.getProvince();
         if (province != null) {
-            stmt.bindString(11, province);
+            stmt.bindString(12, province);
         }
-        stmt.bindLong(12, entity.getIsFriend() ? 1L: 0L);
+        stmt.bindLong(13, entity.getIsFriend() ? 1L: 0L);
  
         String updateTime = entity.getUpdateTime();
         if (updateTime != null) {
-            stmt.bindString(13, updateTime);
+            stmt.bindString(14, updateTime);
         }
     }
 
@@ -201,15 +213,16 @@ public class FriendDao extends AbstractDao<Friend, Long> {
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // symbol
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // name
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // remark
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // firstLetter
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // headImage
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // lifeNotes
-            cursor.getInt(offset + 7), // sex
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // circleBackImage
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // country
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // province
-            cursor.getShort(offset + 11) != 0, // isFriend
-            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12) // updateTime
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // groupRemark
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // firstLetter
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // headImage
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // lifeNotes
+            cursor.getInt(offset + 8), // sex
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // circleBackImage
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // country
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // province
+            cursor.getShort(offset + 12) != 0, // isFriend
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13) // updateTime
         );
         return entity;
     }
@@ -220,15 +233,16 @@ public class FriendDao extends AbstractDao<Friend, Long> {
         entity.setSymbol(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setRemark(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setFirstLetter(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setHeadImage(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setLifeNotes(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setSex(cursor.getInt(offset + 7));
-        entity.setCircleBackImage(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setCountry(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setProvince(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
-        entity.setIsFriend(cursor.getShort(offset + 11) != 0);
-        entity.setUpdateTime(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setGroupRemark(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setFirstLetter(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setHeadImage(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setLifeNotes(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setSex(cursor.getInt(offset + 8));
+        entity.setCircleBackImage(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setCountry(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setProvince(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setIsFriend(cursor.getShort(offset + 12) != 0);
+        entity.setUpdateTime(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
      }
     
     @Override

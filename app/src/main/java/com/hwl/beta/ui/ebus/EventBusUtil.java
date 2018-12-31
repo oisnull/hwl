@@ -5,7 +5,7 @@ import com.hwl.beta.db.entity.ChatRecordMessage;
 import com.hwl.beta.db.entity.ChatUserMessage;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.db.entity.GroupInfo;
-import com.hwl.beta.ui.ebus.bean.EventChatRecordClear;
+import com.hwl.beta.ui.ebus.bean.EventChatGroupSetting;
 import com.hwl.beta.ui.ebus.bean.EventDeleteFriend;
 import com.hwl.beta.ui.ebus.bean.EventUpdateFriendRemark;
 import com.hwl.beta.ui.ebus.bean.EventUserEditModel;
@@ -112,6 +112,31 @@ public class EventBusUtil {
     public static void sendChatGroupMessageEvent(ChatGroupMessage groupMessage) {
         sendEvent(new EventMessageModel
                 (EventBusConstant.EB_TYPE_CHAT_GROUP_MESSAGE_UPDATE, groupMessage));
+    }
+
+    public static void sendChatGroupNoteSettingEvent(String groupGuid, String groupNote) {
+        EventChatGroupSetting groupSetting = new EventChatGroupSetting();
+        groupSetting.setGroupGuid(groupGuid);
+        groupSetting.setGroupNote(groupNote);
+        sendEvent(new EventMessageModel
+                (EventBusConstant.EB_TYPE_CHAT_GROUP_NOTE_SETTING, groupSetting));
+    }
+
+    public static void sendChatGroupNameSettingEvent(String groupGuid, String groupName) {
+        EventChatGroupSetting groupSetting = new EventChatGroupSetting();
+        groupSetting.setGroupGuid(groupGuid);
+        groupSetting.setGroupName(groupName);
+        sendEvent(new EventMessageModel
+                (EventBusConstant.EB_TYPE_CHAT_GROUP_NAME_SETTING, groupSetting));
+    }
+
+    public static void sendChatGroupUserRemarkSettingEvent(String groupGuid, String
+            groupUserRemark) {
+        EventChatGroupSetting groupSetting = new EventChatGroupSetting();
+        groupSetting.setGroupGuid(groupGuid);
+        groupSetting.setGroupUserRemark(groupUserRemark);
+        sendEvent(new EventMessageModel
+                (EventBusConstant.EB_TYPE_CHAT_GROUP_USER_REMARK_SETTING, groupSetting));
     }
 
     public static void sendChatRecordMessageSortEvent(ChatRecordMessage recordMessage) {

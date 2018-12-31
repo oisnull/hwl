@@ -1,16 +1,21 @@
 package com.hwl.beta.ui.immsg;
 
+import java.util.List;
 import java.util.TimerTask;
 import java.util.logging.Logger;
 
 import com.hwl.beta.AppConfig;
 import com.hwl.beta.ui.immsg.listen.AddFriendMessageListen;
+import com.hwl.beta.ui.immsg.listen.ChatSettingMessageListen;
+import com.hwl.beta.ui.immsg.listen.GroupOperateMessageListen;
 import com.hwl.beta.ui.immsg.listen.TestConnectionMessageListen;
 import com.hwl.beta.ui.immsg.listen.UserValidateListen;
 import com.hwl.beta.ui.immsg.send.AddFriendMessageSend;
 import com.hwl.beta.ui.immsg.send.ChatGroupMessageSend;
+import com.hwl.beta.ui.immsg.send.ChatSettingMessageSend;
 import com.hwl.beta.ui.immsg.send.ChatUserMessageSend;
 import com.hwl.beta.ui.immsg.send.ClientAckMessageSend;
+import com.hwl.beta.ui.immsg.send.GroupOperateMessageSend;
 import com.hwl.beta.ui.immsg.send.TestConnectionMessageSend;
 import com.hwl.beta.ui.immsg.send.UserValidateSend;
 import com.hwl.beta.utils.NetworkUtils;
@@ -23,8 +28,11 @@ import com.hwl.beta.ui.immsg.send.HeartBeatMessageSend;
 import com.hwl.im.common.DefaultConsumer;
 import com.hwl.im.imaction.MessageSendExecutor;
 import com.hwl.im.immode.MessageRequestHeadOperate;
+import com.hwl.imcore.improto.ImChatSettingType;
+import com.hwl.imcore.improto.ImGroupOperateType;
 import com.hwl.imcore.improto.ImMessageType;
 import com.hwl.imcore.improto.ImTestConnectionMessageResponse;
+import com.hwl.imcore.improto.ImUserContent;
 
 import io.reactivex.functions.Function;
 
@@ -58,10 +66,12 @@ public class IMClientEntry {
                 ());
         messageOperate.registerListenExecutor(ImMessageType.AddFriend, new AddFriendMessageListen
                 ());
-    }
-
-    public static String getServerAddress() {
-        return launcher.getServerAddress();
+        messageOperate.registerListenExecutor(ImMessageType.ChatSetting, new
+                ChatSettingMessageListen
+                ());
+        messageOperate.registerListenExecutor(ImMessageType.GroupOperate, new
+                GroupOperateMessageListen
+                ());
     }
 
     public static void connectServer() {
@@ -73,8 +83,7 @@ public class IMClientEntry {
         if (launcher.isConnected()) {
             log.info("Client listen : im is connected");
             // log.info("Client listen : connected to server " + launcher.getServerAddress() + "
-            // and" +
-            //         " stop auto check");
+            // and" + " stop auto check");
             return;
         }
 
@@ -212,37 +221,12 @@ public class IMClientEntry {
         });
     }
 
-//    public static void sendChatUserTextMessage(Long toUserId, String content,
-//                                               IMDefaultSendOperateListener operateListener) {
-//        sendChatUserTextMessage(toUserId, content, false, operateListener);
-//    }
-
     public static void sendChatUserTextMessage(Long toUserId, String content, boolean isFriend,
                                                IMDefaultSendOperateListener operateListener) {
         sendChatUserMessage(toUserId, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_TEXT, content, null,
                 null,
                 0, 0, content.length(), 0, isFriend, operateListener);
     }
-
-//    public static void sendChatUserImageMessage(Long toUserId, String previewUrl, int imageWidth,
-//                                                int imageHeight, int size,
-//                                                IMDefaultSendOperateListener operateListener) {
-//        sendChatUserMessage(toUserId, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_IMAGE, "[图片]",
-//                previewUrl, imageWidth, imageHeight, size, 0, false, operateListener);
-//    }
-//
-//    public static void sendChatUserVoiceMessage(Long toUserId, String previewUrl, int size, int
-//            playTime, IMDefaultSendOperateListener operateListener) {
-//        sendChatUserMessage(toUserId, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VOICE, "[语音]",
-//                previewUrl, 0, 0, size, playTime, false, operateListener);
-//    }
-//
-//    public static void sendChatUserVideoMessage(Long toUserId, String previewUrl, int imageWidth,
-//                                                int imageHeight, int size, int playTime,
-//                                                IMDefaultSendOperateListener operateListener) {
-//        sendChatUserMessage(toUserId, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VIDEO, "[视频]",
-//                previewUrl, imageWidth, imageHeight, size, playTime, false, operateListener);
-//    }
 
     public static void sendChatUserMessage(final Long toUserId, final int contentType, final
     String content, final String originalUrl, final String previewUrl, final int imageWidth,
@@ -271,32 +255,6 @@ public class IMClientEntry {
         });
     }
 
-//    public static void sendChatGroupTextMessage(String groupGuid, String content,
-//                                                IMDefaultSendOperateListener operateListener) {
-//        sendChatGroupMessage(groupGuid, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_TEXT, content, null,
-//                0, 0, content.length(), 0, operateListener);
-//    }
-//
-//    public static void sendChatGroupImageMessage(String groupGuid, String previewUrl, int
-//            imageWidth, int imageHeight, int size, IMDefaultSendOperateListener operateListener) {
-//        sendChatGroupMessage(groupGuid, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_IMAGE, "[图片]",
-//                previewUrl, imageWidth, imageHeight, size, 0, operateListener);
-//    }
-//
-//    public static void sendChatGroupVoiceMessage(String groupGuid, String previewUrl, int size,
-//                                                 int playTime, IMDefaultSendOperateListener
-//                                                         operateListener) {
-//        sendChatGroupMessage(groupGuid, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VOICE, "[语音]",
-//                previewUrl, 0, 0, size, playTime, operateListener);
-//    }
-//
-//    public static void sendChatGroupVideoMessage(String groupGuid, String previewUrl, int
-//            imageWidth, int imageHeight, int size, int playTime, IMDefaultSendOperateListener
-//                                                         operateListener) {
-//        sendChatGroupMessage(groupGuid, IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VIDEO, "[视频]",
-//                previewUrl, imageWidth, imageHeight, size, playTime, operateListener);
-//    }
-
     public static void sendChatGroupMessage(final String groupGuid, final int contentType, final
     String content, final String originalUrl, final String previewUrl, final int imageWidth,
                                             final int imageHeight, final
@@ -309,6 +267,118 @@ public class IMClientEntry {
                 ChatGroupMessageSend request = new ChatGroupMessageSend(groupGuid, contentType,
                         content, originalUrl, previewUrl, imageWidth, imageHeight, size,
                         playTime, sendCallback);
+                messageOperate.send(request);
+            }
+        });
+    }
+
+    public static void sendChatGroupNoteSettingMessage(final String groupGuid,
+                                                       final String groupNote,
+                                                       final IMDefaultSendOperateListener
+                                                               operateListener) {
+        commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+            @Override
+            public void accept(DefaultConsumer<Boolean> sendCallback) {
+                ChatSettingMessageSend request = new ChatSettingMessageSend(ImChatSettingType
+                        .GroupNote, groupGuid, null, groupNote, null, sendCallback);
+                messageOperate.send(request);
+            }
+        });
+    }
+
+    public static void sendChatGroupNameSettingMessage(final String groupGuid,
+                                                       final String groupName,
+                                                       final IMDefaultSendOperateListener
+                                                               operateListener) {
+        commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+            @Override
+            public void accept(DefaultConsumer<Boolean> sendCallback) {
+                ChatSettingMessageSend request = new ChatSettingMessageSend(ImChatSettingType
+                        .GroupName, groupGuid, groupName, null, null, sendCallback);
+                messageOperate.send(request);
+            }
+        });
+    }
+
+    public static void sendChatGroupUserRemarkSettingMessage(final String groupGuid,
+                                                             final String groupUserRemark,
+                                                             final IMDefaultSendOperateListener
+                                                                     operateListener) {
+        commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+            @Override
+            public void accept(DefaultConsumer<Boolean> sendCallback) {
+                ChatSettingMessageSend request = new ChatSettingMessageSend(ImChatSettingType
+                        .UserRemark, groupGuid, null, null, groupUserRemark, sendCallback);
+                messageOperate.send(request);
+            }
+        });
+    }
+
+    public static void sendGroupCreateMessage(final String groupGuid,
+                                              final String groupName,
+                                              final List<ImUserContent> groupUsers,
+                                              final IMDefaultSendOperateListener operateListener) {
+        commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+            @Override
+            public void accept(DefaultConsumer<Boolean> sendCallback) {
+                GroupOperateMessageSend request = new GroupOperateMessageSend(ImGroupOperateType
+                        .CreateGroup, groupGuid, groupName, groupUsers, sendCallback);
+                messageOperate.send(request);
+            }
+        });
+    }
+
+    public static void sendGroupExitMessage(final String groupGuid,
+                                            final String groupName,
+                                            final List<ImUserContent> groupUsers,
+                                            final IMDefaultSendOperateListener operateListener) {
+        commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+            @Override
+            public void accept(DefaultConsumer<Boolean> sendCallback) {
+                GroupOperateMessageSend request = new GroupOperateMessageSend(ImGroupOperateType
+                        .ExitGroup, groupGuid, groupName, groupUsers, sendCallback);
+                messageOperate.send(request);
+            }
+        });
+    }
+
+    public static void sendGroupDismissMessage(final String groupGuid,
+                                               final String groupName,
+                                               final IMDefaultSendOperateListener operateListener) {
+        commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+            @Override
+            public void accept(DefaultConsumer<Boolean> sendCallback) {
+                GroupOperateMessageSend request = new GroupOperateMessageSend(ImGroupOperateType
+                        .DismissGroup, groupGuid, groupName, sendCallback);
+                messageOperate.send(request);
+            }
+        });
+    }
+
+    public static void sendGroupUserAddMessage(final String groupGuid,
+                                               final String groupName,
+                                               final List<ImUserContent> groupUsers,
+                                               final IMDefaultSendOperateListener operateListener) {
+        commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+            @Override
+            public void accept(DefaultConsumer<Boolean> sendCallback) {
+                GroupOperateMessageSend request = new GroupOperateMessageSend(ImGroupOperateType
+                        .AddUser, groupGuid, groupName, groupUsers, sendCallback);
+                messageOperate.send(request);
+            }
+        });
+    }
+
+    public static void sendGroupUserRemoveMessage(final String groupGuid,
+                                                  final String groupName,
+                                                  final List<ImUserContent> groupUsers,
+                                                  final IMDefaultSendOperateListener
+                                                          operateListener) {
+        commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+            @Override
+            public void accept(DefaultConsumer<Boolean> sendCallback) {
+                GroupOperateMessageSend request = new GroupOperateMessageSend(ImGroupOperateType
+                        .RemoveUser, groupGuid, groupName, groupUsers, sendCallback);
                 messageOperate.send(request);
             }
         });
