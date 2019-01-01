@@ -73,12 +73,25 @@ public class GroupOperateMessageListen extends
 //            case OperateNone:
 //                break;
             case DismissGroup:
-                groupInfo.setIsDismiss(true);
-                DaoUtils.getGroupInfoManagerInstance().add(groupInfo);
-                DaoUtils.getGroupUserInfoManagerInstance().deleteGroupUserInfo(groupInfo
-                        .getGroupGuid());
-                EventBusUtil.sendGroupDismissEvent(groupInfo.getGroupGuid());
+                this.dismissGroup();
                 break;
+        }
+    }
+
+    private void dismissGroup() {
+        //检测是否存在chat record
+        ChatRecordMessage recordMessage = DaoUtils.getChatRecordMessageManagerInstance()
+                .getGroupRecord(groupInfo.getGroupGuid());
+        if (recordMessage != null) {
+            //如果存在记录则标识存在已经被解散
+            groupInfo.setIsDismiss(true);
+            DaoUtils.getGroupInfoManagerInstance().add(groupInfo);
+            EventBusUtil.sendGroupDismissEvent(groupInfo.getGroupGuid());
+        } else {
+            //如果不存在记录，则直接删除群组相关数据
+            DaoUtils.getGroupInfoManagerInstance().deleteGroupInfo(groupInfo);
+            DaoUtils.getGroupUserInfoManagerInstance().deleteGroupUserInfo(groupInfo
+                    .getGroupGuid());
         }
     }
 

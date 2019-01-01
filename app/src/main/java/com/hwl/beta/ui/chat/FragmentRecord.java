@@ -1,13 +1,18 @@
 package com.hwl.beta.ui.chat;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.ChatFragmentRecordBinding;
@@ -17,6 +22,7 @@ import com.hwl.beta.ui.chat.adp.RecordAdapter;
 import com.hwl.beta.ui.chat.logic.RecordLogic;
 import com.hwl.beta.ui.chat.standard.RecordStandard;
 import com.hwl.beta.ui.common.BaseFragment;
+import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.ebus.EventBusConstant;
 import com.hwl.beta.ui.ebus.EventMessageModel;
@@ -86,7 +92,7 @@ public class FragmentRecord extends BaseFragment {
 
                     @Override
                     public void onItemLongClick(View view, int position) {
-
+                        showPopupMenu(view, position);
                     }
                 });
         binding.rvRecordContainer.setAdapter(recordAdapter);
@@ -192,6 +198,62 @@ public class FragmentRecord extends BaseFragment {
         }
     }
 
+    private void showPopupMenu(View view, final int position) {
+        PopupMenu popup = new PopupMenu(activity, view);
+        popup.getMenuInflater().inflate(R.menu.popup_record_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                final ChatRecordMessage record = recordAdapter.getRecordMessage(position);
+                switch (item.getItemId()) {
+                    case R.id.pop_set_top:
+                        break;
+                    case R.id.pop_delete_record:
+                        recordStandard.deleteRecord(record, new DefaultCallback<Boolean, String>() {
+                            @Override
+                            public void success(Boolean successMessage) {
+                                recordAdapter.removeRecord(record.getRecordId());
+                            }
+
+                            @Override
+                            public void error(String errorMessage) {
+                                Toast.makeText(activity, errorMessage, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
+                    case R.id.pop_delete_messages:
+                        new AlertDialog.Builder(activity)
+                                .setMessage("聊天数据清空后,不能恢复,确认清空 ?")
+                                .setPositiveButton("确定", new DialogInterface
+                                        .OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int
+                                            which) {
+                                        recordStandard.clearMessages(record, new
+                                                DefaultCallback<Boolean, String>() {
+                                            @Override
+                                            public void success(Boolean successMessage) {
+                                                recordAdapter.removeRecord(record.getRecordId());
+                                            }
+
+                                            @Override
+                                            public void error(String errorMessage) {
+                                                Toast.makeText(activity, errorMessage, Toast
+                                                        .LENGTH_SHORT).show();
+                                            }
+                                        });
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .setNegativeButton("取消", null)
+                                .show();
+                        break;
+                }
+                return true;
+            }
+        });
+        popup.show();
+    }
+
     @Override
     protected boolean isRegisterEventBus() {
         return true;
@@ -201,10 +263,12 @@ public class FragmentRecord extends BaseFragment {
     protected void receiveStickyEventMessage(EventMessageModel messageModel) {
         switch (messageModel.getMessageType()) {
             case EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_UPDATE_SORT:
-                recordAdapter.updateRecord((ChatRecordMessage) messageModel.getMessageModel());
+                recordAdapter.updateRecord((ChatRecordMessage) messageModel
+                        .getMessageModel());
                 break;
             case EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_UPDATE_NOSORT:
-                recordAdapter.updateRecord((ChatRecordMessage) messageModel.getMessageModel(),
+                recordAdapter.updateRecord((ChatRecordMessage) messageModel
+                                .getMessageModel(),
                         false);
                 break;
             case EventBusConstant.EB_TYPE_NETWORK_CONNECT_UPDATE:
@@ -214,19 +278,23 @@ public class FragmentRecord extends BaseFragment {
                 binding.llNetworkNone.setVisibility(View.VISIBLE);
                 break;
             case EventBusConstant.EB_TYPE_FRIEND_UPDATE_REMARK:
-                EventUpdateFriendRemark friendRemark = (EventUpdateFriendRemark) messageModel
-                        .getMessageModel();
-                recordAdapter.updateFriendRemark(friendRemark.getFriendId(), friendRemark
-                        .getFriendRemark());
+                EventUpdateFriendRemark friendRemark = (EventUpdateFriendRemark)
+                        messageModel
+                                .getMessageModel();
+                recordAdapter.updateFriendRemark(friendRemark.getFriendId(),
+                        friendRemark
+                                .getFriendRemark());
                 break;
             case EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_CLEAR:
                 recordAdapter.removeRecord((Long) messageModel.getMessageModel());
                 break;
             case EventBusConstant.EB_TYPE_CHAT_GROUP_NAME_SETTING:
-                EventChatGroupSetting groupSetting = (EventChatGroupSetting) messageModel
-                        .getMessageModel();
-                recordAdapter.updateGroupName(groupSetting.getGroupGuid(), groupSetting
-                        .getGroupName());
+                EventChatGroupSetting groupSetting = (EventChatGroupSetting)
+                        messageModel
+                                .getMessageModel();
+                recordAdapter.updateGroupName(groupSetting.getGroupGuid(),
+                        groupSetting
+                                .getGroupName());
                 break;
             case EventBusConstant.EB_TYPE_GROUP_ACTION_DELETE:
                 recordAdapter.removeRecord((String) messageModel.getMessageModel());

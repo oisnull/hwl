@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="action"
+            type="com.hwl.beta.ui.near.action.INearCircleItemListener" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingTop="100px">
+
+        <View
+            android:layout_width="150dp"
+            android:layout_height="120dp"
+            android:background="@drawable/info_null" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="你的附近暂时还没有人发布信息..."
+            android:textColor="@color/color_b2b2b2"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/tv_publish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{view->action.onPublishClick()}"
+            android:padding="10dp"
+            android:text="点击发布 ＞"
+            android:textColor="@color/main"
+            android:textSize="15dp" />
+    </LinearLayout>
+</layout>

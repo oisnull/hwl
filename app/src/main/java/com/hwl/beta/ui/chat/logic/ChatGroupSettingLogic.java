@@ -135,13 +135,15 @@ public class ChatGroupSettingLogic implements ChatGroupSettingStandard {
                                     @Override
                                     protected void onSuccess(DeleteGroupResponse response) {
                                         if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
-
                                             DaoUtils.getGroupInfoManagerInstance()
                                                     .deleteGroupInfo(groupGuid);
                                             DaoUtils.getGroupUserInfoManagerInstance()
-                                                    .deleteGroupUserInfo
-                                                    (groupGuid);
-                                            EventBusUtil.sendGroupDismissEvent(groupGuid);
+                                                    .deleteGroupUserInfo(groupGuid);
+                                            DaoUtils.getChatGroupMessageManagerInstance()
+                                                    .deleteMessages(groupGuid);
+                                            DaoUtils.getChatRecordMessageManagerInstance()
+                                                    .deleteGroupRecord(groupGuid);
+                                            EventBusUtil.sendGroupExitEvent(groupGuid);
                                             callback.success(true);
                                         } else {
                                             onError("解散失败");
