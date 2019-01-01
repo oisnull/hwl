@@ -329,27 +329,24 @@ public class IMClientEntry {
     }
 
     public static void sendGroupExitMessage(final String groupGuid,
-                                            final String groupName,
-                                            final List<ImUserContent> groupUsers,
                                             final IMDefaultSendOperateListener operateListener) {
         commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
                 GroupOperateMessageSend request = new GroupOperateMessageSend(ImGroupOperateType
-                        .ExitGroup, groupGuid, groupName, groupUsers, sendCallback);
+                        .ExitGroup, groupGuid, null, null, sendCallback);
                 messageOperate.send(request);
             }
         });
     }
 
     public static void sendGroupDismissMessage(final String groupGuid,
-                                               final String groupName,
                                                final IMDefaultSendOperateListener operateListener) {
         commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
                 GroupOperateMessageSend request = new GroupOperateMessageSend(ImGroupOperateType
-                        .DismissGroup, groupGuid, groupName, sendCallback);
+                        .DismissGroup, groupGuid, null, sendCallback);
                 messageOperate.send(request);
             }
         });

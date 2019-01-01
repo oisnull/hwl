@@ -43,9 +43,7 @@ public class GroupOperateMessageSend extends AbstractMessageSendExecutor {
                 .setGroupName(StringUtils.nullStrToEmpty(groupName));
 
         if (groupUsers != null && groupUsers.size() > 0) {
-            for (int i = 0; i < groupUsers.size(); i++) {
-                builder.setGroupUsers(i, groupUsers.get(i));
-            }
+            builder.addAllGroupUsers(groupUsers);
         }
 
         messageContent = builder.build();

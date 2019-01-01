@@ -20,12 +20,10 @@ import com.hwl.beta.utils.StringUtils;
 import java.util.List;
 
 public class GroupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private Context context;
     private List<GroupInfo> groups;
     private LayoutInflater inflater;
 
     public GroupAdapter(Context context, List<GroupInfo> groups) {
-        this.context = context;
         this.groups = groups;
         inflater = LayoutInflater.from(context);
     }
@@ -84,6 +82,7 @@ public class GroupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void addGroup(GroupInfo groupInfo) {
         if (groupInfo == null) return;
 
+        if (groups.contains(groupInfo)) return;
         groups.add(groupInfo);
         notifyDataSetChanged();
     }
@@ -91,9 +90,20 @@ public class GroupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void addGroups(List<GroupInfo> groupInfos) {
         if (groupInfos == null || groupInfos.size() <= 0) return;
 
-        groupInfos.removeAll(groups);
+        groups.removeAll(groupInfos);
         groups.addAll(groupInfos);
         notifyDataSetChanged();
+    }
+
+    public void removeGroup(String groupGuid) {
+        if (StringUtils.isEmpty(groupGuid)) return;
+        for (int i = 0; i < groups.size(); i++) {
+            if (groupGuid.equals(groups.get(i).getGroupGuid())) {
+                groups.remove(i);
+                notifyDataSetChanged();
+                break;
+            }
+        }
     }
 
     public List<GroupInfo> getGroups() {

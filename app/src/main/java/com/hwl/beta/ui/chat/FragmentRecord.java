@@ -228,6 +228,9 @@ public class FragmentRecord extends BaseFragment {
                 recordAdapter.updateGroupName(groupSetting.getGroupGuid(), groupSetting
                         .getGroupName());
                 break;
+            case EventBusConstant.EB_TYPE_GROUP_ACTION_DELETE:
+                recordAdapter.removeRecord((String) messageModel.getMessageModel());
+                break;
         }
     }
 

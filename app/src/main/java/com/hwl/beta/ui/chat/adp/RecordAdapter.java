@@ -72,6 +72,17 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
         }
     }
 
+    public void removeRecord(String groupGuid) {
+        if (StringUtils.isEmpty(groupGuid)) return;
+        for (int i = 0; i < records.size(); i++) {
+            if (groupGuid.equals(records.get(i).getGroupGuid())) {
+                records.remove(i);
+                notifyDataSetChanged();
+                break;
+            }
+        }
+    }
+
     public void removeRecord(long recordId) {
         if (recordId <= 0) return;
         for (int i = 0; i < records.size(); i++) {
@@ -84,7 +95,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
     }
 
     public void updateGroupName(String groupGuid, String groupName) {
-        if(StringUtils.isEmpty(groupGuid)) return;
+        if (StringUtils.isEmpty(groupGuid)) return;
         for (int i = 0; i < records.size(); i++) {
             if (groupGuid.equals(records.get(i).getGroupGuid())) {
                 records.get(i).setGroupName(groupName);
@@ -96,6 +107,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
     }
 
     public void updateFriendRemark(long friendId, String remark) {
+        if (friendId <= 0) return;
         for (int i = 0; i < records.size(); i++) {
             if (records.get(i).getFromUserId() == friendId && records.get(i)
                     .getRecordType() == IMConstant.CHAT_RECORD_TYPE_USER) {

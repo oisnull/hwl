@@ -24,6 +24,16 @@ public class ChatGroupUserAdapter extends BaseAdapter {
         inflater = LayoutInflater.from(context);
     }
 
+    public void addUsers(List<GroupUserInfo> userInfos) {
+        if (userInfos == null) return;
+        for (int i = 0; i < userInfos.size(); i++) {
+            if (!users.contains(userInfos.get(i))) {
+                users.add(0, userInfos.get(i));
+            }
+        }
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return users.size();
@@ -36,7 +46,7 @@ public class ChatGroupUserAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return users.get(position).getId();
+        return users.get(position).getId() == null ? 0 : users.get(position).getId();
     }
 
     @Override

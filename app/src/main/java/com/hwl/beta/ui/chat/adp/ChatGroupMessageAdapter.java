@@ -214,7 +214,7 @@ public class ChatGroupMessageAdapter extends RecyclerView.Adapter<RecyclerView.V
                     return 203;
                 }
             default:
-            case IMConstant.CHAT_MESSAGE_CONTENT_TYPE_WELCOME_TIP:
+            case IMConstant.CHAT_MESSAGE_CONTENT_TYPE_SYSTEM:
                 return 300;
         }
     }

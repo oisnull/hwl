@@ -152,6 +152,7 @@ public class ChatRecordMessageManager extends BaseDao<ChatRecordMessage> {
                     GroupInfo groupInfo = DaoUtils.getGroupInfoManagerInstance().get
                             (recordMessages.get(i).getGroupGuid());
                     if (groupInfo != null) {
+                        recordMessages.get(i).setTitle(groupInfo.getGroupName());
                         recordMessages.get(i).setShield(groupInfo.getIsShield());
                         recordMessages.get(i).setGroupUserImages(groupInfo.getUserImages());
                     }

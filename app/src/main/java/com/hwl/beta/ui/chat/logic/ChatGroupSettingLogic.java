@@ -14,6 +14,8 @@ import com.hwl.beta.ui.chat.standard.ChatGroupSettingStandard;
 import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.ebus.EventBusUtil;
+import com.hwl.beta.ui.immsg.IMClientEntry;
+import com.hwl.beta.ui.immsg.IMDefaultSendOperateListener;
 
 import java.util.List;
 
@@ -88,32 +90,28 @@ public class ChatGroupSettingLogic implements ChatGroupSettingStandard {
     }
 
     @Override
-    public void exitGroup(String groupGuid, final DefaultCallback<Boolean, String> callback) {
+    public void exitGroup(final String groupGuid, final DefaultCallback<Boolean, String> callback) {
         GroupService.deleteGroupUser(groupGuid)
                 .subscribe(new NetDefaultObserver<DeleteGroupUserResponse>() {
                     @Override
                     protected void onSuccess(DeleteGroupUserResponse response) {
-//							if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
-//                                                GroupActionMessageSend.sendExitGroupUserMessage
-// (group.getGroupGuid(), myUserId, group.getMyUserName() + " 退出群组").subscribe();
-//
-//                                                DaoUtils.getGroupInfoManagerInstance()
-// .deleteGroupInfo(group);
-//                                                DaoUtils.getGroupUserInfoManagerInstance()
-// .deleteGroupUserInfo(group.getGroupGuid());
-//                                                DaoUtils.getChatGroupMessageManagerInstance()
-// .deleteMessages(group.getGroupGuid());
-//                                                ChatRecordMessage recordMessage = DaoUtils
-// .getChatRecordMessageManagerInstance().deleteGroupRecord(group.getGroupGuid());
-//
-//                                                EventBus.getDefault().post(new EventActionGroup
-// (EventBusConstant.EB_TYPE_ACTINO_EXIT, group));
-//                                                EventBus.getDefault().post(new
-// EventActionChatRecord(EventBusConstant.EB_TYPE_ACTINO_REMOVE, recordMessage));
-                        callback.success(true);
-//							} else {
-//								onError("退出失败");
-//							}
+                        if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
+
+                            IMClientEntry.sendGroupExitMessage(groupGuid, new
+                                    IMDefaultSendOperateListener("ExitGroupMessage"));
+
+                            DaoUtils.getGroupInfoManagerInstance().deleteGroupInfo(groupGuid);
+                            DaoUtils.getGroupUserInfoManagerInstance().deleteGroupUserInfo
+                                    (groupGuid);
+                            DaoUtils.getChatGroupMessageManagerInstance().deleteMessages(groupGuid);
+                            DaoUtils.getChatRecordMessageManagerInstance().deleteGroupRecord
+                                    (groupGuid);
+
+                            EventBusUtil.sendGroupExitEvent(groupGuid);
+                            callback.success(true);
+                        } else {
+                            onError("退出失败");
+                        }
                     }
 
                     @Override
@@ -125,34 +123,42 @@ public class ChatGroupSettingLogic implements ChatGroupSettingStandard {
     }
 
     @Override
-    public void dismissGroup(String groupGuid, final DefaultCallback<Boolean, String> callback) {
-        GroupService.deleteGroup(groupGuid)
-                .subscribe(new NetDefaultObserver<DeleteGroupResponse>() {
+    public void dismissGroup(final String groupGuid, final DefaultCallback<Boolean, String>
+            callback) {
+        IMClientEntry.sendGroupDismissMessage(groupGuid, new
+                IMDefaultSendOperateListener("DismissGroupMessage") {
                     @Override
-                    protected void onSuccess(DeleteGroupResponse response) {
-                        if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
+                    public void success1() {
 
-//                                DaoUtils.getGroupInfoManagerInstance().deleteGroupInfo(group);
-//                                DaoUtils.getGroupUserInfoManagerInstance().deleteGroupUserInfo
-// (group.getGroupGuid());
-//                                DaoUtils.getChatGroupMessageManagerInstance().deleteMessages
-// (group.getGroupGuid());
-//                                ChatRecordMessage recordMessage = DaoUtils
-// .getChatRecordMessageManagerInstance().deleteGroupRecord(group.getGroupGuid());
-                            callback.success(true);
-//                                EventBus.getDefault().post(new EventActionGroup
-// (EventBusConstant.EB_TYPE_ACTINO_EXIT, group));
-//                                EventBus.getDefault().post(new EventActionChatRecord
-// (EventBusConstant.EB_TYPE_ACTINO_REMOVE, recordMessage));
-                        } else {
-                            onError("解散失败");
-                        }
+                        GroupService.deleteGroup(groupGuid)
+                                .subscribe(new NetDefaultObserver<DeleteGroupResponse>() {
+                                    @Override
+                                    protected void onSuccess(DeleteGroupResponse response) {
+                                        if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
+
+                                            DaoUtils.getGroupInfoManagerInstance()
+                                                    .deleteGroupInfo(groupGuid);
+                                            DaoUtils.getGroupUserInfoManagerInstance()
+                                                    .deleteGroupUserInfo
+                                                    (groupGuid);
+                                            EventBusUtil.sendGroupDismissEvent(groupGuid);
+                                            callback.success(true);
+                                        } else {
+                                            onError("解散失败");
+                                        }
+                                    }
+
+                                    @Override
+                                    protected void onError(String resultMessage) {
+                                        super.onError(resultMessage);
+                                        callback.error(resultMessage);
+                                    }
+                                });
                     }
 
                     @Override
-                    protected void onError(String resultMessage) {
-                        super.onError(resultMessage);
-                        callback.error(resultMessage);
+                    public void failed1() {
+                        callback.error("解散群组失败");
                     }
                 });
     }

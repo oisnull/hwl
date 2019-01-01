@@ -172,13 +172,19 @@ public class ActivityChatGroup extends BaseActivity {
                         - 1);
                 break;
             case EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_CLEAR:
+            case EventBusConstant.EB_TYPE_GROUP_ACTION_DELETE:
                 finish();
                 break;
             case EventBusConstant.EB_TYPE_CHAT_GROUP_NAME_SETTING:
-                EventChatGroupSetting groupSetting = (EventChatGroupSetting) messageModel.getMessageModel();
+                EventChatGroupSetting groupSetting = (EventChatGroupSetting) messageModel
+                        .getMessageModel();
                 if (!groupSetting.getGroupGuid().equals(groupInfo.getGroupGuid())) return;
                 groupInfo.setGroupName(groupSetting.getGroupName());
                 binding.tbTitle.setTitle(groupInfo.getGroupName());
+                break;
+            case EventBusConstant.EB_TYPE_GROUP_ACTION_DISMISS:
+                if (messageModel.getMessageModel().equals(groupInfo.getGroupGuid()))
+                    groupInfo.setIsDismiss(true);
                 break;
         }
     }
@@ -322,7 +328,7 @@ public class ActivityChatGroup extends BaseActivity {
         public void onVideoItemClick(int position) {
             ChatGroupMessage message = messageAdapter.getChatGroupMessage(position);
             String showUrl = ChatImageViewBean.getShowUrl(message.getLocalUrl(), null, message
- .getOriginalUrl());
+                    .getOriginalUrl());
             UITransfer.toVideoPlayActivity(activity, ActivityVideoPlay.MODE_VIEW, showUrl);
         }
 
@@ -330,7 +336,7 @@ public class ActivityChatGroup extends BaseActivity {
         public void onAudioItemClick(View view, int position) {
             ChatGroupMessage message = messageAdapter.getChatGroupMessage(position);
             emotionPanelListener.playAudio((ImageView) view.findViewById(R.id.iv_audio),
- message);
+                    message);
         }
 
         @Override
@@ -341,7 +347,8 @@ public class ActivityChatGroup extends BaseActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             view.setVisibility(View.GONE);
-                            emotionPanelListener.resendMessage(messageAdapter.getChatGroupMessage(position));
+                            emotionPanelListener.resendMessage(messageAdapter.getChatGroupMessage
+                                    (position));
                             dialog.dismiss();
                         }
                     })

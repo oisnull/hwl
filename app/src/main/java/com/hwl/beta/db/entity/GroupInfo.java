@@ -194,4 +194,12 @@ public class GroupInfo extends BaseObservable {
         this.isSystem = isSystem;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof GroupInfo) {
+            GroupInfo g = (GroupInfo) obj;
+            return this.getGroupGuid().equals(g.getGroupGuid());
+        }
+        return super.equals(obj);
+    }
 }

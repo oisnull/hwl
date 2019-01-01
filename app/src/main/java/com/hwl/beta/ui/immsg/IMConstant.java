@@ -16,5 +16,5 @@ public class IMConstant {
     public final static int CHAT_MESSAGE_CONTENT_TYPE_VIDEO = 4;
     // public final static int CHAT_MESSAGE_CONTENT_TYPE_REJECT = 5;
     // public final static int CHAT_MESSAGE_CONTENT_TYPE_REJECT_COZY = 6;
-    public final static int CHAT_MESSAGE_CONTENT_TYPE_WELCOME_TIP = 7;
+    public final static int CHAT_MESSAGE_CONTENT_TYPE_SYSTEM = 7;
 }

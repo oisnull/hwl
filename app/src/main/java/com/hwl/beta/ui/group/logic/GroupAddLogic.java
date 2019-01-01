@@ -3,16 +3,22 @@ package com.hwl.beta.ui.group.logic;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.db.entity.GroupInfo;
+import com.hwl.beta.db.entity.GroupUserInfo;
 import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.net.group.GroupService;
 import com.hwl.beta.net.group.body.AddGroupResponse;
+import com.hwl.beta.net.group.body.AddGroupUsersResponse;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.FriendComparator;
 import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
+import com.hwl.beta.ui.convert.DBFriendAction;
 import com.hwl.beta.ui.convert.DBGroupAction;
 import com.hwl.beta.ui.ebus.EventBusUtil;
 import com.hwl.beta.ui.group.standard.GroupAddStandard;
+import com.hwl.beta.ui.immsg.IMClientEntry;
+import com.hwl.beta.ui.immsg.IMDefaultSendOperateListener;
+import com.hwl.imcore.improto.ImUserContent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,52 +41,59 @@ public class GroupAddLogic implements GroupAddStandard {
     }
 
     @Override
-    public void addUserToGroup(List<Friend> selectUsers, String groupGuid,
-                               DefaultCallback<Boolean, String>
-                                       callback) {
+    public void addUserToGroup(final List<Friend> selectUsers, final String groupGuid,
+                               final DefaultCallback<Boolean, String> callback) {
+        if (isRunning) return;
+        isRunning = true;
+
         if (selectUsers == null || selectUsers.size() <= 0) {
+            isRunning = false;
             callback.error("请选择加入的用户");
             return;
         }
+
         final GroupInfo groupInfo = DaoUtils.getGroupInfoManagerInstance().get(groupGuid);
         if (groupInfo == null) {
+            isRunning = false;
             callback.error("加入的群组信息错误");
             return;
         }
 
-        //        GroupService.addGroupUsers(groupInfo.getGroupGuid(), userIds)
-//                .subscribe(new NetDefaultObserver<AddGroupUsersResponse>() {
-//                    @Override
-//                    protected void onSuccess(AddGroupUsersResponse response) {
-//                        LoadingDialog.hide();
-//                        if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
-//                            GroupActionMessageSend.sendAddGroupUsersMessage(groupInfo,
-// finalMessageContent, userInfos).subscribe();
-//                            finish();
-//                        } else {
-//                            onError("加入群组失败");
-//                        }
-//                        isRuning = false;
-//                    }
-//
-//                    @Override
-//                    protected void onError(String resultMessage) {
-//                        super.onError(resultMessage);
-//                        LoadingDialog.hide();
-//                        isRuning = false;
-//                    }
-//
-//                    @Override
-//                    protected void onRelogin() {
-//                        LoadingDialog.hide();
-//                        isRuning = false;
-//                        UITransfer.toReloginDialog(activity);
-//                    }
-//                });
+        GroupService.addGroupUsers(groupInfo.getGroupGuid(), getGroupUserIds(selectUsers))
+                .subscribe(new NetDefaultObserver<AddGroupUsersResponse>() {
+                    @Override
+                    protected void onSuccess(AddGroupUsersResponse response) {
+                        isRunning = false;
+                        if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
+
+                            IMClientEntry.sendGroupUserAddMessage(groupInfo.getGroupGuid(),
+                                    groupInfo.getGroupName(),
+                                    getImGroupUsers(selectUsers),
+                                    new IMDefaultSendOperateListener("AddUserToGroupMessage"));
+
+                            List<GroupUserInfo> userInfos = DBGroupAction
+                                    .convertToGroupUserInfos(groupInfo.getGroupGuid(),
+                                            selectUsers);
+                            DaoUtils.getGroupUserInfoManagerInstance().addListAsync(userInfos);
+                            EventBusUtil.sendGroupUsersAddEvent(userInfos);
+
+                            callback.success(true);
+                        } else {
+                            onError("加入用户到群组失败");
+                        }
+                    }
+
+                    @Override
+                    protected void onError(String resultMessage) {
+                        isRunning = false;
+                        super.onError(resultMessage);
+                        callback.error(resultMessage);
+                    }
+                });
     }
 
     @Override
-    public void createGroup(List<Friend> selectUsers, final DefaultCallback<Boolean, String>
+    public void createGroup(final List<Friend> selectUsers, final DefaultCallback<Boolean, String>
             callback) {
         if (isRunning) return;
         isRunning = true;
@@ -90,6 +103,8 @@ public class GroupAddLogic implements GroupAddStandard {
             isRunning = false;
             return;
         }
+
+        this.addCurrentUser(selectUsers);
 
         final GroupInfo groupInfo = DBGroupAction.convertToGroupInfo("", buildGroupName
                 (selectUsers), "", UserSP.getUserId(), selectUsers.size(), getGroupUserImages
@@ -101,19 +116,21 @@ public class GroupAddLogic implements GroupAddStandard {
                     protected void onSuccess(AddGroupResponse response) {
                         isRunning = false;
                         if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
-                            callback.success(true);
-
                             groupInfo.setGroupGuid(response.getGroupGuid());
                             groupInfo.setBuildTime(response.getBuildTime());
+
+                            IMClientEntry.sendGroupCreateMessage(groupInfo.getGroupGuid(),
+                                    groupInfo.getGroupName(),
+                                    getImGroupUsers(selectUsers),
+                                    new IMDefaultSendOperateListener("CreateGroupMessage"));
+
                             DaoUtils.getGroupInfoManagerInstance().add(groupInfo);
+                            DaoUtils.getGroupUserInfoManagerInstance().addListAsync(DBGroupAction
+                                    .convertToGroupUserInfos(groupInfo.getGroupGuid(),
+                                            selectUsers));
                             EventBusUtil.sendGroupAddEvent(groupInfo);
 
-                            //发送群创建的消息给群用户
-
-//                            GroupActionMessageSend.sendCreateMessage(groupInfo.getGroupGuid(),
-//                                    groupInfo.getGroupName(), groupInfo.getUserImages(), response
-//                                            .getBuildTime(), groupInfo
-//                                            .getGroupName() + " 加入聊天群", userInfos).subscribe();
+                            callback.success(true);
                         } else {
                             onError("创建群组失败");
                         }
@@ -134,15 +151,36 @@ public class GroupAddLogic implements GroupAddStandard {
                 });
     }
 
+    private void addCurrentUser(List<Friend> selectUsers) {
+        Friend friend = DBFriendAction.convertToFriendInfo(UserSP.getUserId(), UserSP.getUserName
+                (), UserSP.getUserHeadImage());
+        selectUsers.add(friend);
+    }
+
+    private List<ImUserContent> getImGroupUsers(List<Friend> selectUsers) {
+        List<ImUserContent> users = new ArrayList<>(selectUsers.size());
+        for (int i = 0; i < selectUsers.size(); i++) {
+            users.add(ImUserContent.newBuilder().setUserId(selectUsers.get(i).getId())
+                    .setUserName(selectUsers.get(i).getName())
+                    .setUserImage(selectUsers.get(i).getHeadImage())
+                    .build());
+        }
+        return users;
+    }
+
     private String buildGroupName(List<Friend> selectUsers) {
-        String groupName = UserSP.getUserName();
+        String groupName = "";
         for (int i = 0; i < selectUsers.size(); i++) {
             if (i <= 5) {
-                groupName += "," + selectUsers.get(i).getName();
+                groupName += selectUsers.get(i).getName() + ",";
             } else {
                 groupName += "...";
                 break;
             }
+        }
+
+        if (groupName.endsWith(",")) {
+            groupName = groupName.substring(0, groupName.length() - 1);
         }
 
         return groupName;
@@ -150,7 +188,6 @@ public class GroupAddLogic implements GroupAddStandard {
 
     private List<Long> getGroupUserIds(List<Friend> selectUsers) {
         List<Long> userIds = new ArrayList<>(selectUsers.size());
-        userIds.add(UserSP.getUserId());
         for (int i = 0; i < selectUsers.size(); i++) {
             userIds.add(selectUsers.get(i).getId());
         }
@@ -159,7 +196,6 @@ public class GroupAddLogic implements GroupAddStandard {
 
     private List<String> getGroupUserImages(List<Friend> selectUsers) {
         List<String> images = new ArrayList<>(9);
-        images.add(UserSP.getUserHeadImage());
         for (int i = 0; i < selectUsers.size(); i++) {
             if (i > 8) break;
             images.add(selectUsers.get(i).getHeadImage());

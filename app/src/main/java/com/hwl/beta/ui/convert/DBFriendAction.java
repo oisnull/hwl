@@ -94,6 +94,17 @@ public class DBFriendAction {
     }
 
     public static Friend convertToFriendInfo(long userId, String userName, String userHeadImage,
+                                             String groupUserRemark) {
+        return convertToFriendInfo(userId, userName, userHeadImage, groupUserRemark, false);
+    }
+
+    public static Friend convertToFriendInfo(long userId, String userName, String userHeadImage,
+                                             boolean isFriend) {
+        return convertToFriendInfo(userId, userName, userHeadImage, null, isFriend);
+    }
+
+    public static Friend convertToFriendInfo(long userId, String userName, String userHeadImage,
+                                             String groupUserRemark,
                                              boolean isFriend) {
         Friend friend = new Friend();
         friend.setId(userId);
@@ -104,6 +115,7 @@ public class DBFriendAction {
         friend.setHeadImage(userHeadImage);
         friend.setUpdateTime(new Date().toString());
         friend.setIsFriend(isFriend);
+        friend.setGroupRemark(groupUserRemark);
         return friend;
     }
 

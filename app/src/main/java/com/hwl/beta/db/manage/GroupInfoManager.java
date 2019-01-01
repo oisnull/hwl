@@ -26,7 +26,13 @@ public class GroupInfoManager extends BaseDao<GroupInfo> {
 
     public void addList(List<GroupInfo> groupInfos) {
         if (groupInfos == null || groupInfos.size() <= 0) return;
-        daoSession.getGroupInfoDao().insertInTx(groupInfos);
+        for (int i = 0; i < groupInfos.size(); i++) {
+            try {
+                this.add(groupInfos.get(i));
+            } catch (Exception e) {
+            }
+        }
+//        daoSession.getGroupInfoDao().insertInTx(groupInfos);
     }
 
     public List<String> getGroupUserImages(String groupGuid) {
@@ -42,7 +48,8 @@ public class GroupInfoManager extends BaseDao<GroupInfo> {
     public GroupInfo get(String groupGuid) {
         if (StringUtils.isBlank(groupGuid)) return null;
 
-        return daoSession.getGroupInfoDao().queryBuilder().where(GroupInfoDao.Properties.GroupGuid.eq(groupGuid)).unique();
+        return daoSession.getGroupInfoDao().queryBuilder().where(GroupInfoDao.Properties
+                .GroupGuid.eq(groupGuid)).unique();
     }
 
     public boolean getGroupSettingIsShield(String groupGuid) {
@@ -97,7 +104,13 @@ public class GroupInfoManager extends BaseDao<GroupInfo> {
     }
 
     public void deleteGroupInfo(GroupInfo groupInfo) {
-        if(groupInfo==null) return;
+        if (groupInfo == null) return;
+        daoSession.getGroupInfoDao().delete(groupInfo);
+    }
+
+    public void deleteGroupInfo(String groupGuid) {
+        GroupInfo groupInfo = get(groupGuid);
+        if (groupInfo == null) return;
         daoSession.getGroupInfoDao().delete(groupInfo);
     }
 }

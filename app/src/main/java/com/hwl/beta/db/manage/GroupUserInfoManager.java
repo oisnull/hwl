@@ -92,7 +92,7 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
                     @Override
                     public void accept(GroupUserInfo userInfo) throws Exception {
                         if (userInfo != null && userInfo.getUserId() > 0)
-                            daoSession.getGroupUserInfoDao().insertOrReplace(userInfo);
+                            daoSession.getGroupUserInfoDao().insert(userInfo);
                     }
                 });
     }

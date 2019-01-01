@@ -51,7 +51,6 @@ public class ActivityGroup extends BaseActivity {
                 .setImageRightClick(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //Toast.makeText(activity, "发起群聊天", Toast.LENGTH_SHORT).show();
                         UITransfer.toGroupAddActivity(activity);
                     }
                 });
@@ -91,14 +90,10 @@ public class ActivityGroup extends BaseActivity {
             case EventBusConstant.EB_TYPE_GROUP_ACTION_ADD:
                 groupAdapter.addGroup((GroupInfo) messageModel.getMessageModel());
                 break;
+            case EventBusConstant.EB_TYPE_GROUP_ACTION_DELETE:
+            case EventBusConstant.EB_TYPE_GROUP_ACTION_DISMISS:
+                groupAdapter.removeGroup((String) messageModel.getMessageModel());
+                break;
         }
-//        if (actionGroup.getActionType() == EventBusConstant.EB_TYPE_ACTINO_ADD) {
-//            groupInfos.add(actionGroup.getGroupInfo());
-//            groupAdapter.notifyItemInserted(groupInfos.size() - 1);
-//        } else if (actionGroup.getActionType() == EventBusConstant.EB_TYPE_ACTINO_REMOVE ||
-// actionGroup.getActionType() == EventBusConstant.EB_TYPE_ACTINO_EXIT) {
-//            groupInfos.remove(actionGroup.getGroupInfo());
-//            groupAdapter.notifyDataSetChanged();
-//        }
     }
 }

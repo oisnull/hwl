@@ -38,7 +38,6 @@ public class ActivityGroupAdd extends BaseActivity {
     List<Friend> selectUsers;
     int groupActionType;
     String groupGuid;
-//    boolean isRuning = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -132,6 +131,28 @@ public class ActivityGroupAdd extends BaseActivity {
     }
 
     private void addUserToGroup() {
+        LoadingDialog.show(activity);
+        standard.addUserToGroup(selectUsers,groupGuid, new DefaultCallback<Boolean, String>() {
+            @Override
+            public void success(Boolean successMessage) {
+                LoadingDialog.hide();
+                finish();
+            }
+
+            @Override
+            public void error(String errorMessage) {
+                LoadingDialog.hide();
+                Toast.makeText(activity, errorMessage, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void relogin() {
+                super.relogin();
+                LoadingDialog.hide();
+                UITransfer.toReloginDialog(activity);
+            }
+        });
+
 //        if (selectUsers.size() <= 0) {
 //            Toast.makeText(activity, "请选择加入的用户", Toast.LENGTH_SHORT).show();
 //            return;

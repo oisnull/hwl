@@ -5,6 +5,7 @@ import com.hwl.beta.db.entity.ChatRecordMessage;
 import com.hwl.beta.db.entity.ChatUserMessage;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.db.entity.GroupInfo;
+import com.hwl.beta.db.entity.GroupUserInfo;
 import com.hwl.beta.ui.ebus.bean.EventChatGroupSetting;
 import com.hwl.beta.ui.ebus.bean.EventDeleteFriend;
 import com.hwl.beta.ui.ebus.bean.EventUpdateFriendRemark;
@@ -12,6 +13,8 @@ import com.hwl.beta.ui.ebus.bean.EventUserEditModel;
 import com.hwl.beta.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
 
 public class EventBusUtil {
     public static void register(Object subscriber) {
@@ -156,5 +159,17 @@ public class EventBusUtil {
 
     public static void sendGroupAddEvent(GroupInfo groupInfo) {
         sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_GROUP_ACTION_ADD, groupInfo));
+    }
+
+    public static void sendGroupDismissEvent(String groupGuid) {
+        sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_GROUP_ACTION_DISMISS, groupGuid));
+    }
+
+    public static void sendGroupExitEvent(String groupGuid) {
+        sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_GROUP_ACTION_DELETE, groupGuid));
+    }
+
+    public static void sendGroupUsersAddEvent(List<GroupUserInfo> users) {
+        sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_GROUP_USERS_ADD, users));
     }
 }

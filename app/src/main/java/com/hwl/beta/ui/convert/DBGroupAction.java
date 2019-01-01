@@ -6,6 +6,7 @@ import com.hwl.beta.db.entity.GroupUserInfo;
 import com.hwl.beta.net.group.NetGroupInfo;
 import com.hwl.beta.net.user.NetGroupUserInfo;
 import com.hwl.beta.sp.UserPosSP;
+import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class DBGroupAction {
             groupInfo.setBuildTime(groupInfos.get(i).getBuildDate());
             groupInfo.setUpdateTime(groupInfos.get(i).getUpdateDate());
             groupInfo.setGroupUserCount(groupInfos.get(i).getGroupUserCount());
+            groupInfo.setMyUserName(UserSP.getUserShowName());
             groupInfo.setUserImages(new ArrayList<String>());
             for (int j = 0; j < groupInfos.get(i).getGroupUsers().size(); j++) {
                 groupInfo.getUserImages().add(groupInfos.get(i).getGroupUsers().get(j)
@@ -59,6 +61,7 @@ public class DBGroupAction {
         groupInfo.setBuildTime(buildTime);
         groupInfo.setGroupUserCount(groupUserCount);
         groupInfo.setUserImages(groupUserImages);
+        groupInfo.setMyUserName(UserSP.getUserShowName());
         groupInfo.setIsSystem(isSystem);
         return groupInfo;
     }
@@ -102,8 +105,8 @@ public class DBGroupAction {
         for (int i = 0; i < friends.size(); i++) {
             GroupUserInfo userInfo = new GroupUserInfo();
             userInfo.setUserId(friends.get(i).getId());
-//            userInfo.setUserName(friends.get(i).getName());
-//            userInfo.setUserHeadImage(friends.get(i).getHeadImage());
+            userInfo.setUserName(friends.get(i).getName());
+            userInfo.setUserImage(friends.get(i).getHeadImage());
             userInfo.setGroupGuid(groupGuid);
             userInfo.setAddTime(new Date());
             groupUserInfos.add(userInfo);
