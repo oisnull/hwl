@@ -103,11 +103,23 @@ public class NearCircleManager extends BaseDao<NearCircle> {
                 .where(NearCircleCommentDao.Properties.CommentId.eq(commentId))
                 .unique();
     }
+	
+    public List<NearCircleComment> getComments(long nearCircleId){
+		return getComments(nearCircleId,0);
+	}
 
-    public List<NearCircleComment> getComments(long nearCircleId) {
+    public List<NearCircleComment> getComments(long nearCircleId,int pageCount) {
         if (nearCircleId <= 0) return null;
+
+		if(pageCount<=0){
+			return daoSession.getNearCircleCommentDao().queryBuilder()
+					.where(NearCircleCommentDao.Properties.NearCircleId.eq(nearCircleId))
+					.list();
+		}
+
         return daoSession.getNearCircleCommentDao().queryBuilder()
                 .where(NearCircleCommentDao.Properties.NearCircleId.eq(nearCircleId))
+                .limit(pageCount)
                 .list();
     }
 
@@ -165,6 +177,25 @@ public class NearCircleManager extends BaseDao<NearCircle> {
             daoSession.getNearCircleLikeDao().save(likeInfo);
         }
     }
+
+	public List<NearCircle> getNearCirclesV2(int pageCount,int commentPageCount){
+        List<NearCircle> infos = daoSession.getNearCircleDao().queryBuilder()
+                .orderDesc(NearCircleDao.Properties.NearCircleId)
+                .limit(pageCount)
+                .list();
+        if (infos == null || infos.size() <= 0) return infos;
+
+		long circleId = 0;
+		for (int i = 0; i < infos.size(); i++) {
+			circleId=infos.get(i).getNearCircleId();
+
+			infos.get(i).setImages(getImages(circleId));
+			infos.get(i).setComments(getComments(circleId,commentPageCount));
+			infos.get(i).setLikes(getLikes(circleId));
+        }
+
+		return infos;
+	}
 
     public List<NearCircleExt> getNearCircles(int pageCount) {
         List<NearCircle> infos = daoSession.getNearCircleDao().queryBuilder()
