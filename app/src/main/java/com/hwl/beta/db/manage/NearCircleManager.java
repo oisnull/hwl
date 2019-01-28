@@ -25,13 +25,14 @@ import io.reactivex.functions.Function;
  */
 
 public class NearCircleManager extends BaseDao<NearCircle> {
+
     public NearCircleManager(Context context) {
         super(context);
     }
 
-    public long save(NearCircle model) {
-        if (model == null) return 0;
-        return daoSession.getNearCircleDao().insertOrReplace(model);
+    public long save(NearCircle info) {
+		if(info==null||info.getNearCircleId()<=0) return;
+        return daoSession.getNearCircleDao().insertOrReplace(info);
     }
 
     public NearCircle getNearCircle(long nearCircleId) {
@@ -51,10 +52,60 @@ public class NearCircleManager extends BaseDao<NearCircle> {
         return id;
     }
 
+	public void saveAll(NearCircle info){
+		save(info);
+		saveImages(info.getNearCircleId(),info.getImages());
+		saveComments(info.getNearCircleId(),info.getComments());
+		saveLikes(info.getNearCircleId(),info.getLikes());
+	}
+
     public void delete(long nearCircleId) {
         if (nearCircleId > 0) {
             String deleteSql = "delete from " + NearCircleDao.TABLENAME + " where " + NearCircleDao.Properties.NearCircleId.columnName + "=" + nearCircleId;
             daoSession.getDatabase().execSQL(deleteSql);
+        }
+    }
+
+    public void deleteAll(long nearCircleId) {
+        if (nearCircleId > 0) {
+			StringBuilder sb = new StringBuilder();
+			//delete info sql
+			sb.append("delete from ");
+			sb.append(NearCircleDao.TABLENAME);
+			sb.append(" where ");
+			sb.append(NearCircleDao.Properties.NearCircleId.columnName);
+			sb.append(" = ");
+			sb.append(nearCircleId);
+			sb.append(";");
+
+			//delete images sql
+			sb.append("delete from ");
+			sb.append(NearCircleImageDao.TABLENAME);
+			sb.append(" where ");
+			sb.append(NearCircleImageDao.Properties.NearCircleId.columnName);
+			sb.append(" = ");
+			sb.append(nearCircleId);
+			sb.append(";");
+
+			//delete comments sql
+			sb.append("delete from ");
+			sb.append(NearCircleCommentDao.TABLENAME);
+			sb.append(" where ");
+			sb.append(NearCircleCommentDao.Properties.NearCircleId.columnName);
+			sb.append(" = ");
+			sb.append(nearCircleId);
+			sb.append(";");
+
+			//delete likes sql
+			sb.append("delete from ");
+			sb.append(NearCircleLikeDao.TABLENAME);
+			sb.append(" where ");
+			sb.append(NearCircleLikeDao.Properties.NearCircleId.columnName);
+			sb.append(" = ");
+			sb.append(nearCircleId);
+			sb.append(";");
+
+            daoSession.getDatabase().execSQL(sb.toString());
         }
     }
 

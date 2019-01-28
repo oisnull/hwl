@@ -35,7 +35,8 @@ public class NearLogic implements NearStandard{
    public void loadServerInfos(final long minNearCircleId,
 	   final List<NearCircle> localInfos,
 	   final DefaultCallback<List<NearCircle>, String> callback){
-	   NearCircleService.getNearCircleInfos(minNearCircleId, pageCount, null)
+
+	   NearCircleService.getNearCircleInfos(minNearCircleId, pageCount, minNearCircleId<=0?this.getMatchInfos(localInfos):null)
                 .map(new NetDefaultFunction<GetNearCircleInfosResponse, List<NearCircle>>() {
                     @Override
                     protected List<NearCircle> onSuccess(GetNearCircleInfosResponse response)  throws Exception {
@@ -45,16 +46,10 @@ public class NearLogic implements NearStandard{
                 .doOnNext(new Consumer<List<NearCircle>>() {
                     @Override
                     public void accept(List<NearCircle> infos) throws Exception {
-                        //if (infos != null && infos.size() > 0)
-						//{
-						//    DaoUtils.getNearCircleManagerInstance().save(nearCircleExt.getInfo());
-						//    DaoUtils.getNearCircleManagerInstance().deleteImages(nearCircleExt.getInfo().getNearCircleId());
-						//    DaoUtils.getNearCircleManagerInstance().deleteComments(nearCircleExt.getInfo().getNearCircleId());
-						//    DaoUtils.getNearCircleManagerInstance().deleteLikes(nearCircleExt.getInfo().getNearCircleId());
-						//    DaoUtils.getNearCircleManagerInstance().saveImages(nearCircleExt.getInfo().getNearCircleId(), nearCircleExt.getImages());
-						//    DaoUtils.getNearCircleManagerInstance().saveComments(nearCircleExt.getInfo().getNearCircleId(), nearCircleExt.getComments());
-						//    DaoUtils.getNearCircleManagerInstance().saveLikes(nearCircleExt.getInfo().getNearCircleId(), nearCircleExt.getLikes());
-						//}
+                        for (int i = 0; i < infos.size(); i++) {
+							DaoUtils.getNearCircleManagerInstance().deleteAll(infos.get(i).getNearCircleId());
+							DaoUtils.getNearCircleManagerInstance().saveAll(infos);
+						}
                     }
                 })
 				.observeOn(AndroidSchedulers.mainThread());
@@ -69,5 +64,16 @@ public class NearLogic implements NearStandard{
                         callback.error(throwable.getMessage());
                     }
                 });
+   }
+
+   private List<NetNearCircleMatchInfo> getMatchInfos(List<NearCircle> localInfos){
+   	   List<NetNearCircleMatchInfo> matchInfos = new ArrayList<>();
+        int length = localInfos.size() > pageCount ? pageCount : localInfos.size();
+        for (int i = 0; i < length; i++) {
+            if (localInfos.get(i) != null && localInfos.get(i).getNearCircleId() > 0) {
+                matchInfos.add(new NetNearCircleMatchInfo(localInfos.get(i).getNearCircleId(), localInfos.get(i).getUpdateTime()));
+            }
+        }
+		return matchInfos;
    }
 }

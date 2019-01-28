@@ -114,6 +114,8 @@ public class FragmentNear extends BaseFragment {
             public void success(List<NearCircle> infos) {
 				binding.pbLoading.setVisibility(View.GONE);
                 nearCircleAdapter.addInfos(infos);
+
+				loadServerInfos(0);
             }
 
             @Override
@@ -146,6 +148,16 @@ public class FragmentNear extends BaseFragment {
         });
 	}
 
+    private void showResult() {
+		if(nearCircleAdapter.getItemCount()<=0){
+			nearCircleAdapter.setEmptyInfo();
+			binding.refreshLayout.setEnableLoadMore(false);
+		}
+        binding.refreshLayout.finishRefresh();
+        binding.refreshLayout.finishLoadMore();
+        binding.pbLoading.setVisibility(View.GONE);
+    }
+
 //    @Subscribe(threadMode = ThreadMode.MAIN)
 //    public void updateMessage(Integer ebType) {
 //        if (ebType == EventBusConstant.EB_TYPE_NEAR_CIRCLE_MESSAGE_UPDATE) {
@@ -159,139 +171,150 @@ public class FragmentNear extends BaseFragment {
 //        }
 //    }
 
-    private void showResult() {
-		if(nearCircleAdapter.getItemCount()<=0){
-			nearCircleAdapter.setEmptyInfo();
-			binding.refreshLayout.setEnableLoadMore(false);
-		}
-        binding.refreshLayout.finishRefresh();
-        binding.refreshLayout.finishLoadMore();
-        binding.pbLoading.setVisibility(View.GONE);
-    }
+    //private void loadNearCircleInfoFromServer(final long minNearCircleId)
+//{
+//    if (!NetworkUtils.isConnected())
+//    {
+//        showResult();
+//        return;
+//    }
 
-    private void loadNearCircleInfoFromServer(final long minNearCircleId) {
-        if (!NetworkUtils.isConnected()) {
-            showResult();
-            return;
-        }
+//    List<NetNearCircleMatchInfo> circleMatchInfos = new ArrayList<>();
+//    if (minNearCircleId <= 0)
+//    {
+//        int length = nearCircles.size() > pageCount ? pageCount : nearCircles.size();
+//        for (int i = 0; i < length; i++)
+//        {
+//            if (nearCircles.get(i).getInfo() != null && nearCircles.get(i).getInfo().getNearCircleId() > 0)
+//            {
+//                circleMatchInfos.add(new NetNearCircleMatchInfo(nearCircles.get(i).getInfo().getNearCircleId(), nearCircles.get(i).getInfo().getUpdateTime()));
+//            }
+//        }
+//    }
 
-        List<NetNearCircleMatchInfo> circleMatchInfos = new ArrayList<>();
-        if (minNearCircleId <= 0) {
-            int length = nearCircles.size() > pageCount ? pageCount : nearCircles.size();
-            for (int i = 0; i < length; i++) {
-                if (nearCircles.get(i).getInfo() != null && nearCircles.get(i).getInfo().getNearCircleId() > 0) {
-                    circleMatchInfos.add(new NetNearCircleMatchInfo(nearCircles.get(i).getInfo().getNearCircleId(), nearCircles.get(i).getInfo().getUpdateTime()));
-                }
-            }
-        }
-
-//        final Date startDate = new Date(System.currentTimeMillis());
-        NearCircleService.getNearCircleInfos(minNearCircleId, pageCount, circleMatchInfos)
-                .flatMap(new NetDefaultFunction<GetNearCircleInfosResponse, NetNearCircleInfo>() {
-                    @Override
-                    protected ObservableSource<NetNearCircleInfo> onSuccess(GetNearCircleInfosResponse response) {
-//                        Date endDate = new Date(System.currentTimeMillis());
-//                        long diff = endDate.getTime() - startDate.getTime();
-//                        Log.d("FragmentNear", "拉取数据用时：" + diff + " ms");
-                        if (response.getNearCircleInfos() != null && response.getNearCircleInfos().size() > 0) {
-                            removeEmptyView();
-                            return Observable.fromIterable(response.getNearCircleInfos());
-                        }
-                        return Observable.fromIterable(new ArrayList<NetNearCircleInfo>());
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Function<NetNearCircleInfo, NearCircleExt>() {
-                    @Override
-                    public NearCircleExt apply(NetNearCircleInfo info) throws Exception {
-//                        Date endDate = new Date(System.currentTimeMillis());
-//                        long diff = endDate.getTime() - startDate.getTime();
-//                        Log.d("FragmentNear", "map数据用时：" + diff + " ms");
-                        NearCircleExt circleBean = new NearCircleExt();
-                        if (info != null && info.getNearCircleId() > 0) {
-                            circleBean.setInfo(DBNearCircleAction.convertToNearCircleInfo(info));
-                            circleBean.setImages(DBNearCircleAction.convertToNearCircleImageInfos(info.getNearCircleId(), info.getPublishUserId(), info.getImages()));
-                            circleBean.setComments(DBNearCircleAction.convertToNearCircleCommentInfos(info.getCommentInfos()));
-                            circleBean.setLikes(DBNearCircleAction.convertToNearCircleLikeInfos(info.getLikeInfos()));
-                            return circleBean;
-                        }
-                        return circleBean;
-                    }
-                })
-                .doOnNext(new Consumer<NearCircleExt>() {
-                    @Override
-                    public void accept(NearCircleExt nearCircleExt) throws Exception {
-                        if (nearCircleExt != null && nearCircleExt.getInfo() != null) {
-                            DaoUtils.getNearCircleManagerInstance().save(nearCircleExt.getInfo());
-                            DaoUtils.getNearCircleManagerInstance().deleteImages(nearCircleExt.getInfo().getNearCircleId());
-                            DaoUtils.getNearCircleManagerInstance().deleteComments(nearCircleExt.getInfo().getNearCircleId());
-                            DaoUtils.getNearCircleManagerInstance().deleteLikes(nearCircleExt.getInfo().getNearCircleId());
-                            DaoUtils.getNearCircleManagerInstance().saveImages(nearCircleExt.getInfo().getNearCircleId(), nearCircleExt.getImages());
-                            DaoUtils.getNearCircleManagerInstance().saveComments(nearCircleExt.getInfo().getNearCircleId(), nearCircleExt.getComments());
-                            DaoUtils.getNearCircleManagerInstance().saveLikes(nearCircleExt.getInfo().getNearCircleId(), nearCircleExt.getLikes());
-                        }
-                    }
-                })
-                .subscribe(new Observer<NearCircleExt>() {
-
-                    int updateCount = 0;
-                    int insertCount = 0;
-
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(NearCircleExt nearCircleExt) {
-                        if (nearCircleExt != null && nearCircleExt.getInfo() != null) {
-                            boolean isExists = false;
-                            for (int i = 0; i < nearCircles.size(); i++) {
-                                if (nearCircles.get(i).getInfo().getNearCircleId() == nearCircleExt.getInfo().getNearCircleId()) {
-                                    nearCircles.remove(i);
-                                    nearCircles.add(i, nearCircleExt);
-                                    updateCount++;
-                                    isExists = true;
-                                    break;
-                                }
-                            }
-                            if (!isExists) {
-                                if (minNearCircleId > 0) {
-                                    nearCircles.add(nearCircleExt);
-                                } else {
-                                    nearCircles.add(insertCount, nearCircleExt);
-                                }
-                                updateCount++;
-                                insertCount++;
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        //Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        showResult();
-//                        if (NetConstant.RESPONSE_RELOGIN.equals(e.getMessage())) {
-//                            UITransfer.toReloginDialog((FragmentActivity) activity);
+//    //        final Date startDate = new Date(System.currentTimeMillis());
+//    NearCircleService.getNearCircleInfos(minNearCircleId, pageCount, circleMatchInfos)
+//            .flatMap(new NetDefaultFunction<GetNearCircleInfosResponse, NetNearCircleInfo>() {
+//                    @Override
+//                    protected ObservableSource<NetNearCircleInfo> onSuccess(GetNearCircleInfosResponse response)
+//{
+//    //                        Date endDate = new Date(System.currentTimeMillis());
+//    //                        long diff = endDate.getTime() - startDate.getTime();
+//    //                        Log.d("FragmentNear", "拉取数据用时：" + diff + " ms");
+//    if (response.getNearCircleInfos() != null && response.getNearCircleInfos().size() > 0)
+//    {
+//        removeEmptyView();
+//        return Observable.fromIterable(response.getNearCircleInfos());
+//    }
+//    return Observable.fromIterable(new ArrayList<NetNearCircleInfo>());
+//}
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .map(new Function<NetNearCircleInfo, NearCircleExt>() {
+//                    @Override
+//                    public NearCircleExt apply(NetNearCircleInfo info) throws Exception
+//{
+//    //                        Date endDate = new Date(System.currentTimeMillis());
+//    //                        long diff = endDate.getTime() - startDate.getTime();
+//    //                        Log.d("FragmentNear", "map数据用时：" + diff + " ms");
+//    NearCircleExt circleBean = new NearCircleExt();
+//                        if (info != null && info.getNearCircleId() > 0) {
+//                            circleBean.setInfo(DBNearCircleAction.convertToNearCircleInfo(info));
+//                            circleBean.setImages(DBNearCircleAction.convertToNearCircleImageInfos(info.getNearCircleId(), info.getPublishUserId(), info.getImages()));
+//                            circleBean.setComments(DBNearCircleAction.convertToNearCircleCommentInfos(info.getCommentInfos()));
+//                            circleBean.setLikes(DBNearCircleAction.convertToNearCircleLikeInfos(info.getLikeInfos()));
+//                            return circleBean;
 //                        }
-                    }
+//                        return circleBean;
+//                    }
+//                })
+//                .doOnNext(new Consumer<NearCircleExt>() {
+//                    @Override
+//                    public void accept(NearCircleExt nearCircleExt) throws Exception
+//{
+//                        if (nearCircleExt != null && nearCircleExt.getInfo() != null) {
+//        DaoUtils.getNearCircleManagerInstance().save(nearCircleExt.getInfo());
+//        DaoUtils.getNearCircleManagerInstance().deleteImages(nearCircleExt.getInfo().getNearCircleId());
+//        DaoUtils.getNearCircleManagerInstance().deleteComments(nearCircleExt.getInfo().getNearCircleId());
+//        DaoUtils.getNearCircleManagerInstance().deleteLikes(nearCircleExt.getInfo().getNearCircleId());
+//        DaoUtils.getNearCircleManagerInstance().saveImages(nearCircleExt.getInfo().getNearCircleId(), nearCircleExt.getImages());
+//        DaoUtils.getNearCircleManagerInstance().saveComments(nearCircleExt.getInfo().getNearCircleId(), nearCircleExt.getComments());
+//        DaoUtils.getNearCircleManagerInstance().saveLikes(nearCircleExt.getInfo().getNearCircleId(), nearCircleExt.getLikes());
+//    }
+//}
+//                })
+//                .subscribe(new Observer<NearCircleExt>() {
 
-                    @Override
-                    public void onComplete() {
-//                        Date endDate = new Date(System.currentTimeMillis());
-//                        long diff = endDate.getTime() - startDate.getTime();
-//                        Log.d("FragmentNear", "设置数据用时：" + diff + " ms");
-                        showResult();
-                        if (updateCount > 0) {
-                            nearCircleAdapter.notifyItemRangeChanged(0, nearCircles.size());
-                        }
+//                    int updateCount = 0;
+//int insertCount = 0;
 
-//                        if (updateCount > 0 || insertCount > 0) {
-//                            isDataChange = true;
-//                        }
-                    }
-                });
-    }
+//@Override
+//                    public void onSubscribe(Disposable d)
+//{
+
+//}
+
+//@Override
+//                    public void onNext(NearCircleExt nearCircleExt)
+//{
+//    if (nearCircleExt != null && nearCircleExt.getInfo() != null)
+//    {
+//        boolean isExists = false;
+//        for (int i = 0; i < nearCircles.size(); i++)
+//        {
+//            if (nearCircles.get(i).getInfo().getNearCircleId() == nearCircleExt.getInfo().getNearCircleId())
+//            {
+//                nearCircles.remove(i);
+//                nearCircles.add(i, nearCircleExt);
+//                updateCount++;
+//                isExists = true;
+//                break;
+//            }
+//        }
+//        if (!isExists)
+//        {
+//            if (minNearCircleId > 0)
+//            {
+//                nearCircles.add(nearCircleExt);
+//            }
+//            else
+//            {
+//                nearCircles.add(insertCount, nearCircleExt);
+//            }
+//            updateCount++;
+//            insertCount++;
+//        }
+//    }
+//}
+
+//@Override
+//                    public void onError(Throwable e)
+//{
+//    //Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
+//    showResult();
+//    //                        if (NetConstant.RESPONSE_RELOGIN.equals(e.getMessage())) {
+//    //                            UITransfer.toReloginDialog((FragmentActivity) activity);
+//    //                        }
+//}
+
+//@Override
+//                    public void onComplete()
+//{
+//    //                        Date endDate = new Date(System.currentTimeMillis());
+//    //                        long diff = endDate.getTime() - startDate.getTime();
+//    //                        Log.d("FragmentNear", "设置数据用时：" + diff + " ms");
+//    showResult();
+//    if (updateCount > 0)
+//    {
+//        nearCircleAdapter.notifyItemRangeChanged(0, nearCircles.size());
+//    }
+
+//    //                        if (updateCount > 0 || insertCount > 0) {
+//    //                            isDataChange = true;
+//    //                        }
+//}
+//                });
+//    }
 
     private class NearCircleItemListener implements INearCircleItemListener {
 
