@@ -46,6 +46,15 @@ public class NearLogic implements NearStandard{
                 .doOnNext(new Consumer<List<NearCircle>>() {
                     @Override
                     public void accept(List<NearCircle> infos) throws Exception {
+						boolean isClearLocalInfo=false;
+						if(infos!=null&&infos.size()>=pageCount&&localInfos!=null&&localInfos.size()>0){
+							isClearLocalInfo = (infos.get(infos.size()-1).getNearCircleId()-localInfos.get(0).getNearCircleId())>1;
+						}
+
+						if(isClearLocalInfo){
+							DaoUtils.getNearCircleManagerInstance().clearAll();
+						}
+
                         for (int i = 0; i < infos.size(); i++) {
 							DaoUtils.getNearCircleManagerInstance().deleteAll(infos.get(i).getNearCircleId());
 							DaoUtils.getNearCircleManagerInstance().saveAll(infos);

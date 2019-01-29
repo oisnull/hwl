@@ -59,6 +59,24 @@ public class NearCircleManager extends BaseDao<NearCircle> {
 		saveLikes(info.getNearCircleId(),info.getLikes());
 	}
 
+	public void clearAll(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("truncate table ");
+		sb.append(NearCircleDao.TABLENAME);
+		sb.append(";");
+		sb.append("truncate table ");
+		sb.append(NearCircleImageDao.TABLENAME);
+		sb.append(";");
+		sb.append("truncate table ");
+		sb.append(NearCircleCommentDao.TABLENAME);
+		sb.append(";");
+		sb.append("truncate table ");
+		sb.append(NearCircleLikeDao.TABLENAME);
+		sb.append(";");
+		
+        daoSession.getDatabase().execSQL(sb.toString());
+	}
+
     public void delete(long nearCircleId) {
         if (nearCircleId > 0) {
             String deleteSql = "delete from " + NearCircleDao.TABLENAME + " where " + NearCircleDao.Properties.NearCircleId.columnName + "=" + nearCircleId;
