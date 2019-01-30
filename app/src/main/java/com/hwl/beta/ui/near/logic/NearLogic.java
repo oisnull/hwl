@@ -4,34 +4,35 @@ import com.hwl.beta.db.entity.NearCircle;
 
 import java.util.List;
 
-public class NearLogic implements NearStandard{
+public class NearLogic implements NearStandard {
 
-   static int pageCount = 15;
-   static int commentPageCount = 10;
-   
-   public void loadLocalInfos(final DefaultCallback<List<NearCircle>, String> callback){
-		Observable.create(new ObservableOnSubscribe() {
-			public void subscribe(ObservableEmitter emitter) throws Exception {
-				List<NearCircle> infos = DaoUtils.getNearCircleManagerInstance().getNearCirclesV2(pageCount,commentPageCount);
+    static int pageCount = 15;
+    static int commentPageCount = 10;
 
-				emitter.onNext(infos);
-			}
-		})
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Consumer<List<NearCircle>>() {
-            @Override
-            public void accept(List<NearCircle> infos) {
-                callback.success(infos);
+    @Override
+    public void loadLocalInfos(final DefaultCallback<List<NearCircle>, String> callback) {
+        Observable.create(new ObservableOnSubscribe() {
+            public void subscribe(ObservableEmitter emitter) throws Exception {
+                List<NearCircle> infos = DaoUtils.getNearCircleManagerInstance().getNearCirclesV2(pageCount,
+                        commentPageCount);
+
+                emitter.onNext(infos);
             }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) {
-                callback.error(throwable.getMessage());
-            }
-        });
-   }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<NearCircle>>() {
+                    @Override
+                    public void accept(List<NearCircle> infos) {
+                        callback.success(infos);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) {
+                        callback.error(throwable.getMessage());
+                    }
+                });
+    }
 
+    @Override
    public void loadServerInfos(final long minNearCircleId,
 	   final List<NearCircle> localInfos,
 	   final DefaultCallback<List<NearCircle>, String> callback){
@@ -85,4 +86,58 @@ public class NearLogic implements NearStandard{
         }
 		return matchInfos;
    }
+
+    @Override
+	public void deleteInfo(final long nearCircleId,final DefaultCallback<boolean, String> callback){
+		NearCircleService.deleteNearCircleInfo(nearCircleId)
+            .subscribe(new NetDefaultObserver<DeleteNearCircleInfoResponse>() {
+                @Override
+                protected void onSuccess(DeleteNearCircleInfoResponse response) {
+                    if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
+						DaoUtils.getNearCircleManagerInstance().deleteAll(nearCircleId);
+                        callback.success(true);
+                    } else {
+                        onError("Delete near circle info failed.");
+                    }
+                }
+
+                @Override
+                protected void onError(String resultMessage) {
+                    callback.error(resultMessage);
+                }
+            });
+	}
+
+    @Override
+	public void setLike(final long nearCircleId,final boolean isLike,final DefaultCallback<boolean, String> callback){
+        NearCircleService.setNearLikeInfo(isLike ? 1 : 0, nearCircleId)
+                .subscribe(new NetDefaultObserver<SetNearLikeInfoResponse>() {
+                    @Override
+                    protected void onSuccess(SetNearLikeInfoResponse response) {
+                        if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
+							callback.success(true);
+                            if (isLike) {
+                                //nearCircleAdapter.addLike(position, null);
+                                //NearCircleMessageSend.sendDeleteLikeMessage(info.getInfo().getNearCircleId(), info.getInfo().getPublishUserId()).subscribe();
+                            } else {
+                                //NearCircleLike likeInfo = new NearCircleLike();
+                                //likeInfo.setNearCircleId(info.getInfo().getNearCircleId());
+                                //likeInfo.setLikeUserId(myUserId);
+                                //likeInfo.setLikeUserName(UserSP.getUserName());
+                                //likeInfo.setLikeUserImage(UserSP.getUserHeadImage());
+                                //likeInfo.setLikeTime(new Date());
+                                //nearCircleAdapter.addLike(position, likeInfo);
+                                //NearCircleMessageSend.sendAddLikeMessage(info.getInfo().getNearCircleId(), info.getInfo().getPublishUserId(), info.getNearCircleMessageContent()).subscribe();
+                            }
+                        } else {
+                            onError("Set user like info failed.");
+                        }
+                    }
+
+                    @Override
+                    protected void onError(String resultMessage) {
+						callback.error(resultMessage);
+                    }
+                });
+	}
 }

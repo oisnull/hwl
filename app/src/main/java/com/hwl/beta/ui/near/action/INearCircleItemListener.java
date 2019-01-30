@@ -29,7 +29,7 @@ public interface INearCircleItemListener {
 
     void onContentClick(NearCircle info);
 
-    void onMoreActionClick(View view, int position);
+    void onMoreActionClick(View view, int position,NearCircle info);
 
     void onMoreCommentClick(NearCircle info);
 

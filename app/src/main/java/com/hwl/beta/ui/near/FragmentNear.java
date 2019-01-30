@@ -113,7 +113,7 @@ public class FragmentNear extends BaseFragment {
             @Override
             public void success(List<NearCircle> infos) {
 				binding.pbLoading.setVisibility(View.GONE);
-                nearCircleAdapter.addInfos(infos);
+                nearCircleAdapter.updateInfos(infos);
 
 				loadServerInfos(0);
             }
@@ -136,7 +136,7 @@ public class FragmentNear extends BaseFragment {
 		nearStandard.loadServerInfos(infoId,nearCircleAdapter.getInfos(),new DefaultCallback<List<NearCircle>, String>() {
             @Override
             public void success(List<NearCircle> infos) {
-                nearCircleAdapter.addInfos(isRefresh,infos);
+                nearCircleAdapter.updateInfos(isRefresh,infos);
 				showResult();
             }
 
@@ -318,18 +318,8 @@ public class FragmentNear extends BaseFragment {
 
     private class NearCircleItemListener implements INearCircleItemListener {
 
-//        private CircleActionMorePop mMorePopupWindow;
+        private CircleActionMorePop mMorePopupWindow;
         boolean isRuning = false;
-
-        private NearCircleExt getNearCircleInfo(long nearCircleId) {
-//            if (nearCircleId <= 0) return null;
-//            for (int i = 0; i < nearCircles.size(); i++) {
-//                if (nearCircles.get(i).getInfo() != null && nearCircles.get(i).getInfo().getNearCircleId() > 0 && nearCircles.get(i).getInfo().getNearCircleId() == nearCircleId) {
-//                    return nearCircles.get(i);
-//                }
-//            }
-            return null;
-        }
 
         @Override
         public void onItemViewClick(View view) {
@@ -338,22 +328,22 @@ public class FragmentNear extends BaseFragment {
 
         @Override
         public void onUserHeadClick(NearCircle info) {
-//            UITransfer.toUserIndexActivity(activity, info.getPublishUserId(), info.getPublishUserName(), info.getPublishUserImage());
+            UITransfer.toUserIndexActivity(activity, info.getPublishUserId(), info.getPublishUserName(), info.getPublishUserImage());
         }
 
         @Override
         public void onLikeUserHeadClick(NearCircleLike likeInfo) {
-//            UITransfer.toUserIndexActivity(activity, likeInfo.getLikeUserId(), likeInfo.getLikeUserName(), likeInfo.getLikeUserImage());
+            UITransfer.toUserIndexActivity(activity, likeInfo.getLikeUserId(), likeInfo.getLikeUserName(), likeInfo.getLikeUserImage());
         }
 
         @Override
         public void onCommentUserClick(NearCircleComment comment) {
-//            UITransfer.toUserIndexActivity(activity, comment.getCommentUserId(), comment.getCommentUserName(), comment.getCommentUserImage());
+            UITransfer.toUserIndexActivity(activity, comment.getCommentUserId(), comment.getCommentUserName(), comment.getCommentUserImage());
         }
 
         @Override
         public void onReplyUserClick(NearCircleComment comment) {
-//            UITransfer.toUserIndexActivity(activity, comment.getReplyUserId(), comment.getReplyUserName(), comment.getReplyUserImage());
+            UITransfer.toUserIndexActivity(activity, comment.getReplyUserId(), comment.getReplyUserName(), comment.getReplyUserImage());
         }
 
         @Override
@@ -373,30 +363,28 @@ public class FragmentNear extends BaseFragment {
         }
 
         @Override
-        public void onMoreActionClick(final View view, int position) {
-//            final NearCircleExt info = nearCircles.get(position);
-//            if (info == null) return;
-//            if (mMorePopupWindow == null) {
-//                mMorePopupWindow = new CircleActionMorePop(activity);
-//            }
-//            mMorePopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-//                @Override
-//                public void onDismiss() {
-//                    view.setVisibility(View.VISIBLE);
-//                }
-//            });
-//            mMorePopupWindow.setActionMoreListener(new CircleActionMorePop.IActionMoreListener() {
-//                @Override
-//                public void onCommentClick(int position) {
-//                    UITransfer.toNearCommentPublishActivity(activity, info.getInfo().getNearCircleId(), info.getInfo().getPublishUserId(), info.getNearCircleMessageContent());
-//                }
-//
-//                @Override
-//                public void onLikeClick(int position) {
-//                    setLikeInfo(position, info);
-//                }
-//            });
-//            mMorePopupWindow.show(position, view, info.getInfo().getIsLiked());
+        public void onMoreActionClick(final View view, int position,NearCircle info) {
+           if (mMorePopupWindow == null) {
+               mMorePopupWindow = new CircleActionMorePop(activity);
+           }
+           mMorePopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+               @Override
+               public void onDismiss() {
+                   view.setVisibility(View.VISIBLE);
+               }
+           });
+           mMorePopupWindow.setActionMoreListener(new CircleActionMorePop.IActionMoreListener() {
+               @Override
+               public void onCommentClick(int position) {
+                   //UITransfer.toNearCommentPublishActivity(activity, info.getNearCircleId(), info.getPublishUserId(), info.getNearCircleMessageContent());
+               }
+
+               @Override
+               public void onLikeClick(int position) {
+                   //setLikeInfo(position, info);
+               }
+           });
+           mMorePopupWindow.show(position, view, info.getIsLiked());
         }
 
         private void setLikeInfo(final int position, final NearCircleExt info) {

@@ -12,4 +12,7 @@ public interface NearStandard {
 
     void loadServerInfos(long minNearCircleId,List<NearCircle> localInfos,DefaultCallback<List<NearCircle>, String> callback);
 
+	void deleteInfo(long nearCircleId,DefaultCallback<boolean, String> callback);
+
+	void setLike(long nearCircleId,boolean isLike,DefaultCallback<boolean, String> callback);
 }

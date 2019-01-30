@@ -61,14 +61,14 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             NearCircleViewHolder viewHolder = (NearCircleViewHolder) holder;
             viewHolder.setItemBinding(itemListener,
                     position,
-                    info.getInfo(),
+                    info,
                     info.getImages(),
                     info.getLikes(),
                     info.getComments(),
-                    new ImageViewBean(info.getInfo().getPublishUserImage())
+                    new ImageViewBean(info.getPublishUserImage())
             );
 
-            if (info.getInfo().getPublishUserId() == myUserId) {
+            if (info.getPublishUserId() == myUserId) {
                 viewHolder.getItemBinding().ivDelete.setVisibility(View.VISIBLE);
             } else {
                 viewHolder.getItemBinding().ivDelete.setVisibility(View.GONE);
@@ -80,11 +80,11 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 		return this.nearCircles;
 	}
 
-	public void addInfos(List<NearCircle> infos){
-		addInfos(false,infos);
+	public void updateInfos(List<NearCircle> infos){
+		updateInfos(false,infos);
 	}
 
-	public void addInfos(boolean isRefresh,List<NearCircle> infos){
+	public void updateInfos(boolean isRefresh,List<NearCircle> infos){
 		if(infos==null||infos.size()<=0) return;
 		
 		if(getItemCount()<=0){
@@ -93,28 +93,30 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 		}else{
 			removeEmptyInfo();
 			if(isRefresh){
-				nearCircles.addAll(0,infos);
+				boolean isClear = (infos.get(infos.size()-1).getNearCircleId()-localInfos.get(0).getNearCircleId())>1;
+				if(isClear){
+					nearCircles.clear();
+					nearCircles.addAll(0,infos);
+				}else{
+					nearCircles.removeAll(infos);
+					nearCircles.addAll(0,infos);
+					sortInfos(infos);
+				}
 			}else{
 				nearCircles.addAll(infos);
 			}
 			nearCircleAdapter.notifyDataSetChanged();
-
-			//for (int i = 0; i < infos.size(); i++) {
-			//int position = messages.indexOf(msg);
-            //if (position == -1)
-            //{
-            //    messages.add(msg);
-            //    notifyItemInserted(messages.size() - 1);
-            //}
-            //else
-            //{
-            //    messages.remove(position);
-            //    messages.add(position, msg);
-            //    notifyItemChanged(position);
-            //}
-			//}
 		}
 	}
+
+    private void sortInfos(List<NearCircle> infos) {
+        if (infos == null || infos.size() <= 0) return;
+        Collections.sort(infos, new Comparator<NearCircle>() {
+            public int compare(NearCircle arg0, NearCircle arg1) {
+                return arg0.getNearCircleId().compareTo(arg1.getNearCircleId());
+            }
+        });
+    }
 
 	public void setEmptyInfo(){
 		nearCircles.clear();
