@@ -1,6 +1,5 @@
 package com.hwl.beta.ui.near;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -12,45 +11,31 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.NearFragmentMainBinding;
-import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.NearCircle;
 import com.hwl.beta.db.entity.NearCircleComment;
 import com.hwl.beta.db.entity.NearCircleImage;
 import com.hwl.beta.db.entity.NearCircleLike;
 import com.hwl.beta.db.ext.NearCircleExt;
-import com.hwl.beta.net.NetConstant;
-import com.hwl.beta.net.near.NearCircleService;
-import com.hwl.beta.net.near.NetNearCircleInfo;
-import com.hwl.beta.net.near.NetNearCircleMatchInfo;
-import com.hwl.beta.net.near.body.GetNearCircleInfosResponse;
-import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.BaseFragment;
+import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.KeyBoardAction;
-import com.hwl.beta.ui.common.rxext.NetDefaultFunction;
-import com.hwl.beta.ui.convert.DBNearCircleAction;
+import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.near.action.INearCircleItemListener;
 import com.hwl.beta.ui.near.adp.NearCircleAdapter;
+import com.hwl.beta.ui.near.logic.NearLogic;
+import com.hwl.beta.ui.near.standard.NearStandard;
+import com.hwl.beta.ui.widget.CircleActionMorePop;
 import com.hwl.beta.utils.NetworkUtils;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
-import org.greenrobot.eventbus.EventBus;
-
-import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2017/12/27.

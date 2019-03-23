@@ -182,7 +182,7 @@ public class ActivityMain extends BaseActivity {
 //                        UITransfer.toNearMessagesActivity(activity);
                         break;
                     case R.id.pop_near_publish:
-//                        UITransfer.toNearPublishActivity(activity);
+                        UITransfer.toNearPublishActivity(activity);
                         break;
                     case R.id.pop_share_app:
                         new AlertDialog.Builder(activity)

@@ -6,9 +6,11 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.OrderBy;
+import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Administrator on 2018/3/8.
@@ -66,17 +68,17 @@ public class NearCircle implements Serializable {
         this.likes = likes;
     }
 
-    public NearCircle(long nearCircleId,int contentType){
+    public NearCircle(long nearCircleId, int contentType) {
         this.nearCircleId = nearCircleId;
         this.contentType = contentType;
-	}
+    }
 
     @Generated(hash = 347641313)
     public NearCircle(long nearCircleId, long publishUserId, String publishUserName,
-            String publishUserImage, int contentType, String content,
-            String linkTitle, String linkUrl, String linkImage, Date publishTime,
-            String updateTime, String fromPosDesc, int commentCount, int likeCount,
-            boolean isLiked) {
+                      String publishUserImage, int contentType, String content,
+                      String linkTitle, String linkUrl, String linkImage, Date publishTime,
+                      String updateTime, String fromPosDesc, int commentCount, int likeCount,
+                      boolean isLiked) {
         this.nearCircleId = nearCircleId;
         this.publishUserId = publishUserId;
         this.publishUserName = publishUserName;
@@ -223,12 +225,12 @@ public class NearCircle implements Serializable {
     public void setIsLiked(boolean isLiked) {
         this.isLiked = isLiked;
     }
-	
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof NearCircle) {
             NearCircle nc = (NearCircle) obj;
-            return this.getNearCircleId().equals(nc.getNearCircleId());
+            return this.getNearCircleId() == nc.getNearCircleId();
         }
         return super.equals(obj);
     }

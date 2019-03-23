@@ -1,8 +1,28 @@
 package com.hwl.beta.ui.near.logic;
 
+import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.NearCircle;
+import com.hwl.beta.net.NetConstant;
+import com.hwl.beta.net.near.NearCircleService;
+import com.hwl.beta.net.near.NetNearCircleMatchInfo;
+import com.hwl.beta.net.near.body.DeleteNearCircleInfoResponse;
+import com.hwl.beta.net.near.body.GetNearCircleInfosResponse;
+import com.hwl.beta.net.near.body.SetNearLikeInfoResponse;
+import com.hwl.beta.ui.common.DefaultCallback;
+import com.hwl.beta.ui.common.rxext.NetDefaultFunction;
+import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
+import com.hwl.beta.ui.convert.DBNearCircleAction;
+import com.hwl.beta.ui.near.standard.NearStandard;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class NearLogic implements NearStandard {
 
@@ -37,43 +57,43 @@ public class NearLogic implements NearStandard {
 	   final List<NearCircle> localInfos,
 	   final DefaultCallback<List<NearCircle>, String> callback){
 
-	   NearCircleService.getNearCircleInfos(minNearCircleId, pageCount, minNearCircleId<=0?this.getMatchInfos(localInfos):null)
-                .map(new NetDefaultFunction<GetNearCircleInfosResponse, List<NearCircle>>() {
-                    @Override
-                    protected List<NearCircle> onSuccess(GetNearCircleInfosResponse response)  throws Exception {
-						return DBNearCircleAction.convertToNearCircleInfos(response.getNearCircleInfos());
-                    }
-                })
-                .doOnNext(new Consumer<List<NearCircle>>() {
-                    @Override
-                    public void accept(List<NearCircle> infos) throws Exception {
-						boolean isClearLocalInfo=false;
-						if(infos!=null&&infos.size()>=pageCount&&localInfos!=null&&localInfos.size()>0){
-							isClearLocalInfo = (infos.get(infos.size()-1).getNearCircleId()-localInfos.get(0).getNearCircleId())>1;
-						}
-
-						if(isClearLocalInfo){
-							DaoUtils.getNearCircleManagerInstance().clearAll();
-						}
-
-                        for (int i = 0; i < infos.size(); i++) {
-							DaoUtils.getNearCircleManagerInstance().deleteAll(infos.get(i).getNearCircleId());
-							DaoUtils.getNearCircleManagerInstance().saveAll(infos);
-						}
-                    }
-                })
-				.observeOn(AndroidSchedulers.mainThread());
-                .subscribe(new Consumer<List<NearCircle>>() {
-                    @Override
-                    public void accept(List<NearCircle> infos) {
-                        callback.success(infos);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) {
-                        callback.error(throwable.getMessage());
-                    }
-                });
+//	   NearCircleService.getNearCircleInfos(minNearCircleId, pageCount, minNearCircleId<=0?this.getMatchInfos(localInfos):null)
+//                .map(new NetDefaultFunction<GetNearCircleInfosResponse, List<NearCircle>>() {
+//                    @Override
+//                    protected List<NearCircle> onSuccess(GetNearCircleInfosResponse response) {
+//						return DBNearCircleAction.convertToNearCircleInfos(response.getNearCircleInfos());
+//                    }
+//                })
+//                .doOnNext(new Consumer<List<NearCircle>>() {
+//                    @Override
+//                    public void accept(List<NearCircle> infos) {
+//						boolean isClearLocalInfo=false;
+//						if(infos!=null&&infos.size()>=pageCount&&localInfos!=null&&localInfos.size()>0){
+//							isClearLocalInfo = (infos.get(infos.size()-1).getNearCircleId()-localInfos.get(0).getNearCircleId())>1;
+//						}
+//
+//						if(isClearLocalInfo){
+//							DaoUtils.getNearCircleManagerInstance().clearAll();
+//						}
+//
+//                        for (int i = 0; i < infos.size(); i++) {
+//							DaoUtils.getNearCircleManagerInstance().deleteAll(infos.get(i).getNearCircleId());
+//							DaoUtils.getNearCircleManagerInstance().saveAll(infos);
+//						}
+//                    }
+//                })
+//				.observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Consumer<List<NearCircle>>() {
+//                    @Override
+//                    public void accept(List<NearCircle> infos) {
+//                        callback.success(infos);
+//                    }
+//                }, new Consumer<Throwable>() {
+//                    @Override
+//                    public void accept(Throwable throwable) {
+//                        callback.error(throwable.getMessage());
+//                    }
+//                });
    }
 
    private List<NetNearCircleMatchInfo> getMatchInfos(List<NearCircle> localInfos){
@@ -88,7 +108,7 @@ public class NearLogic implements NearStandard {
    }
 
     @Override
-	public void deleteInfo(final long nearCircleId,final DefaultCallback<boolean, String> callback){
+	public void deleteInfo(final long nearCircleId,final DefaultCallback<Boolean, String> callback){
 		NearCircleService.deleteNearCircleInfo(nearCircleId)
             .subscribe(new NetDefaultObserver<DeleteNearCircleInfoResponse>() {
                 @Override
@@ -109,7 +129,7 @@ public class NearLogic implements NearStandard {
 	}
 
     @Override
-	public void setLike(final long nearCircleId,final boolean isLike,final DefaultCallback<boolean, String> callback){
+	public void setLike(final long nearCircleId,final boolean isLike,final DefaultCallback<Boolean, String> callback){
         NearCircleService.setNearLikeInfo(isLike ? 1 : 0, nearCircleId)
                 .subscribe(new NetDefaultObserver<SetNearLikeInfoResponse>() {
                     @Override

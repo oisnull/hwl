@@ -72,7 +72,7 @@
         <activity
             android:name=".ui.chat.ActivityChatUser"
             android:windowSoftInputMode="stateHidden|adjustResize" />
-        <!--<activity android:name=".ui.near.ActivityNearPublish" />-->
+        <activity android:name=".ui.near.ActivityNearPublish" />
         <!--<activity android:name=".ui.near.ActivityNearMessages" />-->
         <!--<activity android:name=".ui.near.ActivityNearDetail" />-->
         <!--<activity-->

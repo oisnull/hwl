@@ -8,87 +8,92 @@
         android:background="@color/main_background"
         android:orientation="vertical">
 
-        <!--<com.hwl.beta.ui.widget.TitleBar-->
-            <!--android:id="@+id/tb_title"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content" />-->
+        <com.hwl.beta.ui.widget.TitleBar
+            android:id="@+id/tb_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-        <!--<ScrollView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:scrollbars="none">-->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none">
 
-            <!--<LinearLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:orientation="vertical">-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <!--<LinearLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:background="@color/white"-->
-                    <!--android:orientation="vertical">-->
-                    <!--&lt;!&ndash;内容输入框&ndash;&gt;-->
-                    <!--<com.hwl.beta.emotion.widget.EmotionEditText-->
-                        <!--android:id="@+id/et_emotion_text"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_marginTop="15dp"-->
-                        <!--android:background="@color/white"-->
-                        <!--android:gravity="top|left"-->
-                        <!--android:hint="你想说些什么..."-->
-                        <!--android:lines="5"-->
-                        <!--android:paddingLeft="15dp"-->
-                        <!--android:paddingRight="15dp"-->
-                        <!--android:textColor="@color/color_727270"-->
-                        <!--android:textColorHint="@color/color_b2b2b2"-->
-                        <!--android:textSize="15dp" />-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+                    <!--内容输入框-->
+                    <com.hwl.beta.emotion.widget.EmotionEditText
+                        android:id="@+id/et_emotion_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:background="@color/white"
+                        android:gravity="top|left"
+                        android:hint="你想说些什么..."
+                        android:lines="5"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:textColor="@color/color_727270"
+                        android:textColorHint="@color/color_b2b2b2"
+                        android:textSize="15dp" />
 
-                    <!--&lt;!&ndash;表情显示&ndash;&gt;-->
-                    <!--<com.hwl.beta.emotion.EmotionControlPannel-->
+                    <!--表情显示-->
+                    <!--<com.hwl.beta.emotion.EmotionControlPannelV2-->
                         <!--android:id="@+id/ecp_emotion"-->
                         <!--app:pannel_theme="1"-->
                         <!--android:layout_width="match_parent"-->
                         <!--android:layout_height="wrap_content"-->
                         <!--android:visibility="visible" />-->
+                    <com.hwl.beta.emotion.EmotionControlPanelV2
+                        android:id="@+id/ecp_emotion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:panel_theme="0" />
 
-                <!--</LinearLayout>-->
+                </LinearLayout>
 
-                <!--<com.hwl.beta.ui.widget.WarpLinearLayout-->
-                    <!--android:id="@+id/wll_image_container"-->
-                    <!--app:grivate="left"-->
-                    <!--app:isFull="true"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginTop="15dp"-->
-                    <!--android:background="@color/white">-->
-                    <!--&lt;!&ndash;动态加载图片&ndash;&gt;-->
-                <!--</com.hwl.beta.ui.widget.WarpLinearLayout>-->
+                <com.hwl.beta.ui.widget.WarpLinearLayout
+                    android:id="@+id/wll_image_container"
+                    app:grivate="left"
+                    app:isFull="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:background="@color/white">
+                    <!--动态加载图片-->
+                </com.hwl.beta.ui.widget.WarpLinearLayout>
 
-                <!--&lt;!&ndash;所在位置&ndash;&gt;-->
-                <!--<RelativeLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginTop="15dp"-->
-                    <!--android:background="@color/white"-->
-                    <!--android:paddingLeft="15dp"-->
-                    <!--android:paddingRight="15dp">-->
+                <!--所在位置-->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:background="@color/white"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp">
 
-                    <!--<TextView-->
-                        <!--android:id="@+id/tv_location"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:drawableLeft="@drawable/ic_location2"-->
-                        <!--android:drawablePadding="10dp"-->
-                        <!--android:gravity="center_vertical"-->
-                        <!--android:paddingBottom="10dp"-->
-                        <!--android:paddingTop="15dp"-->
-                        <!--android:text="所在位置"-->
-                        <!--android:textColor="@color/color_727270"-->
-                        <!--android:textSize="15dp" />-->
+                    <TextView
+                        android:id="@+id/tv_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_location2"
+                        android:drawablePadding="10dp"
+                        android:gravity="center_vertical"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="15dp"
+                        android:text="所在位置"
+                        android:textColor="@color/color_727270"
+                        android:textSize="15dp" />
 
-                <!--</RelativeLayout>-->
-            <!--</LinearLayout>-->
-        <!--</ScrollView>-->
+                </RelativeLayout>
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 </layout>

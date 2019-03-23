@@ -21,6 +21,8 @@ import com.hwl.beta.ui.near.holder.NearCircleViewHolder;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -36,7 +38,7 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public NearCircleAdapter(Context context, List<NearCircle> nearCircles, INearCircleItemListener itemListener) {
         this.context = context;
-        this.nearCircles = nearCircles==null?new ArrayList<>():nearCircles;
+        this.nearCircles = nearCircles==null?new ArrayList<NearCircle>():nearCircles;
         this.itemListener = itemListener;
         inflater = LayoutInflater.from(context);
         myUserId = UserSP.getUserId();
@@ -86,14 +88,14 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
 	public void updateInfos(boolean isRefresh,List<NearCircle> infos){
 		if(infos==null||infos.size()<=0) return;
-		
+
 		if(getItemCount()<=0){
 			nearCircles.addAll(infos);
-			nearCircleAdapter.notifyDataSetChanged();
+			notifyDataSetChanged();
 		}else{
 			removeEmptyInfo();
 			if(isRefresh){
-				boolean isClear = (infos.get(infos.size()-1).getNearCircleId()-localInfos.get(0).getNearCircleId())>1;
+				boolean isClear = (infos.get(infos.size()-1).getNearCircleId()-nearCircles.get(0).getNearCircleId())>1;
 				if(isClear){
 					nearCircles.clear();
 					nearCircles.addAll(0,infos);
@@ -105,23 +107,23 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 			}else{
 				nearCircles.addAll(infos);
 			}
-			nearCircleAdapter.notifyDataSetChanged();
+			notifyDataSetChanged();
 		}
 	}
 
     private void sortInfos(List<NearCircle> infos) {
         if (infos == null || infos.size() <= 0) return;
-        Collections.sort(infos, new Comparator<NearCircle>() {
-            public int compare(NearCircle arg0, NearCircle arg1) {
-                return arg0.getNearCircleId().compareTo(arg1.getNearCircleId());
-            }
-        });
+//        Collections.sort(infos, new Comparator<NearCircle>() {
+//            public int compare(NearCircle arg0, NearCircle arg1) {
+//                return arg0.getNearCircleId().compareTo(arg1.getNearCircleId());
+//            }
+//        });
     }
 
 	public void setEmptyInfo(){
 		nearCircles.clear();
 		nearCircles.add(new NearCircle(0,NetConstant.CIRCLE_CONTENT_NULL));
-		nearCircleAdapter.notifyDataSetChanged();
+		notifyDataSetChanged();
 	}
 
 	private void removeEmptyInfo(){
@@ -131,7 +133,7 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 		}
 	}
 
-	public void getMinId(){
+	public long getMinId(){
 		if(getItemCount()<=0){
 			return 0;
 		}
@@ -145,7 +147,7 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         int position = -1;
         List<NearCircleComment> comments = null;
         for (int i = 0; i < nearCircles.size(); i++) {
-            if (nearCircles.get(i).getInfo().getNearCircleId() == comment.getNearCircleId()) {
+            if (nearCircles.get(i).getNearCircleId() == comment.getNearCircleId()) {
                 comments = nearCircles.get(i).getComments();
                 if (comments == null) {
                     comments = new ArrayList<>();
@@ -172,7 +174,7 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         if (likeInfo == null) {
             //取消点赞
-            info.getInfo().setIsLiked(false);
+            info.setIsLiked(false);
             for (int i = 0; i < info.getLikes().size(); i++) {
                 if (info.getLikes().get(i).getLikeUserId() == myUserId) {
                     info.getLikes().remove(i);
@@ -182,7 +184,7 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
         } else {
             //点赞
-            info.getInfo().setIsLiked(true);
+            info.setIsLiked(true);
             info.getLikes().add(info.getLikes().size(), likeInfo);
             notifyItemChanged(position);
         }
