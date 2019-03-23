@@ -35,6 +35,42 @@ public class NearCircle implements Serializable {
     private int likeCount;
     private boolean isLiked;
 
+    @Transient
+    private List<NearCircleImage> images;
+    @Transient
+    private List<NearCircleComment> comments;
+    @Transient
+    private List<NearCircleLike> likes;
+
+    public List<NearCircleImage> getImages() {
+        return this.images;
+    }
+
+    public void setImages(List<NearCircleImage> imgs) {
+        this.images = imgs;
+    }
+
+    public List<NearCircleComment> getComments() {
+        return this.comments;
+    }
+
+    public void setComments(List<NearCircleComment> cmts) {
+        this.comments = cmts;
+    }
+
+    public List<NearCircleLike> getLikes() {
+        return this.likes;
+    }
+
+    public void setLikes(List<NearCircleLike> likes) {
+        this.likes = likes;
+    }
+
+    public NearCircle(long nearCircleId,int contentType){
+        this.nearCircleId = nearCircleId;
+        this.contentType = contentType;
+	}
+
     @Generated(hash = 347641313)
     public NearCircle(long nearCircleId, long publishUserId, String publishUserName,
             String publishUserImage, int contentType, String content,
@@ -187,5 +223,13 @@ public class NearCircle implements Serializable {
     public void setIsLiked(boolean isLiked) {
         this.isLiked = isLiked;
     }
-
+	
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof NearCircle) {
+            NearCircle nc = (NearCircle) obj;
+            return this.getNearCircleId().equals(nc.getNearCircleId());
+        }
+        return super.equals(obj);
+    }
 }

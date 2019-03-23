@@ -53,16 +53,6 @@ public class ActivityWelcome extends FragmentActivity {
                             tvCountdown.setText(sec + " s");
                         }
                     }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
                 });
     }
 

@@ -25,13 +25,14 @@ import io.reactivex.functions.Function;
  */
 
 public class NearCircleManager extends BaseDao<NearCircle> {
+
     public NearCircleManager(Context context) {
         super(context);
     }
 
-    public long save(NearCircle model) {
-        if (model == null) return 0;
-        return daoSession.getNearCircleDao().insertOrReplace(model);
+    public long save(NearCircle info) {
+		if(info==null||info.getNearCircleId()<=0) return;
+        return daoSession.getNearCircleDao().insertOrReplace(info);
     }
 
     public NearCircle getNearCircle(long nearCircleId) {
@@ -51,10 +52,78 @@ public class NearCircleManager extends BaseDao<NearCircle> {
         return id;
     }
 
+	public void saveAll(NearCircle info){
+		save(info);
+		saveImages(info.getNearCircleId(),info.getImages());
+		saveComments(info.getNearCircleId(),info.getComments());
+		saveLikes(info.getNearCircleId(),info.getLikes());
+	}
+
+	public void clearAll(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("truncate table ");
+		sb.append(NearCircleDao.TABLENAME);
+		sb.append(";");
+		sb.append("truncate table ");
+		sb.append(NearCircleImageDao.TABLENAME);
+		sb.append(";");
+		sb.append("truncate table ");
+		sb.append(NearCircleCommentDao.TABLENAME);
+		sb.append(";");
+		sb.append("truncate table ");
+		sb.append(NearCircleLikeDao.TABLENAME);
+		sb.append(";");
+		
+        daoSession.getDatabase().execSQL(sb.toString());
+	}
+
     public void delete(long nearCircleId) {
         if (nearCircleId > 0) {
             String deleteSql = "delete from " + NearCircleDao.TABLENAME + " where " + NearCircleDao.Properties.NearCircleId.columnName + "=" + nearCircleId;
             daoSession.getDatabase().execSQL(deleteSql);
+        }
+    }
+
+    public void deleteAll(long nearCircleId) {
+        if (nearCircleId > 0) {
+			StringBuilder sb = new StringBuilder();
+			//delete info sql
+			sb.append("delete from ");
+			sb.append(NearCircleDao.TABLENAME);
+			sb.append(" where ");
+			sb.append(NearCircleDao.Properties.NearCircleId.columnName);
+			sb.append(" = ");
+			sb.append(nearCircleId);
+			sb.append(";");
+
+			//delete images sql
+			sb.append("delete from ");
+			sb.append(NearCircleImageDao.TABLENAME);
+			sb.append(" where ");
+			sb.append(NearCircleImageDao.Properties.NearCircleId.columnName);
+			sb.append(" = ");
+			sb.append(nearCircleId);
+			sb.append(";");
+
+			//delete comments sql
+			sb.append("delete from ");
+			sb.append(NearCircleCommentDao.TABLENAME);
+			sb.append(" where ");
+			sb.append(NearCircleCommentDao.Properties.NearCircleId.columnName);
+			sb.append(" = ");
+			sb.append(nearCircleId);
+			sb.append(";");
+
+			//delete likes sql
+			sb.append("delete from ");
+			sb.append(NearCircleLikeDao.TABLENAME);
+			sb.append(" where ");
+			sb.append(NearCircleLikeDao.Properties.NearCircleId.columnName);
+			sb.append(" = ");
+			sb.append(nearCircleId);
+			sb.append(";");
+
+            daoSession.getDatabase().execSQL(sb.toString());
         }
     }
 
@@ -103,11 +172,23 @@ public class NearCircleManager extends BaseDao<NearCircle> {
                 .where(NearCircleCommentDao.Properties.CommentId.eq(commentId))
                 .unique();
     }
+	
+    public List<NearCircleComment> getComments(long nearCircleId){
+		return getComments(nearCircleId,0);
+	}
 
-    public List<NearCircleComment> getComments(long nearCircleId) {
+    public List<NearCircleComment> getComments(long nearCircleId,int pageCount) {
         if (nearCircleId <= 0) return null;
+
+		if(pageCount<=0){
+			return daoSession.getNearCircleCommentDao().queryBuilder()
+					.where(NearCircleCommentDao.Properties.NearCircleId.eq(nearCircleId))
+					.list();
+		}
+
         return daoSession.getNearCircleCommentDao().queryBuilder()
                 .where(NearCircleCommentDao.Properties.NearCircleId.eq(nearCircleId))
+                .limit(pageCount)
                 .list();
     }
 
@@ -165,6 +246,25 @@ public class NearCircleManager extends BaseDao<NearCircle> {
             daoSession.getNearCircleLikeDao().save(likeInfo);
         }
     }
+
+	public List<NearCircle> getNearCirclesV2(int pageCount,int commentPageCount){
+        List<NearCircle> infos = daoSession.getNearCircleDao().queryBuilder()
+                .orderDesc(NearCircleDao.Properties.NearCircleId)
+                .limit(pageCount)
+                .list();
+        if (infos == null || infos.size() <= 0) return infos;
+
+		long circleId = 0;
+		for (int i = 0; i < infos.size(); i++) {
+			circleId=infos.get(i).getNearCircleId();
+
+			infos.get(i).setImages(getImages(circleId));
+			infos.get(i).setComments(getComments(circleId,commentPageCount));
+			infos.get(i).setLikes(getLikes(circleId));
+        }
+
+		return infos;
+	}
 
     public List<NearCircleExt> getNearCircles(int pageCount) {
         List<NearCircle> infos = daoSession.getNearCircleDao().queryBuilder()

@@ -12,7 +12,7 @@ import com.hwl.beta.databinding.NearItemBinding;
 import com.hwl.beta.databinding.NearItemNullBinding;
 import com.hwl.beta.db.entity.NearCircleComment;
 import com.hwl.beta.db.entity.NearCircleLike;
-import com.hwl.beta.db.ext.NearCircleExt;
+import com.hwl.beta.db.entity.NearCircle;
 import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.near.action.INearCircleItemListener;
@@ -29,14 +29,14 @@ import java.util.List;
 
 public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;
-    List<NearCircleExt> nearCircles;
+    List<NearCircle> nearCircles;
     INearCircleItemListener itemListener;
     LayoutInflater inflater;
     long myUserId;
 
-    public NearCircleAdapter(Context context, List<NearCircleExt> nearCircles, INearCircleItemListener itemListener) {
+    public NearCircleAdapter(Context context, List<NearCircle> nearCircles, INearCircleItemListener itemListener) {
         this.context = context;
-        this.nearCircles = nearCircles;
+        this.nearCircles = nearCircles==null?new ArrayList<>():nearCircles;
         this.itemListener = itemListener;
         inflater = LayoutInflater.from(context);
         myUserId = UserSP.getUserId();
@@ -53,7 +53,7 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        NearCircleExt info = nearCircles.get(position);
+        NearCircle info = nearCircles.get(position);
         if (holder instanceof NearCircleNullViewHolder) {
             NearCircleNullViewHolder viewHolder = (NearCircleNullViewHolder) holder;
             viewHolder.setItemBinding(itemListener);
@@ -61,20 +61,82 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             NearCircleViewHolder viewHolder = (NearCircleViewHolder) holder;
             viewHolder.setItemBinding(itemListener,
                     position,
-                    info.getInfo(),
+                    info,
                     info.getImages(),
                     info.getLikes(),
                     info.getComments(),
-                    new ImageViewBean(info.getInfo().getPublishUserImage())
+                    new ImageViewBean(info.getPublishUserImage())
             );
 
-            if (info.getInfo().getPublishUserId() == myUserId) {
+            if (info.getPublishUserId() == myUserId) {
                 viewHolder.getItemBinding().ivDelete.setVisibility(View.VISIBLE);
             } else {
                 viewHolder.getItemBinding().ivDelete.setVisibility(View.GONE);
             }
         }
     }
+
+	public List<NearCircle> getInfos(){
+		return this.nearCircles;
+	}
+
+	public void updateInfos(List<NearCircle> infos){
+		updateInfos(false,infos);
+	}
+
+	public void updateInfos(boolean isRefresh,List<NearCircle> infos){
+		if(infos==null||infos.size()<=0) return;
+		
+		if(getItemCount()<=0){
+			nearCircles.addAll(infos);
+			nearCircleAdapter.notifyDataSetChanged();
+		}else{
+			removeEmptyInfo();
+			if(isRefresh){
+				boolean isClear = (infos.get(infos.size()-1).getNearCircleId()-localInfos.get(0).getNearCircleId())>1;
+				if(isClear){
+					nearCircles.clear();
+					nearCircles.addAll(0,infos);
+				}else{
+					nearCircles.removeAll(infos);
+					nearCircles.addAll(0,infos);
+					sortInfos(infos);
+				}
+			}else{
+				nearCircles.addAll(infos);
+			}
+			nearCircleAdapter.notifyDataSetChanged();
+		}
+	}
+
+    private void sortInfos(List<NearCircle> infos) {
+        if (infos == null || infos.size() <= 0) return;
+        Collections.sort(infos, new Comparator<NearCircle>() {
+            public int compare(NearCircle arg0, NearCircle arg1) {
+                return arg0.getNearCircleId().compareTo(arg1.getNearCircleId());
+            }
+        });
+    }
+
+	public void setEmptyInfo(){
+		nearCircles.clear();
+		nearCircles.add(new NearCircle(0,NetConstant.CIRCLE_CONTENT_NULL));
+		nearCircleAdapter.notifyDataSetChanged();
+	}
+
+	private void removeEmptyInfo(){
+		int position = nearCircles.indexOf(new NearCircle(0,NetConstant.CIRCLE_CONTENT_NULL));
+		if (position != -1){
+			nearCircles.remove(position);
+		}
+	}
+
+	public void getMinId(){
+		if(getItemCount()<=0){
+			return 0;
+		}
+		return nearCircles.get(getItemCount() - 1).getNearCircleId();
+	}
 
     public void addComment(NearCircleComment comment) {
         if (comment == null || comment.getNearCircleId() <= 0 || comment.getCommentUserId() <= 0)
@@ -94,7 +156,6 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
         }
 
-
         comments.add(comment);
         if (position == -1) {
             notifyItemChanged(0);
@@ -104,7 +165,7 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public void addLike(int position, NearCircleLike likeInfo) {
-        NearCircleExt info = nearCircles.get(position);
+        NearCircle info = nearCircles.get(position);
         if (info.getLikes() == null) {
             info.setLikes(new ArrayList<NearCircleLike>());
         }
@@ -140,7 +201,7 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemViewType(int position) {
-        if (nearCircles.get(position).getInfo().getContentType() == NetConstant.CIRCLE_CONTENT_NULL)
+        if (nearCircles.get(position).getContentType() == NetConstant.CIRCLE_CONTENT_NULL)
             return 0;
         return 1;
     }

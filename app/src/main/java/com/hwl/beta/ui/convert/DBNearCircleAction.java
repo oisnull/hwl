@@ -37,8 +37,35 @@ public class DBNearCircleAction {
         model.setLinkUrl(info.getLinkUrl());
         model.setLinkTitle(info.getLinkTitle());
         model.setIsLiked(info.isLiked());
+
+		List<NearCircleImage> images=convertToNearCircleImageInfos(info.getNearCircleId(),info.getPublishUserId(),info.getImages());
+		if(images!=null&&images.size()>0){
+			model.setImages(images);
+		}
+
+		List<NearCircleComment> comments=convertToNearCircleCommentInfos(info.getCommentInfos());
+		if(comments!=null&&comments.size()>0){
+			model.setComments(comments);
+		}
+
+		List<NearCircleLike> likes=convertToNearCircleLikeInfos(info.getLikeInfos());
+		if(likes!=null&&likes.size()>0){
+			model.setLikes(likes);
+		}
+
         return model;
     }
+
+	public static List<NearCircle> convertToNearCircleInfos(List<NetNearCircleInfo> netInfos){
+        if (netInfos == null || netInfos.size() <= 0) return null;
+		
+		List<NearCircle> infos=new ArrayList<>(netInfos.size());
+        for (int i = 0; i < netInfos.size(); i++) {
+			infos.add(convertToNearCircleInfo(netInfos.get(i)));
+		}
+
+		return infos;
+	}
 
     public static List<NearCircleImage> convertToNearCircleImageInfos(long nearCircleId, long publishUserId, List<NetImageInfo> images) {
         if (nearCircleId <= 0 || images == null || images.size() <= 0) return null;
