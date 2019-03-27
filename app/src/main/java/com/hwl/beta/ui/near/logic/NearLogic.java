@@ -58,7 +58,7 @@ public class NearLogic implements NearStandard {
 	   final DefaultCallback<List<NearCircle>, String> callback){
 
 //	   NearCircleService.getNearCircleInfos(minNearCircleId, pageCount, minNearCircleId<=0?this.getMatchInfos(localInfos):null)
-//                .map(new NetDefaultFunction<GetNearCircleInfosResponse, List<NearCircle>>() {
+//                .map(new Function<GetNearCircleInfosResponse, List<NearCircle>>() {
 //                    @Override
 //                    protected List<NearCircle> onSuccess(GetNearCircleInfosResponse response) {
 //						return DBNearCircleAction.convertToNearCircleInfos(response.getNearCircleInfos());
