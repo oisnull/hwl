@@ -263,19 +263,13 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
     private Observable<ChatUserMessage> validateUser(final ChatUserMessage message) {
         return UserService.getUserRelationInfo(message
                 .getToUserId())
-                .map(new Function<ResponseBase<GetUserRelationInfoResponse>, ChatUserMessage>() {
+                .map(new Function<GetUserRelationInfoResponse, ChatUserMessage>() {
                     @Override
-                    public ChatUserMessage apply(ResponseBase<GetUserRelationInfoResponse>
-                                                         response) throws Exception {
-                        if (response != null && response.getResponseBody() != null) {
-                            GetUserRelationInfoResponse res = response.getResponseBody();
-                            if (res.getIsInBlackList()) {
-                                throw new CustomException(ExceptionCode.ChatCodeUserBlack);
-                            }
-                            return message;
-                        } else {
-                            throw new CustomException(ExceptionCode.ChatCodeUserValidateFailure);
+                    public ChatUserMessage apply(GetUserRelationInfoResponse res) throws Exception {
+                        if (res.getIsInBlackList()) {
+                            throw new CustomException(ExceptionCode.ChatCodeUserBlack);
                         }
+                        return message;
                     }
                 });
     }

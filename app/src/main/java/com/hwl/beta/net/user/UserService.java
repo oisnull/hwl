@@ -1,5 +1,6 @@
 package com.hwl.beta.net.user;
 
+import com.hwl.beta.net.NetDefaultFunction;
 import com.hwl.beta.net.RequestBase;
 import com.hwl.beta.net.ResponseBase;
 import com.hwl.beta.net.RetrofitUtils;
@@ -83,7 +84,8 @@ public class UserService {
     }
 
     public static Observable<ResponseBase<SetUserPasswordResponse>> setUserPassword(String email,
-                                                                                    String mobile, String password, String passwordOK, String code) {
+                                                                                    String mobile
+            , String password, String passwordOK, String code) {
         SetUserPasswordRequest requestBody = new SetUserPasswordRequest();
         requestBody.setEmail(email);
         requestBody.setMobile(mobile);
@@ -221,64 +223,62 @@ public class UserService {
         return response;
     }
 
-    public static Observable<ResponseBase<SetFriendRemarkResponse>> setFriendRemark(long friendId, String remark) {
+    public static Observable<SetFriendRemarkResponse> setFriendRemark(long friendId
+            , String remark) {
         SetFriendRemarkRequest requestBody = new SetFriendRemarkRequest();
         requestBody.setMyUserId(UserSP.getUserId());
         requestBody.setFriendUserId(friendId);
         requestBody.setFriendUserRemark(remark);
-        Observable<ResponseBase<SetFriendRemarkResponse>> response = RetrofitUtils.createApi
+        return RetrofitUtils.createApi
                 (IUserService.class)
                 .setFriendRemark(new RequestBase(UserSP.getUserToken(), requestBody))
+                .map(new NetDefaultFunction<SetFriendRemarkResponse>())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-        return response;
     }
 
-    public static Observable<ResponseBase<GetFriendsResponse>> getFriends() {
+    public static Observable<GetFriendsResponse> getFriends() {
         GetFriendsRequest requestBody = new GetFriendsRequest();
         requestBody.setUserId(UserSP.getUserId());
-        Observable<ResponseBase<GetFriendsResponse>> response = RetrofitUtils.createApi
-                (IUserService.class)
+        return RetrofitUtils.createApi(IUserService.class)
                 .getFriends(new RequestBase(UserSP.getUserToken(), requestBody))
+                .map(new NetDefaultFunction<GetFriendsResponse>())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-        return response;
     }
 
-    public static Observable<ResponseBase<DeleteFriendResponse>> deleteFriend(long friendUserId) {
+    public static Observable<DeleteFriendResponse> deleteFriend(long friendUserId) {
         DeleteFriendRequest requestBody = new DeleteFriendRequest();
         requestBody.setMyUserId(UserSP.getUserId());
         requestBody.setFriendUserId(friendUserId);
-        Observable<ResponseBase<DeleteFriendResponse>> response = RetrofitUtils.createApi
+        return RetrofitUtils.createApi
                 (IUserService.class)
                 .deleteFriend(new RequestBase(UserSP.getUserToken(), requestBody))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-        return response;
     }
 
-    public static Observable<ResponseBase<GetUserDetailsResponse>> getUserDetails(long viewUserId) {
+    public static Observable<GetUserDetailsResponse> getUserDetails(long viewUserId) {
         GetUserDetailsRequest requestBody = new GetUserDetailsRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setGetUserId(viewUserId);
-        Observable<ResponseBase<GetUserDetailsResponse>> response = RetrofitUtils.createApi
+        return RetrofitUtils.createApi
                 (IUserService.class)
                 .getUserDetails(new RequestBase(UserSP.getUserToken(), requestBody))
+                .map(new NetDefaultFunction<ResponseBase<GetUserDetailsResponse>>())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-        return response;
     }
 
-    public static Observable<ResponseBase<GetUserRelationInfoResponse>> getUserRelationInfo(long relationUserId) {
+    public static Observable<GetUserRelationInfoResponse> getUserRelationInfo(long relationUserId) {
         GetUserRelationInfoRequest requestBody = new GetUserRelationInfoRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setRelationUserId(relationUserId);
-        Observable<ResponseBase<GetUserRelationInfoResponse>> response = RetrofitUtils.createApi
+        return RetrofitUtils.createApi
                 (IUserService.class)
                 .getUserRelationInfo(new RequestBase(UserSP.getUserToken(), requestBody))
+                .map(new NetDefaultFunction<ResponseBase<GetUserRelationInfoResponse>>())
                 .subscribeOn(Schedulers.io());
-//                .observeOn(AndroidSchedulers.mainThread());
-        return response;
     }
 
 

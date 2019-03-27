@@ -1,5 +1,6 @@
 package com.hwl.beta.net.near;
 
+import com.hwl.beta.net.NetDefaultFunction;
 import com.hwl.beta.net.RequestBase;
 import com.hwl.beta.net.ResponseBase;
 import com.hwl.beta.net.RetrofitUtils;
@@ -50,7 +51,7 @@ public class NearCircleService {
         requestBody.setCount(pageCount <= 0 ? 15 : pageCount);
         return RetrofitUtils.createApi(INearCircleService.class)
                 .getNearCircleInfos(new RequestBase(UserSP.getUserToken(), requestBody))
-				.Map(new NetDefaultFunction<ResponseBase<GetNearCircleInfosResponse>,GetNearCircleInfosResponse>())
+                .map(new NetDefaultFunction())
                 .subscribeOn(Schedulers.io());
     }
 
