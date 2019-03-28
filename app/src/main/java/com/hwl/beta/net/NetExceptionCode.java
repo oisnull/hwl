@@ -5,7 +5,7 @@ package com.hwl.beta.net;
  */
 
 public enum NetExceptionCode {
-    TokenInvalid(1, "Login timeout.");
+    TokenInvalid(1, "Token is invalid, need to login again.");
 
     private String desc;
     private int index;

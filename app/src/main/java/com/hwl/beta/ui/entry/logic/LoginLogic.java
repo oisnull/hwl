@@ -23,7 +23,7 @@ public class LoginLogic implements LoginStandard {
     @Override
     public void userLogin(LoginBean loginBean, final DefaultAction succCallback, final DefaultConsumer<String> errorCallback) {
         if (loginBean == null) {
-            errorCallback.accept("login parameter is empty");
+            errorCallback.accept("login parameter can't be empty");
             return;
         }
 

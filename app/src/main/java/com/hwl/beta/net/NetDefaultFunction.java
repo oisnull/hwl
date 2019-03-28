@@ -27,7 +27,7 @@ public class NetDefaultFunction<T> implements Function<ResponseBase<T>, T> {
 
     private String getFailedMessage(ResponseBase<T> response) {
         if (StringUtils.isBlank(response.getResponseHead().getResultMessage())) {
-            return "Request data failed";
+            return "Network error,request data failed";
         }
 
         return response.getResponseHead().getResultMessage();
