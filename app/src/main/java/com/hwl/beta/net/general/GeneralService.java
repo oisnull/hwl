@@ -1,5 +1,6 @@
 package com.hwl.beta.net.general;
 
+import com.hwl.beta.net.NetDefaultFunction;
 import com.hwl.beta.net.RequestBase;
 import com.hwl.beta.net.ResponseBase;
 import com.hwl.beta.net.RetrofitUtils;
@@ -30,8 +31,7 @@ public class GeneralService {
         return RetrofitUtils.createApi(GeneralService.IGenericService.class)
                 .sendEmail(new RequestBase(requestBody))
                 .map(new NetDefaultFunction<ResponseBase<SendEmailResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public static Observable<SendSMSResponse> sendSMS(String mobile) {
@@ -40,8 +40,7 @@ public class GeneralService {
         return RetrofitUtils.createApi(GeneralService.IGenericService.class)
                 .sendSMS(new RequestBase(requestBody))
                 .map(new NetDefaultFunction<ResponseBase<SendSMSResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public static Observable<CheckVersionResponse> checkVersion() {
@@ -51,8 +50,7 @@ public class GeneralService {
         return RetrofitUtils.createApi(GeneralService.IGenericService.class)
                 .checkVersion(new RequestBase(requestBody))
                 .map(new NetDefaultFunction<ResponseBase<CheckVersionResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public interface IGenericService {

@@ -13,13 +13,14 @@ import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.KeyBoardAction;
 import com.hwl.beta.ui.common.UITransfer;
-import com.hwl.im.common.DefaultAction;
-import com.hwl.im.common.DefaultConsumer;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.entry.action.IRegisterListener;
 import com.hwl.beta.ui.entry.bean.RegisterBean;
 import com.hwl.beta.ui.entry.logic.RegisterLogic;
 import com.hwl.beta.ui.entry.standard.RegisterStandard;
 import com.hwl.beta.ui.widget.TimeCount;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Administrator on 2018/1/13.
@@ -129,20 +130,42 @@ public class ActivityRegister extends BaseActivity {
                 return;
             }
 
-            registerStandard.userRegister(registerBean, new DefaultAction() {
-                @Override
-                public void run() {
-                    Toast.makeText(activity, "注册成功 ！", Toast.LENGTH_LONG).show();
-                    UITransfer.toLoginActivity(activity);
-                    finish();
-                }
-            }, new DefaultConsumer<String>() {
-                @Override
-                public void accept(String s) {
-                    isRunning = false;
-                    binding.btnRegister.setText("注   册");
-                }
-            });
+            registerStandard.userRegister(registerBean)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new RXDefaultObserver<Boolean>() {
+                        @Override
+                        protected void onSuccess(Boolean success) {
+                            if (success) {
+                                Toast.makeText(activity, "注册成功 ！", Toast.LENGTH_LONG).show();
+                                UITransfer.toLoginActivity(activity);
+                                finish();
+                            } else {
+                                onError("注册失败 ！");
+                            }
+                        }
+
+                        @Override
+                        protected void onError(String message) {
+                            super.onError(message);
+                            isRunning = false;
+                            binding.btnRegister.setText("注   册");
+                        }
+                    });
+
+//            registerStandard.userRegister(registerBean, new DefaultAction() {
+//                @Override
+//                public void run() {
+//                    Toast.makeText(activity, "注册成功 ！", Toast.LENGTH_LONG).show();
+//                    UITransfer.toLoginActivity(activity);
+//                    finish();
+//                }
+//            }, new DefaultConsumer<String>() {
+//                @Override
+//                public void accept(String s) {
+//                    isRunning = false;
+//                    binding.btnRegister.setText("注   册");
+//                }
+//            });
         }
 
         @Override
@@ -153,17 +176,34 @@ public class ActivityRegister extends BaseActivity {
             }
 
             setSendViewStatus(NetConstant.SEND_STATUS_PROGRESSING);
-            registerStandard.sendCode(registerBean, new DefaultAction() {
-                @Override
-                public void run() {
-                    setSendViewStatus(NetConstant.SEND_STATUS_SUCCESS);
-                }
-            }, new DefaultConsumer<String>() {
-                @Override
-                public void accept(String s) {
-                    setSendViewStatus(NetConstant.SEND_STATUS_FAILED);
-                }
-            });
+            registerStandard.sendCode(registerBean)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new RXDefaultObserver<Boolean>() {
+                        @Override
+                        protected void onSuccess(Boolean success) {
+                            if (success)
+                                setSendViewStatus(NetConstant.SEND_STATUS_SUCCESS);
+                            else
+                                onError("发送失败！");
+                        }
+
+                        @Override
+                        protected void onError(String message) {
+                            super.onError(message);
+                            setSendViewStatus(NetConstant.SEND_STATUS_FAILED);
+                        }
+                    });
+//            registerStandard.sendCode(registerBean, new DefaultAction() {
+//                @Override
+//                public void run() {
+//                    setSendViewStatus(NetConstant.SEND_STATUS_SUCCESS);
+//                }
+//            }, new DefaultConsumer<String>() {
+//                @Override
+//                public void accept(String s) {
+//                    setSendViewStatus(NetConstant.SEND_STATUS_FAILED);
+//                }
+//            });
         }
     }
 }

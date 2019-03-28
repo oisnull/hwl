@@ -58,8 +58,7 @@ public class UserService {
         return RetrofitUtils.createApi(IUserService.class)
                 .userLogin(new RequestBase(requestBody))
                 .map(new NetDefaultFunction<ResponseBase<UserLoginResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public static Observable<UserRegisterResponse> userRegister(String email,
@@ -76,8 +75,7 @@ public class UserService {
         return RetrofitUtils.createApi(IUserService.class)
                 .userRegister(new RequestBase(requestBody))
                 .map(new NetDefaultFunction<ResponseBase<UserRegisterResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public static Observable<SetUserPasswordResponse> setUserPassword(String email,

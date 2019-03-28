@@ -6,11 +6,11 @@ import com.hwl.beta.net.general.body.SendEmailResponse;
 import com.hwl.beta.net.general.body.SendSMSResponse;
 import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.UserRegisterResponse;
-import com.hwl.im.common.DefaultAction;
-import com.hwl.im.common.DefaultConsumer;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.entry.bean.RegisterBean;
 import com.hwl.beta.ui.entry.standard.RegisterStandard;
+
+import io.reactivex.Observable;
+import io.reactivex.functions.Function;
 
 /**
  * RegisterLogic
@@ -29,12 +29,11 @@ public class RegisterLogic implements RegisterStandard {
     }
 
     @Override
-    public void userRegister(RegisterBean registerBean, final DefaultAction succCallback, final
-    DefaultConsumer<String> errorCallback) {
-        if (registerBean == null) {
-            errorCallback.accept("register parameter is empty");
-            return;
-        }
+    public Observable<Boolean> userRegister(RegisterBean registerBean) {
+//        if (registerBean == null) {
+//            errorCallback.accept("register parameter is empty");
+//            return;
+//        }
         String email = "";
         String mobile = "";
         if (registerBean.getIsEmail()) {
@@ -43,67 +42,53 @@ public class RegisterLogic implements RegisterStandard {
             mobile = registerBean.getAccount();
         }
 
-        UserService.userRegister(email,
+        return UserService.userRegister(email,
                 mobile,
                 registerBean.getMd5Password(),
                 registerBean.getMd5PasswordOK(),
                 registerBean.getCheckCode())
-                .subscribe(new NetDefaultObserver<UserRegisterResponse>() {
+                .map(new Function<UserRegisterResponse, Boolean>() {
                     @Override
-                    protected void onSuccess(UserRegisterResponse response) {
-                        if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
-                            succCallback.run();
-                        } else {
-                            onError("注册失败");
-                        }
-                    }
-
-                    @Override
-                    protected void onError(String resultMessage) {
-                        super.onError(resultMessage);
-                        errorCallback.accept(resultMessage);
+                    public Boolean apply(UserRegisterResponse response) {
+                        return response.getStatus() == NetConstant.RESULT_SUCCESS;
                     }
                 });
+//                .subscribe(new NetDefaultObserver<UserRegisterResponse>() {
+//                    @Override
+//                    protected void onSuccess(UserRegisterResponse response) {
+//                        if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
+//                            succCallback.run();
+//                        } else {
+//                            onError("注册失败");
+//                        }
+//                    }
+//
+//                    @Override
+//                    protected void onError(String resultMessage) {
+//                        super.onError(resultMessage);
+//                        errorCallback.accept(resultMessage);
+//                    }
+//                });
     }
 
     @Override
-    public void sendCode(RegisterBean registerBean, final DefaultAction succCallback, final
-    DefaultConsumer
-            <String> errorCallback) {
+    public Observable<Boolean> sendCode(RegisterBean registerBean) {
         if (registerBean.getIsEmail()) {
-            GeneralService.sendEmail(registerBean.getAccount()).subscribe(new NetDefaultObserver<SendEmailResponse>() {
-                @Override
-                protected void onSuccess(SendEmailResponse response) {
-                    if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
-                        succCallback.run();
-                    } else {
-                        onError("发送失败");
-                    }
-                }
-
-                @Override
-                protected void onError(String resultMessage) {
-                    super.onError(resultMessage);
-                    errorCallback.accept(resultMessage);
-                }
-            });
+            return GeneralService.sendEmail(registerBean.getAccount())
+                    .map(new Function<SendEmailResponse, Boolean>() {
+                        @Override
+                        public Boolean apply(SendEmailResponse response) {
+                            return response.getStatus() == NetConstant.RESULT_SUCCESS;
+                        }
+                    });
         } else {
-            GeneralService.sendSMS(registerBean.getAccount()).subscribe(new NetDefaultObserver<SendSMSResponse>() {
-                @Override
-                protected void onSuccess(SendSMSResponse response) {
-                    if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
-                        succCallback.run();
-                    } else {
-                        onError("发送失败");
-                    }
-                }
-
-                @Override
-                protected void onError(String resultMessage) {
-                    super.onError(resultMessage);
-                    errorCallback.accept(resultMessage);
-                }
-            });
+            return GeneralService.sendSMS(registerBean.getAccount())
+                    .map(new Function<SendSMSResponse, Boolean>() {
+                        @Override
+                        public Boolean apply(SendSMSResponse response) {
+                            return response.getStatus() == NetConstant.RESULT_SUCCESS;
+                        }
+                    });
         }
 
     }
