@@ -4,6 +4,8 @@ import com.hwl.beta.db.entity.FriendRequest;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+
 public interface NewFriendStandard {
     List<FriendRequest> getFriendRequestInfos();
     Observable addFriend(FriendRequest friendRequest);

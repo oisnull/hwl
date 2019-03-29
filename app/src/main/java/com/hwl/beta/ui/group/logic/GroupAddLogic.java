@@ -11,7 +11,7 @@ import com.hwl.beta.net.group.body.AddGroupUsersResponse;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.FriendComparator;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.convert.DBFriendAction;
 import com.hwl.beta.ui.convert.DBGroupAction;
 import com.hwl.beta.ui.ebus.EventBusUtil;
@@ -60,7 +60,7 @@ public class GroupAddLogic implements GroupAddStandard {
         }
 
         GroupService.addGroupUsers(groupInfo.getGroupGuid(), getGroupUserIds(selectUsers))
-                .subscribe(new NetDefaultObserver<AddGroupUsersResponse>() {
+                .subscribe(new RXDefaultObserver<AddGroupUsersResponse>() {
                     @Override
                     protected void onSuccess(AddGroupUsersResponse response) {
                         isRunning = false;
@@ -111,7 +111,7 @@ public class GroupAddLogic implements GroupAddStandard {
                 (selectUsers), null, false);
 
         GroupService.addGroup(groupInfo.getGroupName(), getGroupUserIds(selectUsers))
-                .subscribe(new NetDefaultObserver<AddGroupResponse>() {
+                .subscribe(new RXDefaultObserver<AddGroupResponse>() {
                     @Override
                     protected void onSuccess(AddGroupResponse response) {
                         isRunning = false;

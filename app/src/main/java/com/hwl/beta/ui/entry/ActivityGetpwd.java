@@ -18,9 +18,12 @@ import com.hwl.beta.net.user.body.SetUserPasswordResponse;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.entry.action.IRegisterListener;
 import com.hwl.beta.ui.entry.bean.RegisterBean;
 import com.hwl.beta.ui.widget.TimeCount;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Administrator on 2018/1/13.

@@ -12,7 +12,7 @@ import com.hwl.beta.net.group.body.GroupUsersResponse;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.ui.chat.standard.ChatGroupSettingStandard;
 import com.hwl.beta.ui.common.DefaultCallback;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.ebus.EventBusUtil;
 import com.hwl.beta.ui.immsg.IMClientEntry;
 import com.hwl.beta.ui.immsg.IMDefaultSendOperateListener;
@@ -46,7 +46,7 @@ public class ChatGroupSettingLogic implements ChatGroupSettingStandard {
 
         GroupService.groupUsers(groupGuid)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NetDefaultObserver<GroupUsersResponse>() {
+                .subscribe(new RXDefaultObserver<GroupUsersResponse>() {
                     @Override
                     protected void onSuccess(GroupUsersResponse response) {
                         if (response.getGroupUserInfos() != null) {
@@ -92,7 +92,7 @@ public class ChatGroupSettingLogic implements ChatGroupSettingStandard {
     @Override
     public void exitGroup(final String groupGuid, final DefaultCallback<Boolean, String> callback) {
         GroupService.deleteGroupUser(groupGuid)
-                .subscribe(new NetDefaultObserver<DeleteGroupUserResponse>() {
+                .subscribe(new RXDefaultObserver<DeleteGroupUserResponse>() {
                     @Override
                     protected void onSuccess(DeleteGroupUserResponse response) {
                         if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
@@ -131,7 +131,7 @@ public class ChatGroupSettingLogic implements ChatGroupSettingStandard {
                     public void success1() {
 
                         GroupService.deleteGroup(groupGuid)
-                                .subscribe(new NetDefaultObserver<DeleteGroupResponse>() {
+                                .subscribe(new RXDefaultObserver<DeleteGroupResponse>() {
                                     @Override
                                     protected void onSuccess(DeleteGroupResponse response) {
                                         if (response.getStatus() == NetConstant.RESULT_SUCCESS) {

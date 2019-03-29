@@ -16,11 +16,14 @@ import com.hwl.beta.db.entity.FriendRequest;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.UITransfer;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserverEmpty;
 import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.user.action.INewFriendItemListener;
 import com.hwl.beta.ui.user.adp.NewFriendAdapter;
 import com.hwl.beta.ui.user.logic.NewFriendLogic;
 import com.hwl.beta.ui.user.standard.NewFriendStandard;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Administrator on 2018/1/8.

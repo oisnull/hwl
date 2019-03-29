@@ -16,6 +16,7 @@ import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.common.BaseFragment;
 import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.UITransfer;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.ebus.EventBusConstant;
 import com.hwl.beta.ui.ebus.EventMessageModel;
 import com.hwl.beta.ui.ebus.bean.EventDeleteFriend;
@@ -27,6 +28,8 @@ import com.hwl.beta.ui.widget.SideBar;
 import com.hwl.im.common.DefaultConsumer;
 
 import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Administrator on 2017/12/27.

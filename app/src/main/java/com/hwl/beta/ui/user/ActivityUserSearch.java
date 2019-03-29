@@ -15,6 +15,7 @@ import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.KeyBoardAction;
 import com.hwl.beta.ui.common.UITransfer;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.dialog.DialogUtils;
 import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.immsg.IMClientEntry;
@@ -26,6 +27,8 @@ import com.hwl.beta.ui.user.logic.UserSearchLogic;
 import com.hwl.beta.ui.user.standard.UserSearchStandard;
 
 import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Administrator on 2018/1/27.

@@ -12,12 +12,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.NearActivityPulishBinding;
 import com.hwl.beta.db.entity.NearCircleImage;
-import com.hwl.beta.emotion.IDefaultEmotionListener;
 import com.hwl.beta.net.ResponseBase;
 import com.hwl.beta.net.near.NearCircleService;
 import com.hwl.beta.net.near.NetImageInfo;
@@ -27,12 +24,11 @@ import com.hwl.beta.net.resx.UploadService;
 import com.hwl.beta.net.resx.body.UpResxResponse;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.BaseActivity;
-import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.imgcompress.CompressChatImage;
 import com.hwl.beta.ui.imgselect.bean.ImageBean;
-import com.hwl.beta.ui.imgselect.bean.ImageSelectType;
 import com.hwl.beta.utils.ScreenUtils;
 import com.hwl.beta.utils.StringUtils;
 
@@ -265,7 +261,7 @@ public class ActivityNearPublish extends BaseActivity {
         }
 
         NearCircleService.addNearCircleInfo(content, images)
-                .subscribe(new NetDefaultObserver<AddNearCircleInfoResponse>() {
+                .subscribe(new RXDefaultObserver<AddNearCircleInfoResponse>() {
                     @Override
                     protected void onSuccess(AddNearCircleInfoResponse res) {
                         LoadingDialog.hide();

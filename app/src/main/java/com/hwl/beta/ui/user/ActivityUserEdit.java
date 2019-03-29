@@ -23,6 +23,7 @@ import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.convert.SexAction;
 import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.ebus.EventBusConstant;
@@ -131,7 +132,7 @@ public class ActivityUserEdit extends BaseActivity {
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new NetDefaultObserver<SetUserInfoResponse>() {
+                    .subscribe(new RXDefaultObserver<SetUserInfoResponse>() {
                         @Override
                         protected void onSuccess(SetUserInfoResponse response) {
                             LoadingDialog.hide();

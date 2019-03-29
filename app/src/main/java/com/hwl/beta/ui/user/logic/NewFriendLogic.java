@@ -9,8 +9,6 @@ import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.AddFriendResponse;
 import com.hwl.beta.sp.MessageCountSP;
-import com.hwl.beta.ui.common.DefaultCallback;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.convert.DBChatMessageAction;
 import com.hwl.beta.ui.convert.DBFriendAction;
 import com.hwl.beta.ui.ebus.EventBusUtil;
@@ -21,6 +19,9 @@ import com.hwl.beta.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
 
 public class NewFriendLogic implements NewFriendStandard {
     @Override
@@ -39,25 +40,22 @@ public class NewFriendLogic implements NewFriendStandard {
 
     @Override
     public Observable addFriend(final FriendRequest friendRequest) {
-        // if (friendRequest == null || friendRequest.getFriendId() <= 0) {
-            // callback.error("friendId is empty");
-            // return;
-        // }
-        // if (StringUtils.isBlank(friendRequest.getFriendName())) {
-            // callback.error("friendName is empty");
-            // return;
-        // }
+        if (friendRequest == null || friendRequest.getFriendId() <= 0) {
+            Observable.error(new Throwable("friendId is empty"));
+        }
+        if (StringUtils.isBlank(friendRequest.getFriendName())) {
+            Observable.error(new Throwable("friendName is empty"));
+        }
 
-        // if (DaoUtils.getFriendManagerInstance().isExistsFriend(friendRequest.getFriendId())) {
-            // DaoUtils.getFriendRequestManagerInstance().delete(friendRequest);
-            // callback.success(true);
-            // return;
-        // }
-       return UserService.addFriend(friendRequest.getFriendId(), friendRequest.getFriendName())
-				.doOnNext(new Consumer<AddFriendResponse>(){
-					@Override
+        if (DaoUtils.getFriendManagerInstance().isExistsFriend(friendRequest.getFriendId())) {
+            DaoUtils.getFriendRequestManagerInstance().delete(friendRequest);
+            return Observable.just(true);
+        }
+        return UserService.addFriend(friendRequest.getFriendId(), friendRequest.getFriendName())
+                .doOnNext(new Consumer<AddFriendResponse>() {
+                    @Override
                     public void accept(AddFriendResponse response) throws Exception {
-						if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
+                        if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
                             Friend friend = DBFriendAction.convertToFriendInfo(response
                                     .getFriendInfo());
                             DaoUtils.getFriendManagerInstance().save(friend);
@@ -66,8 +64,8 @@ public class NewFriendLogic implements NewFriendStandard {
                             EventBusUtil.sendFriendAddEvent(friend);
                             sendChatUserMessage(friend);
                         }
-					}
-				});
+                    }
+                });
     }
 
     private void sendChatUserMessage(final Friend friend) {

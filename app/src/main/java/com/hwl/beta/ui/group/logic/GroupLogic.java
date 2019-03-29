@@ -8,6 +8,7 @@ import com.hwl.beta.net.group.GroupService;
 import com.hwl.beta.net.group.body.GetGroupsResponse;
 import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.convert.DBFriendAction;
 import com.hwl.beta.ui.convert.DBGroupAction;
 import com.hwl.beta.ui.group.standard.GroupStandard;
@@ -34,7 +35,7 @@ public class GroupLogic implements GroupStandard {
             String> callback) {
 
         GroupService.getGroups()
-                .subscribe(new NetDefaultObserver<GetGroupsResponse>(false) {
+                .subscribe(new RXDefaultObserver<GetGroupsResponse>(false) {
                     @Override
                     protected void onSuccess(GetGroupsResponse response) {
                         List<GroupInfo> groups = null;

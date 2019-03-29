@@ -22,6 +22,7 @@ import com.hwl.beta.databinding.EntryActivityMainBinding;
 import com.hwl.beta.location.BaiduLocation;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.ui.TabFragmentPagerAdapter;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.dialog.DialogUtils;
 import com.hwl.beta.ui.ebus.EventBusConstant;
 import com.hwl.beta.ui.ebus.EventMessageModel;
@@ -41,6 +42,7 @@ import com.hwl.beta.ui.entry.standard.MainStandard;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
 public class ActivityMain extends BaseActivity {
@@ -129,7 +131,7 @@ public class ActivityMain extends BaseActivity {
 				@Override
 				protected void onError(String message) {
 					binding.tbTitle.setTitle("未知");
-					showLocationDialog("定位失败", errorMessage);
+					showLocationDialog("定位失败", message);
 				}
 			});
     }

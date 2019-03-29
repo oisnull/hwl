@@ -9,9 +9,6 @@ import com.hwl.beta.R;
 import com.hwl.beta.location.BaiduLocation;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.ui.common.BaseActivity;
-import com.hwl.beta.ui.common.DefaultCallback;
-import com.hwl.beta.ui.entry.logic.MainLogic;
-import com.hwl.beta.ui.entry.standard.MainStandard;
 
 public class TestActivityLocation extends BaseActivity {
 
@@ -45,7 +42,7 @@ public class TestActivityLocation extends BaseActivity {
             }
 
             @Override
-            public void onFaild(BaiduLocation.ResultInfo info) {
+            public void onFailed(BaiduLocation.ResultInfo info) {
                 tvStatus.setText(info.message);
             }
         });

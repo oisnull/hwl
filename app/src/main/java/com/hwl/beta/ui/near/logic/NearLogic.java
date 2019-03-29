@@ -6,12 +6,9 @@ import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.net.near.NearCircleService;
 import com.hwl.beta.net.near.NetNearCircleMatchInfo;
 import com.hwl.beta.net.near.body.DeleteNearCircleInfoResponse;
-import com.hwl.beta.net.near.body.GetNearCircleInfosResponse;
 import com.hwl.beta.net.near.body.SetNearLikeInfoResponse;
 import com.hwl.beta.ui.common.DefaultCallback;
-import com.hwl.beta.ui.common.rxext.NetDefaultFunction;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
-import com.hwl.beta.ui.convert.DBNearCircleAction;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.near.standard.NearStandard;
 
 import java.util.ArrayList;
@@ -110,7 +107,7 @@ public class NearLogic implements NearStandard {
     @Override
 	public void deleteInfo(final long nearCircleId,final DefaultCallback<Boolean, String> callback){
 		NearCircleService.deleteNearCircleInfo(nearCircleId)
-            .subscribe(new NetDefaultObserver<DeleteNearCircleInfoResponse>() {
+            .subscribe(new RXDefaultObserver<DeleteNearCircleInfoResponse>() {
                 @Override
                 protected void onSuccess(DeleteNearCircleInfoResponse response) {
                     if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
@@ -131,7 +128,7 @@ public class NearLogic implements NearStandard {
     @Override
 	public void setLike(final long nearCircleId,final boolean isLike,final DefaultCallback<Boolean, String> callback){
         NearCircleService.setNearLikeInfo(isLike ? 1 : 0, nearCircleId)
-                .subscribe(new NetDefaultObserver<SetNearLikeInfoResponse>() {
+                .subscribe(new RXDefaultObserver<SetNearLikeInfoResponse>() {
                     @Override
                     protected void onSuccess(SetNearLikeInfoResponse response) {
                         if (response.getStatus() == NetConstant.RESULT_SUCCESS) {

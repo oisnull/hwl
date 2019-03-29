@@ -3,12 +3,12 @@ package com.hwl.beta.ui.user.logic;
 import com.hwl.beta.net.user.UserSearchInfo;
 import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.SearchUserResponse;
-import com.hwl.beta.ui.common.DefaultCallback;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.user.standard.UserSearchStandard;
-import com.hwl.beta.utils.StringUtils;
 
 import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.functions.Function;
 
 public class UserSearchLogic implements UserSearchStandard {
 

@@ -50,7 +50,8 @@ import retrofit2.http.POST;
 
 public class UserService {
 
-    public static Observable<UserLoginResponse> userLogin(String email, String mobile, String password) {
+    public static Observable<UserLoginResponse> userLogin(String email, String mobile,
+                                                          String password) {
         UserLoginRequest requestBody = new UserLoginRequest();
         requestBody.setEmail(email);
         requestBody.setMobile(mobile);
@@ -79,10 +80,10 @@ public class UserService {
     }
 
     public static Observable<SetUserPasswordResponse> setUserPassword(String email,
-																		String mobile,
-																		String password,
-																		String passwordOK,
-																		String code) {
+                                                                      String mobile,
+                                                                      String password,
+                                                                      String passwordOK,
+                                                                      String code) {
         SetUserPasswordRequest requestBody = new SetUserPasswordRequest();
         requestBody.setEmail(email);
         requestBody.setMobile(mobile);
@@ -96,7 +97,9 @@ public class UserService {
                 .subscribeOn(Schedulers.io());
     }
 
-    public static Observable<ResetUserPasswordResponse> resetUserPassword(String oldPassword, String password, String passwordOK) {
+    public static Observable<ResetUserPasswordResponse> resetUserPassword(String oldPassword,
+                                                                          String password,
+                                                                          String passwordOK) {
         ResetUserPasswordRequest requestBody = new ResetUserPasswordRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setOldPassword(oldPassword);
@@ -254,8 +257,7 @@ public class UserService {
                 (IUserService.class)
                 .getUserDetails(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<GetUserDetailsResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public static Observable<GetUserRelationInfoResponse> getUserRelationInfo(long relationUserId) {

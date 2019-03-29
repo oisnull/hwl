@@ -1,5 +1,6 @@
 package com.hwl.beta.net.circle;
 
+import com.hwl.beta.net.NetDefaultFunction;
 import com.hwl.beta.net.RequestBase;
 import com.hwl.beta.net.ResponseBase;
 import com.hwl.beta.net.RetrofitUtils;
