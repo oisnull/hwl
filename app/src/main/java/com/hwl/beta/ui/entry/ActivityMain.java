@@ -57,9 +57,9 @@ public class ActivityMain extends BaseActivity {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         activity = this;
+        mainListener = new MainListener();
         mainStandard = new MainLogic();
         mainBean = mainStandard.getMainBean();
-        mainListener = new MainListener();
         binding = DataBindingUtil.setContentView(this, R.layout.entry_activity_main);
         binding.setMainBean(mainBean);
         binding.setAction(mainListener);
@@ -118,18 +118,20 @@ public class ActivityMain extends BaseActivity {
     }
 
     private void initLocation() {
-        mainStandard.getLocation(new DefaultCallback<String, String>() {
-            @Override
-            public void success(String desc) {
-                binding.tbTitle.setTitle(desc);
-            }
+        mainStandard.getLocation()
+			.observeOn(AndroidSchedulers.mainThread())
+			.subscribe(new RXDefaultObserver<String>(false) {
+				@Override
+				protected void onSuccess(String desc) {
+					binding.tbTitle.setTitle(desc);
+				}
 
-            @Override
-            public void error(String errorMessage) {
-                binding.tbTitle.setTitle("未知");
-                showLocationDialog("定位失败", errorMessage);
-            }
-        });
+				@Override
+				protected void onError(String message) {
+					binding.tbTitle.setTitle("未知");
+					showLocationDialog("定位失败", errorMessage);
+				}
+			});
     }
 
     public void showLocationDialog(String title, String content) {

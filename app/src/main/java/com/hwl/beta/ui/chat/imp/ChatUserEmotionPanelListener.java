@@ -261,8 +261,7 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
     }
 
     private Observable<ChatUserMessage> validateUser(final ChatUserMessage message) {
-        return UserService.getUserRelationInfo(message
-                .getToUserId())
+        return UserService.getUserRelationInfo(message.getToUserId())
                 .map(new Function<GetUserRelationInfoResponse, ChatUserMessage>() {
                     @Override
                     public ChatUserMessage apply(GetUserRelationInfoResponse res) throws Exception {

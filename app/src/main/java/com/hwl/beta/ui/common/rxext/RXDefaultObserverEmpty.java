@@ -32,7 +32,11 @@ public class RXDefaultObserverEmpty implements Observer {
 
     @Override
     public void onError(Throwable e) {
-        onError(e.getMessage());
+        if (e instanceof NetException&&((NetException)e).getCode()==NetExceptionCode.TokenInvalid) {
+			onRelogin();
+		}else{
+			onError(e.getMessage());
+		}
     }
 
     @Override
@@ -41,6 +45,9 @@ public class RXDefaultObserverEmpty implements Observer {
     }
 
     protected void onSuccess() {
+    }
+
+    protected void onRelogin() {
     }
 
     protected void onError(String message) {

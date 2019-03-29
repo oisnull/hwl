@@ -73,36 +73,21 @@ public class FriendsLogic implements FriendsStandard {
     }
 
     @Override
-    public void loadServerFriends(final List<Friend> localFriends, final
-    DefaultCallback<List<Friend>, String>
-            callback) {
+    public Observable<List<Friend>> loadServerFriends(final List<Friend> localFriends) {
         if ((localFriends.size() - 3) >= UserSP.getFriendCount()) {
-            callback.error("已经是最新的数据了");
-            return;
+            return Observable.error(new Throwable("已经是最新的数据了"));
         }
 
-        UserService.getFriends().subscribe(new NetDefaultObserver<GetFriendsResponse>() {
-            @Override
-            protected void onSuccess(GetFriendsResponse response) {
-                List<Friend> serverFriends = DBFriendAction.convertToFriendInfos(response
-                        .getUserFriendInfos());
+       return UserService.getFriends()
+		.map(new Function<GetFriendsResponse,List<Friend>>(){
+			@Override
+            public List<Friend> apply(GetFriendsResponse response) throws Exception {
+               List<Friend> serverFriends = DBFriendAction.convertToFriendInfos(response.getUserFriendInfos());
                 if (serverFriends != null) {
                     serverFriends.removeAll(localFriends);
                     DaoUtils.getFriendManagerInstance().saveList(serverFriends);
                 }
-                callback.success(serverFriends);
             }
-
-            @Override
-            protected void onError(String resultMessage) {
-                super.onError(resultMessage);
-                callback.error(resultMessage);
-            }
-
-            @Override
-            protected void onRelogin() {
-                callback.relogin();
-            }
-        });
+		});
     }
 }

@@ -13,29 +13,17 @@ import java.util.List;
 public class UserSearchLogic implements UserSearchStandard {
 
     @Override
-    public void searchUsers(String key, final DefaultCallback<List<UserSearchInfo>, String>
-            callback) {
-        if (StringUtils.isBlank(key)) {
-            callback.error("Search key is empty");
-            return;
-        }
-        UserService.searchUser(key)
-                .subscribe(new NetDefaultObserver<SearchUserResponse>() {
-                    @Override
-                    protected void onSuccess(SearchUserResponse response) {
-                        callback.success(response.getUserInfos());
+    public Observable<List<UserSearchInfo>> searchUsers(String key) {
+//        if (StringUtils.isBlank(key)) {
+//            callback.error("Search key is empty");
+//            return;
+//        }
+      return UserService.searchUser(key)
+				.map(new Function<SearchUserResponse,List<UserSearchInfo>>(){
+					@Override
+                    public List<UserSearchInfo> apply(SearchUserResponse response) throws Exception {
+						return response.getUserInfos();
                     }
-
-                    @Override
-                    protected void onError(String resultMessage) {
-                        super.onError(resultMessage);
-                        callback.error(resultMessage);
-                    }
-
-                    @Override
-                    protected void onRelogin() {
-                        callback.relogin();
-                    }
-                });
+				});
     }
 }

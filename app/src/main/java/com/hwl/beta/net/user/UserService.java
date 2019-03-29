@@ -93,8 +93,7 @@ public class UserService {
                 (IUserService.class)
                 .setUserPassword(new RequestBase(requestBody))
                 .map(new NetDefaultFunction<ResponseBase<SetUserPasswordResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public static Observable<ResetUserPasswordResponse> resetUserPassword(String oldPassword, String password, String passwordOK) {
@@ -107,18 +106,14 @@ public class UserService {
                 (IUserService.class)
                 .resetUserPassword(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<ResetUserPasswordResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
-    public static Observable<SetUserPosResponse> setUserPos(SetUserPosRequest
-                                                                                  requestBody) {
-        return RetrofitUtils.createApi
-                (IUserService.class)
+    public static Observable<SetUserPosResponse> setUserPos(SetUserPosRequest requestBody) {
+        return RetrofitUtils.createApi(IUserService.class)
                 .setUserPos(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<SetUserPosResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public static Observable<SearchUserResponse> searchUser(String userKey) {
@@ -129,8 +124,7 @@ public class UserService {
                 (IUserService.class)
                 .searchUser(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<SearchUserResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public static Observable<AddFriendResponse> addFriend(long addUserId, String
@@ -143,8 +137,7 @@ public class UserService {
                 (IUserService.class)
                 .addFriend(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<AddFriendResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public static Observable<SetUserInfoResponse> setUserSymbol(String symbol) {
@@ -203,8 +196,7 @@ public class UserService {
                 (IUserService.class)
                 .setUserHeadImage(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<SetUserInfoResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public static Observable<SetUserCircleBackImageResponse> setUserCircleBackImage
@@ -240,8 +232,7 @@ public class UserService {
         return RetrofitUtils.createApi(IUserService.class)
                 .getFriends(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<GetFriendsResponse>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public static Observable<DeleteFriendResponse> deleteFriend(long friendUserId) {
@@ -252,8 +243,7 @@ public class UserService {
                 (IUserService.class)
                 .deleteFriend(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<DeleteFriendResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public static Observable<GetUserDetailsResponse> getUserDetails(long viewUserId) {

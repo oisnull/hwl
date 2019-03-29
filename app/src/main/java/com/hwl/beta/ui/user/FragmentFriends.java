@@ -137,24 +137,45 @@ public class FragmentFriends extends BaseFragment {
     }
 
     private void loadServerFriendInfo() {
-        friendsStandard.loadServerFriends(friendAdapter.getFriends(), new
-                DefaultCallback<List<Friend>, String>() {
-                    @Override
-                    public void success(List<Friend> friends) {
-                        binding.pbLoading.setVisibility(View.GONE);
-                        friendAdapter.addFriends(friends);
-                    }
+		friendsStandard.loadServerFriends(friendAdapter.getFriends())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new RXDefaultObserver<List<Friend>>() {
+                @Override
+                protected void onSuccess(List<Friend> friends) {
+                    binding.pbLoading.setVisibility(View.GONE);
+                    friendAdapter.addFriends(friends);
+                }
 
-                    @Override
-                    public void error(String errorMessage) {
-                        binding.pbLoading.setVisibility(View.GONE);
-                    }
+                @Override
+                protected void onError(String message) {
+                    super.onError(message);
+                    binding.pbLoading.setVisibility(View.GONE);
+                }
 
-                    @Override
-                    public void relogin() {
-                        binding.pbLoading.setVisibility(View.GONE);
-                        UITransfer.toReloginDialog(activity);
-                    }
-                });
+				@Override
+                public void onRelogin() {
+                    binding.pbLoading.setVisibility(View.GONE);
+                    UITransfer.toReloginDialog(activity);
+                }
+            });
+        // friendsStandard.loadServerFriends(friendAdapter.getFriends(), new
+                // DefaultCallback<List<Friend>, String>() {
+                    // @Override
+                    // public void success(List<Friend> friends) {
+                        // binding.pbLoading.setVisibility(View.GONE);
+                        // friendAdapter.addFriends(friends);
+                    // }
+
+                    // @Override
+                    // public void error(String errorMessage) {
+                        // binding.pbLoading.setVisibility(View.GONE);
+                    // }
+
+                    // @Override
+                    // public void relogin() {
+                        // binding.pbLoading.setVisibility(View.GONE);
+                        // UITransfer.toReloginDialog(activity);
+                    // }
+                // });
     }
 }

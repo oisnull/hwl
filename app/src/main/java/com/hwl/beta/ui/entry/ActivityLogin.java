@@ -87,6 +87,7 @@ public class ActivityLogin extends FragmentActivity {
 
                         @Override
                         protected void onError(String message) {
+                            super.onError(message);
                             isRunning = false;
                             binding.btnLogin.setText("登   录");
                         }

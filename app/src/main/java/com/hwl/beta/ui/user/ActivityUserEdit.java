@@ -120,15 +120,12 @@ public class ActivityUserEdit extends BaseActivity {
             }
             LoadingDialog.show(activity, "正在上传...");
             UploadService.upImage(new File(localPath), ResxType.USERHEADIMAGE)
-                    .flatMap(new Function<ResponseBase<UpResxResponse>,
-                            Observable<ResponseBase<SetUserInfoResponse>>>() {
+                    .flatMap(new Function<ResponseBase<UpResxResponse>,Observable<SetUserInfoResponse>>() {
                         @Override
-                        public Observable<ResponseBase<SetUserInfoResponse>> apply
-                                (ResponseBase<UpResxResponse> response) throws Exception {
+                        public Observable<SetUserInfoResponse> apply(ResponseBase<UpResxResponse> response) throws Exception {
                             if (response != null && response.getResponseBody() != null &&
                                     response.getResponseBody().isSuccess()) {
-                                return UserService.setUserHeadImage(response.getResponseBody()
-                                        .getOriginalUrl());
+                                return UserService.setUserHeadImage(response.getResponseBody().getOriginalUrl());
                             } else
                                 throw new Exception("头像上传失败");
                         }

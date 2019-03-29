@@ -11,6 +11,6 @@ public interface FriendsStandard {
     void loadLocalFriends(DefaultConsumer<List<Friend>> succCallback, DefaultConsumer<Throwable>
             errorCallback);
 
-    void loadServerFriends(List<Friend> friends,DefaultCallback<List<Friend>, String> callback);
+    Observable<List<Friend>> loadServerFriends(List<Friend> friends);
 
 }
