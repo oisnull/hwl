@@ -14,7 +14,6 @@ import com.hwl.beta.databinding.UserFragmentFriendsBinding;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.common.BaseFragment;
-import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.ebus.EventBusConstant;

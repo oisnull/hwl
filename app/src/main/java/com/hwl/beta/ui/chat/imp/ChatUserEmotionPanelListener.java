@@ -279,13 +279,10 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
         }
 
         return UploadService.upImage(new File(message.getLocalUrl()), ResxType.CHATIMAGE)
-                .map(new Function<ResponseBase<UpResxResponse>, ChatUserMessage>() {
+                .map(new Function<UpResxResponse, ChatUserMessage>() {
                     @Override
-                    public ChatUserMessage apply(ResponseBase<UpResxResponse> response) throws
-                            Exception {
-                        if (response != null && response.getResponseBody() != null && response
-                                .getResponseBody().isSuccess()) {
-                            UpResxResponse res = response.getResponseBody();
+                    public ChatUserMessage apply(UpResxResponse res) throws Exception {
+                        if (res.isSuccess()) {
                             message.setOriginalUrl(res.getOriginalUrl());
                             message.setPreviewUrl(res.getPreviewUrl());
                             message.setImageWidth(res.getWidth());
@@ -305,13 +302,10 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
         }
 
         return UploadService.upVoice(new File(message.getLocalUrl()))
-                .map(new Function<ResponseBase<UpResxResponse>, ChatUserMessage>() {
+                .map(new Function<UpResxResponse, ChatUserMessage>() {
                     @Override
-                    public ChatUserMessage apply(ResponseBase<UpResxResponse> response) throws
-                            Exception {
-                        if (response != null && response.getResponseBody() != null && response
-                                .getResponseBody().isSuccess()) {
-                            UpResxResponse res = response.getResponseBody();
+                    public ChatUserMessage apply(UpResxResponse res) throws Exception {
+                        if (res.isSuccess()) {
                             message.setOriginalUrl(res.getOriginalUrl());
                             message.setSize((int) res.getOriginalSize());
                             return message;

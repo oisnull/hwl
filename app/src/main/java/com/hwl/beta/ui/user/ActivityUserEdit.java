@@ -22,7 +22,6 @@ import com.hwl.beta.net.user.body.SetUserInfoResponse;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.UITransfer;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.convert.SexAction;
 import com.hwl.beta.ui.dialog.LoadingDialog;
@@ -121,12 +120,11 @@ public class ActivityUserEdit extends BaseActivity {
             }
             LoadingDialog.show(activity, "正在上传...");
             UploadService.upImage(new File(localPath), ResxType.USERHEADIMAGE)
-                    .flatMap(new Function<ResponseBase<UpResxResponse>,Observable<SetUserInfoResponse>>() {
+                    .flatMap(new Function<UpResxResponse, Observable<SetUserInfoResponse>>() {
                         @Override
-                        public Observable<SetUserInfoResponse> apply(ResponseBase<UpResxResponse> response) throws Exception {
-                            if (response != null && response.getResponseBody() != null &&
-                                    response.getResponseBody().isSuccess()) {
-                                return UserService.setUserHeadImage(response.getResponseBody().getOriginalUrl());
+                        public Observable<SetUserInfoResponse> apply(UpResxResponse response) throws Exception {
+                            if (response.isSuccess()) {
+                                return UserService.setUserHeadImage(response.getOriginalUrl());
                             } else
                                 throw new Exception("头像上传失败");
                         }

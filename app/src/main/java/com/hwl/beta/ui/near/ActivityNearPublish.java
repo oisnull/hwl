@@ -24,7 +24,6 @@ import com.hwl.beta.net.resx.UploadService;
 import com.hwl.beta.net.resx.body.UpResxResponse;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.BaseActivity;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.imgcompress.CompressChatImage;
@@ -204,14 +203,14 @@ public class ActivityNearPublish extends BaseActivity {
                         return file;
                     }
                 })
-                .flatMap(new Function<File, ObservableSource<ResponseBase<UpResxResponse>>>() {
+                .flatMap(new Function<File, ObservableSource<UpResxResponse>>() {
                     @Override
-                    public ObservableSource<ResponseBase<UpResxResponse>> apply(File file) throws Exception {
+                    public ObservableSource<UpResxResponse> apply(File file) throws Exception {
                         return UploadService.upImage(file, ResxType.NEARCIRCLEPOST);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NetDefaultObserver<UpResxResponse>() {
+                .subscribe(new RXDefaultObserver<UpResxResponse>() {
                     @Override
                     protected void onSuccess(UpResxResponse res) {
                         if (res.isSuccess()) {

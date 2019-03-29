@@ -7,7 +7,6 @@ import com.hwl.beta.db.entity.GroupUserInfo;
 import com.hwl.beta.net.group.GroupService;
 import com.hwl.beta.net.group.body.GetGroupsResponse;
 import com.hwl.beta.ui.common.DefaultCallback;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.convert.DBFriendAction;
 import com.hwl.beta.ui.convert.DBGroupAction;
