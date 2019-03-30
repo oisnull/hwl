@@ -3,12 +3,12 @@ package com.hwl.beta.ui.entry.logic;
 import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.UserLoginResponse;
 import com.hwl.beta.sp.UserSP;
-import com.hwl.im.common.DefaultAction;
-import com.hwl.im.common.DefaultConsumer;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.entry.bean.LoginBean;
 
 import com.hwl.beta.ui.entry.standard.LoginStandard;
+
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
 
 public class LoginLogic implements LoginStandard {
 
@@ -21,12 +21,7 @@ public class LoginLogic implements LoginStandard {
     }
 
     @Override
-    public void userLogin(LoginBean loginBean, final DefaultAction succCallback, final DefaultConsumer<String> errorCallback) {
-        if (loginBean == null) {
-            errorCallback.accept("login parameter is empty");
-            return;
-        }
-
+    public Observable userLogin(LoginBean loginBean) {
         String email = "";
         String mobile = "";
         if (loginBean.getIsEmail()) {
@@ -35,18 +30,11 @@ public class LoginLogic implements LoginStandard {
             mobile = loginBean.getAccount();
         }
 
-        UserService.userLogin(email, mobile, loginBean.getMd5Password())
-                .subscribe(new NetDefaultObserver<UserLoginResponse>() {
+        return UserService.userLogin(email, mobile, loginBean.getMd5Password())
+                .doOnNext(new Consumer<UserLoginResponse>() {
                     @Override
-                    protected void onSuccess(UserLoginResponse response) {
+                    public void accept(UserLoginResponse response) throws Exception {
                         UserSP.setUserInfo(response.getUserInfo());
-                        succCallback.run();
-                    }
-
-                    @Override
-                    protected void onError(String resultMessage) {
-                        super.onError(resultMessage);
-                        errorCallback.accept(resultMessage);
                     }
                 });
     }

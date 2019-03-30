@@ -1,5 +1,7 @@
 package com.hwl.beta.ui.entry.logic;
 
+import android.util.Log;
+
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.GroupInfo;
 import com.hwl.beta.location.BaiduLocation;
@@ -10,16 +12,38 @@ import com.hwl.beta.net.user.body.SetUserPosResponse;
 import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.sp.UserSP;
-import com.hwl.beta.ui.common.DefaultCallback;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.convert.DBFriendAction;
-import com.hwl.im.common.DefaultConsumer;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.convert.DBGroupAction;
 import com.hwl.beta.ui.entry.bean.MainBean;
 import com.hwl.beta.ui.entry.standard.MainStandard;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
+
 public class MainLogic implements MainStandard {
     private BaiduLocation locationService;
+
+    private void startLocation(final ObservableEmitter emitter) {
+        locationService = new BaiduLocation(new BaiduLocation.OnLocationListener() {
+            @Override
+            public void onSuccess(BaiduLocation.ResultModel result) {
+                emitter.onNext(result);
+            }
+
+            @Override
+            public void onFailed(BaiduLocation.ResultInfo info) {
+                emitter.onError(new Throwable(info.message));
+            }
+        });
+        locationService.start();
+    }
 
     @Override
     public MainBean getMainBean() {
@@ -34,66 +58,55 @@ public class MainLogic implements MainStandard {
     }
 
     @Override
-    public void getLocation(final DefaultCallback<String, String> callback) {
-        locationService = new BaiduLocation(new BaiduLocation.OnLocationListener() {
-            @Override
-            public void onSuccess(BaiduLocation.ResultModel result) {
-                //判断本地存储的位置是否与当前定位的位置是否一样，如果一样则不做任何操作
-                if (UserPosSP.getLontitude() == result.lontitude && UserPosSP.getLatitude() ==
-                        result.latitude) {
-                    callback.success(UserPosSP.getNearDesc());
-                    return;
-                } else {
-                    UserPosSP.setUserPos(
-                            result.latitude,
-                            result.lontitude,
-                            result.country,
-                            result.province,
-                            result.city,
-                            result.district,
-                            result.street,
-                            result.describe);
-                }
-
-                setUserPos(result, callback);
+    public Observable<String> getLocation() {
+        return Observable.create(new ObservableOnSubscribe() {
+            public void subscribe(ObservableEmitter emitter) {
+                startLocation(emitter);
             }
-
-            @Override
-            public void onFaild(BaiduLocation.ResultInfo info) {
-                callback.error(info.message);
-            }
-        });
-        locationService.start();
-    }
-
-    //设置用户位置信息，并返回当前位置群组信息和组用户信息
-    private void setUserPos(BaiduLocation.ResultModel result, final DefaultCallback<String,
-            String> callback) {
-        SetUserPosRequest request = new SetUserPosRequest();
-        request.setUserId(UserSP.getUserId());
-        request.setLastGroupGuid(UserPosSP.getGroupGuid());
-        request.setLatitude(result.latitude + "");
-        request.setLongitude(result.lontitude + "");
-        request.setCountry(result.country);
-        request.setProvince(result.province);
-        request.setCity(result.city);
-        request.setDistrict(result.district);
-        request.setStreet(result.street);
-        request.setDetails(result.addr);
-
-        UserService.setUserPos(request)
-                .subscribe(new NetDefaultObserver<SetUserPosResponse>() {
+        })
+                .concatMap(new Function<BaiduLocation.ResultModel, Observable<SetUserPosResponse>>() {
                     @Override
-                    protected void onSuccess(SetUserPosResponse res) {
+                    public Observable<SetUserPosResponse> apply(BaiduLocation.ResultModel result) {
+                        if (UserPosSP.getLontitude() == result.lontitude && UserPosSP
+                                .getLatitude() == result.latitude) {
+                            return Observable.just(new SetUserPosResponse());
+                        }
+                        UserPosSP.setUserPos(
+                                result.latitude,
+                                result.lontitude,
+                                result.country,
+                                result.province,
+                                result.city,
+                                result.district,
+                                result.street,
+                                result.describe);
+
+                        SetUserPosRequest request = new SetUserPosRequest();
+                        request.setUserId(UserSP.getUserId());
+                        request.setLastGroupGuid(UserPosSP.getGroupGuid());
+                        request.setLatitude(result.latitude + "");
+                        request.setLongitude(result.lontitude + "");
+                        request.setCountry(result.country);
+                        request.setProvince(result.province);
+                        request.setCity(result.city);
+                        request.setDistrict(result.district);
+                        request.setStreet(result.street);
+                        request.setDetails(result.addr);
+
+                        return UserService.setUserPos(request);
+                    }
+                })
+                .map(new Function<SetUserPosResponse, String>() {
+                    @Override
+                    public String apply(SetUserPosResponse res) {
                         if (res.getStatus() == NetConstant.RESULT_SUCCESS) {
                             UserPosSP.setUserPos(res.getUserPosId(), res.getUserGroupGuid());
-                            callback.success(UserPosSP.getNearDesc());
                             addLocalGroupInfo(res);
-                        } else {
-                            callback.error("设置定位信息失败");
                         }
+                        return UserPosSP.getNearDesc();
                     }
-                });
+                })
+                .subscribeOn(Schedulers.io());
     }
 
     private void addLocalGroupInfo(SetUserPosResponse res) {

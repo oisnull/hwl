@@ -6,7 +6,7 @@ import com.hwl.beta.db.entity.GroupInfo;
 import com.hwl.beta.db.entity.GroupUserInfo;
 import com.hwl.beta.net.group.GroupService;
 import com.hwl.beta.net.group.body.GetGroupAndUsersResponse;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.convert.DBFriendAction;
 import com.hwl.beta.ui.convert.DBGroupAction;
 import com.hwl.beta.utils.StringUtils;
@@ -50,7 +50,7 @@ public class GroupAction {
         setStatus(groupGuid, true);
 
         GroupService.getGroupAndUsers(groupGuid)
-                .subscribe(new NetDefaultObserver<GetGroupAndUsersResponse>() {
+                .subscribe(new RXDefaultObserver<GetGroupAndUsersResponse>() {
 
                     @Override
                     protected void onSuccess(GetGroupAndUsersResponse response) {

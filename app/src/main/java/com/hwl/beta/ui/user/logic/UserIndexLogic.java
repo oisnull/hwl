@@ -10,11 +10,13 @@ import com.hwl.beta.net.user.body.DeleteFriendResponse;
 import com.hwl.beta.net.user.body.GetUserDetailsResponse;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.DefaultCallback;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.convert.DBFriendAction;
 import com.hwl.beta.ui.ebus.EventBusUtil;
 import com.hwl.beta.ui.user.bean.UserIndexBean;
 import com.hwl.beta.ui.user.standard.UserIndexStandard;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class UserIndexLogic implements UserIndexStandard {
     @Override
@@ -58,7 +60,8 @@ public class UserIndexLogic implements UserIndexStandard {
         if (userId == UserSP.getUserId()) return;
 
         UserService.getUserDetails(userId)
-                .subscribe(new NetDefaultObserver<GetUserDetailsResponse>() {
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RXDefaultObserver<GetUserDetailsResponse>() {
                     @Override
                     protected void onSuccess(GetUserDetailsResponse response) {
                         if (response.getUserDetailsInfo() != null) {
@@ -78,7 +81,8 @@ public class UserIndexLogic implements UserIndexStandard {
     @Override
     public void deleteFriend(final long userId, final DefaultCallback callback) {
         UserService.deleteFriend(userId)
-                .subscribe(new NetDefaultObserver<DeleteFriendResponse>() {
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RXDefaultObserver<DeleteFriendResponse>() {
                     @Override
                     protected void onSuccess(DeleteFriendResponse response) {
                         if (response.getStatus() == NetConstant.RESULT_SUCCESS || response

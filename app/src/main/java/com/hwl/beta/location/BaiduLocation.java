@@ -16,7 +16,7 @@ public class BaiduLocation {
     public interface OnLocationListener {
         void onSuccess(ResultModel result);
 
-        void onFaild(ResultInfo info);
+        void onFailed(ResultInfo info);
     }
 
     public class ResultInfo {

@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.hwl.beta.net.NetExceptionCode;
 import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.NetworkBroadcastReceiver;
 import com.hwl.beta.R;
@@ -27,7 +28,6 @@ import com.hwl.beta.ui.ebus.EventBusConstant;
 import com.hwl.beta.ui.ebus.EventMessageModel;
 import com.hwl.beta.ui.chat.FragmentRecord;
 import com.hwl.beta.ui.common.BaseActivity;
-import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.ShareTransfer;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.entry.bean.MainBean;
@@ -41,6 +41,8 @@ import com.hwl.beta.ui.entry.standard.MainStandard;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
 public class ActivityMain extends BaseActivity {
@@ -57,9 +59,9 @@ public class ActivityMain extends BaseActivity {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         activity = this;
+        mainListener = new MainListener();
         mainStandard = new MainLogic();
         mainBean = mainStandard.getMainBean();
-        mainListener = new MainListener();
         binding = DataBindingUtil.setContentView(this, R.layout.entry_activity_main);
         binding.setMainBean(mainBean);
         binding.setAction(mainListener);
@@ -118,18 +120,22 @@ public class ActivityMain extends BaseActivity {
     }
 
     private void initLocation() {
-        mainStandard.getLocation(new DefaultCallback<String, String>() {
-            @Override
-            public void success(String desc) {
-                binding.tbTitle.setTitle(desc);
-            }
-
-            @Override
-            public void error(String errorMessage) {
-                binding.tbTitle.setTitle("未知");
-                showLocationDialog("定位失败", errorMessage);
-            }
-        });
+        mainStandard.getLocation()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String desc) {
+                        binding.tbTitle.setTitle(desc);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) {
+                        if (NetExceptionCode.isTokenInvalid(throwable))
+                            UITransfer.toReloginDialog(activity);
+                        binding.tbTitle.setTitle("未知");
+                        showLocationDialog("定位失败", throwable.getMessage());
+                    }
+                });
     }
 
     public void showLocationDialog(String title, String content) {

@@ -1,5 +1,6 @@
 package com.hwl.beta.net.general;
 
+import com.hwl.beta.net.NetDefaultFunction;
 import com.hwl.beta.net.RequestBase;
 import com.hwl.beta.net.ResponseBase;
 import com.hwl.beta.net.RetrofitUtils;
@@ -24,33 +25,32 @@ import retrofit2.http.POST;
 
 public class GeneralService {
 
-    public static Observable<ResponseBase<SendEmailResponse>> sendEmail(String email) {
+    public static Observable<SendEmailResponse> sendEmail(String email) {
         SendEmailRequest requestBody = new SendEmailRequest();
         requestBody.setEmail(email);
         return RetrofitUtils.createApi(GeneralService.IGenericService.class)
                 .sendEmail(new RequestBase(requestBody))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .map(new NetDefaultFunction<ResponseBase<SendEmailResponse>>())
+                .subscribeOn(Schedulers.io());
     }
 
-    public static Observable<ResponseBase<SendSMSResponse>> sendSMS(String mobile) {
+    public static Observable<SendSMSResponse> sendSMS(String mobile) {
         SendSMSRequest requestBody = new SendSMSRequest();
         requestBody.setMobile(mobile);
         return RetrofitUtils.createApi(GeneralService.IGenericService.class)
                 .sendSMS(new RequestBase(requestBody))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .map(new NetDefaultFunction<ResponseBase<SendSMSResponse>>())
+                .subscribeOn(Schedulers.io());
     }
 
-    public static Observable<ResponseBase<CheckVersionResponse>> checkVersion() {
+    public static Observable<CheckVersionResponse> checkVersion() {
         CheckVersionRequest requestBody = new CheckVersionRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setOldVersion(AppUtils.getAppVersionName());
-        Observable<ResponseBase<CheckVersionResponse>> response = RetrofitUtils.createApi(GeneralService.IGenericService.class)
+        return RetrofitUtils.createApi(GeneralService.IGenericService.class)
                 .checkVersion(new RequestBase(requestBody))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-        return response;
+                .map(new NetDefaultFunction<ResponseBase<CheckVersionResponse>>())
+                .subscribeOn(Schedulers.io());
     }
 
     public interface IGenericService {

@@ -285,13 +285,11 @@ public class ChatGroupEmotionPanelListener implements EmotionControlPanelV2.Pane
         }
 
         return UploadService.upImage(new File(message.getLocalUrl()), ResxType.CHATIMAGE)
-                .map(new Function<ResponseBase<UpResxResponse>, ChatGroupMessage>() {
+                .map(new Function<UpResxResponse, ChatGroupMessage>() {
                     @Override
-                    public ChatGroupMessage apply(ResponseBase<UpResxResponse> response) throws
+                    public ChatGroupMessage apply(UpResxResponse res) throws
                             Exception {
-                        if (response != null && response.getResponseBody() != null && response
-                                .getResponseBody().isSuccess()) {
-                            UpResxResponse res = response.getResponseBody();
+                        if (res.isSuccess()) {
                             message.setOriginalUrl(res.getOriginalUrl());
                             message.setPreviewUrl(res.getPreviewUrl());
                             message.setImageWidth(res.getWidth());
@@ -311,13 +309,11 @@ public class ChatGroupEmotionPanelListener implements EmotionControlPanelV2.Pane
         }
 
         return UploadService.upVoice(new File(message.getLocalUrl()))
-                .map(new Function<ResponseBase<UpResxResponse>, ChatGroupMessage>() {
+                .map(new Function<UpResxResponse, ChatGroupMessage>() {
                     @Override
-                    public ChatGroupMessage apply(ResponseBase<UpResxResponse> response) throws
+                    public ChatGroupMessage apply(UpResxResponse res) throws
                             Exception {
-                        if (response != null && response.getResponseBody() != null && response
-                                .getResponseBody().isSuccess()) {
-                            UpResxResponse res = response.getResponseBody();
+                        if (res.isSuccess()) {
                             message.setOriginalUrl(res.getOriginalUrl());
                             message.setSize((int) res.getOriginalSize());
                             return message;

@@ -9,14 +9,15 @@ import android.widget.Toast;
 
 import com.hwl.beta.ui.common.KeyBoardAction;
 import com.hwl.beta.ui.common.UITransfer;
-import com.hwl.im.common.DefaultAction;
-import com.hwl.im.common.DefaultConsumer;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserverEmpty;
 import com.hwl.beta.ui.entry.logic.LoginLogic;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.EntryActivityLoginBinding;
 import com.hwl.beta.ui.entry.action.ILoginListener;
 import com.hwl.beta.ui.entry.bean.LoginBean;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Administrator on 2018/1/13.
@@ -75,19 +76,22 @@ public class ActivityLogin extends FragmentActivity {
                 return;
             }
 
-            loginHandle.userLogin(loginBean, new DefaultAction() {
-                @Override
-                public void run() {
-                    UITransfer.toWelcomeActivity(activity);
-                    finish();
-                }
-            }, new DefaultConsumer<String>() {
-                @Override
-                public void accept(String s) {
-                    isRunning = false;
-                    binding.btnLogin.setText("登   录");
-                }
-            });
+            loginHandle.userLogin(loginBean)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new RXDefaultObserverEmpty() {
+                        @Override
+                        protected void onSuccess() {
+                            UITransfer.toWelcomeActivity(activity);
+                            finish();
+                        }
+
+                        @Override
+                        protected void onError(String message) {
+                            super.onError(message);
+                            isRunning = false;
+                            binding.btnLogin.setText("登   录");
+                        }
+                    });
         }
 
         @Override

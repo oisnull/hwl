@@ -17,10 +17,12 @@ import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.SetUserPasswordResponse;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.UITransfer;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.entry.action.IRegisterListener;
 import com.hwl.beta.ui.entry.bean.RegisterBean;
 import com.hwl.beta.ui.widget.TimeCount;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Administrator on 2018/1/13.
@@ -139,7 +141,8 @@ public class ActivityGetpwd extends BaseActivity {
                     registerBean.getMd5Password(),
                     registerBean.getMd5PasswordOK(),
                     registerBean.getCheckCode())
-                    .subscribe(new NetDefaultObserver<SetUserPasswordResponse>() {
+					.observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new RXDefaultObserver<SetUserPasswordResponse>() {
                         @Override
                         protected void onSuccess(SetUserPasswordResponse response) {
                             Toast.makeText(activity, "提交成功 ！", Toast.LENGTH_LONG).show();
@@ -148,8 +151,8 @@ public class ActivityGetpwd extends BaseActivity {
                         }
 
                         @Override
-                        protected void onError(String resultMessage) {
-                            super.onError(resultMessage);
+                        protected void onError(String message) {
+                            super.onError(message);
                             isRuning = false;
                             binding.btnRegisterCommit.setText("确认提交");
                         }
@@ -174,43 +177,47 @@ public class ActivityGetpwd extends BaseActivity {
         }
 
         private void sendEmailCode() {
-            GeneralService.sendEmail(registerBean.getAccount()).subscribe(new NetDefaultObserver<SendEmailResponse>() {
-                @Override
-                protected void onSuccess(SendEmailResponse response) {
-                    if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
-                        Toast.makeText(activity, "发送成功", Toast.LENGTH_SHORT).show();
-                        setSendViewStatus(NetConstant.SEND_STATUS_SUCCESS);
-                    } else {
-                        setSendViewStatus(NetConstant.SEND_STATUS_FAILED);
-                    }
-                }
+            GeneralService.sendEmail(registerBean.getAccount())
+					.observeOn(AndroidSchedulers.mainThread())
+					.subscribe(new RXDefaultObserver<SendEmailResponse>() {
+						@Override
+						protected void onSuccess(SendEmailResponse response) {
+							if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
+								Toast.makeText(activity, "发送成功", Toast.LENGTH_SHORT).show();
+								setSendViewStatus(NetConstant.SEND_STATUS_SUCCESS);
+							} else {
+								setSendViewStatus(NetConstant.SEND_STATUS_FAILED);
+							}
+						}
 
-                @Override
-                protected void onError(String resultMessage) {
-                    super.onError(resultMessage);
-                    setSendViewStatus(NetConstant.SEND_STATUS_FAILED);
-                }
-            });
+						@Override
+						protected void onError(String resultMessage) {
+							super.onError(resultMessage);
+							setSendViewStatus(NetConstant.SEND_STATUS_FAILED);
+						}
+					});
         }
 
         private void sendSMSCode() {
-            GeneralService.sendSMS(registerBean.getAccount()).subscribe(new NetDefaultObserver<SendSMSResponse>() {
-                @Override
-                protected void onSuccess(SendSMSResponse response) {
-                    if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
-                        Toast.makeText(activity, "发送成功", Toast.LENGTH_SHORT).show();
-                        setSendViewStatus(NetConstant.SEND_STATUS_SUCCESS);
-                    } else {
-                        setSendViewStatus(NetConstant.SEND_STATUS_FAILED);
-                    }
-                }
+            GeneralService.sendSMS(registerBean.getAccount())
+					.observeOn(AndroidSchedulers.mainThread())
+					.subscribe(new RXDefaultObserver<SendSMSResponse>() {
+						@Override
+						protected void onSuccess(SendSMSResponse response) {
+							if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
+								Toast.makeText(activity, "发送成功", Toast.LENGTH_SHORT).show();
+								setSendViewStatus(NetConstant.SEND_STATUS_SUCCESS);
+							} else {
+								setSendViewStatus(NetConstant.SEND_STATUS_FAILED);
+							}
+						}
 
-                @Override
-                protected void onError(String resultMessage) {
-                    super.onError(resultMessage);
-                    setSendViewStatus(NetConstant.SEND_STATUS_FAILED);
-                }
-            });
+						@Override
+						protected void onError(String resultMessage) {
+							super.onError(resultMessage);
+							setSendViewStatus(NetConstant.SEND_STATUS_FAILED);
+						}
+					});
         }
     }
 }

@@ -16,11 +16,14 @@ import com.hwl.beta.db.entity.FriendRequest;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.UITransfer;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserverEmpty;
 import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.user.action.INewFriendItemListener;
 import com.hwl.beta.ui.user.adp.NewFriendAdapter;
 import com.hwl.beta.ui.user.logic.NewFriendLogic;
 import com.hwl.beta.ui.user.standard.NewFriendStandard;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Administrator on 2018/1/8.
@@ -91,25 +94,49 @@ public class ActivityNewFriend extends BaseActivity {
         @Override
         public void onAddClick(View view, final FriendRequest friendRequest) {
             LoadingDialog.show(activity);
-            friendStandard.addFriend(friendRequest, new DefaultCallback<Boolean, String>() {
-                @Override
-                public void success(Boolean successMessage) {
-                    LoadingDialog.hide();
-                    Toast.makeText(activity, "添加好友成功", Toast.LENGTH_SHORT).show();
-                    friendAdapter.removeInfo(friendRequest);
-                }
+            friendStandard.addFriend(friendRequest)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RXDefaultObserverEmpty() {
+                    @Override
+                    protected void onSuccess() {
+						LoadingDialog.hide();
+						Toast.makeText(activity, "添加好友成功", Toast.LENGTH_SHORT).show();
+						friendAdapter.removeInfo(friendRequest);
+                    }
 
-                @Override
-                public void error(String errorMessage) {
-                    LoadingDialog.hide();
-                }
+                    @Override
+                    protected void onError(String message) {
+                        super.onError(message);
+						LoadingDialog.hide();
+                    }
 
-                @Override
-                public void relogin() {
-                    LoadingDialog.hide();
-                    UITransfer.toReloginDialog(activity);
-                }
-            });
+					@Override
+                    public void onRelogin() {
+						LoadingDialog.hide();
+						UITransfer.toReloginDialog(activity);
+                    }
+                });
+
+
+            // friendStandard.addFriend(friendRequest, new DefaultCallback<Boolean, String>() {
+                // @Override
+                // public void success(Boolean successMessage) {
+                    // LoadingDialog.hide();
+                    // Toast.makeText(activity, "添加好友成功", Toast.LENGTH_SHORT).show();
+                    // friendAdapter.removeInfo(friendRequest);
+                // }
+
+                // @Override
+                // public void error(String errorMessage) {
+                    // LoadingDialog.hide();
+                // }
+
+                // @Override
+                // public void relogin() {
+                    // LoadingDialog.hide();
+                    // UITransfer.toReloginDialog(activity);
+                // }
+            // });
         }
     }
 }

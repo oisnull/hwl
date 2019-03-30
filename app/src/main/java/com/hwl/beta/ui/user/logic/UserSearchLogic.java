@@ -3,38 +3,26 @@ package com.hwl.beta.ui.user.logic;
 import com.hwl.beta.net.user.UserSearchInfo;
 import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.SearchUserResponse;
-import com.hwl.beta.ui.common.DefaultCallback;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.user.standard.UserSearchStandard;
 import com.hwl.beta.utils.StringUtils;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.functions.Function;
+
 public class UserSearchLogic implements UserSearchStandard {
 
     @Override
-    public void searchUsers(String key, final DefaultCallback<List<UserSearchInfo>, String>
-            callback) {
+    public Observable<List<UserSearchInfo>> searchUsers(String key) {
         if (StringUtils.isBlank(key)) {
-            callback.error("Search key is empty");
-            return;
+            Observable.error(new Throwable("Search key is empty"));
         }
-        UserService.searchUser(key)
-                .subscribe(new NetDefaultObserver<SearchUserResponse>() {
+        return UserService.searchUser(key)
+                .map(new Function<SearchUserResponse, List<UserSearchInfo>>() {
                     @Override
-                    protected void onSuccess(SearchUserResponse response) {
-                        callback.success(response.getUserInfos());
-                    }
-
-                    @Override
-                    protected void onError(String resultMessage) {
-                        super.onError(resultMessage);
-                        callback.error(resultMessage);
-                    }
-
-                    @Override
-                    protected void onRelogin() {
-                        callback.relogin();
+                    public List<UserSearchInfo> apply(SearchUserResponse response) {
+                        return response.getUserInfos();
                     }
                 });
     }

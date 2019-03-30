@@ -1,10 +1,11 @@
 package com.hwl.beta.ui.user.standard;
 
 import com.hwl.beta.net.user.UserSearchInfo;
-import com.hwl.beta.ui.common.DefaultCallback;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+
 public interface UserSearchStandard {
-    void searchUsers(String key, DefaultCallback<List<UserSearchInfo>, String> callback);
+    Observable<List<UserSearchInfo>> searchUsers(String key);
 }

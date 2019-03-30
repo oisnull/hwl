@@ -17,7 +17,7 @@ import com.hwl.beta.net.group.body.SetGroupNoteResponse;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.BaseActivity;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.ebus.EventBusUtil;
 import com.hwl.beta.ui.immsg.IMClientEntry;
@@ -138,7 +138,7 @@ public class ActivityChatGroupSettingEdit extends BaseActivity {
         //成功后保存到本地
         //发送MQ通知群组人
         GroupService.setGroupNote(groupGuid, content)
-                .subscribe(new NetDefaultObserver<SetGroupNoteResponse>() {
+                .subscribe(new RXDefaultObserver<SetGroupNoteResponse>() {
                     @Override
                     protected void onSuccess(SetGroupNoteResponse response) {
                         LoadingDialog.hide();
@@ -195,7 +195,7 @@ public class ActivityChatGroupSettingEdit extends BaseActivity {
         //成功后保存到本地
         //发送MQ通知群组人
         GroupService.setGroupName(groupGuid, content)
-                .subscribe(new NetDefaultObserver<SetGroupNameResponse>() {
+                .subscribe(new RXDefaultObserver<SetGroupNameResponse>() {
                     @Override
                     protected void onSuccess(SetGroupNameResponse response) {
                         LoadingDialog.hide();

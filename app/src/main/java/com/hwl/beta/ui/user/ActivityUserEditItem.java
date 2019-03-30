@@ -17,10 +17,10 @@ import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.SetFriendRemarkResponse;
 import com.hwl.beta.net.user.body.SetUserInfoResponse;
 import com.hwl.beta.sp.UserSP;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.ebus.EventBusUtil;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.KeyBoardAction;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.convert.SexAction;
 import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.user.action.IUserEditItemListener;
@@ -112,8 +112,8 @@ public class ActivityUserEditItem extends BaseActivity {
         return "个人信息设置";
     }
 
-    private NetDefaultObserver<SetUserInfoResponse> defaultObserver = new
-            NetDefaultObserver<SetUserInfoResponse>() {
+    private RXDefaultObserver<SetUserInfoResponse> defaultObserver = new
+            RXDefaultObserver<SetUserInfoResponse>() {
                 @Override
                 protected void onSuccess(SetUserInfoResponse response) {
                     if (response != null && response.getStatus() == NetConstant.RESULT_SUCCESS) {
@@ -149,8 +149,8 @@ public class ActivityUserEditItem extends BaseActivity {
                 }
             };
 
-    private NetDefaultObserver<SetFriendRemarkResponse> friendRemarkObserver = new
-            NetDefaultObserver<SetFriendRemarkResponse>() {
+    private RXDefaultObserver<SetFriendRemarkResponse> friendRemarkObserver = new
+            RXDefaultObserver<SetFriendRemarkResponse>() {
                 @Override
                 protected void onSuccess(SetFriendRemarkResponse response) {
                     Friend friend = DaoUtils.getFriendManagerInstance().updateRemark(itemBean.getFriendId(),

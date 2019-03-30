@@ -15,6 +15,7 @@ import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.KeyBoardAction;
 import com.hwl.beta.ui.common.UITransfer;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.dialog.DialogUtils;
 import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.immsg.IMClientEntry;
@@ -26,6 +27,8 @@ import com.hwl.beta.ui.user.logic.UserSearchLogic;
 import com.hwl.beta.ui.user.standard.UserSearchStandard;
 
 import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Administrator on 2018/1/27.
@@ -76,27 +79,27 @@ public class ActivityUserSearch extends BaseActivity {
             KeyBoardAction.hideSoftInput(activity);
             binding.pbLoading.setVisibility(View.VISIBLE);
 
-            searchStandard.searchUsers(binding.etUserKey.getText() + "", new
-                    DefaultCallback<List<UserSearchInfo>, String>() {
+			searchStandard.searchUsers(binding.etUserKey.getText() + "")
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new RXDefaultObserver<List<UserSearchInfo>>() {
                         @Override
-                        public void success(List<UserSearchInfo> users) {
+                        protected void onSuccess(List<UserSearchInfo> users) {
                             isRuning = false;
                             userAdapter.clearAndAddUsers(users);
                             binding.pbLoading.setVisibility(View.GONE);
-                            binding.tvShow.setVisibility((users != null && users.size() > 0) ?
-                                    View.GONE
-                                    : View.VISIBLE);
+                            binding.tvShow.setVisibility((users != null && users.size() > 0) ? View.GONE: View.VISIBLE);
                         }
 
                         @Override
-                        public void error(String errorMessage) {
+                        protected void onError(String message) {
+                            super.onError(message);
                             isRuning = false;
                             binding.tvShow.setVisibility(View.GONE);
                             binding.pbLoading.setVisibility(View.GONE);
                         }
 
-                        @Override
-                        public void relogin() {
+						@Override
+                        public void onRelogin() {
                             UITransfer.toReloginDialog(activity);
                         }
                     });

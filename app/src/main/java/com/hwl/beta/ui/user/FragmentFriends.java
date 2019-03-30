@@ -14,8 +14,8 @@ import com.hwl.beta.databinding.UserFragmentFriendsBinding;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.common.BaseFragment;
-import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.UITransfer;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.ebus.EventBusConstant;
 import com.hwl.beta.ui.ebus.EventMessageModel;
 import com.hwl.beta.ui.ebus.bean.EventDeleteFriend;
@@ -27,6 +27,8 @@ import com.hwl.beta.ui.widget.SideBar;
 import com.hwl.im.common.DefaultConsumer;
 
 import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Administrator on 2017/12/27.
@@ -137,24 +139,45 @@ public class FragmentFriends extends BaseFragment {
     }
 
     private void loadServerFriendInfo() {
-        friendsStandard.loadServerFriends(friendAdapter.getFriends(), new
-                DefaultCallback<List<Friend>, String>() {
-                    @Override
-                    public void success(List<Friend> friends) {
-                        binding.pbLoading.setVisibility(View.GONE);
-                        friendAdapter.addFriends(friends);
-                    }
+		friendsStandard.loadServerFriends(friendAdapter.getFriends())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new RXDefaultObserver<List<Friend>>() {
+                @Override
+                protected void onSuccess(List<Friend> friends) {
+                    binding.pbLoading.setVisibility(View.GONE);
+                    friendAdapter.addFriends(friends);
+                }
 
-                    @Override
-                    public void error(String errorMessage) {
-                        binding.pbLoading.setVisibility(View.GONE);
-                    }
+                @Override
+                protected void onError(String message) {
+                    super.onError(message);
+                    binding.pbLoading.setVisibility(View.GONE);
+                }
 
-                    @Override
-                    public void relogin() {
-                        binding.pbLoading.setVisibility(View.GONE);
-                        UITransfer.toReloginDialog(activity);
-                    }
-                });
+				@Override
+                public void onRelogin() {
+                    binding.pbLoading.setVisibility(View.GONE);
+                    UITransfer.toReloginDialog(activity);
+                }
+            });
+        // friendsStandard.loadServerFriends(friendAdapter.getFriends(), new
+                // DefaultCallback<List<Friend>, String>() {
+                    // @Override
+                    // public void success(List<Friend> friends) {
+                        // binding.pbLoading.setVisibility(View.GONE);
+                        // friendAdapter.addFriends(friends);
+                    // }
+
+                    // @Override
+                    // public void error(String errorMessage) {
+                        // binding.pbLoading.setVisibility(View.GONE);
+                    // }
+
+                    // @Override
+                    // public void relogin() {
+                        // binding.pbLoading.setVisibility(View.GONE);
+                        // UITransfer.toReloginDialog(activity);
+                    // }
+                // });
     }
 }

@@ -7,8 +7,6 @@ import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.GetFriendsResponse;
 import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.sp.UserSP;
-import com.hwl.beta.ui.common.DefaultCallback;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.convert.DBFriendAction;
 import com.hwl.beta.ui.user.standard.FriendsStandard;
 import com.hwl.im.common.DefaultConsumer;
@@ -19,7 +17,6 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -73,36 +70,24 @@ public class FriendsLogic implements FriendsStandard {
     }
 
     @Override
-    public void loadServerFriends(final List<Friend> localFriends, final
-    DefaultCallback<List<Friend>, String>
-            callback) {
+    public Observable<List<Friend>> loadServerFriends(final List<Friend> localFriends) {
         if ((localFriends.size() - 3) >= UserSP.getFriendCount()) {
-            callback.error("已经是最新的数据了");
-            return;
+            return Observable.error(new Throwable("已经是最新的数据了"));
         }
 
-        UserService.getFriends().subscribe(new NetDefaultObserver<GetFriendsResponse>() {
-            @Override
-            protected void onSuccess(GetFriendsResponse response) {
-                List<Friend> serverFriends = DBFriendAction.convertToFriendInfos(response
-                        .getUserFriendInfos());
-                if (serverFriends != null) {
-                    serverFriends.removeAll(localFriends);
-                    DaoUtils.getFriendManagerInstance().saveList(serverFriends);
-                }
-                callback.success(serverFriends);
-            }
+        return UserService.getFriends()
+                .map(new Function<GetFriendsResponse, List<Friend>>() {
+                    @Override
+                    public List<Friend> apply(GetFriendsResponse response) {
+                        List<Friend> serverFriends =
+                                DBFriendAction.convertToFriendInfos(response.getUserFriendInfos());
+                        if (serverFriends != null) {
+                            serverFriends.removeAll(localFriends);
+                            DaoUtils.getFriendManagerInstance().saveList(serverFriends);
+                        }
 
-            @Override
-            protected void onError(String resultMessage) {
-                super.onError(resultMessage);
-                callback.error(resultMessage);
-            }
-
-            @Override
-            protected void onRelogin() {
-                callback.relogin();
-            }
-        });
+                        return serverFriends;
+                    }
+                });
     }
 }
