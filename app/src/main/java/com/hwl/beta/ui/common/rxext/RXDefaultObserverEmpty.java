@@ -4,7 +4,6 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.hwl.beta.HWLApp;
-import com.hwl.beta.net.NetException;
 import com.hwl.beta.net.NetExceptionCode;
 
 import io.reactivex.Observer;
@@ -34,11 +33,11 @@ public class RXDefaultObserverEmpty implements Observer {
 
     @Override
     public void onError(Throwable e) {
-        if (e instanceof NetException&&((NetException)e).getCode()== NetExceptionCode.TokenInvalid) {
-			onRelogin();
-		}else{
-			onError(e.getMessage());
-		}
+        if (NetExceptionCode.isTokenInvalid(e)) {
+            onRelogin();
+        } else {
+            onError(e.getMessage());
+        }
     }
 
     @Override

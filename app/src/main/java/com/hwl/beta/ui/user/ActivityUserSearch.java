@@ -103,31 +103,6 @@ public class ActivityUserSearch extends BaseActivity {
                             UITransfer.toReloginDialog(activity);
                         }
                     });
-
-            // searchStandard.searchUsers(binding.etUserKey.getText() + "", new
-                    // DefaultCallback<List<UserSearchInfo>, String>() {
-                        // @Override
-                        // public void success(List<UserSearchInfo> users) {
-                            // isRuning = false;
-                            // userAdapter.clearAndAddUsers(users);
-                            // binding.pbLoading.setVisibility(View.GONE);
-                            // binding.tvShow.setVisibility((users != null && users.size() > 0) ?
-                                    // View.GONE
-                                    // : View.VISIBLE);
-                        // }
-
-                        // @Override
-                        // public void error(String errorMessage) {
-                            // isRuning = false;
-                            // binding.tvShow.setVisibility(View.GONE);
-                            // binding.pbLoading.setVisibility(View.GONE);
-                        // }
-
-                        // @Override
-                        // public void relogin() {
-                            // UITransfer.toReloginDialog(activity);
-                        // }
-                    // });
         }
     }
 

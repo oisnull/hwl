@@ -123,8 +123,7 @@ public class UserService {
         SearchUserRequest requestBody = new SearchUserRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setUserKey(userKey);
-        return RetrofitUtils.createApi
-                (IUserService.class)
+        return RetrofitUtils.createApi(IUserService.class)
                 .searchUser(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<SearchUserResponse>>())
                 .subscribeOn(Schedulers.io());
@@ -136,8 +135,7 @@ public class UserService {
         requestBody.setMyUserId(UserSP.getUserId());
         requestBody.setFriendUserId(addUserId);
         requestBody.setMyRemark(remark);
-        return RetrofitUtils.createApi
-                (IUserService.class)
+        return RetrofitUtils.createApi(IUserService.class)
                 .addFriend(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<AddFriendResponse>>())
                 .subscribeOn(Schedulers.io());

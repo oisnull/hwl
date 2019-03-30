@@ -1,5 +1,7 @@
 package com.hwl.beta.ui.entry.logic;
 
+import android.util.Log;
+
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.GroupInfo;
 import com.hwl.beta.location.BaiduLocation;
@@ -10,6 +12,7 @@ import com.hwl.beta.net.user.body.SetUserPosResponse;
 import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.sp.UserSP;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.convert.DBFriendAction;
 import com.hwl.beta.ui.convert.DBGroupAction;
 import com.hwl.beta.ui.entry.bean.MainBean;
@@ -18,7 +21,10 @@ import com.hwl.beta.ui.entry.standard.MainStandard;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainLogic implements MainStandard {
@@ -28,12 +34,7 @@ public class MainLogic implements MainStandard {
         locationService = new BaiduLocation(new BaiduLocation.OnLocationListener() {
             @Override
             public void onSuccess(BaiduLocation.ResultModel result) {
-                if (UserPosSP.getLontitude() == result.lontitude && UserPosSP.getLatitude() ==
-                        result.latitude) {
-                    emitter.onComplete();
-                } else {
-                    emitter.onNext(result);
-                }
+                emitter.onNext(result);
             }
 
             @Override
@@ -63,9 +64,13 @@ public class MainLogic implements MainStandard {
                 startLocation(emitter);
             }
         })
-                .map(new Function<BaiduLocation.ResultModel, Observable<SetUserPosResponse>>() {
+                .concatMap(new Function<BaiduLocation.ResultModel, Observable<SetUserPosResponse>>() {
                     @Override
                     public Observable<SetUserPosResponse> apply(BaiduLocation.ResultModel result) {
+                        if (UserPosSP.getLontitude() == result.lontitude && UserPosSP
+                                .getLatitude() == result.latitude) {
+                            return Observable.just(new SetUserPosResponse());
+                        }
                         UserPosSP.setUserPos(
                                 result.latitude,
                                 result.lontitude,
@@ -87,6 +92,7 @@ public class MainLogic implements MainStandard {
                         request.setDistrict(result.district);
                         request.setStreet(result.street);
                         request.setDetails(result.addr);
+
                         return UserService.setUserPos(request);
                     }
                 })
@@ -97,10 +103,10 @@ public class MainLogic implements MainStandard {
                             UserPosSP.setUserPos(res.getUserPosId(), res.getUserGroupGuid());
                             addLocalGroupInfo(res);
                         }
-
                         return UserPosSP.getNearDesc();
                     }
-                }).subscribeOn(Schedulers.io());
+                })
+                .subscribeOn(Schedulers.io());
     }
 
     private void addLocalGroupInfo(SetUserPosResponse res) {

@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.hwl.beta.net.NetExceptionCode;
 import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.NetworkBroadcastReceiver;
 import com.hwl.beta.R;
@@ -22,13 +23,11 @@ import com.hwl.beta.databinding.EntryActivityMainBinding;
 import com.hwl.beta.location.BaiduLocation;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.ui.TabFragmentPagerAdapter;
-import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.dialog.DialogUtils;
 import com.hwl.beta.ui.ebus.EventBusConstant;
 import com.hwl.beta.ui.ebus.EventMessageModel;
 import com.hwl.beta.ui.chat.FragmentRecord;
 import com.hwl.beta.ui.common.BaseActivity;
-import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.ShareTransfer;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.entry.bean.MainBean;
@@ -43,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
 public class ActivityMain extends BaseActivity {
@@ -121,19 +121,21 @@ public class ActivityMain extends BaseActivity {
 
     private void initLocation() {
         mainStandard.getLocation()
-			.observeOn(AndroidSchedulers.mainThread())
-			.subscribe(new RXDefaultObserver<String>(false) {
-				@Override
-				protected void onSuccess(String desc) {
-					binding.tbTitle.setTitle(desc);
-				}
-
-				@Override
-				protected void onError(String message) {
-					binding.tbTitle.setTitle("未知");
-					showLocationDialog("定位失败", message);
-				}
-			});
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String desc) {
+                        binding.tbTitle.setTitle(desc);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) {
+                        if (NetExceptionCode.isTokenInvalid(throwable))
+                            UITransfer.toReloginDialog(activity);
+                        binding.tbTitle.setTitle("未知");
+                        showLocationDialog("定位失败", throwable.getMessage());
+                    }
+                });
     }
 
     public void showLocationDialog(String title, String content) {

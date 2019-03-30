@@ -39,4 +39,8 @@ public enum NetExceptionCode {
     public void setIndex(int index) {
         this.index = index;
     }
+
+    public static boolean isTokenInvalid(Throwable e) {
+        return e instanceof NetException && ((NetException) e).getCode() == NetExceptionCode.TokenInvalid;
+    }
 }
