@@ -109,8 +109,7 @@ public class NearCircleService {
         return RetrofitUtils.createApi(INearCircleService.class)
                 .setNearLikeInfo(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<SetNearLikeInfoResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public static void addComment(long nearCircleId, String content) {
@@ -148,8 +147,7 @@ public class NearCircleService {
         return RetrofitUtils.createApi(INearCircleService.class)
                 .deleteNearCircleInfo(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<DeleteNearCircleInfoResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public interface INearCircleService {

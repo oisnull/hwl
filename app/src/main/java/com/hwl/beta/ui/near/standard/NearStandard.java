@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface NearStandard {
 
-    void loadLocalInfos(DefaultCallback<List<NearCircle>, String> callback);
+    Observalbe<List<NearCircle>> loadLocalInfos();
 
-    void loadServerInfos(long minNearCircleId,List<NearCircle> localInfos,DefaultCallback<List<NearCircle>, String> callback);
+    Observalbe<List<NearCircle>> loadServerInfos(long minNearCircleId,List<NearCircle> localInfos);
 
-	void deleteInfo(long nearCircleId,DefaultCallback<Boolean, String> callback);
+	Observalbe deleteInfo(long nearCircleId);
 
-	void setLike(long nearCircleId,boolean isLike,DefaultCallback<Boolean, String> callback);
+	Observalbe setLike(long nearCircleId,boolean isLike);
 }
