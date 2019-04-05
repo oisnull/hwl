@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.NearActivityPulishBinding;
 import com.hwl.beta.db.entity.NearCircleImage;
-import com.hwl.beta.net.ResponseBase;
 import com.hwl.beta.net.near.NearCircleService;
 import com.hwl.beta.net.near.NetImageInfo;
 import com.hwl.beta.net.near.body.AddNearCircleInfoResponse;

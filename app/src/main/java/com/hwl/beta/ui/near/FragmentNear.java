@@ -22,9 +22,9 @@ import com.hwl.beta.db.entity.NearCircleImage;
 import com.hwl.beta.db.entity.NearCircleLike;
 import com.hwl.beta.db.ext.NearCircleExt;
 import com.hwl.beta.ui.common.BaseFragment;
-import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.KeyBoardAction;
 import com.hwl.beta.ui.common.UITransfer;
+import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.near.action.INearCircleItemListener;
 import com.hwl.beta.ui.near.adp.NearCircleAdapter;
 import com.hwl.beta.ui.near.logic.NearLogic;
@@ -37,6 +37,9 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+
 /**
  * Created by Administrator on 2017/12/27.
  */
@@ -46,13 +49,14 @@ public class FragmentNear extends BaseFragment {
     NearFragmentMainBinding binding;
     FragmentActivity activity;
     NearCircleAdapter nearCircleAdapter;
-	NearStandard nearStandard;
+    NearStandard nearStandard;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         activity = getActivity();
-		nearStandard = new NearLogic();
+        nearStandard = new NearLogic();
         binding = DataBindingUtil.inflate(inflater, R.layout.near_fragment_main, container, false);
 
         initView();
@@ -67,38 +71,38 @@ public class FragmentNear extends BaseFragment {
     }
 
     private void loadLocalInfos() {
-		nearStandard.loadLocalInfos()
-		.observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Consumer<List<NearCircle>>() {
-            @Override
-            public void accept(List<NearCircle> infos) {
-				binding.pbLoading.setVisibility(View.GONE);
-                nearCircleAdapter.updateInfos(infos);
+        nearStandard.loadLocalInfos()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<NearCircle>>() {
+                    @Override
+                    public void accept(List<NearCircle> infos) {
+                        binding.pbLoading.setVisibility(View.GONE);
+                        nearCircleAdapter.updateInfos(infos);
 
-				loadServerInfos(0);
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) {
-				binding.pbLoading.setVisibility(View.GONE);
-				Toast.makeText(activity, errorMessage, Toast.LENGTH_SHORT).show();
-            }
-        });
+                        loadServerInfos(0);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) {
+                        binding.pbLoading.setVisibility(View.GONE);
+                        Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-		// nearStandard.loadLocalInfos(new DefaultCallback<List<NearCircle>, String>() {
-            // @Override
-            // public void success(List<NearCircle> infos) {
-				// binding.pbLoading.setVisibility(View.GONE);
-                // nearCircleAdapter.updateInfos(infos);
+        // nearStandard.loadLocalInfos(new DefaultCallback<List<NearCircle>, String>() {
+        // @Override
+        // public void success(List<NearCircle> infos) {
+        // binding.pbLoading.setVisibility(View.GONE);
+        // nearCircleAdapter.updateInfos(infos);
 
-				// loadServerInfos(0);
-            // }
+        // loadServerInfos(0);
+        // }
 
-            // @Override
-            // public void error(String errorMessage) {
-				// binding.pbLoading.setVisibility(View.GONE);
-				// Toast.makeText(activity, errorMessage, Toast.LENGTH_SHORT).show();
-            // }
+        // @Override
+        // public void error(String errorMessage) {
+        // binding.pbLoading.setVisibility(View.GONE);
+        // Toast.makeText(activity, errorMessage, Toast.LENGTH_SHORT).show();
+        // }
         // });
     }
 
@@ -129,49 +133,50 @@ public class FragmentNear extends BaseFragment {
         });
     }
 
-	private void loadServerInfos(long infoId){
-		if (!NetworkUtils.isConnected()) {
-			showResult();
+    private void loadServerInfos(long infoId) {
+        if (!NetworkUtils.isConnected()) {
+            showResult();
             return;
         }
 
-		boolean isRefresh=infoId==0;
-		nearStandard.loadServerInfos(infoId,nearCircleAdapter.getInfos())
-		.observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Consumer<List<NearCircle>>() {
-            @Override
-            public void accept(List<NearCircle> infos) {
-                nearCircleAdapter.updateInfos(isRefresh,infos);
-				showResult();
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) {
-				showResult();
-				Toast.makeText(activity, errorMessage, Toast.LENGTH_SHORT).show();
-            }
-        });
+        final boolean isRefresh = infoId == 0;
+        nearStandard.loadServerInfos(infoId, nearCircleAdapter.getInfos())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<NearCircle>>() {
+                    @Override
+                    public void accept(List<NearCircle> infos) {
+                        nearCircleAdapter.updateInfos(isRefresh, infos);
+                        showResult();
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) {
+                        showResult();
+                        Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-		// nearStandard.loadServerInfos(infoId,nearCircleAdapter.getInfos(),new DefaultCallback<List<NearCircle>, String>() {
-            // @Override
-            // public void success(List<NearCircle> infos) {
-                // nearCircleAdapter.updateInfos(isRefresh,infos);
-				// showResult();
-            // }
+        // nearStandard.loadServerInfos(infoId,nearCircleAdapter.getInfos(),new
+        // DefaultCallback<List<NearCircle>, String>() {
+        // @Override
+        // public void success(List<NearCircle> infos) {
+        // nearCircleAdapter.updateInfos(isRefresh,infos);
+        // showResult();
+        // }
 
-            // @Override
-            // public void error(String errorMessage) {
-				// showResult();
-				// Toast.makeText(activity, errorMessage, Toast.LENGTH_SHORT).show();
-            // }
+        // @Override
+        // public void error(String errorMessage) {
+        // showResult();
+        // Toast.makeText(activity, errorMessage, Toast.LENGTH_SHORT).show();
+        // }
         // });
-	}
+    }
 
     private void showResult() {
-		if(nearCircleAdapter.getItemCount()<=0){
-			nearCircleAdapter.setEmptyInfo();
-			binding.refreshLayout.setEnableLoadMore(false);
-		}
+        if (nearCircleAdapter.getItemCount() <= 0) {
+            nearCircleAdapter.setEmptyInfo();
+            binding.refreshLayout.setEnableLoadMore(false);
+        }
         binding.refreshLayout.finishRefresh();
         binding.refreshLayout.finishLoadMore();
         binding.pbLoading.setVisibility(View.GONE);
@@ -204,9 +209,11 @@ public class FragmentNear extends BaseFragment {
 //        int length = nearCircles.size() > pageCount ? pageCount : nearCircles.size();
 //        for (int i = 0; i < length; i++)
 //        {
-//            if (nearCircles.get(i).getInfo() != null && nearCircles.get(i).getInfo().getNearCircleId() > 0)
+//            if (nearCircles.get(i).getInfo() != null && nearCircles.get(i).getInfo()
+// .getNearCircleId() > 0)
 //            {
-//                circleMatchInfos.add(new NetNearCircleMatchInfo(nearCircles.get(i).getInfo().getNearCircleId(), nearCircles.get(i).getInfo().getUpdateTime()));
+//                circleMatchInfos.add(new NetNearCircleMatchInfo(nearCircles.get(i).getInfo()
+// .getNearCircleId(), nearCircles.get(i).getInfo().getUpdateTime()));
 //            }
 //        }
 //    }
@@ -215,7 +222,8 @@ public class FragmentNear extends BaseFragment {
 //    NearCircleService.getNearCircleInfos(minNearCircleId, pageCount, circleMatchInfos)
 //            .flatMap(new NetDefaultFunction<GetNearCircleInfosResponse, NetNearCircleInfo>() {
 //                    @Override
-//                    protected ObservableSource<NetNearCircleInfo> onSuccess(GetNearCircleInfosResponse response)
+//                    protected ObservableSource<NetNearCircleInfo> onSuccess
+// (GetNearCircleInfosResponse response)
 //{
 //    //                        Date endDate = new Date(System.currentTimeMillis());
 //    //                        long diff = endDate.getTime() - startDate.getTime();
@@ -239,9 +247,13 @@ public class FragmentNear extends BaseFragment {
 //    NearCircleExt circleBean = new NearCircleExt();
 //                        if (info != null && info.getNearCircleId() > 0) {
 //                            circleBean.setInfo(DBNearCircleAction.convertToNearCircleInfo(info));
-//                            circleBean.setImages(DBNearCircleAction.convertToNearCircleImageInfos(info.getNearCircleId(), info.getPublishUserId(), info.getImages()));
-//                            circleBean.setComments(DBNearCircleAction.convertToNearCircleCommentInfos(info.getCommentInfos()));
-//                            circleBean.setLikes(DBNearCircleAction.convertToNearCircleLikeInfos(info.getLikeInfos()));
+//                            circleBean.setImages(DBNearCircleAction
+// .convertToNearCircleImageInfos(info.getNearCircleId(), info.getPublishUserId(), info.getImages
+// ()));
+//                            circleBean.setComments(DBNearCircleAction
+// .convertToNearCircleCommentInfos(info.getCommentInfos()));
+//                            circleBean.setLikes(DBNearCircleAction.convertToNearCircleLikeInfos
+// (info.getLikeInfos()));
 //                            return circleBean;
 //                        }
 //                        return circleBean;
@@ -253,12 +265,18 @@ public class FragmentNear extends BaseFragment {
 //{
 //                        if (nearCircleExt != null && nearCircleExt.getInfo() != null) {
 //        DaoUtils.getNearCircleManagerInstance().save(nearCircleExt.getInfo());
-//        DaoUtils.getNearCircleManagerInstance().deleteImages(nearCircleExt.getInfo().getNearCircleId());
-//        DaoUtils.getNearCircleManagerInstance().deleteComments(nearCircleExt.getInfo().getNearCircleId());
-//        DaoUtils.getNearCircleManagerInstance().deleteLikes(nearCircleExt.getInfo().getNearCircleId());
-//        DaoUtils.getNearCircleManagerInstance().saveImages(nearCircleExt.getInfo().getNearCircleId(), nearCircleExt.getImages());
-//        DaoUtils.getNearCircleManagerInstance().saveComments(nearCircleExt.getInfo().getNearCircleId(), nearCircleExt.getComments());
-//        DaoUtils.getNearCircleManagerInstance().saveLikes(nearCircleExt.getInfo().getNearCircleId(), nearCircleExt.getLikes());
+//        DaoUtils.getNearCircleManagerInstance().deleteImages(nearCircleExt.getInfo()
+// .getNearCircleId());
+//        DaoUtils.getNearCircleManagerInstance().deleteComments(nearCircleExt.getInfo()
+// .getNearCircleId());
+//        DaoUtils.getNearCircleManagerInstance().deleteLikes(nearCircleExt.getInfo()
+// .getNearCircleId());
+//        DaoUtils.getNearCircleManagerInstance().saveImages(nearCircleExt.getInfo()
+// .getNearCircleId(), nearCircleExt.getImages());
+//        DaoUtils.getNearCircleManagerInstance().saveComments(nearCircleExt.getInfo()
+// .getNearCircleId(), nearCircleExt.getComments());
+//        DaoUtils.getNearCircleManagerInstance().saveLikes(nearCircleExt.getInfo()
+// .getNearCircleId(), nearCircleExt.getLikes());
 //    }
 //}
 //                })
@@ -281,7 +299,8 @@ public class FragmentNear extends BaseFragment {
 //        boolean isExists = false;
 //        for (int i = 0; i < nearCircles.size(); i++)
 //        {
-//            if (nearCircles.get(i).getInfo().getNearCircleId() == nearCircleExt.getInfo().getNearCircleId())
+//            if (nearCircles.get(i).getInfo().getNearCircleId() == nearCircleExt.getInfo()
+// .getNearCircleId())
 //            {
 //                nearCircles.remove(i);
 //                nearCircles.add(i, nearCircleExt);
@@ -347,22 +366,26 @@ public class FragmentNear extends BaseFragment {
 
         @Override
         public void onUserHeadClick(NearCircle info) {
-            UITransfer.toUserIndexActivity(activity, info.getPublishUserId(), info.getPublishUserName(), info.getPublishUserImage());
+            UITransfer.toUserIndexActivity(activity, info.getPublishUserId(),
+                    info.getPublishUserName(), info.getPublishUserImage());
         }
 
         @Override
         public void onLikeUserHeadClick(NearCircleLike likeInfo) {
-            UITransfer.toUserIndexActivity(activity, likeInfo.getLikeUserId(), likeInfo.getLikeUserName(), likeInfo.getLikeUserImage());
+            UITransfer.toUserIndexActivity(activity, likeInfo.getLikeUserId(),
+                    likeInfo.getLikeUserName(), likeInfo.getLikeUserImage());
         }
 
         @Override
         public void onCommentUserClick(NearCircleComment comment) {
-            UITransfer.toUserIndexActivity(activity, comment.getCommentUserId(), comment.getCommentUserName(), comment.getCommentUserImage());
+            UITransfer.toUserIndexActivity(activity, comment.getCommentUserId(),
+                    comment.getCommentUserName(), comment.getCommentUserImage());
         }
 
         @Override
         public void onReplyUserClick(NearCircleComment comment) {
-            UITransfer.toUserIndexActivity(activity, comment.getReplyUserId(), comment.getReplyUserName(), comment.getReplyUserImage());
+            UITransfer.toUserIndexActivity(activity, comment.getReplyUserId(),
+                    comment.getReplyUserName(), comment.getReplyUserImage());
         }
 
         @Override
@@ -370,9 +393,12 @@ public class FragmentNear extends BaseFragment {
 //            NearCircleExt currnetInfo = this.getNearCircleInfo(comment.getNearCircleId());
 //            if (currnetInfo == null) return;
 //            if (comment.getCommentUserId() == myUserId) {
-//                UITransfer.toNearCommentPublishActivity(activity, comment.getNearCircleId(), currnetInfo.getInfo().getPublishUserId(), currnetInfo.getNearCircleMessageContent());
+//                UITransfer.toNearCommentPublishActivity(activity, comment.getNearCircleId(),
+// currnetInfo.getInfo().getPublishUserId(), currnetInfo.getNearCircleMessageContent());
 //            } else {
-//                UITransfer.toNearCommentPublishActivity(activity, comment.getNearCircleId(), currnetInfo.getInfo().getPublishUserId(), comment.getCommentUserId(), comment.getCommentUserName(), currnetInfo.getNearCircleMessageContent());
+//                UITransfer.toNearCommentPublishActivity(activity, comment.getNearCircleId(),
+// currnetInfo.getInfo().getPublishUserId(), comment.getCommentUserId(), comment
+// .getCommentUserName(), currnetInfo.getNearCircleMessageContent());
 //            }
         }
 
@@ -382,46 +408,48 @@ public class FragmentNear extends BaseFragment {
         }
 
         @Override
-        public void onMoreActionClick(final View view, int position,NearCircle info) {
-           if (mMorePopupWindow == null) {
-               mMorePopupWindow = new CircleActionMorePop(activity);
-           }
-           mMorePopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-               @Override
-               public void onDismiss() {
-                   view.setVisibility(View.VISIBLE);
-               }
-           });
-           mMorePopupWindow.setActionMoreListener(new CircleActionMorePop.IActionMoreListener() {
-               @Override
-               public void onCommentClick(int position) {
-                   //UITransfer.toNearCommentPublishActivity(activity, info.getNearCircleId(), info.getPublishUserId(), info.getNearCircleMessageContent());
-               }
+        public void onMoreActionClick(final View view, int position, NearCircle info) {
+            if (mMorePopupWindow == null) {
+                mMorePopupWindow = new CircleActionMorePop(activity);
+            }
+            mMorePopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                @Override
+                public void onDismiss() {
+                    view.setVisibility(View.VISIBLE);
+                }
+            });
+            mMorePopupWindow.setActionMoreListener(new CircleActionMorePop.IActionMoreListener() {
+                @Override
+                public void onCommentClick(int position) {
+                    //UITransfer.toNearCommentPublishActivity(activity, info.getNearCircleId(),
+                    // info.getPublishUserId(), info.getNearCircleMessageContent());
+                }
 
-               @Override
-               public void onLikeClick(int position) {
-                   //setLikeInfo(position, info);
-               }
-           });
-           mMorePopupWindow.show(position, view, info.getIsLiked());
+                @Override
+                public void onLikeClick(int position) {
+                    //setLikeInfo(position, info);
+                }
+            });
+            mMorePopupWindow.show(position, view, info.getIsLiked());
         }
 
-		private void setLike(int position,long nearCircleId){
-			nearStandard.setLike(nearCircleId,true)
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(new Consumer<Object>() {
-					@Override
-					public void accept(Object o) {
-					}
-				}, new Consumer<Throwable>() {
-					@Override
-					public void accept(Throwable throwable) {
-					}
-				});
-		}
+        private void setLike(int position, long nearCircleId) {
+            nearStandard.setLike(nearCircleId, true)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Object>() {
+                        @Override
+                        public void accept(Object o) {
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) {
+                        }
+                    });
+        }
 
         private void setLikeInfo(final int position, final NearCircleExt info) {
-//            if (isRuning || info == null || info.getInfo() == null || info.getInfo().getNearCircleId() <= 0)
+//            if (isRuning || info == null || info.getInfo() == null || info.getInfo()
+// .getNearCircleId() <= 0)
 //                return;
 //            isRuning = true;
 //            final boolean isLiked = info.getInfo().getIsLiked();
@@ -433,7 +461,8 @@ public class FragmentNear extends BaseFragment {
 //                            if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
 //                                if (isLiked) {
 //                                    nearCircleAdapter.addLike(position, null);
-//                                    NearCircleMessageSend.sendDeleteLikeMessage(info.getInfo().getNearCircleId(), info.getInfo().getPublishUserId()).subscribe();
+//                                    NearCircleMessageSend.sendDeleteLikeMessage(info.getInfo()
+// .getNearCircleId(), info.getInfo().getPublishUserId()).subscribe();
 //                                } else {
 //                                    NearCircleLike likeInfo = new NearCircleLike();
 //                                    likeInfo.setNearCircleId(info.getInfo().getNearCircleId());
@@ -442,7 +471,9 @@ public class FragmentNear extends BaseFragment {
 //                                    likeInfo.setLikeUserImage(UserSP.getUserHeadImage());
 //                                    likeInfo.setLikeTime(new Date());
 //                                    nearCircleAdapter.addLike(position, likeInfo);
-//                                    NearCircleMessageSend.sendAddLikeMessage(info.getInfo().getNearCircleId(), info.getInfo().getPublishUserId(), info.getNearCircleMessageContent()).subscribe();
+//                                    NearCircleMessageSend.sendAddLikeMessage(info.getInfo()
+// .getNearCircleId(), info.getInfo().getPublishUserId(), info.getNearCircleMessageContent())
+// .subscribe();
 //                                }
 //                            } else {
 //                                onError("操作失败");
@@ -478,44 +509,44 @@ public class FragmentNear extends BaseFragment {
         }
 
         private void deleteCircle(final int position, long nearCircleId) {
-           LoadingDialog.show(activity);
-           nearStandard.deleteInfo(nearCircleId)
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(new Consumer<Object>() {
-					@Override
-					public void accept(Object o) {
+            LoadingDialog.show(activity);
+            nearStandard.deleteInfo(nearCircleId)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Object>() {
+                        @Override
+                        public void accept(Object o) {
                             nearCircleAdapter.remove(position);
-                           LoadingDialog.hide();
-					}
-				}, new Consumer<Throwable>() {
-					@Override
-					public void accept(Throwable throwable) {
-                        LoadingDialog.hide();
-					}
-				});
-                   // .subscribe(new NetDefaultObserver<DeleteNearCircleInfoResponse>() {
-                       // @Override
-                       // protected void onSuccess(DeleteNearCircleInfoResponse response) {
-                           // if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
-                               // DaoUtils.getNearCircleManagerInstance().delete(nearCircleId);
-                               // DaoUtils.getNearCircleManagerInstance().deleteImages(nearCircleId);
-                               // DaoUtils.getNearCircleManagerInstance().deleteComments(nearCircleId);
-                               // DaoUtils.getNearCircleManagerInstance().deleteLikes(nearCircleId);
-                               // nearCircleAdapter.remove(position);
-                               // LoadingDialog.hide();
-                               // isRuning = false;
-                           // } else {
-                               // onError("删除失败");
-                           // }
-                       // }
+                            LoadingDialog.hide();
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) {
+                            LoadingDialog.hide();
+                        }
+                    });
+            // .subscribe(new NetDefaultObserver<DeleteNearCircleInfoResponse>() {
+            // @Override
+            // protected void onSuccess(DeleteNearCircleInfoResponse response) {
+            // if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
+            // DaoUtils.getNearCircleManagerInstance().delete(nearCircleId);
+            // DaoUtils.getNearCircleManagerInstance().deleteImages(nearCircleId);
+            // DaoUtils.getNearCircleManagerInstance().deleteComments(nearCircleId);
+            // DaoUtils.getNearCircleManagerInstance().deleteLikes(nearCircleId);
+            // nearCircleAdapter.remove(position);
+            // LoadingDialog.hide();
+            // isRuning = false;
+            // } else {
+            // onError("删除失败");
+            // }
+            // }
 
-                       // @Override
-                       // protected void onError(String resultMessage) {
-                           // super.onError(resultMessage);
-                           // isRuning = false;
-                           // LoadingDialog.hide();
-                       // }
-                   // });
+            // @Override
+            // protected void onError(String resultMessage) {
+            // super.onError(resultMessage);
+            // isRuning = false;
+            // LoadingDialog.hide();
+            // }
+            // });
         }
 
         @Override
