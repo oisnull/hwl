@@ -6,8 +6,10 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -21,6 +23,7 @@ import com.hwl.beta.net.near.body.AddNearCircleInfoResponse;
 import com.hwl.beta.net.resx.ResxType;
 import com.hwl.beta.net.resx.UploadService;
 import com.hwl.beta.net.resx.body.UpResxResponse;
+import com.hwl.beta.sp.AppInstallStatus;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
@@ -82,10 +85,21 @@ public class ActivityNearPublish extends BaseActivity {
                         if (isRuning) return;
                         isRuning = true;
                         nearCircleImages = new ArrayList<>();
-                        publishImages();
+                        //publishImages();
                     }
                 });
 
+        binding.ecpEmotion.setEditText(binding.etEmotionText)
+                .setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
+                .setContentContainerView(binding.svNearPublishContainer);
+
+        binding.svNearPublishContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                binding.ecpEmotion.setContentContainerHeight(binding.svNearPublishContainer
+                        .getHeight() - binding.tbTitle.getHeight());
+            }
+        });
 //        binding.ecpEmotion.setEmotionPanelListener(new IDefaultEmotionListener() {
 //            @Override
 //            public void onDefaultItemClick(String name) {
@@ -98,15 +112,15 @@ public class ActivityNearPublish extends BaseActivity {
 //            }
 //        });
 
-        binding.etEmotionText.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    binding.ecpEmotion.setVisibility(View.VISIBLE);
-                }
-                return false;
-            }
-        });
+//        binding.etEmotionText.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+////                    binding.ecpEmotion.setVisibility(View.VISIBLE);
+//                }
+//                return false;
+//            }
+//        });
 
 //        View viewImageAdd = View.inflate(activity, R.layout.image_add_item, null);
 //        ImageView ivAdd = viewImageAdd.findViewById(R.id.iv_add);

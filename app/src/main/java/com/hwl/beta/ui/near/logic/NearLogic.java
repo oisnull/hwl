@@ -59,7 +59,10 @@ public class NearLogic implements NearStandard {
                 .map(new Function<GetNearCircleInfosResponse, List<NearCircle>>() {
                     @Override
                     public List<NearCircle> apply(GetNearCircleInfosResponse response) {
-                        return DBNearCircleAction.convertToNearCircleInfos(response.getNearCircleInfos());
+                        List<NearCircle> infos =
+                                DBNearCircleAction.convertToNearCircleInfos(response.getNearCircleInfos());
+                        if (infos == null) infos = new ArrayList<>();
+                        return infos;
                     }
                 })
                 .doOnNext(new Consumer<List<NearCircle>>() {

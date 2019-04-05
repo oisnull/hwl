@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_sys_emotion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/layout_border"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/iv_default_emotions"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:src="@drawable/chat_emotion"
+            android:visibility="visible" />
+
+    </LinearLayout>
+
+    <!--默认表情和扩展表情列表-->
+    <com.hwl.beta.emotion.NoHorizontalScrollerViewPager
+        android:id="@+id/vp_emotion_container"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:visibility="gone" />
+
+</LinearLayout>

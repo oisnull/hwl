@@ -4,7 +4,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/main_background"
         android:orientation="vertical">
 
@@ -14,8 +14,10 @@
             android:layout_height="wrap_content" />
 
         <ScrollView
+            android:id="@+id/svNearPublishContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:scrollbars="none">
 
             <LinearLayout
@@ -32,41 +34,28 @@
                     <com.hwl.beta.emotion.widget.EmotionEditText
                         android:id="@+id/et_emotion_text"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="200dp"
                         android:layout_marginTop="15dp"
                         android:background="@color/white"
                         android:gravity="top|left"
                         android:hint="你想说些什么..."
-                        android:lines="5"
+                        android:maxHeight="200dp"
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
                         android:textColor="@color/color_727270"
                         android:textColorHint="@color/color_b2b2b2"
-                        android:textSize="15dp" />
-
-                    <!--表情显示-->
-                    <!--<com.hwl.beta.emotion.EmotionControlPannelV2-->
-                        <!--android:id="@+id/ecp_emotion"-->
-                        <!--app:pannel_theme="1"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:visibility="visible" />-->
-                    <com.hwl.beta.emotion.EmotionControlPanelV2
-                        android:id="@+id/ecp_emotion"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:panel_theme="0" />
+                        android:textSize="@dimen/dp_15" />
 
                 </LinearLayout>
 
                 <com.hwl.beta.ui.widget.WarpLinearLayout
                     android:id="@+id/wll_image_container"
-                    app:grivate="left"
-                    app:isFull="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
-                    android:background="@color/white">
+                    android:background="@color/white"
+                    app:grivate="left"
+                    app:isFull="true">
                     <!--动态加载图片-->
                 </com.hwl.beta.ui.widget.WarpLinearLayout>
 
@@ -86,8 +75,8 @@
                         android:drawableLeft="@drawable/ic_location2"
                         android:drawablePadding="10dp"
                         android:gravity="center_vertical"
-                        android:paddingBottom="10dp"
                         android:paddingTop="15dp"
+                        android:paddingBottom="10dp"
                         android:text="所在位置"
                         android:textColor="@color/color_727270"
                         android:textSize="15dp" />
@@ -95,5 +84,11 @@
                 </RelativeLayout>
             </LinearLayout>
         </ScrollView>
+
+        <com.hwl.beta.emotion.EmotionDefaultPanel
+            android:id="@+id/ecp_emotion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
     </LinearLayout>
 </layout>

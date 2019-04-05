@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.hwl.beta.emotion.EmotionDefaultPannel
+    <com.hwl.beta.emotion.EmotionDefaultPanel
         android:id="@+id/edp_emotion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

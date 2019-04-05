@@ -99,7 +99,7 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
     }
 
     private void initView() {
-        View view = LayoutInflater.from(context).inflate(R.layout.emotion_control_pannel, this,
+        View view = LayoutInflater.from(context).inflate(R.layout.emotion_control_panel, this,
                 false);
         softInputManager = (InputMethodManager) activity.getSystemService(Context
                 .INPUT_METHOD_SERVICE);
