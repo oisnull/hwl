@@ -3,6 +3,8 @@ package com.hwl.beta.ui.imgcompress;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.hwl.beta.HWLApp;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -15,6 +17,10 @@ public class CompressChatImage {
     public final static int FIX_WIDTH = 960;
     public final static int FIX_HEIGHT = 1280;
     public final static int FIX_QUALITY = 75;
+
+    public static File chatImage(String path) {
+        return chatImage(HWLApp.getContext(), path);
+    }
 
     public static File chatImage(Context context, String path) {
         try {

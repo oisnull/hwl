@@ -4,14 +4,12 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -30,7 +28,7 @@ public class EmotionDefaultPanel extends LinearLayout {
     Context context;
     ImageView ivDefaultEmotions;
     EmotionEditText etMessage;
-    LinearLayout llSysEmotion;
+    LinearLayout llSysEmotion, llEmotionContainer;
     ViewGroup contentContainerView;
     NoHorizontalScrollerViewPager vpEmotionContainer;
     InputMethodManager softInputManager;
@@ -74,6 +72,7 @@ public class EmotionDefaultPanel extends LinearLayout {
         softInputManager = (InputMethodManager) activity.getSystemService(Context
                 .INPUT_METHOD_SERVICE);
         llSysEmotion = view.findViewById(R.id.ll_sys_emotion);
+        llEmotionContainer = view.findViewById(R.id.ll_emotion_container);
         vpEmotionContainer = view.findViewById(R.id.vp_emotion_container);
         ivDefaultEmotions = view.findViewById(R.id.iv_default_emotions);
         ivDefaultEmotions.setOnClickListener(new OnClickListener() {
@@ -82,6 +81,16 @@ public class EmotionDefaultPanel extends LinearLayout {
                 showDefaultEmotion();
             }
         });
+        llSysEmotion.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    hideEmotionPanel();
+                }
+                return false;
+            }
+        });
+
         this.bindSysEmotionData();
         this.addView(view);
     }
@@ -113,15 +122,15 @@ public class EmotionDefaultPanel extends LinearLayout {
                 showKeyboard();
             }
         });
-        etMessage.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    showKeyboard();
-                }
-                return false;
-            }
-        });
+//        etMessage.setOnTouchListener(new OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//                    showKeyboard();
+//                }
+//                return false;
+//            }
+//        });
         etMessage.setSoftKeyListener(new OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -133,8 +142,14 @@ public class EmotionDefaultPanel extends LinearLayout {
         });
     }
 
+    public void hideEmotionPanel() {
+        this.setVisibility(GONE);
+        hideSoftInput();
+    }
+
     private void showKeyboard() {
-        EmotionDefaultPanel.this.setVisibility(VISIBLE);
+        if (!this.isShown())
+            this.setVisibility(VISIBLE);
         lockContentHeight();
         showSoftInput();
         hideEmotionContainer();
@@ -142,7 +157,7 @@ public class EmotionDefaultPanel extends LinearLayout {
     }
 
     private void showDefaultEmotion() {
-        if (vpEmotionContainer.isShown()) {
+        if (llEmotionContainer.isShown()) {
             showKeyboard();
         } else {
             lockContentHeight();
@@ -157,7 +172,6 @@ public class EmotionDefaultPanel extends LinearLayout {
                 .getLayoutParams();
         params.height = contentContainerView.getHeight() > this.contentContainerHeight ? this
                 .contentContainerHeight : contentContainerView.getHeight();
-        Log.d("params.height", params.height + "");
         params.weight = 0.0F;
     }
 
@@ -167,22 +181,22 @@ public class EmotionDefaultPanel extends LinearLayout {
             public void run() {
                 ((LinearLayout.LayoutParams) contentContainerView.getLayoutParams()).weight = 1.0F;
             }
-        }, 200L);
+        }, 300L);
     }
 
     private void showEmotionContainer() {
         etMessage.postDelayed(new Runnable() {
             @Override
             public void run() {
-                vpEmotionContainer.getLayoutParams().height = localSoftInputHeight;
-                vpEmotionContainer.setVisibility(View.VISIBLE);
+                llEmotionContainer.getLayoutParams().height = localSoftInputHeight;
+                llEmotionContainer.setVisibility(View.VISIBLE);
             }
-        }, 200L);
+        }, 300L);
     }
 
     private void hideEmotionContainer() {
-        if (vpEmotionContainer.isShown()) {
-            vpEmotionContainer.setVisibility(View.GONE);
+        if (llEmotionContainer.isShown()) {
+            llEmotionContainer.setVisibility(View.GONE);
         }
     }
 

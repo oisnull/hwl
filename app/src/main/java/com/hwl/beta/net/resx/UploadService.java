@@ -37,7 +37,6 @@ public class UploadService {
                 .upImage(body, UserSP.getUserToken(), resxType)
                 .map(new NetDefaultFunction<UpResxResponse>())
                 .subscribeOn(Schedulers.io());
-//                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public static Observable<UpResxResponse> upImage(byte[] bitmap, int resxType) {

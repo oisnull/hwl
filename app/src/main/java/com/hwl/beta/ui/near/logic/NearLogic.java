@@ -35,24 +35,12 @@ public class NearLogic implements NearStandard {
             }
         })
                 .subscribeOn(Schedulers.io());
-        // .observeOn(AndroidSchedulers.mainThread())
-        // .subscribe(new Consumer<List<NearCircle>>() {
-        // @Override
-        // public void accept(List<NearCircle> infos) {
-        // callback.success(infos); //https://github.com/ReactiveX/RxJava/wiki/Creating-Observables
-        // }
-        // }, new Consumer<Throwable>() {
-        // @Override
-        // public void accept(Throwable throwable) {
-        // callback.error(throwable.getMessage());
-        // }
-        // });
     }
 
     @Override
     public Observable<List<NearCircle>> loadServerInfos(final long minNearCircleId,
                                                         final List<NearCircle> localInfos) {
-        // minNearCircleId <=0 and get new datas
+        // minNearCircleId <=0 and get new data
         // minNearCircleId >0 and get old data
         return NearCircleService.getNearCircleInfos(minNearCircleId, PAGE_COUNT,
                 this.getMatchInfos(minNearCircleId, localInfos))
@@ -100,14 +88,6 @@ public class NearLogic implements NearStandard {
                     localInfos.get(i).getUpdateTime()));
             if (matchInfos.size() >= PAGE_COUNT) break;
         }
-
-        // int length = localInfos.size() > PAGE_COUNT ? PAGE_COUNT : localInfos.size();
-        // for (int i = 0; i < length; i++) {
-        // if (localInfos.get(i) != null && localInfos.get(i).getNearCircleId() > 0) {
-        // matchInfos.add(new NetNearCircleMatchInfo(localInfos.get(i).getNearCircleId(),
-        // localInfos.get(i).getUpdateTime()));
-        // }
-        // }
         return matchInfos;
     }
 

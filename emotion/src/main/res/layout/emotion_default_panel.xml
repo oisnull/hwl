@@ -26,10 +26,20 @@
     </LinearLayout>
 
     <!--默认表情和扩展表情列表-->
-    <com.hwl.beta.emotion.NoHorizontalScrollerViewPager
-        android:id="@+id/vp_emotion_container"
+    <LinearLayout
+        android:id="@+id/ll_emotion_container"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:visibility="gone" />
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <com.hwl.beta.emotion.NoHorizontalScrollerViewPager
+            android:id="@+id/vp_emotion_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible" />
+    </LinearLayout>
+
 
 </LinearLayout>
