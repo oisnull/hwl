@@ -33,7 +33,7 @@ public class ImagePagerAdapter extends PagerAdapter {
         Glide.with(context).
                 load(imageUrls.get(position)).
                 error(R.drawable.empty_photo).
-                diskCacheStrategy(DiskCacheStrategy.RESULT).//保存最终图片
+//                diskCacheStrategy(DiskCacheStrategy.RESULT).//保存最终图片
                 into(photoView);
         // Now just add PhotoView to ViewPager and return it
         container.addView(photoView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);

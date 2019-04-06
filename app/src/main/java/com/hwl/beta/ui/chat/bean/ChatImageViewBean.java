@@ -5,7 +5,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.hwl.beta.R;
-import com.hwl.beta.ui.common.GlideImageHandler;
+//import com.hwl.beta.ui.common.GlideImageHandler;
 import com.hwl.beta.utils.FileUtils;
 import com.hwl.beta.utils.StringUtils;
 
@@ -45,11 +45,11 @@ public class ChatImageViewBean {
         if (StringUtils.isBlank(imageUrl))
             return;
         Glide.with(view.getContext()).load(imageUrl)
-                .asBitmap()
+//                .asBitmap()
                 .placeholder(R.drawable.empty_photo)
                 .error(R.drawable.empty_photo)
-                .into(new GlideImageHandler(view));
-        ;
+//                .into(new GlideImageHandler(view));
+                .into(view);
     }
 
 

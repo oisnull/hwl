@@ -141,7 +141,7 @@ public class FragmentFriends extends BaseFragment {
     private void loadServerFriendInfo() {
 		friendsStandard.loadServerFriends(friendAdapter.getFriends())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new RXDefaultObserver<List<Friend>>() {
+            .subscribe(new RXDefaultObserver<List<Friend>>(false) {
                 @Override
                 protected void onSuccess(List<Friend> friends) {
                     binding.pbLoading.setVisibility(View.GONE);
@@ -160,24 +160,5 @@ public class FragmentFriends extends BaseFragment {
                     UITransfer.toReloginDialog(activity);
                 }
             });
-        // friendsStandard.loadServerFriends(friendAdapter.getFriends(), new
-                // DefaultCallback<List<Friend>, String>() {
-                    // @Override
-                    // public void success(List<Friend> friends) {
-                        // binding.pbLoading.setVisibility(View.GONE);
-                        // friendAdapter.addFriends(friends);
-                    // }
-
-                    // @Override
-                    // public void error(String errorMessage) {
-                        // binding.pbLoading.setVisibility(View.GONE);
-                    // }
-
-                    // @Override
-                    // public void relogin() {
-                        // binding.pbLoading.setVisibility(View.GONE);
-                        // UITransfer.toReloginDialog(activity);
-                    // }
-                // });
     }
 }
