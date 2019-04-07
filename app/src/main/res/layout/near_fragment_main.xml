@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    <LinearLayout
+        android:id="@+id/ll_near_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/main_background"
@@ -50,7 +51,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_30"
             android:visibility="gone" />
 
         <com.scwang.smartrefresh.layout.SmartRefreshLayout
@@ -67,10 +68,10 @@
 
         </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
-        <com.hwl.beta.emotion.EmotionControlPanelV2
+        <com.hwl.beta.emotion.EmotionDefaultPanelV2
             android:id="@+id/ecp_emotion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:panel_theme="0" />
+            android:visibility="gone" />
     </LinearLayout>
 </layout>

@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
@@ -21,12 +22,12 @@ import com.hwl.beta.db.entity.NearCircle;
 import com.hwl.beta.db.entity.NearCircleComment;
 import com.hwl.beta.db.entity.NearCircleImage;
 import com.hwl.beta.db.entity.NearCircleLike;
-import com.hwl.beta.db.ext.NearCircleExt;
 import com.hwl.beta.sp.AppInstallStatus;
 import com.hwl.beta.ui.common.BaseFragment;
 import com.hwl.beta.ui.common.KeyBoardAction;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.dialog.LoadingDialog;
+import com.hwl.beta.ui.entry.ActivityMain;
 import com.hwl.beta.ui.imgselect.ActivityImageBrowse;
 import com.hwl.beta.ui.near.action.INearCircleItemListener;
 import com.hwl.beta.ui.near.adp.NearCircleAdapter;
@@ -60,6 +61,7 @@ public class FragmentNear extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         activity = getActivity();
+        activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         nearStandard = new NearLogic();
         binding = DataBindingUtil.inflate(inflater, R.layout.near_fragment_main, container, false);
 
@@ -112,23 +114,42 @@ public class FragmentNear extends BaseFragment {
             }
         });
         binding.refreshLayout.setEnableLoadMore(false);
+
+//        binding.llMessageTip.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                UITransfer.toNearMessagesActivity(activity);
+//            }
+//        });
+
+        binding.ecpEmotion.setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
+                .setContentContainerView(binding.refreshLayout)
+                .setCancelListener(new Runnable() {
+                    @Override
+                    public void run() {
+                        setEmotionStatus(false);
+                    }
+                });
+
         binding.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 binding.ecpEmotion.setContentContainerHeight(binding.refreshLayout.getHeight());
             }
         });
-        binding.ecpEmotion.setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
-                .setContentContainerView(binding.refreshLayout);
-//                .setEmotionPanelListener(emotionPanelListener);
+    }
 
-        binding.llMessageTip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                UITransfer.toNearMessagesActivity(activity);
-            }
-        });
-
+    public void setEmotionStatus(boolean isShow) {
+        ActivityMain parentActivity = (ActivityMain) getActivity();
+        if (isShow) {
+            parentActivity.setBottomNavVisibility(false);
+            binding.ecpEmotion.showKeyboard();
+            binding.ecpEmotion.setVisibility(View.VISIBLE);
+        } else {
+            parentActivity.setBottomNavVisibility(true);
+            binding.ecpEmotion.hideEmotionPanel();
+            binding.ecpEmotion.setVisibility(View.GONE);
+        }
     }
 
     private void loadServerInfos(long infoId) {
@@ -245,6 +266,7 @@ public class FragmentNear extends BaseFragment {
             mMorePopupWindow.setActionMoreListener(new CircleActionMorePop.IActionMoreListener() {
                 @Override
                 public void onCommentClick(int position) {
+                    setEmotionStatus(true);
                     //UITransfer.toNearCommentPublishActivity(activity, info.getNearCircleId(),
                     // info.getPublishUserId(), info.getNearCircleMessageContent());
                 }

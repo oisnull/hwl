@@ -313,7 +313,7 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
         this.showKeyboard(false);
     }
 
-    private void showKeyboard() {
+    public void showKeyboard() {
         this.showKeyboard(true);
     }
 
