@@ -150,7 +150,8 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     showKeyboard();
-                    onPanelHeightChanged.run();
+                    if (onPanelHeightChanged != null)
+                        onPanelHeightChanged.run();
                 }
                 return false;
             }
@@ -280,7 +281,8 @@ public class EmotionControlPanelV2 extends LinearLayout implements View.OnClickL
                 etChatMessage.setText("");
             }
         }
-        onPanelHeightChanged.run();
+        if (onPanelHeightChanged != null)
+            onPanelHeightChanged.run();
     }
 
     private void showSendButton(boolean isShow) {

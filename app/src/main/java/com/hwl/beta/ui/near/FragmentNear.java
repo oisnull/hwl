@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ import com.hwl.beta.db.entity.NearCircleComment;
 import com.hwl.beta.db.entity.NearCircleImage;
 import com.hwl.beta.db.entity.NearCircleLike;
 import com.hwl.beta.db.ext.NearCircleExt;
+import com.hwl.beta.sp.AppInstallStatus;
 import com.hwl.beta.ui.common.BaseFragment;
 import com.hwl.beta.ui.common.KeyBoardAction;
 import com.hwl.beta.ui.common.UITransfer;
@@ -109,14 +111,24 @@ public class FragmentNear extends BaseFragment {
                 loadServerInfos(nearCircleAdapter.getMinId());
             }
         });
-
         binding.refreshLayout.setEnableLoadMore(false);
+        binding.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                binding.ecpEmotion.setContentContainerHeight(binding.refreshLayout.getHeight());
+            }
+        });
+        binding.ecpEmotion.setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
+                .setContentContainerView(binding.refreshLayout);
+//                .setEmotionPanelListener(emotionPanelListener);
+
         binding.llMessageTip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                UITransfer.toNearMessagesActivity(activity);
             }
         });
+
     }
 
     private void loadServerInfos(long infoId) {
@@ -169,7 +181,7 @@ public class FragmentNear extends BaseFragment {
     private class NearCircleItemListener implements INearCircleItemListener {
 
         private CircleActionMorePop mMorePopupWindow;
-        boolean isRuning = false;
+        boolean isRunning = false;
 
         @Override
         public void onItemViewClick(View view) {
@@ -220,7 +232,7 @@ public class FragmentNear extends BaseFragment {
         }
 
         @Override
-        public void onMoreActionClick(final View view, int position, NearCircle info) {
+        public void onMoreActionClick(final View view, int position, final NearCircle info) {
             if (mMorePopupWindow == null) {
                 mMorePopupWindow = new CircleActionMorePop(activity);
             }
@@ -239,65 +251,35 @@ public class FragmentNear extends BaseFragment {
 
                 @Override
                 public void onLikeClick(int position) {
-                    //setLikeInfo(position, info);
+                    setLike(position, info);
                 }
             });
             mMorePopupWindow.show(position, view, info.getIsLiked());
         }
 
-        private void setLike(int position, long nearCircleId) {
-            nearStandard.setLike(nearCircleId, true)
+        private void setLike(final int position, NearCircle info) {
+            if (isRunning) return;
+            isRunning = true;
+
+            final boolean isLike = !info.getIsLiked();
+            nearStandard.setLike(info.getNearCircleId(), isLike)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<Object>() {
+                    .subscribe(new Consumer<NearCircleLike>() {
                         @Override
-                        public void accept(Object o) {
+                        public void accept(NearCircleLike info) {
+                            isRunning = false;
+                            if (isLike)
+                                nearCircleAdapter.addLike(position, info);
+                            else
+                                nearCircleAdapter.addLike(position, null);
                         }
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) {
+                            isRunning = false;
+                            Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
-        }
-
-        private void setLikeInfo(final int position, final NearCircleExt info) {
-//            if (isRuning || info == null || info.getInfo() == null || info.getInfo()
-// .getNearCircleId() <= 0)
-//                return;
-//            isRuning = true;
-//            final boolean isLiked = info.getInfo().getIsLiked();
-//            NearCircleService.setNearLikeInfo(isLiked ? 0 : 1, info.getInfo().getNearCircleId())
-//                    .subscribe(new NetDefaultObserver<SetNearLikeInfoResponse>() {
-//                        @Override
-//                        protected void onSuccess(SetNearLikeInfoResponse response) {
-//                            isRuning = false;
-//                            if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
-//                                if (isLiked) {
-//                                    nearCircleAdapter.addLike(position, null);
-//                                    NearCircleMessageSend.sendDeleteLikeMessage(info.getInfo()
-// .getNearCircleId(), info.getInfo().getPublishUserId()).subscribe();
-//                                } else {
-//                                    NearCircleLike likeInfo = new NearCircleLike();
-//                                    likeInfo.setNearCircleId(info.getInfo().getNearCircleId());
-//                                    likeInfo.setLikeUserId(myUserId);
-//                                    likeInfo.setLikeUserName(UserSP.getUserName());
-//                                    likeInfo.setLikeUserImage(UserSP.getUserHeadImage());
-//                                    likeInfo.setLikeTime(new Date());
-//                                    nearCircleAdapter.addLike(position, likeInfo);
-//                                    NearCircleMessageSend.sendAddLikeMessage(info.getInfo()
-// .getNearCircleId(), info.getInfo().getPublishUserId(), info.getNearCircleMessageContent())
-// .subscribe();
-//                                }
-//                            } else {
-//                                onError("操作失败");
-//                            }
-//                        }
-//
-//                        @Override
-//                        protected void onError(String resultMessage) {
-//                            super.onError(resultMessage);
-//                            isRuning = false;
-//                        }
-//                    });
         }
 
         @Override
@@ -373,7 +355,8 @@ public class FragmentNear extends BaseFragment {
                 for (int i = 0; i < images.size(); i++) {
                     imageUrls.add(images.get(i).getImageUrl());
                 }
-                UITransfer.toImageBrowseActivity(activity, ActivityImageBrowse.MODE_VIEW, position, imageUrls);
+                UITransfer.toImageBrowseActivity(activity, ActivityImageBrowse.MODE_VIEW,
+                        position, imageUrls);
             }
         }
     }

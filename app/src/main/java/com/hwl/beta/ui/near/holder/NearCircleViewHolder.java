@@ -3,6 +3,7 @@ package com.hwl.beta.ui.near.holder;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -59,13 +60,13 @@ public class NearCircleViewHolder extends RecyclerView.ViewHolder {
             this.itemBinding.mivImages.setVisibility(View.GONE);
         } else {
             this.itemBinding.mivImages.setVisibility(View.VISIBLE);
+            this.itemBinding.mivImages.setImagesData(DBNearCircleAction.convertToMultiImages(images));
             this.itemBinding.mivImages.setImageListener(new MultiImageView.IMultiImageListener() {
                 @Override
                 public void onImageClick(int position, String imageUrl) {
                     itemListener.onImageClick(position, images);
                 }
             });
-            this.itemBinding.mivImages.setImagesData(DBNearCircleAction.convertToMultiImages(images));
         }
 
         boolean isShowActionContainer = false;
@@ -116,7 +117,8 @@ public class NearCircleViewHolder extends RecyclerView.ViewHolder {
         this.itemBinding.executePendingBindings();
     }
 
-    private void setLikeViews(final List<NearCircleLike> likes, final INearCircleItemListener itemListener) {
+    private void setLikeViews(final List<NearCircleLike> likes,
+                              final INearCircleItemListener itemListener) {
         if (likes == null || likes.size() <= 0) return;
         this.itemBinding.fblLikeContainer.removeAllViews();
         Context context = this.itemBinding.rlLikeContainer.getContext();

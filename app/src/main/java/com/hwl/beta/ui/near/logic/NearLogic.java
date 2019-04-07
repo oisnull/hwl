@@ -2,16 +2,19 @@ package com.hwl.beta.ui.near.logic;
 
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.NearCircle;
+import com.hwl.beta.db.entity.NearCircleLike;
 import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.net.near.NearCircleService;
 import com.hwl.beta.net.near.NetNearCircleMatchInfo;
 import com.hwl.beta.net.near.body.DeleteNearCircleInfoResponse;
 import com.hwl.beta.net.near.body.GetNearCircleInfosResponse;
 import com.hwl.beta.net.near.body.SetNearLikeInfoResponse;
+import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.convert.DBNearCircleAction;
 import com.hwl.beta.ui.near.standard.NearStandard;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -108,15 +111,34 @@ public class NearLogic implements NearStandard {
     }
 
     @Override
-    public Observable setLike(final long nearCircleId, final boolean isLike) {
+    public Observable<NearCircleLike> setLike(final long nearCircleId, final boolean isLike) {
+        if (nearCircleId <= 0) {
+            return Observable.error(new Throwable("Near circle id con't be empty."));
+        }
         return NearCircleService.setNearLikeInfo(isLike ? 1 : 0, nearCircleId)
-                .map(new Function<SetNearLikeInfoResponse, Boolean>() {
+                .map(new Function<SetNearLikeInfoResponse, NearCircleLike>() {
                     @Override
-                    public Boolean apply(SetNearLikeInfoResponse response) throws Exception {
+                    public NearCircleLike apply(SetNearLikeInfoResponse response) throws Exception {
                         if (response.getStatus() != NetConstant.RESULT_SUCCESS) {
                             throw new Exception("Set user like info failed.");
                         }
-                        return true;
+
+                        NearCircleLike likeInfo = new NearCircleLike();
+                        if (isLike) {
+                            likeInfo.setNearCircleId(nearCircleId);
+                            likeInfo.setLikeUserId(UserSP.getUserId());
+                            likeInfo.setLikeUserName(UserSP.getUserName());
+                            likeInfo.setLikeUserImage(UserSP.getUserHeadImage());
+                            likeInfo.setLikeTime(new Date());
+                            DaoUtils.getNearCircleManagerInstance().saveLike(nearCircleId,
+                                    likeInfo);
+                            //send im message
+                        } else {
+                            DaoUtils.getNearCircleManagerInstance().deleteLike(nearCircleId,
+                                    UserSP.getUserId());
+                        }
+
+                        return likeInfo;
                     }
                 });
         // .subscribe(new RXDefaultObserver<SetNearLikeInfoResponse>() {
