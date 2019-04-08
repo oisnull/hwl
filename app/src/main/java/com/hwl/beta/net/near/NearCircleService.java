@@ -111,8 +111,8 @@ public class NearCircleService {
                 .subscribeOn(Schedulers.io());
     }
 
-    public static void addComment(long nearCircleId, String content) {
-        addComment(nearCircleId, content, 0);
+    public static Observable<AddNearCommentResponse> addComment(long nearCircleId, String content) {
+        return addComment(nearCircleId, content, 0);
     }
 
     public static Observable<AddNearCommentResponse> addComment(long nearCircleId, String content, long replyUserId) {
@@ -124,8 +124,7 @@ public class NearCircleService {
         return RetrofitUtils.createApi(INearCircleService.class)
                 .addNearComment(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<AddNearCommentResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public static Observable<DeleteNearCommentResponse> addComment(int commentId) {
@@ -135,8 +134,7 @@ public class NearCircleService {
         return RetrofitUtils.createApi(INearCircleService.class)
                 .deleteNearComment(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<DeleteNearCommentResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public static Observable<DeleteNearCircleInfoResponse> deleteNearCircleInfo(long nearCircleId) {

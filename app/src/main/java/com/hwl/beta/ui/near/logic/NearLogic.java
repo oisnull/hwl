@@ -141,36 +141,25 @@ public class NearLogic implements NearStandard {
                         return likeInfo;
                     }
                 });
-        // .subscribe(new RXDefaultObserver<SetNearLikeInfoResponse>() {
-        // @Override
-        // protected void onSuccess(SetNearLikeInfoResponse response) {
-        // if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
-        // callback.success(true);
-        // if (isLike) {
-//                                nearCircleAdapter.addLike(position, null);
-//                                NearCircleMessageSend.sendDeleteLikeMessage(info.getInfo()
-// .getNearCircleId(), info.getInfo().getPublishUserId()).subscribe();
-        // } else {
-//                                NearCircleLike likeInfo = new NearCircleLike();
-//                                likeInfo.setNearCircleId(info.getInfo().getNearCircleId());
-//                                likeInfo.setLikeUserId(myUserId);
-//                                likeInfo.setLikeUserName(UserSP.getUserName());
-//                                likeInfo.setLikeUserImage(UserSP.getUserHeadImage());
-//                                likeInfo.setLikeTime(new Date());
-//                                nearCircleAdapter.addLike(position, likeInfo);
-//                                NearCircleMessageSend.sendAddLikeMessage(info.getInfo()
-// .getNearCircleId(), info.getInfo().getPublishUserId(), info.getNearCircleMessageContent())
-// .subscribe();
-        // }
-        // } else {
-        // onError("Set user like info failed.");
-        // }
-        // }
-
-        // @Override
-        // protected void onError(String resultMessage) {
-        // callback.error(resultMessage);
-        // }
-        // });
     }
+	
+    @Override
+    public Observable<NearCircleComment> addComment(long nearCircleId, String content,long replyUserId){
+        if (nearCircleId <= 0) {
+            return Observable.error(new Throwable("Near circle id con't be empty."));
+        }
+
+       NearCircleService.addComment(nearCircleId, content, replyUserId)
+                .map(new Function<AddNearCommentResponse, NearCircleComment>() {
+                    @Override
+                    public NearCircleComment apply(AddNearCommentResponse response) throws Exception {
+                        if(response.getNearCircleCommentInfo() == null || response.getNearCircleCommentInfo().getCommentId() <= 0)
+                            throw new Exception("Post user comment info failed.");
+
+                        NearCircleComment commentInfo = DBNearCircleAction.convertToNearCircleCommentInfo(res.getNearCircleCommentInfo());
+                        DaoUtils.getNearCircleManagerInstance().saveComment(nearCircleId,commentInfo);
+						return commentInfo;
+                    }
+                });
+	}
 }

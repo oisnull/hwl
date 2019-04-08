@@ -16,4 +16,6 @@ public interface NearStandard {
     Observable deleteInfo(long nearCircleId);
 
     Observable<NearCircleLike> setLike(long nearCircleId, boolean isLike);
+
+    Observable<NearCircleComment> addComment(long nearCircleId, String content,long replyUserId);
 }

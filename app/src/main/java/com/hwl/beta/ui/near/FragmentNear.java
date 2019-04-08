@@ -124,12 +124,7 @@ public class FragmentNear extends BaseFragment {
 
         binding.ecpEmotion.setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
                 .setContentContainerView(binding.refreshLayout)
-                .setCancelListener(new Runnable() {
-                    @Override
-                    public void run() {
-                        setEmotionStatus(false);
-                    }
-                });
+				.setEmotionPanelListener(emotionPanelListener);
 
         binding.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -139,7 +134,11 @@ public class FragmentNear extends BaseFragment {
         });
     }
 
-    public void setEmotionStatus(boolean isShow) {
+    public void setEmotionStatus(boolean isShow){
+		setEmotionStatus(isShow,null);
+	}
+
+    public void setEmotionStatus(boolean isShow,String hintText) {
         ActivityMain parentActivity = (ActivityMain) getActivity();
         if (isShow) {
             parentActivity.setBottomNavVisibility(false);
@@ -150,6 +149,7 @@ public class FragmentNear extends BaseFragment {
             binding.ecpEmotion.hideEmotionPanel();
             binding.ecpEmotion.setVisibility(View.GONE);
         }
+		binding.ecpEmotion.setHintMessage(hintText);
     }
 
     private void loadServerInfos(long infoId) {
@@ -199,6 +199,49 @@ public class FragmentNear extends BaseFragment {
 //        }
 //    }
 
+	private EmotionDefaultPanelV2.IEmotionPanelListener emotionPanelListener = new EmotionDefaultPanelV2.IEmotionPanelListener(){
+		
+		private int position;
+		private NearCircle info;
+	
+		public void setNearCircleInfo(int position,NearCircle info){
+			this.position=position;
+			this.info=info;
+		}
+		
+        @Override
+        public void cancelClick(){
+			setEmotionStatus(false);
+		}
+		
+        @Override
+        public boolean sentClick(String content){
+            if (StringUtils.isBlank(text)) {
+                Toast.makeText(activity, "发送的内容不能为空", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+			
+			LoadingDialog.show(activity, "正在发送,请稍后...");
+			nearStandard.addComment(info.getNearCircleId(), content,0)
+			.observeOn(AndroidSchedulers.mainThread())
+			.subscribe(new Consumer<NearCircleComment>() {
+				@Override
+				public void accept(NearCircleComment info) {
+                    LoadingDialog.hide();
+                    nearCircleAdapter.addComment(info);
+				}
+			}, new Consumer<Throwable>() {
+				@Override
+				public void accept(Throwable throwable) {
+                    LoadingDialog.hide();
+					Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+				}
+			});
+
+			return true;
+		}
+	}
+
     private class NearCircleItemListener implements INearCircleItemListener {
 
         private CircleActionMorePop mMorePopupWindow;
@@ -235,6 +278,11 @@ public class FragmentNear extends BaseFragment {
 
         @Override
         public void onCommentContentClick(NearCircleComment comment) {
+				    // if (StringUtils.isNotBlank(replyUserName)) {
+				        // edpEmotion.setHintText("回复 " + replyUserName + " :");
+				    // } else {
+				        // edpEmotion.setHintText("输入评论内容");
+				    // }
 //            NearCircleExt currnetInfo = this.getNearCircleInfo(comment.getNearCircleId());
 //            if (currnetInfo == null) return;
 //            if (comment.getCommentUserId() == myUserId) {
@@ -266,9 +314,8 @@ public class FragmentNear extends BaseFragment {
             mMorePopupWindow.setActionMoreListener(new CircleActionMorePop.IActionMoreListener() {
                 @Override
                 public void onCommentClick(int position) {
-                    setEmotionStatus(true);
-                    //UITransfer.toNearCommentPublishActivity(activity, info.getNearCircleId(),
-                    // info.getPublishUserId(), info.getNearCircleMessageContent());
+                    setEmotionStatus(true,"输入评论内容");
+					emotionPanelListener.setNearCircleInfo(position,info);
                 }
 
                 @Override

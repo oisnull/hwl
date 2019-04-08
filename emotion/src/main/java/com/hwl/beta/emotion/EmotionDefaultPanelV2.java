@@ -37,7 +37,7 @@ public class EmotionDefaultPanelV2 extends LinearLayout {
     FragmentActivity activity;
     int localSoftInputHeight = 0;
     int contentContainerHeight = 0;
-    Runnable cancelCallback;
+    IEmotionPanelListener panelListener;
 
     public EmotionDefaultPanelV2(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -47,8 +47,8 @@ public class EmotionDefaultPanelV2 extends LinearLayout {
         init();
     }
 
-    public EmotionDefaultPanelV2 setCancelListener(Runnable cancelListener) {
-        this.cancelCallback = cancelListener;
+    public EmotionDefaultPanelV2 setEmotionPanelListener(IEmotionPanelListener panelListener) {
+        this.panelListener = panelListener;
         return this;
     }
 
@@ -96,12 +96,22 @@ public class EmotionDefaultPanelV2 extends LinearLayout {
                 return false;
             }
         });
-
+		
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cancelCallback != null)
-                    cancelCallback.run();
+                if (panelListener != null)
+                    panelListener.cancelClick();
+            }
+        });
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (panelListener != null){
+					if(panelListener.sentClick(etMessage.getText()+"")){
+						etMessage.setText("");
+					}
+				}                    
             }
         });
 
@@ -109,6 +119,10 @@ public class EmotionDefaultPanelV2 extends LinearLayout {
         this.bindSysEmotionData();
         this.addView(view);
     }
+
+	public void setHintMessage(String hintText){
+		etMessage.setHintText(hintText);
+	}
 
     private void bindSysEmotionData() {
         List<Fragment> emotionExtendFragments = new ArrayList<>(1);
@@ -215,4 +229,9 @@ public class EmotionDefaultPanelV2 extends LinearLayout {
     private void hideSoftInput() {
         softInputManager.hideSoftInputFromWindow(etMessage.getWindowToken(), 0);
     }
+
+	public interface IEmotionPanelListener{
+		void cancelClick();
+		boolean sentClick(String content);
+	}
 }
