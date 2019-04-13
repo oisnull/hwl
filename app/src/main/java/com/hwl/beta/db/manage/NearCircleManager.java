@@ -199,8 +199,8 @@ public class NearCircleManager extends BaseDao<NearCircle> {
                 .list();
     }
 
-    public void saveComment(long nearCircleId, NearCircleComment comment) {
-        if (nearCircleId > 0 && comment != null) {
+    public void saveComment(NearCircleComment comment) {
+        if (comment != null && comment.getNearCircleId() > 0 && comment.getCommentId() > 0) {
             daoSession.getNearCircleCommentDao().save(comment);
         }
     }
@@ -249,8 +249,8 @@ public class NearCircleManager extends BaseDao<NearCircle> {
         }
     }
 
-    public void saveLike(long nearCircleId, NearCircleLike likeInfo) {
-        if (nearCircleId > 0 && likeInfo != null) {
+    public void saveLike(NearCircleLike likeInfo) {
+        if (likeInfo != null && likeInfo.getNearCircleId() > 0 && likeInfo.getLikeUserId() > 0) {
             daoSession.getNearCircleLikeDao().save(likeInfo);
         }
     }

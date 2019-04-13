@@ -121,7 +121,7 @@ public class EmotionDefaultPanelV2 extends LinearLayout {
     }
 
 	public void setHintMessage(String hintText){
-		etMessage.setHintText(hintText);
+		etMessage.setHint(hintText);
 	}
 
     private void bindSysEmotionData() {

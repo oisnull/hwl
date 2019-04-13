@@ -22,6 +22,7 @@ import com.hwl.beta.db.entity.NearCircle;
 import com.hwl.beta.db.entity.NearCircleComment;
 import com.hwl.beta.db.entity.NearCircleImage;
 import com.hwl.beta.db.entity.NearCircleLike;
+import com.hwl.beta.emotion.EmotionDefaultPanelV2;
 import com.hwl.beta.sp.AppInstallStatus;
 import com.hwl.beta.ui.common.BaseFragment;
 import com.hwl.beta.ui.common.KeyBoardAction;
@@ -35,6 +36,7 @@ import com.hwl.beta.ui.near.logic.NearLogic;
 import com.hwl.beta.ui.near.standard.NearStandard;
 import com.hwl.beta.ui.widget.CircleActionMorePop;
 import com.hwl.beta.utils.NetworkUtils;
+import com.hwl.beta.utils.StringUtils;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -55,6 +57,7 @@ public class FragmentNear extends BaseFragment {
     FragmentActivity activity;
     NearCircleAdapter nearCircleAdapter;
     NearStandard nearStandard;
+    EmotionPanelListener emotionPanelListener;
 
     @Nullable
     @Override
@@ -122,9 +125,10 @@ public class FragmentNear extends BaseFragment {
 //            }
 //        });
 
+        emotionPanelListener=new EmotionPanelListener();
         binding.ecpEmotion.setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
                 .setContentContainerView(binding.refreshLayout)
-				.setEmotionPanelListener(emotionPanelListener);
+                .setEmotionPanelListener(emotionPanelListener);
 
         binding.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -134,11 +138,11 @@ public class FragmentNear extends BaseFragment {
         });
     }
 
-    public void setEmotionStatus(boolean isShow){
-		setEmotionStatus(isShow,null);
-	}
+    public void setEmotionStatus(boolean isShow) {
+        setEmotionStatus(isShow, null);
+    }
 
-    public void setEmotionStatus(boolean isShow,String hintText) {
+    public void setEmotionStatus(boolean isShow, String hintText) {
         ActivityMain parentActivity = (ActivityMain) getActivity();
         if (isShow) {
             parentActivity.setBottomNavVisibility(false);
@@ -149,7 +153,7 @@ public class FragmentNear extends BaseFragment {
             binding.ecpEmotion.hideEmotionPanel();
             binding.ecpEmotion.setVisibility(View.GONE);
         }
-		binding.ecpEmotion.setHintMessage(hintText);
+        binding.ecpEmotion.setHintMessage(hintText);
     }
 
     private void loadServerInfos(long infoId) {
@@ -199,48 +203,47 @@ public class FragmentNear extends BaseFragment {
 //        }
 //    }
 
-	private EmotionDefaultPanelV2.IEmotionPanelListener emotionPanelListener = new EmotionDefaultPanelV2.IEmotionPanelListener(){
-		
-		private int position;
-		private NearCircle info;
-	
-		public void setNearCircleInfo(int position,NearCircle info){
-			this.position=position;
-			this.info=info;
-		}
-		
+    private class EmotionPanelListener implements EmotionDefaultPanelV2.IEmotionPanelListener{
+        private int position;
+        private NearCircle info;
+
+        public void setNearCircleInfo(int position, NearCircle info) {
+            this.position = position;
+            this.info = info;
+        }
+
         @Override
-        public void cancelClick(){
-			setEmotionStatus(false);
-		}
-		
+        public void cancelClick() {
+            setEmotionStatus(false);
+        }
+
         @Override
-        public boolean sentClick(String content){
-            if (StringUtils.isBlank(text)) {
+        public boolean sentClick(String content) {
+            if (StringUtils.isBlank(content)) {
                 Toast.makeText(activity, "发送的内容不能为空", Toast.LENGTH_SHORT).show();
                 return false;
             }
-			
-			LoadingDialog.show(activity, "正在发送,请稍后...");
-			nearStandard.addComment(info.getNearCircleId(), content,0)
-			.observeOn(AndroidSchedulers.mainThread())
-			.subscribe(new Consumer<NearCircleComment>() {
-				@Override
-				public void accept(NearCircleComment info) {
-                    LoadingDialog.hide();
-                    nearCircleAdapter.addComment(info);
-				}
-			}, new Consumer<Throwable>() {
-				@Override
-				public void accept(Throwable throwable) {
-                    LoadingDialog.hide();
-					Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
-				}
-			});
 
-			return true;
-		}
-	}
+            LoadingDialog.show(activity, "正在发送,请稍后...");
+            nearStandard.addComment(info, content, 0)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<NearCircleComment>() {
+                        @Override
+                        public void accept(NearCircleComment info) throws Exception {
+                            LoadingDialog.hide();
+                            nearCircleAdapter.addComment(info);
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) {
+                            LoadingDialog.hide();
+                            Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+            return true;
+        }
+    }
 
     private class NearCircleItemListener implements INearCircleItemListener {
 
@@ -278,11 +281,11 @@ public class FragmentNear extends BaseFragment {
 
         @Override
         public void onCommentContentClick(NearCircleComment comment) {
-				    // if (StringUtils.isNotBlank(replyUserName)) {
-				        // edpEmotion.setHintText("回复 " + replyUserName + " :");
-				    // } else {
-				        // edpEmotion.setHintText("输入评论内容");
-				    // }
+            // if (StringUtils.isNotBlank(replyUserName)) {
+            // edpEmotion.setHintText("回复 " + replyUserName + " :");
+            // } else {
+            // edpEmotion.setHintText("输入评论内容");
+            // }
 //            NearCircleExt currnetInfo = this.getNearCircleInfo(comment.getNearCircleId());
 //            if (currnetInfo == null) return;
 //            if (comment.getCommentUserId() == myUserId) {
@@ -314,8 +317,8 @@ public class FragmentNear extends BaseFragment {
             mMorePopupWindow.setActionMoreListener(new CircleActionMorePop.IActionMoreListener() {
                 @Override
                 public void onCommentClick(int position) {
-                    setEmotionStatus(true,"输入评论内容");
-					emotionPanelListener.setNearCircleInfo(position,info);
+                    setEmotionStatus(true, "输入评论内容");
+                    emotionPanelListener.setNearCircleInfo(position, info);
                 }
 
                 @Override
@@ -331,7 +334,7 @@ public class FragmentNear extends BaseFragment {
             isRunning = true;
 
             final boolean isLike = !info.getIsLiked();
-            nearStandard.setLike(info.getNearCircleId(), isLike)
+            nearStandard.setLike(info, isLike)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<NearCircleLike>() {
                         @Override
@@ -387,29 +390,6 @@ public class FragmentNear extends BaseFragment {
                             LoadingDialog.hide();
                         }
                     });
-            // .subscribe(new NetDefaultObserver<DeleteNearCircleInfoResponse>() {
-            // @Override
-            // protected void onSuccess(DeleteNearCircleInfoResponse response) {
-            // if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
-            // DaoUtils.getNearCircleManagerInstance().delete(nearCircleId);
-            // DaoUtils.getNearCircleManagerInstance().deleteImages(nearCircleId);
-            // DaoUtils.getNearCircleManagerInstance().deleteComments(nearCircleId);
-            // DaoUtils.getNearCircleManagerInstance().deleteLikes(nearCircleId);
-            // nearCircleAdapter.remove(position);
-            // LoadingDialog.hide();
-            // isRuning = false;
-            // } else {
-            // onError("删除失败");
-            // }
-            // }
-
-            // @Override
-            // protected void onError(String resultMessage) {
-            // super.onError(resultMessage);
-            // isRuning = false;
-            // LoadingDialog.hide();
-            // }
-            // });
         }
 
         @Override

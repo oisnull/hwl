@@ -8,6 +8,7 @@ import com.hwl.beta.AppConfig;
 import com.hwl.beta.ui.immsg.listen.AddFriendMessageListen;
 import com.hwl.beta.ui.immsg.listen.ChatSettingMessageListen;
 import com.hwl.beta.ui.immsg.listen.GroupOperateMessageListen;
+import com.hwl.beta.ui.immsg.listen.NearCircleOperateMessageListen;
 import com.hwl.beta.ui.immsg.listen.TestConnectionMessageListen;
 import com.hwl.beta.ui.immsg.listen.UserValidateListen;
 import com.hwl.beta.ui.immsg.send.AddFriendMessageSend;
@@ -16,6 +17,7 @@ import com.hwl.beta.ui.immsg.send.ChatSettingMessageSend;
 import com.hwl.beta.ui.immsg.send.ChatUserMessageSend;
 import com.hwl.beta.ui.immsg.send.ClientAckMessageSend;
 import com.hwl.beta.ui.immsg.send.GroupOperateMessageSend;
+import com.hwl.beta.ui.immsg.send.NearCircleOperateMessageSend;
 import com.hwl.beta.ui.immsg.send.TestConnectionMessageSend;
 import com.hwl.beta.ui.immsg.send.UserValidateSend;
 import com.hwl.beta.utils.NetworkUtils;
@@ -31,6 +33,7 @@ import com.hwl.im.immode.MessageRequestHeadOperate;
 import com.hwl.imcore.improto.ImChatSettingType;
 import com.hwl.imcore.improto.ImGroupOperateType;
 import com.hwl.imcore.improto.ImMessageType;
+import com.hwl.imcore.improto.ImNearCircleOperateType;
 import com.hwl.imcore.improto.ImTestConnectionMessageResponse;
 import com.hwl.imcore.improto.ImUserContent;
 
@@ -67,11 +70,11 @@ public class IMClientEntry {
         messageOperate.registerListenExecutor(ImMessageType.AddFriend, new AddFriendMessageListen
                 ());
         messageOperate.registerListenExecutor(ImMessageType.ChatSetting, new
-                ChatSettingMessageListen
-                ());
+                ChatSettingMessageListen());
         messageOperate.registerListenExecutor(ImMessageType.GroupOperate, new
-                GroupOperateMessageListen
-                ());
+                GroupOperateMessageListen());
+        messageOperate.registerListenExecutor(ImMessageType.NearCircleOperate, new
+                NearCircleOperateMessageListen());
     }
 
     public static void connectServer() {
@@ -192,18 +195,19 @@ public class IMClientEntry {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
                 TestConnectionMessageSend request = new TestConnectionMessageSend(sendCallback);
-                TestConnectionMessageListen response = new TestConnectionMessageListen(new DefaultConsumer<ImTestConnectionMessageResponse>() {
-                    @Override
-                    public void accept(ImTestConnectionMessageResponse content) {
-                        operateListener.listenSuccess(content);
-                    }
-                }, new DefaultConsumer<String>() {
-                    @Override
-                    public void accept(String msg) {
-                        operateListener.listenFailed(msg);
-                        operateListener.sessionInvalid();
-                    }
-                });
+                TestConnectionMessageListen response =
+                        new TestConnectionMessageListen(new DefaultConsumer<ImTestConnectionMessageResponse>() {
+                            @Override
+                            public void accept(ImTestConnectionMessageResponse content) {
+                                operateListener.listenSuccess(content);
+                            }
+                        }, new DefaultConsumer<String>() {
+                            @Override
+                            public void accept(String msg) {
+                                operateListener.listenFailed(msg);
+                                operateListener.sessionInvalid();
+                            }
+                        });
                 messageOperate.send(request, response);
             }
         });
@@ -376,6 +380,60 @@ public class IMClientEntry {
             public void accept(DefaultConsumer<Boolean> sendCallback) {
                 GroupOperateMessageSend request = new GroupOperateMessageSend(ImGroupOperateType
                         .RemoveUser, groupGuid, groupName, groupUsers, sendCallback);
+                messageOperate.send(request);
+            }
+        });
+    }
+
+    public static void sendNearCircleLikeMessage(final long nearCircleId,
+                                                 final boolean isLike,
+                                                 final long originUserId,
+                                                 final IMDefaultSendOperateListener operateListener) {
+        commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+            @Override
+            public void accept(DefaultConsumer<Boolean> sendCallback) {
+                NearCircleOperateMessageSend request =
+                        new NearCircleOperateMessageSend(isLike ? ImNearCircleOperateType
+                                .AddLike : ImNearCircleOperateType.CancelLike, originUserId, 0,
+                                nearCircleId, isLike, 0, null,
+                                sendCallback);
+                messageOperate.send(request);
+            }
+        });
+    }
+
+    public static void sendNearCircleCommentMessage(final long nearCircleId,
+                                                    final long commentId,
+                                                    final String content,
+                                                    final long originUserId,
+                                                    final long replyUserId,
+                                                    final IMDefaultSendOperateListener operateListener) {
+        commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+            @Override
+            public void accept(DefaultConsumer<Boolean> sendCallback) {
+                NearCircleOperateMessageSend request =
+                        new NearCircleOperateMessageSend(ImNearCircleOperateType
+                                .PostComment, originUserId, replyUserId,
+                                nearCircleId, false, commentId, content,
+                                sendCallback);
+                messageOperate.send(request);
+            }
+        });
+    }
+
+    public static void sendNearCircleCancelCommentMessage(final long nearCircleId,
+                                                          final long commentId,
+                                                          final long originUserId,
+                                                          final long replyUserId,
+                                                          final IMDefaultSendOperateListener operateListener) {
+        commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+            @Override
+            public void accept(DefaultConsumer<Boolean> sendCallback) {
+                NearCircleOperateMessageSend request =
+                        new NearCircleOperateMessageSend(ImNearCircleOperateType
+                                .CancelComment, originUserId, replyUserId,
+                                nearCircleId, false, commentId, null,
+                                sendCallback);
                 messageOperate.send(request);
             }
         });

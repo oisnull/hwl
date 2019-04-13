@@ -2,15 +2,19 @@ package com.hwl.beta.ui.near.logic;
 
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.NearCircle;
+import com.hwl.beta.db.entity.NearCircleComment;
 import com.hwl.beta.db.entity.NearCircleLike;
 import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.net.near.NearCircleService;
 import com.hwl.beta.net.near.NetNearCircleMatchInfo;
+import com.hwl.beta.net.near.body.AddNearCommentResponse;
 import com.hwl.beta.net.near.body.DeleteNearCircleInfoResponse;
 import com.hwl.beta.net.near.body.GetNearCircleInfosResponse;
 import com.hwl.beta.net.near.body.SetNearLikeInfoResponse;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.convert.DBNearCircleAction;
+import com.hwl.beta.ui.immsg.IMClientEntry;
+import com.hwl.beta.ui.immsg.IMDefaultSendOperateListener;
 import com.hwl.beta.ui.near.standard.NearStandard;
 
 import java.util.ArrayList;
@@ -111,11 +115,11 @@ public class NearLogic implements NearStandard {
     }
 
     @Override
-    public Observable<NearCircleLike> setLike(final long nearCircleId, final boolean isLike) {
-        if (nearCircleId <= 0) {
+    public Observable<NearCircleLike> setLike(final NearCircle info, final boolean isLike) {
+        if (info == null || info.getNearCircleId() <= 0) {
             return Observable.error(new Throwable("Near circle id con't be empty."));
         }
-        return NearCircleService.setNearLikeInfo(isLike ? 1 : 0, nearCircleId)
+        return NearCircleService.setNearLikeInfo(isLike ? 1 : 0, info.getNearCircleId())
                 .map(new Function<SetNearLikeInfoResponse, NearCircleLike>() {
                     @Override
                     public NearCircleLike apply(SetNearLikeInfoResponse response) throws Exception {
@@ -125,41 +129,62 @@ public class NearLogic implements NearStandard {
 
                         NearCircleLike likeInfo = new NearCircleLike();
                         if (isLike) {
-                            likeInfo.setNearCircleId(nearCircleId);
+                            likeInfo.setNearCircleId(info.getNearCircleId());
                             likeInfo.setLikeUserId(UserSP.getUserId());
                             likeInfo.setLikeUserName(UserSP.getUserName());
                             likeInfo.setLikeUserImage(UserSP.getUserHeadImage());
                             likeInfo.setLikeTime(new Date());
-                            DaoUtils.getNearCircleManagerInstance().saveLike(nearCircleId,
-                                    likeInfo);
-                            //send im message
+                            DaoUtils.getNearCircleManagerInstance().saveLike(likeInfo);
                         } else {
-                            DaoUtils.getNearCircleManagerInstance().deleteLike(nearCircleId,
+                            DaoUtils.getNearCircleManagerInstance().deleteLike(info.getNearCircleId(),
                                     UserSP.getUserId());
                         }
 
                         return likeInfo;
                     }
+                })
+                .doOnNext(new Consumer<NearCircleLike>() {
+                    @Override
+                    public void accept(NearCircleLike likeInfo) {
+                        //send im message
+                        IMClientEntry.sendNearCircleLikeMessage(info.getNearCircleId(), isLike,
+                                info.getPublishUserId(),
+                                new IMDefaultSendOperateListener("setLike"));
+                    }
                 });
     }
-	
+
+
     @Override
-    public Observable<NearCircleComment> addComment(long nearCircleId, String content,long replyUserId){
-        if (nearCircleId <= 0) {
+    public Observable<NearCircleComment> addComment(final NearCircle info,
+                                                    final String content,
+                                                    final long replyUserId) {
+        if (info == null || info.getNearCircleId() <= 0) {
             return Observable.error(new Throwable("Near circle id con't be empty."));
         }
 
-       NearCircleService.addComment(nearCircleId, content, replyUserId)
+        return NearCircleService.addComment(info.getNearCircleId(), content, replyUserId)
                 .map(new Function<AddNearCommentResponse, NearCircleComment>() {
                     @Override
                     public NearCircleComment apply(AddNearCommentResponse response) throws Exception {
-                        if(response.getNearCircleCommentInfo() == null || response.getNearCircleCommentInfo().getCommentId() <= 0)
+                        if (response.getNearCircleCommentInfo() == null || response.getNearCircleCommentInfo().getCommentId() <= 0)
                             throw new Exception("Post user comment info failed.");
 
-                        NearCircleComment commentInfo = DBNearCircleAction.convertToNearCircleCommentInfo(res.getNearCircleCommentInfo());
-                        DaoUtils.getNearCircleManagerInstance().saveComment(nearCircleId,commentInfo);
-						return commentInfo;
+                        NearCircleComment commentInfo =
+                                DBNearCircleAction.convertToNearCircleCommentInfo(response.getNearCircleCommentInfo());
+                        DaoUtils.getNearCircleManagerInstance().saveComment(commentInfo);
+                        return commentInfo;
+                    }
+                })
+                .doOnNext(new Consumer<NearCircleComment>() {
+                    @Override
+                    public void accept(NearCircleComment comment) {
+                        //send im message
+                        IMClientEntry.sendNearCircleCommentMessage(info.getNearCircleId(),
+                                comment.getCommentId(), content,
+                                info.getPublishUserId(), replyUserId,
+                                new IMDefaultSendOperateListener("addComment"));
                     }
                 });
-	}
+    }
 }
