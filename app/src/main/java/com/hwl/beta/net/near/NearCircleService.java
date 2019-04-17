@@ -74,8 +74,7 @@ public class NearCircleService {
         return RetrofitUtils.createApi(INearCircleService.class)
                 .getNearCircleDetail(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<GetNearCircleDetailResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public static Observable<AddNearCircleInfoResponse> addNearCircleInfo(String content, List<NetImageInfo> images) {

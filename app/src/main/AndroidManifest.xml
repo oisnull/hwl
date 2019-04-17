@@ -74,7 +74,7 @@
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity android:name=".ui.near.ActivityNearPublish" />
         <!--<activity android:name=".ui.near.ActivityNearMessages" />-->
-        <!--<activity android:name=".ui.near.ActivityNearDetail" />-->
+        <activity android:name=".ui.near.ActivityNearDetail" />
         <!--<activity-->
         <!--android:name=".ui.near.ActivityCommentPublish"-->
         <!--android:screenOrientation="portrait"-->

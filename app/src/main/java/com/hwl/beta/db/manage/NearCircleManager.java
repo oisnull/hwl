@@ -32,13 +32,44 @@ public class NearCircleManager extends BaseDao<NearCircle> {
 
     public long save(NearCircle info) {
         if (info == null || info.getNearCircleId() <= 0) return 0;
+		
+		if(info.getImages()!=null&&info.getImages().size()>0)
+            saveImages(info.getImages());
+			
+		if(info.getComments()!=null&&info.getComments().size()>0)
+            saveComments(info.getComments());
+
+		if(info.getLikes()!=null&&info.getLikes().size()>0)
+            saveLikes(info.getLikes());
+			
         return daoSession.getNearCircleDao().insertOrReplace(info);
     }
 
     public NearCircle getNearCircle(long nearCircleId) {
-        if (nearCircleId <= 0) return null;
-        return daoSession.getNearCircleDao().load(nearCircleId);
+        return getNearCircle(nearCircleId,0);
     }
+
+    public NearCircle getNearCircle(long nearCircleId,int commentPageCount) {
+        if (nearCircleId <= 0) return null;
+        NearCircle info = daoSession.getNearCircleDao().load(nearCircleId);
+		if(info==null) return null;
+		
+		if(commentPageCount<=0) return info;
+
+        info.setImages(getImages(nearCircleId));
+        info.setComments(getComments(nearCircleId, commentPageCount));
+        info.setLikes(getLikes(nearCircleId));
+
+		return info;
+    }
+
+	public String getLastUpdateTime(long nearCircleId){
+		if(nearCircleId<=0) return null;
+            String sql =
+                    "select " + NearCircleLikeDao.Properties.LastUpdateTime.columnName + " from " + NearCircleLikeDao.TABLENAME + " where " + NearCircleLikeDao.Properties.NearCircleId.columnName + " = " + nearCircleId;
+
+		return daoSession.getDatabase().execSQL(sql);
+	}
 
     public long save(NearCircle model, List<NearCircleImage> images) {
         if (model == null) return 0;
@@ -56,9 +87,9 @@ public class NearCircleManager extends BaseDao<NearCircle> {
         if (infos == null || infos.size() <= 0) return;
         for (NearCircle info : infos) {
             save(info);
-            saveImages(info.getNearCircleId(), info.getImages());
-            saveComments(info.getNearCircleId(), info.getComments());
-            saveLikes(info.getNearCircleId(), info.getLikes());
+            saveImages(info.getImages());
+            saveComments(info.getComments());
+            saveLikes(info.getLikes());
         }
     }
 
@@ -138,8 +169,8 @@ public class NearCircleManager extends BaseDao<NearCircle> {
                 .list();
     }
 
-    public void saveImages(long nearCircleId, List<NearCircleImage> images) {
-        if (nearCircleId > 0 && images != null && images.size() > 0) {
+    public void saveImages(List<NearCircleImage> images) {
+        if (images != null && images.size() > 0) {
             daoSession.getNearCircleImageDao().saveInTx(images);
         }
     }
@@ -205,8 +236,8 @@ public class NearCircleManager extends BaseDao<NearCircle> {
         }
     }
 
-    public void saveComments(long nearCircleId, List<NearCircleComment> comments) {
-        if (nearCircleId > 0 && comments != null && comments.size() > 0) {
+    public void saveComments(List<NearCircleComment> comments) {
+        if (comments != null && comments.size() > 0) {
             daoSession.getNearCircleCommentDao().saveInTx(comments);
         }
     }
@@ -243,8 +274,8 @@ public class NearCircleManager extends BaseDao<NearCircle> {
         }
     }
 
-    public void saveLikes(long nearCircleId, List<NearCircleLike> likes) {
-        if (nearCircleId > 0 && likes != null && likes.size() > 0) {
+    public void saveLikes(List<NearCircleLike> likes) {
+        if (likes != null && likes.size() > 0) {
             daoSession.getNearCircleLikeDao().saveInTx(likes);
         }
     }

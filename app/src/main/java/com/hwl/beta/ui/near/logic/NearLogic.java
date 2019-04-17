@@ -187,4 +187,39 @@ public class NearLogic implements NearStandard {
                     }
                 });
     }
+	
+    @Override
+    public Observable<NearCircle> loadDetails(final long nearCircleId){
+        if (nearCircleId <= 0) {
+            return Observable.error(new Throwable("Near circle id con't be empty."));
+        }
+		
+        if (!NetworkUtils.isConnected()) {
+			return Observable.fromCallable(new Callable<NearCircle>() {
+						@Override
+						public NearCircle call() throws Exception {
+							return DaoUtils.getNearCircleManagerInstance().getNearCircle(nearCircleId,COMMNET_PAGE_COUNT);
+						}
+					}).subscribeOn(Schedulers.io());
+        }
+
+		return NearCircleService.getNearCircleDetail(nearCircleId)
+				.map(new Function<GetNearCircleDetailResponse, NearCircle>() {
+                    @Override
+                    public NearCircle apply(GetNearCircleDetailResponse response) throws Exception {
+                        if (response.getNearCircleInfo() == null)
+                            return Observable.empty();
+
+						//update local info
+						String localLastUpdateTime=DaoUtils.getNearCircleManagerInstance().getLastUpdateTime(nearCircleId);
+						if (!StringUtils.isBlank(localLastUpdateTime) && localLastUpdateTime.equals(response.getNearCircleInfo().getUpdateTime())){
+							DaoUtils.getNearCircleManagerInstance().deleteAll(nearCircleId);
+							DaoUtils.getNearCircleManagerInstance().save(response.getNearCircleInfo());
+						}
+
+                        return DBNearCircleAction.convertToNearCircleInfo(response.getNearCircleInfo());
+                    }
+                });
+	}
+	
 }
