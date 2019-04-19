@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.hwl.beta.R;
-import com.hwl.beta.databinding.ActivityNearDetailBinding;
+import com.hwl.beta.databinding.NearActivityDetailBinding;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.NearCircleComment;
 import com.hwl.beta.db.entity.NearCircleLike;
@@ -51,7 +51,7 @@ import java.util.List;
 public class ActivityNearDetail extends BaseActivity {
 
    Activity activity;
-   ActivityNearDetailBinding binding;
+   NearActivityDetailBinding binding;
    NearStandard nearStandard;
    NearCircle info;
    INearCircleDetailListener itemListener;
@@ -63,7 +63,7 @@ public class ActivityNearDetail extends BaseActivity {
        activity = this;
 	   nearStandard = new NearLogic();
        itemListener = new NearCircleDetailListener();
-       binding = DataBindingUtil.setContentView(activity, R.layout.activity_near_detail);
+       binding = DataBindingUtil.setContentView(activity, R.layout.near_activity_detail);
        binding.setAction(itemListener);
 
        initView();

@@ -45,8 +45,8 @@ import com.hwl.beta.ui.group.ActivityGroupAdd;
 import com.hwl.beta.ui.imgselect.ActivityImageBrowse;
 import com.hwl.beta.ui.imgselect.ActivityImageSelect;
 //import com.hwl.beta.ui.near.ActivityCommentPublish;
-//import com.hwl.beta.ui.near.ActivityNearDetail;
-//import com.hwl.beta.ui.near.ActivityNearMessages;
+import com.hwl.beta.ui.near.ActivityNearDetail;
+import com.hwl.beta.ui.near.ActivityNearMessages;
 import com.hwl.beta.ui.near.ActivityNearPublish;
 import com.hwl.beta.ui.user.ActivityNewFriend;
 import com.hwl.beta.ui.user.ActivityUserEdit;
@@ -286,31 +286,31 @@ public class UITransfer {
         context.startActivity(intent);
     }
 
-//    public static void toNearDetailActivity(Activity context, long circleId) {
-//        toNearDetailActivity(context, circleId, null);
-//    }
-//
-//    public static void toNearDetailActivity(Activity context, NearCircleExt info) {
-//        toNearDetailActivity(context, 0, info);
-//    }
-//
-//    private static void toNearDetailActivity(Activity context, long circleId, NearCircleExt
-// info) {
-//        Intent intent = new Intent(context, ActivityNearDetail.class);
-//        if (info != null && info.getInfo() != null) {
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable("nearcircleext", info);
-//            intent.putExtras(bundle);
-//        }
-//        intent.putExtra("nearcircleid", circleId);
-//        context.startActivity(intent);
-//    }
-//
-//    public static void toNearMessagesActivity(Activity context) {
-//        Intent intent = new Intent(context, ActivityNearMessages.class);
-//        context.startActivity(intent);
-//    }
-//
+   public static void toNearDetailActivity(Activity context, long circleId) {
+       toNearDetailActivity(context, circleId, null);
+   }
+
+   public static void toNearDetailActivity(Activity context, NearCircleExt info) {
+       toNearDetailActivity(context, 0, info);
+   }
+
+   private static void toNearDetailActivity(Activity context, long circleId, NearCircleExt
+info) {
+       Intent intent = new Intent(context, ActivityNearDetail.class);
+       if (info != null && info.getInfo() != null) {
+           Bundle bundle = new Bundle();
+           bundle.putSerializable("nearcircleext", info);
+           intent.putExtras(bundle);
+       }
+       intent.putExtra("nearcircleid", circleId);
+       context.startActivity(intent);
+   }
+
+   public static void toNearMessagesActivity(Activity context) {
+       Intent intent = new Intent(context, ActivityNearMessages.class);
+       context.startActivity(intent);
+   }
+
 //    public static void toNearCommentPublishActivity(Activity context, long nearCircleId, long
 //            publishUserId, String content) {
 //        toNearCommentPublishActivity(context, nearCircleId, publishUserId, 0, null, content);

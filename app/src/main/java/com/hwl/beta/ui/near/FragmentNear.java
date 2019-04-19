@@ -118,12 +118,12 @@ public class FragmentNear extends BaseFragment {
         });
         binding.refreshLayout.setEnableLoadMore(false);
 
-//        binding.llMessageTip.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-////                UITransfer.toNearMessagesActivity(activity);
-//            }
-//        });
+       binding.llMessageTip.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+                UITransfer.toNearMessagesActivity(activity);
+           }
+       });
 
         emotionPanelListener=new EmotionPanelListener();
         binding.ecpEmotion.setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
@@ -190,18 +190,23 @@ public class FragmentNear extends BaseFragment {
         binding.pbLoading.setVisibility(View.GONE);
     }
 
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void updateMessage(Integer ebType) {
-//        if (ebType == EventBusConstant.EB_TYPE_NEAR_CIRCLE_MESSAGE_UPDATE) {
-//            int count = MessageCountSP.getNearCircleMessageCount();
-//            if (count > 0) {
-//                binding.llMessageTip.setVisibility(View.VISIBLE);
-//                binding.tvMessageCount.setText(count + "");
-//            } else {
-//                binding.llMessageTip.setVisibility(View.GONE);
-//            }
-//        }
-//    }
+    @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
+
+    @Override
+    protected void receiveEventMessage(EventMessageModel messageModel) {
+		if(messageModel.getMessageType()==EventBusConstant.EB_TYPE_NEAR_CIRCLE_MESSAGE_UPDATE){
+           int count = MessageCountSP.getNearCircleMessageCount();
+           if (count > 0) {
+               binding.llMessageTip.setVisibility(View.VISIBLE);
+               binding.tvMessageCount.setText(count + "");
+           } else {
+               binding.llMessageTip.setVisibility(View.GONE);
+           }
+		}
+    }
 
     private class EmotionPanelListener implements EmotionDefaultPanelV2.IEmotionPanelListener{
         private int position;
@@ -300,7 +305,7 @@ public class FragmentNear extends BaseFragment {
 
         @Override
         public void onContentClick(NearCircle info) {
-//            UITransfer.toNearDetailActivity(activity, info.getNearCircleId());
+            UITransfer.toNearDetailActivity(activity, info.getNearCircleId());
         }
 
         @Override
