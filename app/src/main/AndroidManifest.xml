@@ -80,7 +80,7 @@
         <!--android:screenOrientation="portrait"-->
         <!--android:theme="@style/ActivityBottomDialog"-->
         <!--android:windowSoftInputMode="stateVisible" />-->
-        <!--<activity android:name=".ui.circle.ActivityCircleIndex" />-->
+        <activity android:name=".ui.circle.ActivityCircleIndex" />
         <!--<activity android:name=".ui.circle.ActivityCirclePublish" />-->
         <!--<activity-->
         <!--android:name=".ui.circle.ActivityCircleCommentPublish"-->
