@@ -9,6 +9,7 @@ import com.hwl.beta.net.near.NearCircleService;
 import com.hwl.beta.net.near.NetNearCircleMatchInfo;
 import com.hwl.beta.net.near.body.AddNearCommentResponse;
 import com.hwl.beta.net.near.body.DeleteNearCircleInfoResponse;
+import com.hwl.beta.net.near.body.GetNearCircleDetailResponse;
 import com.hwl.beta.net.near.body.GetNearCircleInfosResponse;
 import com.hwl.beta.net.near.body.SetNearLikeInfoResponse;
 import com.hwl.beta.sp.UserSP;
@@ -16,6 +17,8 @@ import com.hwl.beta.ui.convert.DBNearCircleAction;
 import com.hwl.beta.ui.immsg.IMClientEntry;
 import com.hwl.beta.ui.immsg.IMDefaultSendOperateListener;
 import com.hwl.beta.ui.near.standard.NearStandard;
+import com.hwl.beta.utils.NetworkUtils;
+import com.hwl.beta.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,7 +33,7 @@ import io.reactivex.schedulers.Schedulers;
 public class NearLogic implements NearStandard {
 
     final static int PAGE_COUNT = 15;
-    final static int COMMNET_PAGE_COUNT = 10;
+    final static int COMMENT_PAGE_COUNT = 10;
 
     @Override
     public Observable<List<NearCircle>> loadLocalInfos() {
@@ -38,7 +41,7 @@ public class NearLogic implements NearStandard {
             @Override
             public List<NearCircle> call() throws Exception {
                 return DaoUtils.getNearCircleManagerInstance().getNearCirclesV2(PAGE_COUNT,
-                        COMMNET_PAGE_COUNT);
+                        COMMENT_PAGE_COUNT);
             }
         })
                 .subscribeOn(Schedulers.io());
@@ -187,39 +190,40 @@ public class NearLogic implements NearStandard {
                     }
                 });
     }
-	
+
     @Override
-    public Observable<NearCircle> loadDetails(final long nearCircleId){
+    public Observable<NearCircle> loadDetails(final long nearCircleId) {
         if (nearCircleId <= 0) {
             return Observable.error(new Throwable("Near circle id con't be empty."));
         }
-		
+
         if (!NetworkUtils.isConnected()) {
-			return Observable.fromCallable(new Callable<NearCircle>() {
-						@Override
-						public NearCircle call() throws Exception {
-							return DaoUtils.getNearCircleManagerInstance().getNearCircle(nearCircleId,COMMNET_PAGE_COUNT);
-						}
-					}).subscribeOn(Schedulers.io());
+            return Observable.fromCallable(new Callable<NearCircle>() {
+                @Override
+                public NearCircle call() throws Exception {
+                    return DaoUtils.getNearCircleManagerInstance().getNearCircle(nearCircleId,
+                            COMMENT_PAGE_COUNT);
+                }
+            }).subscribeOn(Schedulers.io());
         }
 
-		return NearCircleService.getNearCircleDetail(nearCircleId)
-				.map(new Function<GetNearCircleDetailResponse, NearCircle>() {
+        return NearCircleService.getNearCircleDetail(nearCircleId)
+                .map(new Function<GetNearCircleDetailResponse, NearCircle>() {
                     @Override
                     public NearCircle apply(GetNearCircleDetailResponse response) throws Exception {
-                        if (response.getNearCircleInfo() == null)
-                            return Observable.empty();
+                        NearCircle info =
+                                DBNearCircleAction.convertToNearCircleInfo(response.getNearCircleInfo());
+                        //update local info
+                        String localLastUpdateTime =
+                                DaoUtils.getNearCircleManagerInstance().getLastUpdateTime(nearCircleId);
+                        if (!StringUtils.isBlank(localLastUpdateTime) && localLastUpdateTime.equals(response.getNearCircleInfo().getUpdateTime())) {
+                            DaoUtils.getNearCircleManagerInstance().deleteAll(nearCircleId);
+                            DaoUtils.getNearCircleManagerInstance().save(info);
+                        }
 
-						//update local info
-						String localLastUpdateTime=DaoUtils.getNearCircleManagerInstance().getLastUpdateTime(nearCircleId);
-						if (!StringUtils.isBlank(localLastUpdateTime) && localLastUpdateTime.equals(response.getNearCircleInfo().getUpdateTime())){
-							DaoUtils.getNearCircleManagerInstance().deleteAll(nearCircleId);
-							DaoUtils.getNearCircleManagerInstance().save(response.getNearCircleInfo());
-						}
-
-                        return DBNearCircleAction.convertToNearCircleInfo(response.getNearCircleInfo());
+                        return info;
                     }
                 });
-	}
-	
+    }
+
 }

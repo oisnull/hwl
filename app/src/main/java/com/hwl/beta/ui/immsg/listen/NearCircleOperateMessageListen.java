@@ -1,10 +1,19 @@
 package com.hwl.beta.ui.immsg.listen;
 
+import com.hwl.beta.db.DBConstant;
+import com.hwl.beta.db.DaoUtils;
+import com.hwl.beta.db.entity.NearCircleComment;
+import com.hwl.beta.db.entity.NearCircleLike;
+import com.hwl.beta.db.entity.NearCircleMessage;
+import com.hwl.beta.sp.MessageCountSP;
+import com.hwl.beta.ui.ebus.EventBusUtil;
 import com.hwl.im.imaction.AbstractMessageListenExecutor;
 import com.hwl.imcore.improto.ImMessageResponse;
 import com.hwl.imcore.improto.ImMessageType;
 import com.hwl.imcore.improto.ImNearCircleOperateMessageContent;
 import com.hwl.imcore.improto.ImNearCircleOperateMessageResponse;
+
+import java.util.Date;
 
 public class NearCircleOperateMessageListen extends
         AbstractMessageListenExecutor<ImNearCircleOperateMessageResponse> {
@@ -54,7 +63,7 @@ public class NearCircleOperateMessageListen extends
         model.setReplyUserId(messageContent.getReplyUser().getUserId());
         model.setReplyUserName(messageContent.getReplyUser().getUserName());
         model.setActionTime(new Date(response.getBuildTime()));
-		DaoUtils.getNearCircleMessageManagerInstance().save(model)
+		DaoUtils.getNearCircleMessageManagerInstance().save(model);
 	}
 
 	private void addComment(){

@@ -24,10 +24,13 @@ import com.hwl.beta.db.entity.NearCircleImage;
 import com.hwl.beta.db.entity.NearCircleLike;
 import com.hwl.beta.emotion.EmotionDefaultPanelV2;
 import com.hwl.beta.sp.AppInstallStatus;
+import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.common.BaseFragment;
 import com.hwl.beta.ui.common.KeyBoardAction;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.dialog.LoadingDialog;
+import com.hwl.beta.ui.ebus.EventBusConstant;
+import com.hwl.beta.ui.ebus.EventMessageModel;
 import com.hwl.beta.ui.entry.ActivityMain;
 import com.hwl.beta.ui.imgselect.ActivityImageBrowse;
 import com.hwl.beta.ui.near.action.INearCircleItemListener;
@@ -197,7 +200,7 @@ public class FragmentNear extends BaseFragment {
 
     @Override
     protected void receiveEventMessage(EventMessageModel messageModel) {
-		if(messageModel.getMessageType()==EventBusConstant.EB_TYPE_NEAR_CIRCLE_MESSAGE_UPDATE){
+		if(messageModel.getMessageType()== EventBusConstant.EB_TYPE_NEAR_CIRCLE_MESSAGE_UPDATE){
            int count = MessageCountSP.getNearCircleMessageCount();
            if (count > 0) {
                binding.llMessageTip.setVisibility(View.VISIBLE);

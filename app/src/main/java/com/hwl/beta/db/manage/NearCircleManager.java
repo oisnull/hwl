@@ -1,6 +1,7 @@
 package com.hwl.beta.db.manage;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import com.hwl.beta.db.BaseDao;
 import com.hwl.beta.db.DaoUtils;
@@ -32,44 +33,49 @@ public class NearCircleManager extends BaseDao<NearCircle> {
 
     public long save(NearCircle info) {
         if (info == null || info.getNearCircleId() <= 0) return 0;
-		
-		if(info.getImages()!=null&&info.getImages().size()>0)
+
+        if (info.getImages() != null && info.getImages().size() > 0)
             saveImages(info.getImages());
-			
-		if(info.getComments()!=null&&info.getComments().size()>0)
+
+        if (info.getComments() != null && info.getComments().size() > 0)
             saveComments(info.getComments());
 
-		if(info.getLikes()!=null&&info.getLikes().size()>0)
+        if (info.getLikes() != null && info.getLikes().size() > 0)
             saveLikes(info.getLikes());
-			
+
         return daoSession.getNearCircleDao().insertOrReplace(info);
     }
 
     public NearCircle getNearCircle(long nearCircleId) {
-        return getNearCircle(nearCircleId,0);
+        return getNearCircle(nearCircleId, 0);
     }
 
-    public NearCircle getNearCircle(long nearCircleId,int commentPageCount) {
+    public NearCircle getNearCircle(long nearCircleId, int commentPageCount) {
         if (nearCircleId <= 0) return null;
         NearCircle info = daoSession.getNearCircleDao().load(nearCircleId);
-		if(info==null) return null;
-		
-		if(commentPageCount<=0) return info;
+        if (info == null) return null;
+
+        if (commentPageCount <= 0) return info;
 
         info.setImages(getImages(nearCircleId));
         info.setComments(getComments(nearCircleId, commentPageCount));
         info.setLikes(getLikes(nearCircleId));
 
-		return info;
+        return info;
     }
 
-	public String getLastUpdateTime(long nearCircleId){
-		if(nearCircleId<=0) return null;
-            String sql =
-                    "select " + NearCircleLikeDao.Properties.LastUpdateTime.columnName + " from " + NearCircleLikeDao.TABLENAME + " where " + NearCircleLikeDao.Properties.NearCircleId.columnName + " = " + nearCircleId;
+    public String getLastUpdateTime(long nearCircleId) {
+        if (nearCircleId <= 0) return null;
 
-		return daoSession.getDatabase().execSQL(sql);
-	}
+        String sql =
+                "select " + NearCircleDao.Properties.UpdateTime.columnName + " from " + NearCircleDao.TABLENAME + " where " + NearCircleDao.Properties.NearCircleId.columnName + " = " + nearCircleId;
+
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
+        if (cursor != null) {
+            return cursor.getString(0);
+        }
+        return null;
+    }
 
     public long save(NearCircle model, List<NearCircleImage> images) {
         if (model == null) return 0;
@@ -183,7 +189,7 @@ public class NearCircleManager extends BaseDao<NearCircle> {
         }
     }
 
-    public void deleteComment(long nearCircleId, long userId, int commentId) {
+    public void deleteComment(long nearCircleId, long userId, long commentId) {
         if (nearCircleId > 0) {
             String deleteSql = "delete from " + NearCircleCommentDao.TABLENAME + " where " +
                     NearCircleCommentDao.Properties.NearCircleId.columnName + "=" + nearCircleId + " and " +
@@ -202,7 +208,7 @@ public class NearCircleManager extends BaseDao<NearCircle> {
         }
     }
 
-    public NearCircleComment getComment(long nearCircleId, long userId, int commentId) {
+    public NearCircleComment getComment(long nearCircleId, long userId, long commentId) {
         if (nearCircleId <= 0) return null;
         return daoSession.getNearCircleCommentDao().queryBuilder()
                 .where(NearCircleCommentDao.Properties.NearCircleId.eq(nearCircleId))

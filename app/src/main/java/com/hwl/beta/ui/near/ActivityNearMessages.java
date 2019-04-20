@@ -14,10 +14,7 @@ import com.hwl.beta.databinding.NearActivityMessagesBinding;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.NearCircleMessage;
 import com.hwl.beta.sp.MessageCountSP;
-import com.hwl.beta.ui.busbean.EventBusConstant;
 import com.hwl.beta.ui.common.BaseActivity;
-import com.hwl.beta.ui.common.UITransfer;
-import com.hwl.beta.ui.near.adp.NearMessageAdapter;
 
 import java.util.List;
 
@@ -26,7 +23,7 @@ public class ActivityNearMessages extends BaseActivity {
    Activity activity;
    NearActivityMessagesBinding binding;
    List<NearCircleMessage> messages;
-   NearMessageAdapter messageAdapter;
+//   NearMessageAdapter messageAdapter;
 
    @Override
    protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,7 +59,7 @@ public class ActivityNearMessages extends BaseActivity {
                                        dialog.dismiss();
                                        DaoUtils.getNearCircleMessageManagerInstance().deleteAll();
                                        messages.clear();
-                                       messageAdapter.notifyDataSetChanged();
+//                                       messageAdapter.notifyDataSetChanged();
                                    }
                                })
                                .setNegativeButton("取消", null)
@@ -70,9 +67,9 @@ public class ActivityNearMessages extends BaseActivity {
                    }
                });
 
-       messageAdapter = new NearMessageAdapter(activity, messages, new NearMessageItemListener());
-       binding.rvMessageContainer.setAdapter(messageAdapter);
-       binding.rvMessageContainer.setLayoutManager(new LinearLayoutManager(activity));
+//       messageAdapter = new NearMessageAdapter(activity, messages, new NearMessageItemListener());
+//       binding.rvMessageContainer.setAdapter(messageAdapter);
+//       binding.rvMessageContainer.setLayoutManager(new LinearLayoutManager(activity));
    }
 
    @Override
@@ -82,30 +79,30 @@ public class ActivityNearMessages extends BaseActivity {
        //EventBus.getDefault().post(EventBusConstant.EB_TYPE_NEAR_CIRCLE_MESSAGE_UPDATE);
    }
 
-   private class NearMessageItemListener implements NearMessageAdapter.INearMessageItemListener {
-
-       @Override
-       public void onItemClick(View v, NearCircleMessage message, int position) {
-           UITransfer.toNearDetailActivity(activity, message.getNearCircleId());
-       }
-
-       @Override
-       public void onItemLongClick(View v, final NearCircleMessage message, final int position) {
-           new AlertDialog.Builder(activity)
-                   .setMessage("确认要删除这条消息?")
-                   .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                       @Override
-                       public void onClick(DialogInterface dialog, int which) {
-                           dialog.dismiss();
-                           if (DaoUtils.getNearCircleMessageManagerInstance().deleteMessage(message)) {
-                               messages.remove(position);
-                               messageAdapter.notifyItemRemoved(position);
-                               messageAdapter.notifyItemRangeChanged(position, messages.size() - position);
-                           }
-                       }
-                   })
-                   .setNegativeButton("取消", null)
-                   .show();
-       }
-   }
+//   private class NearMessageItemListener implements NearMessageAdapter.INearMessageItemListener {
+//
+//       @Override
+//       public void onItemClick(View v, NearCircleMessage message, int position) {
+//           UITransfer.toNearDetailActivity(activity, message.getNearCircleId());
+//       }
+//
+//       @Override
+//       public void onItemLongClick(View v, final NearCircleMessage message, final int position) {
+//           new AlertDialog.Builder(activity)
+//                   .setMessage("确认要删除这条消息?")
+//                   .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                       @Override
+//                       public void onClick(DialogInterface dialog, int which) {
+//                           dialog.dismiss();
+//                           if (DaoUtils.getNearCircleMessageManagerInstance().deleteMessage(message)) {
+//                               messages.remove(position);
+//                               messageAdapter.notifyItemRemoved(position);
+//                               messageAdapter.notifyItemRangeChanged(position, messages.size() - position);
+//                           }
+//                       }
+//                   })
+//                   .setNegativeButton("取消", null)
+//                   .show();
+//       }
+//   }
 }
