@@ -23,7 +23,7 @@ import com.hwl.beta.ui.chat.ActivityChatGroupSettingEdit;
 //import com.hwl.beta.ui.chat.ActivityChatUser;
 //import com.hwl.beta.ui.circle.ActivityCircleCommentPublish;
 //import com.hwl.beta.ui.circle.ActivityCircleDetail;
-//import com.hwl.beta.ui.circle.ActivityCircleIndex;
+import com.hwl.beta.ui.circle.ActivityCircleIndex;
 //import com.hwl.beta.ui.circle.ActivityCircleMessages;
 //import com.hwl.beta.ui.circle.ActivityCirclePublish;
 //import com.hwl.beta.ui.circle.ActivityCircleUserIndex;
@@ -326,12 +326,12 @@ info) {
 //        intent.putExtra("content", content);
 //        context.startActivity(intent);
 //    }
-//
-//    public static void toCircleIndexActivity(Activity context) {
-//        Intent intent = new Intent(context, ActivityCircleIndex.class);
-//        context.startActivity(intent);
-//    }
-//
+
+    public static void toCircleIndexActivity(Activity context) {
+        Intent intent = new Intent(context, ActivityCircleIndex.class);
+        context.startActivity(intent);
+    }
+
 //    public static void toCirclePublishActivity(Activity context) {
 //        Intent intent = new Intent(context, ActivityCirclePublish.class);
 //        context.startActivity(intent);

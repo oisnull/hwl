@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="action"
+            type="com.hwl.beta.ui.circle.action.ICircleItemListener" />
+
+        <variable
+            name="userName"
+            type="String" />
+
+        <variable
+            name="image"
+            type="com.hwl.beta.ui.user.bean.ImageViewBean" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/iv_circle_back"
+            android:layout_width="match_parent"
+            android:layout_height="260dp"
+            android:background="@color/user_circle_background"
+            android:onClick="@{(view)->action.onCircleBackImageClick()}"
+            android:scaleType="centerCrop"
+            app:imageUrl="@{image.imageCircleUrl}" />
+
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="40dp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/iv_user_header"
+            android:text="@{userName}"
+            android:textColor="@color/white"
+            android:textSize="15dp" />
+
+        <ImageView
+            android:id="@+id/iv_user_header"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"
+            android:onClick="@{(view)->action.onMyUserHeadClick()}"
+            android:src="@drawable/empty_photo"
+            app:imageUrl="@{image.imageUrl}" />
+    </RelativeLayout>
+</layout>

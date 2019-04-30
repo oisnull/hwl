@@ -31,6 +31,47 @@ public class Circle implements Serializable {
     private int commentCount;
     private int likeCount;
     private boolean isLiked;
+	
+    @Transient
+    private int itemType;
+    @Transient
+    private List<CircleImage> images;
+    @Transient
+    private List<CircleComment> comments;
+    @Transient
+    private List<CircleLike> likes;
+
+    public List<CircleImage> getImages() {
+        return this.images;
+    }
+
+    public void setImages(List<CircleImage> imgs) {
+        this.images = imgs;
+    }
+
+    public List<CircleComment> getComments() {
+        return this.comments;
+    }
+
+    public void setComments(List<CircleComment> cmts) {
+        this.comments = cmts;
+    }
+
+    public List<CircleLike> getLikes() {
+        return this.likes;
+    }
+
+    public void setLikes(List<CircleLike> likes) {
+        this.likes = likes;
+    }
+
+    public int getItemType() {
+        return this.itemType;
+    }
+
+    public void setItemType(int itemType) {
+        this.itemType = itemType;
+    }
 
     public String getShowTime() {
         if (this.publishTime != null)

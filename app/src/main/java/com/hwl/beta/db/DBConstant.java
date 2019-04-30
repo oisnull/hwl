@@ -9,4 +9,9 @@ public class DBConstant {
     public final static int CIRCLE_TYPE_COMMENT = 2;
 
     public final static int GROUP_IMAGE_COUNT= 9;
+
+    public final static int CIRCLE_ITEM_NULL= 101;
+    public final static int CIRCLE_ITEM_HEAD= 102;
+    public final static int CIRCLE_ITEM_DATA= 103;
+    public final static int CIRCLE_ITEM_MSGCOUNT= 104;
 }

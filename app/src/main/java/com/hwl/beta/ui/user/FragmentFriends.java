@@ -108,7 +108,7 @@ public class FragmentFriends extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch ((int) id) {
                     case -1:
-//                        UITransfer.toCircleIndexActivity(activity);
+                        UITransfer.toCircleIndexActivity(activity);
                         break;
                     case -2:
                         UITransfer.toGroupActivity(activity);
