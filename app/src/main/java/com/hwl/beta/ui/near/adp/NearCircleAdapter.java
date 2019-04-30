@@ -21,8 +21,6 @@ import com.hwl.beta.ui.near.holder.NearCircleViewHolder;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**

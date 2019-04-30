@@ -3,7 +3,6 @@ package com.hwl.beta.ui.widget;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -15,7 +14,6 @@ import com.hwl.beta.utils.ScreenUtils;
 import java.util.List;
 
 public class MultiImageView extends ViewGroup {
-
 
     /**
      * 图片之间的间隔
@@ -70,12 +68,13 @@ public class MultiImageView extends ViewGroup {
         setLayoutParams(params);
 
         for (int i = 0; i < childrenCount; i++) {
-            ImageView childrenView = (ImageView) getChildAt(i);
-            if (childrenView != null && childrenView.getTag(R.id.id_tag_image) != null && images.get(i).path == childrenView.getTag(R.id.id_tag_image)) {
-                Glide.with(context).clear(childrenView);
-                Log.d("-----------------",images.get(i).path);
-            }
-            childrenView = generateImageView(i, images.get(i), childrenCount == 1);
+//            ImageView childrenView = (ImageView) getChildAt(i);
+//            if (childrenView != null && childrenView.getTag(R.id.id_tag_image) != null &&
+// images.get(i).path == childrenView.getTag(R.id.id_tag_image)) {
+//                Glide.with(context).clear(childrenView);
+//                android.util.Log.d("childrenView",images.get(i).path);
+//            }
+            ImageView childrenView = generateImageView(i, images.get(i), childrenCount == 1);
             childrenView.setTag(R.id.id_tag_image, images.get(i).path);
             Glide.with(context).load(images.get(i).path)
                     .placeholder(R.drawable.empty_photo)
@@ -105,14 +104,17 @@ public class MultiImageView extends ViewGroup {
         return position;
     }
 
-    public int getGap() {
-        return gap;
-    }
+//    public int getGap() {
+//        return gap;
+//    }
+//
+//    public void setGap(int gap) {
+//        this.gap = gap;
+//    }
 
-    public void setGap(int gap) {
-        this.gap = gap;
+    public List<ImageBean> getImagesData() {
+        return images;
     }
-
 
     public void setImagesData(List<ImageBean> lists) {
         if (lists == null || lists.isEmpty()) {

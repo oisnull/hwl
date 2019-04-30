@@ -16,7 +16,7 @@ import java.util.Date;
 @Entity
 public class NearCircleComment implements Serializable {
     private static final long serialVersionUID = 11L;
-    private int commentId;
+    private long commentId;
     private long nearCircleId;
     private long commentUserId;
     private String commentUserName;
@@ -28,16 +28,11 @@ public class NearCircleComment implements Serializable {
     @OrderBy("commentTime desc")
     private Date commentTime;
 
-    public String getShowTime() {
-        if (this.commentTime != null)
-            return DateUtils.getChatShowTime(this.commentTime);
-        return null;
-    }
-
-    @Generated(hash = 1892715940)
-    public NearCircleComment(int commentId, long nearCircleId, long commentUserId,
+    @Generated(hash = 1875012971)
+    public NearCircleComment(long commentId, long nearCircleId, long commentUserId,
             String commentUserName, String commentUserImage, long replyUserId,
-            String replyUserName, String replyUserImage, String content, Date commentTime) {
+            String replyUserName, String replyUserImage, String content,
+            Date commentTime) {
         this.commentId = commentId;
         this.nearCircleId = nearCircleId;
         this.commentUserId = commentUserId;
@@ -54,11 +49,17 @@ public class NearCircleComment implements Serializable {
     public NearCircleComment() {
     }
 
-    public int getCommentId() {
+    public String getShowTime() {
+        if (this.commentTime != null)
+            return DateUtils.getChatShowTime(this.commentTime);
+        return null;
+    }
+
+    public long getCommentId() {
         return this.commentId;
     }
 
-    public void setCommentId(int commentId) {
+    public void setCommentId(long commentId) {
         this.commentId = commentId;
     }
 
@@ -133,7 +134,6 @@ public class NearCircleComment implements Serializable {
     public void setCommentTime(Date commentTime) {
         this.commentTime = commentTime;
     }
-
 
     @Override
     public boolean equals(Object obj) {

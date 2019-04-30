@@ -172,4 +172,8 @@ public class EventBusUtil {
     public static void sendGroupUsersAddEvent(List<GroupUserInfo> users) {
         sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_GROUP_USERS_ADD, users));
     }
+
+    public static void sendNearMessageUpdateEvent() {
+        sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_NEAR_CIRCLE_MESSAGE_UPDATE));
+    }
 }

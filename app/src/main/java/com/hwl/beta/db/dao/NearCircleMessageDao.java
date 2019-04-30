@@ -30,7 +30,7 @@ public class NearCircleMessageDao extends AbstractDao<NearCircleMessage, Long> {
         public final static Property UserId = new Property(3, long.class, "userId", false, "USER_ID");
         public final static Property UserName = new Property(4, String.class, "userName", false, "USER_NAME");
         public final static Property Comment = new Property(5, String.class, "comment", false, "COMMENT");
-        public final static Property CommentId = new Property(6, int.class, "commentId", false, "COMMENT_ID");
+        public final static Property CommentId = new Property(6, long.class, "commentId", false, "COMMENT_ID");
         public final static Property ReplyUserId = new Property(7, long.class, "replyUserId", false, "REPLY_USER_ID");
         public final static Property ReplyUserName = new Property(8, String.class, "replyUserName", false, "REPLY_USER_NAME");
         public final static Property Content = new Property(9, String.class, "content", false, "CONTENT");
@@ -179,7 +179,7 @@ public class NearCircleMessageDao extends AbstractDao<NearCircleMessage, Long> {
             cursor.getLong(offset + 3), // userId
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // userName
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // comment
-            cursor.getInt(offset + 6), // commentId
+            cursor.getLong(offset + 6), // commentId
             cursor.getLong(offset + 7), // replyUserId
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // replyUserName
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // content
@@ -198,7 +198,7 @@ public class NearCircleMessageDao extends AbstractDao<NearCircleMessage, Long> {
         entity.setUserId(cursor.getLong(offset + 3));
         entity.setUserName(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setComment(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setCommentId(cursor.getInt(offset + 6));
+        entity.setCommentId(cursor.getLong(offset + 6));
         entity.setReplyUserId(cursor.getLong(offset + 7));
         entity.setReplyUserName(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
         entity.setContent(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
