@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/ll_near_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/main_background">
+        android:background="@color/main_background"
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/ll_message_tip"
@@ -49,14 +51,14 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_30"
             android:visibility="gone" />
 
         <com.scwang.smartrefresh.layout.SmartRefreshLayout
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/pb_loading">
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_near_container"
@@ -65,5 +67,11 @@
                 android:overScrollMode="never" />
 
         </com.scwang.smartrefresh.layout.SmartRefreshLayout>
-    </RelativeLayout>
+
+        <com.hwl.beta.emotion.EmotionDefaultPanelV2
+            android:id="@+id/ecp_emotion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+    </LinearLayout>
 </layout>

@@ -165,6 +165,10 @@ public class ActivityMain extends BaseActivity {
         }
     }
 
+    public void setBottomNavVisibility(boolean isShow) {
+        binding.llNavBottom.setVisibility(isShow ? View.VISIBLE : View.GONE);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -239,8 +243,9 @@ public class ActivityMain extends BaseActivity {
 
         public void initVPContainer() {
             List<Fragment> fragments = new ArrayList<>();
+            final FragmentNear fragmentNear = new FragmentNear();
             fragments.add(new FragmentRecord());
-            fragments.add(new FragmentNear());
+            fragments.add(fragmentNear);
             fragments.add(new FragmentFriends());
             fragments.add(new FragmentCenter());
 
@@ -267,6 +272,7 @@ public class ActivityMain extends BaseActivity {
                     //页面状态改变时调用 1:表示正在滑动 ，2：表示滑动完毕，0：表示什么都没做
                     if (state == 2) {
                         int index = binding.vpContainer.getCurrentItem();
+                        fragmentNear.setEmotionStatus(false);
                         switchTab(index);
                     }
                 }

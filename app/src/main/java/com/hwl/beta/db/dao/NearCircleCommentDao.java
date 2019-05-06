@@ -24,7 +24,7 @@ public class NearCircleCommentDao extends AbstractDao<NearCircleComment, Void> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property CommentId = new Property(0, int.class, "commentId", false, "COMMENT_ID");
+        public final static Property CommentId = new Property(0, long.class, "commentId", false, "COMMENT_ID");
         public final static Property NearCircleId = new Property(1, long.class, "nearCircleId", false, "NEAR_CIRCLE_ID");
         public final static Property CommentUserId = new Property(2, long.class, "commentUserId", false, "COMMENT_USER_ID");
         public final static Property CommentUserName = new Property(3, String.class, "commentUserName", false, "COMMENT_USER_NAME");
@@ -153,7 +153,7 @@ public class NearCircleCommentDao extends AbstractDao<NearCircleComment, Void> {
     @Override
     public NearCircleComment readEntity(Cursor cursor, int offset) {
         NearCircleComment entity = new NearCircleComment( //
-            cursor.getInt(offset + 0), // commentId
+            cursor.getLong(offset + 0), // commentId
             cursor.getLong(offset + 1), // nearCircleId
             cursor.getLong(offset + 2), // commentUserId
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // commentUserName
@@ -169,7 +169,7 @@ public class NearCircleCommentDao extends AbstractDao<NearCircleComment, Void> {
      
     @Override
     public void readEntity(Cursor cursor, NearCircleComment entity, int offset) {
-        entity.setCommentId(cursor.getInt(offset + 0));
+        entity.setCommentId(cursor.getLong(offset + 0));
         entity.setNearCircleId(cursor.getLong(offset + 1));
         entity.setCommentUserId(cursor.getLong(offset + 2));
         entity.setCommentUserName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));

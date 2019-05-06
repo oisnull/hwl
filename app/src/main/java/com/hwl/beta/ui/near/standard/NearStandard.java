@@ -1,6 +1,8 @@
 package com.hwl.beta.ui.near.standard;
 
 import com.hwl.beta.db.entity.NearCircle;
+import com.hwl.beta.db.entity.NearCircleComment;
+import com.hwl.beta.db.entity.NearCircleLike;
 
 import java.util.List;
 
@@ -14,5 +16,9 @@ public interface NearStandard {
 
     Observable deleteInfo(long nearCircleId);
 
-    Observable setLike(long nearCircleId,boolean isLike);
+    Observable<NearCircleLike> setLike(NearCircle info, boolean isLike);
+
+    Observable<NearCircleComment> addComment(NearCircle info, String content, long replyUserId);
+
+    Observable<NearCircle> loadDetails(long nearCircleId);
 }
