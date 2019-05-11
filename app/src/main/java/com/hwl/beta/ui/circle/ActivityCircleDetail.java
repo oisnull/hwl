@@ -16,28 +16,23 @@ import android.widget.Toast;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.hwl.beta.R;
-import com.hwl.beta.databinding.ActivityCircleDetailBinding;
+import com.hwl.beta.databinding.CircleActivityDetailBinding;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.Circle;
 import com.hwl.beta.db.entity.CircleComment;
 import com.hwl.beta.db.entity.CircleLike;
 import com.hwl.beta.db.ext.CircleExt;
-import com.hwl.beta.mq.send.CircleMessageSend;
 import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.net.circle.CircleService;
 import com.hwl.beta.net.circle.body.GetCircleDetailResponse;
 import com.hwl.beta.net.circle.body.SetLikeInfoResponse;
 import com.hwl.beta.sp.UserSP;
-import com.hwl.beta.ui.busbean.EventActionCircleComment;
-import com.hwl.beta.ui.busbean.EventActionCircleLike;
-import com.hwl.beta.ui.busbean.EventBusConstant;
 import com.hwl.beta.ui.circle.action.ICircleCommentItemListener;
 import com.hwl.beta.ui.circle.action.ICircleDetailListener;
 import com.hwl.beta.ui.circle.adp.CircleCommentAdapter;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.KeyBoardAction;
 import com.hwl.beta.ui.common.UITransfer;
-import com.hwl.beta.ui.common.rxext.NetDefaultObserver;
 import com.hwl.beta.ui.convert.DBCircleAction;
 import com.hwl.beta.ui.imgselect.ActivityImageBrowse;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
@@ -57,7 +52,7 @@ import java.util.List;
 public class ActivityCircleDetail extends BaseActivity {
 
     Activity activity;
-    ActivityCircleDetailBinding binding;
+    CircleActivityDetailBinding binding;
     ICircleDetailListener itemListener;
     CircleCommentAdapter commentAdapter;
     CircleExt info;
@@ -69,33 +64,23 @@ public class ActivityCircleDetail extends BaseActivity {
         activity = this;
         myUserId = UserSP.getUserId();
         itemListener = new CircleDetailListener();
-        binding = DataBindingUtil.setContentView(activity, R.layout.activity_circle_detail);
+        binding = DataBindingUtil.setContentView(activity, R.layout.circle_activity_detail);
         binding.setAction(itemListener);
 
         initView();
-
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void addComment(EventActionCircleComment action) {
-        if (action.getActionType() != EventBusConstant.EB_TYPE_ACTINO_ADD) return;
-        CircleComment comment = action.getComment();
-        if (comment == null || comment.getCircleId() <= 0 || comment.getCommentUserId() <= 0)
-            return;
-
-        int position = info.getComments().size();
-        info.getComments().add(position, comment);
-        commentAdapter.notifyItemInserted(position);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void addComment(EventActionCircleComment action) {
+//        if (action.getActionType() != EventBusConstant.EB_TYPE_ACTINO_ADD) return;
+//        CircleComment comment = action.getComment();
+//        if (comment == null || comment.getCircleId() <= 0 || comment.getCommentUserId() <= 0)
+//            return;
+//
+//        int position = info.getComments().size();
+//        info.getComments().add(position, comment);
+//        commentAdapter.notifyItemInserted(position);
+//    }
 
     private void initView() {
         binding.tbTitle.setTitle("动态详细")
@@ -131,7 +116,8 @@ public class ActivityCircleDetail extends BaseActivity {
         }
 
         this.setLikeViews(info.getLikes());
-        commentAdapter = new CircleCommentAdapter(activity, info.getComments(), new CircleCommentItemListener());
+        commentAdapter = new CircleCommentAdapter(activity, info.getComments(),
+                new CircleCommentItemListener());
         binding.rvComments.setAdapter(commentAdapter);
         binding.rvComments.setLayoutManager(new LinearLayoutManager(activity));
     }
@@ -169,44 +155,53 @@ public class ActivityCircleDetail extends BaseActivity {
     }
 
     private void loadFromServer(final boolean isResetInfo) {
-        CircleService.getCircleDetail(info.getInfo().getCircleId())
-                .subscribe(new NetDefaultObserver<GetCircleDetailResponse>() {
-                    @Override
-                    protected void onSuccess(GetCircleDetailResponse response) {
-                        List<CircleComment> comments = DBCircleAction.convertToCircleCommentInfos(response.getCircleInfo().getCommentInfos());
-                        if (comments != null && comments.size() > 0) {
-                            comments.removeAll(info.getComments());
-                            info.getComments().addAll(comments);
-                        }
-                        info.setLikes(DBCircleAction.convertToCircleLikeInfos(response.getCircleInfo().getLikeInfos()));
-                        if (response.getCircleInfo() != null) {
-                            if (isResetInfo) {
-                                info.setInfo(DBCircleAction.convertToCircleInfo(response.getCircleInfo()));
-                                info.setImages(DBCircleAction.convertToCircleImageInfos(response.getCircleInfo().getCircleId(), response.getCircleInfo().getPublishUserId(), response.getCircleInfo().getImages()));
-                                bindData();
-                            } else {
-                                if (response.getCircleInfo().getUpdateTime() != null && !response.getCircleInfo().getUpdateTime().equals(info.getInfo().getUpdateTime())) {
-                                    info.getInfo().setUpdateTime(response.getCircleInfo().getUpdateTime());
-                                    setLikeViews(info.getLikes());
-                                    commentAdapter.notifyItemRangeChanged(0, info.getComments().size());
-                                }
-                            }
-                            saveInfo(response.getCircleInfo().getUpdateTime());
-                        } else {
-                            Toast.makeText(activity, "数据已经被用户删除!", Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
-                        binding.pbCircleLoading.setVisibility(View.GONE);
-                        binding.svCircleContainer.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    protected void onError(String resultMessage) {
-                        super.onError(resultMessage);
-                        binding.pbCircleLoading.setVisibility(View.GONE);
-                        binding.svCircleContainer.setVisibility(View.GONE);
-                    }
-                });
+//        CircleService.getCircleDetail(info.getInfo().getCircleId())
+//                .subscribe(new NetDefaultObserver<GetCircleDetailResponse>() {
+//                    @Override
+//                    protected void onSuccess(GetCircleDetailResponse response) {
+//                        List<CircleComment> comments = DBCircleAction
+//                        .convertToCircleCommentInfos(response.getCircleInfo().getCommentInfos());
+//                        if (comments != null && comments.size() > 0) {
+//                            comments.removeAll(info.getComments());
+//                            info.getComments().addAll(comments);
+//                        }
+//                        info.setLikes(DBCircleAction.convertToCircleLikeInfos(response
+//                        .getCircleInfo().getLikeInfos()));
+//                        if (response.getCircleInfo() != null) {
+//                            if (isResetInfo) {
+//                                info.setInfo(DBCircleAction.convertToCircleInfo(response
+//                                .getCircleInfo()));
+//                                info.setImages(DBCircleAction.convertToCircleImageInfos
+//                                (response.getCircleInfo().getCircleId(), response.getCircleInfo
+//                                ().getPublishUserId(), response.getCircleInfo().getImages()));
+//                                bindData();
+//                            } else {
+//                                if (response.getCircleInfo().getUpdateTime() != null &&
+//                                !response.getCircleInfo().getUpdateTime().equals(info.getInfo()
+//                                .getUpdateTime())) {
+//                                    info.getInfo().setUpdateTime(response.getCircleInfo()
+//                                    .getUpdateTime());
+//                                    setLikeViews(info.getLikes());
+//                                    commentAdapter.notifyItemRangeChanged(0, info.getComments()
+//                                    .size());
+//                                }
+//                            }
+//                            saveInfo(response.getCircleInfo().getUpdateTime());
+//                        } else {
+//                            Toast.makeText(activity, "数据已经被用户删除!", Toast.LENGTH_SHORT).show();
+//                            finish();
+//                        }
+//                        binding.pbCircleLoading.setVisibility(View.GONE);
+//                        binding.svCircleContainer.setVisibility(View.VISIBLE);
+//                    }
+//
+//                    @Override
+//                    protected void onError(String resultMessage) {
+//                        super.onError(resultMessage);
+//                        binding.pbCircleLoading.setVisibility(View.GONE);
+//                        binding.svCircleContainer.setVisibility(View.GONE);
+//                    }
+//                });
     }
 
     private void saveInfo(String lastUpdateTime) {
@@ -219,9 +214,9 @@ public class ActivityCircleDetail extends BaseActivity {
             DaoUtils.getCircleManagerInstance().deleteImages(info.getInfo().getCircleId());
             DaoUtils.getCircleManagerInstance().deleteComments(info.getInfo().getCircleId());
             DaoUtils.getCircleManagerInstance().deleteLikes(info.getInfo().getCircleId());
-            DaoUtils.getCircleManagerInstance().saveImages(info.getInfo().getCircleId(), info.getImages());
-            DaoUtils.getCircleManagerInstance().saveComments(info.getInfo().getCircleId(), info.getComments());
-            DaoUtils.getCircleManagerInstance().saveLikes(info.getInfo().getCircleId(), info.getLikes());
+            DaoUtils.getCircleManagerInstance().saveImages(info.getImages());
+            DaoUtils.getCircleManagerInstance().saveComments(info.getComments());
+            DaoUtils.getCircleManagerInstance().saveLikes(info.getLikes());
         }
     }
 
@@ -253,16 +248,17 @@ public class ActivityCircleDetail extends BaseActivity {
     }
 
     private void removeLikeView() {
-        if (info == null || info.getLikes() == null || info.getLikes().size() <= 0)
-            return;
-        for (int i = 0; i < info.getLikes().size(); i++) {
-            if (info.getLikes().get(i).getLikeUserId() == myUserId) {
-                EventBus.getDefault().post(new EventActionCircleLike(EventBusConstant.EB_TYPE_ACTINO_REMOVE, info.getLikes().get(i)));
-                info.getLikes().remove(i);
-                binding.fblLikeContainer.removeViewAt(i);
-                break;
-            }
-        }
+//        if (info == null || info.getLikes() == null || info.getLikes().size() <= 0)
+//            return;
+//        for (int i = 0; i < info.getLikes().size(); i++) {
+//            if (info.getLikes().get(i).getLikeUserId() == myUserId) {
+//                EventBus.getDefault().post(new EventActionCircleLike(EventBusConstant
+//                .EB_TYPE_ACTINO_REMOVE, info.getLikes().get(i)));
+//                info.getLikes().remove(i);
+//                binding.fblLikeContainer.removeViewAt(i);
+//                break;
+//            }
+//        }
     }
 
     private class CircleDetailListener implements ICircleDetailListener {
@@ -277,36 +273,45 @@ public class ActivityCircleDetail extends BaseActivity {
 
         @Override
         public void onMyUserHeadClick() {
-            UITransfer.toCircleUserIndexActivity(activity, UserSP.getUserId(), UserSP.getUserName(), UserSP.getUserHeadImage(), UserSP.getUserCirclebackimage(), UserSP.getLifeNotes());
+//            UITransfer.toCircleUserIndexActivity(activity, UserSP.getUserId(), UserSP
+//            .getUserName(), UserSP.getUserHeadImage(), UserSP.getUserCirclebackimage(), UserSP
+//            .getLifeNotes());
         }
 
         @Override
         public void onUserHeadClick() {
-            UITransfer.toUserIndexActivity(activity, info.getInfo().getPublishUserId(), info.getInfo().getPublishUserName(), info.getInfo().getPublishUserImage());
+            UITransfer.toUserIndexActivity(activity, info.getInfo().getPublishUserId(),
+                    info.getInfo().getPublishUserName(), info.getInfo().getPublishUserImage());
         }
 
         @Override
         public void onLikeUserHeadClick(CircleLike likeInfo) {
-            UITransfer.toUserIndexActivity(activity, likeInfo.getLikeUserId(), likeInfo.getLikeUserName(), likeInfo.getLikeUserImage());
+            UITransfer.toUserIndexActivity(activity, likeInfo.getLikeUserId(),
+                    likeInfo.getLikeUserName(), likeInfo.getLikeUserImage());
         }
 
         @Override
         public void onCommentUserClick(CircleComment comment) {
-            UITransfer.toUserIndexActivity(activity, comment.getCommentUserId(), comment.getCommentUserName(), comment.getCommentUserImage());
+            UITransfer.toUserIndexActivity(activity, comment.getCommentUserId(),
+                    comment.getCommentUserName(), comment.getCommentUserImage());
         }
 
         @Override
         public void onReplyUserClick(CircleComment comment) {
-            UITransfer.toUserIndexActivity(activity, comment.getReplyUserId(), comment.getReplyUserName(), comment.getReplyUserImage());
+            UITransfer.toUserIndexActivity(activity, comment.getReplyUserId(),
+                    comment.getReplyUserName(), comment.getReplyUserImage());
         }
 
         @Override
         public void onCommentContentClick(CircleComment comment) {
-            if (comment.getCommentUserId() == myUserId) {
-                UITransfer.toCircleCommentPublishActivity(activity, comment.getCircleId(), info.getInfo().getPublishUserId(), info.getCircleMessageContent());
-            } else {
-                UITransfer.toCircleCommentPublishActivity(activity, comment.getCircleId(), info.getInfo().getPublishUserId(), comment.getCommentUserId(), comment.getCommentUserName(), info.getCircleMessageContent());
-            }
+//            if (comment.getCommentUserId() == myUserId) {
+//                UITransfer.toCircleCommentPublishActivity(activity, comment.getCircleId(), info
+//                .getInfo().getPublishUserId(), info.getCircleMessageContent());
+//            } else {
+//                UITransfer.toCircleCommentPublishActivity(activity, comment.getCircleId(), info
+//                .getInfo().getPublishUserId(), comment.getCommentUserId(), comment
+//                .getCommentUserName(), info.getCircleMessageContent());
+//            }
         }
 
         @Override
@@ -329,7 +334,9 @@ public class ActivityCircleDetail extends BaseActivity {
             mMorePopupWindow.setActionMoreListener(new CircleActionMorePop.IActionMoreListener() {
                 @Override
                 public void onCommentClick(int position) {
-                    UITransfer.toCircleCommentPublishActivity(activity, info.getInfo().getCircleId(), info.getInfo().getPublishUserId(), info.getCircleMessageContent());
+//                    UITransfer.toCircleCommentPublishActivity(activity, info.getInfo()
+//                    .getCircleId(), info.getInfo().getPublishUserId(), info
+//                    .getCircleMessageContent());
                 }
 
                 @Override
@@ -341,47 +348,53 @@ public class ActivityCircleDetail extends BaseActivity {
         }
 
         private void setLikeInfo(final int position, final CircleExt info) {
-            if (isRuning || info == null || info.getInfo() == null || info.getInfo().getCircleId() <= 0)
-                return;
-            isRuning = true;
-            final boolean isLiked = info.getInfo().getIsLiked();
-            CircleService.setLikeInfo(isLiked ? 0 : 1, info.getInfo().getCircleId())
-                    .subscribe(new NetDefaultObserver<SetLikeInfoResponse>() {
-                        @Override
-                        protected void onSuccess(SetLikeInfoResponse response) {
-                            isRuning = false;
-                            if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
-                                if (isLiked) {
-                                    //取消点赞
-                                    info.getInfo().setIsLiked(false);
-                                    removeLikeView();
-                                    CircleMessageSend.sendDeleteLikeMessage(info.getInfo().getCircleId(), info.getInfo().getPublishUserId()).subscribe();
-                                } else {
-                                    //点赞
-                                    info.getInfo().setIsLiked(true);
-                                    CircleLike likeInfo = new CircleLike();
-                                    likeInfo.setCircleId(info.getInfo().getCircleId());
-                                    likeInfo.setLikeUserId(myUserId);
-                                    likeInfo.setLikeUserName(UserSP.getUserName());
-                                    likeInfo.setLikeUserImage(UserSP.getUserHeadImage());
-                                    likeInfo.setLikeTime(new Date());
-                                    info.getLikes().add(likeInfo);
-                                    setLikeView(likeInfo);
-                                    EventBus.getDefault().post(new EventActionCircleLike(EventBusConstant.EB_TYPE_ACTINO_ADD, likeInfo));
-                                    CircleMessageSend.sendAddLikeMessage(info.getInfo().getCircleId(), info.getInfo().getPublishUserId(), info.getCircleMessageContent()).subscribe();
-                                }
-                                saveCircleInfo();
-                            } else {
-                                onError("操作失败");
-                            }
-                        }
-
-                        @Override
-                        protected void onError(String resultMessage) {
-                            super.onError(resultMessage);
-                            isRuning = false;
-                        }
-                    });
+//            if (isRuning || info == null || info.getInfo() == null || info.getInfo()
+//            .getCircleId() <= 0)
+//                return;
+//            isRuning = true;
+//            final boolean isLiked = info.getInfo().getIsLiked();
+//            CircleService.setLikeInfo(isLiked ? 0 : 1, info.getInfo().getCircleId())
+//                    .subscribe(new NetDefaultObserver<SetLikeInfoResponse>() {
+//                        @Override
+//                        protected void onSuccess(SetLikeInfoResponse response) {
+//                            isRuning = false;
+//                            if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
+//                                if (isLiked) {
+//                                    //取消点赞
+//                                    info.getInfo().setIsLiked(false);
+//                                    removeLikeView();
+//                                    CircleMessageSend.sendDeleteLikeMessage(info.getInfo()
+//                                    .getCircleId(), info.getInfo().getPublishUserId())
+//                                    .subscribe();
+//                                } else {
+//                                    //点赞
+//                                    info.getInfo().setIsLiked(true);
+//                                    CircleLike likeInfo = new CircleLike();
+//                                    likeInfo.setCircleId(info.getInfo().getCircleId());
+//                                    likeInfo.setLikeUserId(myUserId);
+//                                    likeInfo.setLikeUserName(UserSP.getUserName());
+//                                    likeInfo.setLikeUserImage(UserSP.getUserHeadImage());
+//                                    likeInfo.setLikeTime(new Date());
+//                                    info.getLikes().add(likeInfo);
+//                                    setLikeView(likeInfo);
+//                                    EventBus.getDefault().post(new EventActionCircleLike
+//                                    (EventBusConstant.EB_TYPE_ACTINO_ADD, likeInfo));
+//                                    CircleMessageSend.sendAddLikeMessage(info.getInfo()
+//                                    .getCircleId(), info.getInfo().getPublishUserId(), info
+//                                    .getCircleMessageContent()).subscribe();
+//                                }
+//                                saveCircleInfo();
+//                            } else {
+//                                onError("操作失败");
+//                            }
+//                        }
+//
+//                        @Override
+//                        protected void onError(String resultMessage) {
+//                            super.onError(resultMessage);
+//                            isRuning = false;
+//                        }
+//                    });
         }
 
         private void saveCircleInfo() {
@@ -391,9 +404,9 @@ public class ActivityCircleDetail extends BaseActivity {
             DaoUtils.getCircleManagerInstance().deleteImages(info.getInfo().getCircleId());
             DaoUtils.getCircleManagerInstance().deleteComments(info.getInfo().getCircleId());
             DaoUtils.getCircleManagerInstance().deleteLikes(info.getInfo().getCircleId());
-            DaoUtils.getCircleManagerInstance().saveImages(info.getInfo().getCircleId(), info.getImages());
-            DaoUtils.getCircleManagerInstance().saveComments(info.getInfo().getCircleId(), info.getComments());
-            DaoUtils.getCircleManagerInstance().saveLikes(info.getInfo().getCircleId(), info.getLikes());
+            DaoUtils.getCircleManagerInstance().saveImages(info.getImages());
+            DaoUtils.getCircleManagerInstance().saveComments(info.getComments());
+            DaoUtils.getCircleManagerInstance().saveLikes(info.getLikes());
         }
 
         @Override
@@ -421,7 +434,7 @@ public class ActivityCircleDetail extends BaseActivity {
 
         @Override
         public void onPublishClick() {
-            UITransfer.toCirclePublishActivity(activity);
+//            UITransfer.toCirclePublishActivity(activity);
         }
 
         @Override
@@ -431,7 +444,8 @@ public class ActivityCircleDetail extends BaseActivity {
                 for (int i = 0; i < info.getImages().size(); i++) {
                     imageUrls.add(info.getImages().get(i).getImageUrl());
                 }
-                UITransfer.toImageBrowseActivity(activity, ActivityImageBrowse.MODE_VIEW, position, imageUrls);
+                UITransfer.toImageBrowseActivity(activity, ActivityImageBrowse.MODE_VIEW,
+                        position, imageUrls);
             }
         }
     }

@@ -74,12 +74,10 @@ public class NearLogic implements NearStandard {
 
                         if (isClearLocalInfo) {
                             DaoUtils.getNearCircleManagerInstance().clearAll();
+                        } else {
+                            DaoUtils.getNearCircleManagerInstance().deleteAll(infos);
                         }
-
-                        for (int i = 0; i < infos.size(); i++) {
-                            DaoUtils.getNearCircleManagerInstance().deleteAll(infos.get(i).getNearCircleId());
-                            DaoUtils.getNearCircleManagerInstance().saveAll(infos);
-                        }
+                        DaoUtils.getNearCircleManagerInstance().saveAll(infos);
                     }
                 });
     }

@@ -21,6 +21,8 @@ import com.hwl.beta.ui.near.holder.NearCircleViewHolder;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -34,9 +36,10 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     LayoutInflater inflater;
     long myUserId;
 
-    public NearCircleAdapter(Context context, List<NearCircle> nearCircles, INearCircleItemListener itemListener) {
+    public NearCircleAdapter(Context context, List<NearCircle> nearCircles,
+                             INearCircleItemListener itemListener) {
         this.context = context;
-        this.nearCircles = nearCircles==null?new ArrayList<NearCircle>():nearCircles;
+        this.nearCircles = nearCircles == null ? new ArrayList<NearCircle>() : nearCircles;
         this.itemListener = itemListener;
         inflater = LayoutInflater.from(context);
         myUserId = UserSP.getUserId();
@@ -47,7 +50,8 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (viewType == 0) {
             return new NearCircleNullViewHolder((NearItemNullBinding) DataBindingUtil.inflate(inflater, R.layout.near_item_null, parent, false));
         } else {
-            return new NearCircleViewHolder((NearItemBinding) DataBindingUtil.inflate(inflater, R.layout.near_item, parent, false));
+            return new NearCircleViewHolder((NearItemBinding) DataBindingUtil.inflate(inflater,
+                    R.layout.near_item, parent, false));
         }
     }
 
@@ -76,67 +80,68 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-	public List<NearCircle> getInfos(){
-		return this.nearCircles;
-	}
+    public List<NearCircle> getInfos() {
+        return this.nearCircles;
+    }
 
-	public void updateInfos(List<NearCircle> infos){
-		updateInfos(false,infos);
-	}
+    public void updateInfos(List<NearCircle> infos) {
+        updateInfos(false, infos);
+    }
 
-	public void updateInfos(boolean isRefresh,List<NearCircle> infos){
-		if(infos==null||infos.size()<=0) return;
+    public void updateInfos(boolean isRefresh, List<NearCircle> infos) {
+        if (infos == null || infos.size() <= 0) return;
 
-		if(getItemCount()<=0){
-			nearCircles.addAll(infos);
-			notifyDataSetChanged();
-		}else{
-			removeEmptyInfo();
-			if(isRefresh){
-				boolean isClear = (infos.get(infos.size()-1).getNearCircleId()-nearCircles.get(0).getNearCircleId())>1;
-				if(isClear){
-					nearCircles.clear();
-					nearCircles.addAll(0,infos);
-				}else{
-					nearCircles.removeAll(infos);
-					nearCircles.addAll(0,infos);
-					sortInfos(infos);
-				}
-			}else{
-				nearCircles.addAll(infos);
-			}
-			notifyDataSetChanged();
-		}
-	}
+        if (getItemCount() <= 0) {
+            nearCircles.addAll(infos);
+            notifyDataSetChanged();
+        } else {
+            removeEmptyInfo();
+            if (isRefresh) {
+                boolean isClear =
+                        (infos.get(infos.size() - 1).getNearCircleId() - nearCircles.get(0).getNearCircleId()) > 1;
+                if (isClear) {
+                    nearCircles.clear();
+                    nearCircles.addAll(0, infos);
+                } else {
+                    nearCircles.removeAll(infos);
+                    nearCircles.addAll(0, infos);
+                    sortInfos(infos);
+                }
+            } else {
+                nearCircles.addAll(infos);
+            }
+            notifyDataSetChanged();
+        }
+    }
 
     private void sortInfos(List<NearCircle> infos) {
         if (infos == null || infos.size() <= 0) return;
-//        Collections.sort(infos, new Comparator<NearCircle>() {
-//            public int compare(NearCircle arg0, NearCircle arg1) {
-//                return arg0.getNearCircleId().compareTo(arg1.getNearCircleId());
-//            }
-//        });
+        Collections.sort(infos, new Comparator<NearCircle>() {
+            public int compare(NearCircle arg0, NearCircle arg1) {
+                return (int) (arg0.getNearCircleId() - arg1.getNearCircleId());
+            }
+        });
     }
 
-	public void setEmptyInfo(){
-		nearCircles.clear();
-		nearCircles.add(new NearCircle(0,NetConstant.CIRCLE_CONTENT_NULL));
-		notifyDataSetChanged();
-	}
+    public void setEmptyInfo() {
+        nearCircles.clear();
+        nearCircles.add(new NearCircle(0, NetConstant.CIRCLE_CONTENT_NULL));
+        notifyDataSetChanged();
+    }
 
-	private void removeEmptyInfo(){
-		int position = nearCircles.indexOf(new NearCircle(0,NetConstant.CIRCLE_CONTENT_NULL));
-		if (position != -1){
-			nearCircles.remove(position);
-		}
-	}
+    private void removeEmptyInfo() {
+        int position = nearCircles.indexOf(new NearCircle(0, NetConstant.CIRCLE_CONTENT_NULL));
+        if (position != -1) {
+            nearCircles.remove(position);
+        }
+    }
 
-	public long getMinId(){
-		if(getItemCount()<=0){
-			return 0;
-		}
-		return nearCircles.get(getItemCount() - 1).getNearCircleId();
-	}
+    public long getMinId() {
+        if (getItemCount() <= 0) {
+            return 0;
+        }
+        return nearCircles.get(getItemCount() - 1).getNearCircleId();
+    }
 
     public void addComment(NearCircleComment comment) {
         if (comment == null || comment.getNearCircleId() <= 0 || comment.getCommentUserId() <= 0)

@@ -3,6 +3,7 @@ package com.hwl.beta.db.manage;
 import android.content.Context;
 
 import com.hwl.beta.db.BaseDao;
+import com.hwl.beta.db.DBConstant;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.dao.CircleCommentDao;
 import com.hwl.beta.db.dao.CircleDao;
@@ -39,7 +40,8 @@ public class CircleManager extends BaseDao<Circle> {
 
     public void delete(long nearCircleId) {
         if (nearCircleId > 0) {
-            String deleteSql = "delete from " + CircleDao.TABLENAME + " where " + CircleDao.Properties.CircleId.columnName + "=" + nearCircleId;
+            String deleteSql =
+                    "delete from " + CircleDao.TABLENAME + " where " + CircleDao.Properties.CircleId.columnName + "=" + nearCircleId;
             daoSession.getDatabase().execSQL(deleteSql);
         }
     }
@@ -61,6 +63,85 @@ public class CircleManager extends BaseDao<Circle> {
         return id;
     }
 
+    public void saveAll(List<Circle> infos) {
+        if (infos == null || infos.size() <= 0) return;
+        for (Circle info : infos) {
+            save(info);
+            saveImages(info.getImages());
+            saveComments(info.getComments());
+            saveLikes(info.getLikes());
+        }
+    }
+
+    public void clearAll() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("DELETE FROM ");
+        sb.append(CircleDao.TABLENAME);
+        sb.append(";");
+        sb.append("DELETE FROM ");
+        sb.append(CircleImageDao.TABLENAME);
+        sb.append(";");
+        sb.append("DELETE FROM ");
+        sb.append(CircleCommentDao.TABLENAME);
+        sb.append(";");
+        sb.append("DELETE FROM ");
+        sb.append(CircleLikeDao.TABLENAME);
+        sb.append(";");
+
+        daoSession.getDatabase().execSQL(sb.toString());
+    }
+
+    public void deleteAll(List<Circle> infos) {
+        if (infos == null || infos.size() <= 0) return;
+        for (Circle info : infos) {
+            deleteAll(info.getCircleId());
+        }
+    }
+
+    public void deleteAll(long circleId) {
+        if (circleId > 0) {
+            StringBuilder sb = new StringBuilder();
+            //delete info sql
+            sb.append("delete from ");
+            sb.append(CircleDao.TABLENAME);
+            sb.append(" where ");
+            sb.append(CircleDao.Properties.CircleId.columnName);
+            sb.append(" = ");
+            sb.append(circleId);
+            sb.append(";");
+
+            //delete images sql
+            sb.append("delete from ");
+            sb.append(CircleImageDao.TABLENAME);
+            sb.append(" where ");
+            sb.append(CircleImageDao.Properties.CircleId.columnName);
+            sb.append(" = ");
+            sb.append(circleId);
+            sb.append(";");
+
+            //delete comments sql
+            sb.append("delete from ");
+            sb.append(CircleCommentDao.TABLENAME);
+            sb.append(" where ");
+            sb.append(CircleCommentDao.Properties.CircleId.columnName);
+            sb.append(" = ");
+            sb.append(circleId);
+            sb.append(";");
+
+            //delete likes sql
+            sb.append("delete from ");
+            sb.append(CircleLikeDao.TABLENAME);
+            sb.append(" where ");
+            sb.append(CircleLikeDao.Properties.CircleId.columnName);
+            sb.append(" = ");
+            sb.append(circleId);
+            sb.append(";");
+
+            daoSession.getDatabase().execSQL(sb.toString());
+        }
+    }
+
+
     public List<CircleImage> getImages(long CircleId) {
         if (CircleId <= 0) return null;
         return daoSession.getCircleImageDao().queryBuilder()
@@ -68,22 +149,24 @@ public class CircleManager extends BaseDao<Circle> {
                 .list();
     }
 
-    public void saveImages(long CircleId, List<CircleImage> images) {
-        if (CircleId > 0 && images != null && images.size() > 0) {
+    public void saveImages(List<CircleImage> images) {
+        if (images != null && images.size() > 0) {
             daoSession.getCircleImageDao().saveInTx(images);
         }
     }
 
     public void deleteImages(long CircleId) {
         if (CircleId > 0) {
-            String deleteSql = "delete from " + CircleImageDao.TABLENAME + " where " + CircleImageDao.Properties.CircleId.columnName + "=" + CircleId;
+            String deleteSql =
+                    "delete from " + CircleImageDao.TABLENAME + " where " + CircleImageDao.Properties.CircleId.columnName + "=" + CircleId;
             daoSession.getDatabase().execSQL(deleteSql);
         }
     }
 
     public void deleteComments(long CircleId) {
         if (CircleId > 0) {
-            String deleteSql = "delete from " + CircleCommentDao.TABLENAME + " where " + CircleCommentDao.Properties.CircleId.columnName + "=" + CircleId;
+            String deleteSql =
+                    "delete from " + CircleCommentDao.TABLENAME + " where " + CircleCommentDao.Properties.CircleId.columnName + "=" + CircleId;
             daoSession.getDatabase().execSQL(deleteSql);
         }
     }
@@ -107,10 +190,22 @@ public class CircleManager extends BaseDao<Circle> {
                 .unique();
     }
 
-    public List<CircleComment> getComments(long CircleId) {
-        if (CircleId <= 0) return null;
+    public List<CircleComment> getComments(long circleId) {
+        return getComments(circleId, 0);
+    }
+
+    public List<CircleComment> getComments(long circleId, int pageCount) {
+        if (circleId <= 0) return null;
+
+        if (pageCount <= 0) {
+            return daoSession.getCircleCommentDao().queryBuilder()
+                    .where(CircleCommentDao.Properties.CircleId.eq(circleId))
+                    .list();
+        }
+
         return daoSession.getCircleCommentDao().queryBuilder()
-                .where(CircleCommentDao.Properties.CircleId.eq(CircleId))
+                .where(CircleCommentDao.Properties.CircleId.eq(circleId))
+                .limit(pageCount)
                 .list();
     }
 
@@ -120,8 +215,8 @@ public class CircleManager extends BaseDao<Circle> {
         }
     }
 
-    public void saveComments(long CircleId, List<CircleComment> comments) {
-        if (CircleId > 0 && comments != null && comments.size() > 0) {
+    public void saveComments(List<CircleComment> comments) {
+        if (comments != null && comments.size() > 0) {
             daoSession.getCircleCommentDao().saveInTx(comments);
         }
     }
@@ -134,16 +229,17 @@ public class CircleManager extends BaseDao<Circle> {
                 .unique();
     }
 
-    public List<CircleLike> getLikes(long CircleId) {
-        if (CircleId <= 0) return null;
+    public List<CircleLike> getLikes(long circleId) {
+        if (circleId <= 0) return null;
         return daoSession.getCircleLikeDao().queryBuilder()
-                .where(CircleLikeDao.Properties.CircleId.eq(CircleId))
+                .where(CircleLikeDao.Properties.CircleId.eq(circleId))
                 .list();
     }
 
     public void deleteLikes(long CircleId) {
         if (CircleId > 0) {
-            String deleteSql = "delete from " + CircleLikeDao.TABLENAME + " where " + CircleLikeDao.Properties.CircleId.columnName + " = " + CircleId;
+            String deleteSql =
+                    "delete from " + CircleLikeDao.TABLENAME + " where " + CircleLikeDao.Properties.CircleId.columnName + " = " + CircleId;
             daoSession.getDatabase().execSQL(deleteSql);
         }
     }
@@ -157,14 +253,14 @@ public class CircleManager extends BaseDao<Circle> {
         }
     }
 
-    public void saveLikes(long CircleId, List<CircleLike> likes) {
-        if (CircleId > 0 && likes != null && likes.size() > 0) {
+    public void saveLikes(List<CircleLike> likes) {
+        if (likes != null && likes.size() > 0) {
             daoSession.getCircleLikeDao().saveInTx(likes);
         }
     }
 
-    public void saveLike(long circleId, CircleLike likeInfo) {
-        if (circleId > 0 && likeInfo != null) {
+    public void saveLike(CircleLike likeInfo) {
+        if (likeInfo != null) {
             daoSession.getCircleLikeDao().save(likeInfo);
         }
     }
@@ -186,7 +282,8 @@ public class CircleManager extends BaseDao<Circle> {
             exts.add(ext);
         }
 
-        List<Friend> friends = DaoUtils.getFriendManagerInstance().getList(getCircleInfoUserIds(exts));
+        List<Friend> friends =
+                DaoUtils.getFriendManagerInstance().getList(getCircleInfoUserIds(exts));
         setCircleFriendInfo(exts, friends);
         return exts;
     }
@@ -218,7 +315,8 @@ public class CircleManager extends BaseDao<Circle> {
 
             if (exts.get(i).getLikes() != null && exts.get(i).getLikes().size() > 0) {
                 for (int j = 0; j < exts.get(i).getLikes().size(); j++) {
-                    Friend friend2 = getFriend(friends, exts.get(i).getLikes().get(j).getLikeUserId());
+                    Friend friend2 = getFriend(friends,
+                            exts.get(i).getLikes().get(j).getLikeUserId());
                     if (friend2 == null) continue;
                     exts.get(i).getLikes().get(j).setLikeUserName(friend2.getShowName());
                     exts.get(i).getLikes().get(j).setLikeUserImage(friend2.getHeadImage());
@@ -227,12 +325,14 @@ public class CircleManager extends BaseDao<Circle> {
 
             if (exts.get(i).getComments() != null && exts.get(i).getComments().size() > 0) {
                 for (int j = 0; j < exts.get(i).getComments().size(); j++) {
-                    Friend friend3 = getFriend(friends, exts.get(i).getComments().get(j).getCommentUserId());
+                    Friend friend3 = getFriend(friends,
+                            exts.get(i).getComments().get(j).getCommentUserId());
                     if (friend3 != null) {
                         exts.get(i).getComments().get(j).setCommentUserName(friend3.getShowName());
                         exts.get(i).getComments().get(j).setCommentUserImage(friend3.getHeadImage());
                     }
-                    Friend friend4 = getFriend(friends, exts.get(i).getComments().get(j).getReplyUserId());
+                    Friend friend4 = getFriend(friends,
+                            exts.get(i).getComments().get(j).getReplyUserId());
                     if (friend4 != null) {
                         exts.get(i).getComments().get(j).setReplyUserName(friend4.getShowName());
                         exts.get(i).getComments().get(j).setReplyUserImage(friend4.getHeadImage());
@@ -296,9 +396,29 @@ public class CircleManager extends BaseDao<Circle> {
             ext.setLikes(getLikes(infos.get(i).getCircleId()));
             exts.add(ext);
         }
-        List<Friend> friends = DaoUtils.getFriendManagerInstance().getList(getCircleInfoUserIds(exts));
+        List<Friend> friends =
+                DaoUtils.getFriendManagerInstance().getList(getCircleInfoUserIds(exts));
         setCircleFriendInfo(exts, friends);
         return exts;
+    }
+
+    public List<Circle> getCircles(int pageCount, int commentPageCount) {
+        List<Circle> infos = daoSession.getCircleDao().queryBuilder()
+                .orderDesc(CircleDao.Properties.CircleId)
+                .limit(pageCount)
+                .list();
+        if (infos == null || infos.size() <= 0) return infos;
+
+        long circleId = 0;
+        for (int i = 0; i < infos.size(); i++) {
+            circleId = infos.get(i).getCircleId();
+            infos.get(i).setItemType(DBConstant.CIRCLE_ITEM_DATA);
+            infos.get(i).setImages(getImages(circleId));
+            infos.get(i).setComments(getComments(circleId, commentPageCount));
+            infos.get(i).setLikes(getLikes(circleId));
+        }
+
+        return infos;
     }
 
     public CircleExt get(long CircleId) {
@@ -314,7 +434,8 @@ public class CircleManager extends BaseDao<Circle> {
 
         List<CircleExt> exts = new ArrayList<>();
         exts.add(info);
-        List<Friend> friends = DaoUtils.getFriendManagerInstance().getList(getCircleInfoUserIds(exts));
+        List<Friend> friends =
+                DaoUtils.getFriendManagerInstance().getList(getCircleInfoUserIds(exts));
         setCircleFriendInfo(exts, friends);
         return info;
     }

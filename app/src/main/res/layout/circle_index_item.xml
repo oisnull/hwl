@@ -52,8 +52,8 @@
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
             android:background="@drawable/ic_delete"
             android:onClick="@{(view)->action.onDeleteClick(position,info)}"
             android:visibility="gone" />
@@ -62,11 +62,11 @@
             android:id="@+id/tv_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/tv_username"
-            android:layout_alignStart="@+id/tv_username"
             android:layout_below="@+id/tv_username"
-            android:paddingBottom="@dimen/dp_5"
+            android:layout_alignStart="@+id/tv_username"
+            android:layout_alignLeft="@+id/tv_username"
             android:paddingTop="@dimen/dp_5"
+            android:paddingBottom="@dimen/dp_5"
             android:text="@{info.content}"
             android:textColor="@color/color_727270"
             android:textSize="15dp"
@@ -123,7 +123,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/circle_action"
-                android:onClick="@{(view)->action.onMoreActionClick(view,position)}" />
+                android:onClick="@{(view)->action.onMoreActionClick(view,position,info)}" />
 
         </RelativeLayout>
 
@@ -149,8 +149,8 @@
                     android:id="@+id/iv_like"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
                     android:src="@drawable/ic_unlike" />
 
                 <com.google.android.flexbox.FlexboxLayout
@@ -179,8 +179,8 @@
                     android:id="@+id/iv_comment"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
                     android:src="@drawable/ic_uncomment" />
 
                 <android.support.v7.widget.RecyclerView

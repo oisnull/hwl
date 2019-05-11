@@ -45,13 +45,11 @@
                         android:textSize="15dp" />
 
                     <!--表情显示-->
-                    <com.hwl.beta.emotion.EmotionControlPannel
+                    <com.hwl.beta.emotion.EmotionDefaultPanel
                         android:id="@+id/ecp_emotion"
-                        app:pannel_theme="1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="visible" />
-
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <com.hwl.beta.ui.widget.WarpLinearLayout

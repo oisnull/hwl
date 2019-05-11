@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 
 import com.hwl.beta.db.DaoUtils;
-import com.hwl.beta.db.ext.CircleExt;
 import com.hwl.beta.db.ext.NearCircleExt;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.sp.UserSP;
@@ -31,6 +30,7 @@ import com.hwl.beta.ui.TestActivityIm;
 import com.hwl.beta.ui.TestActivityLocation;
 import com.hwl.beta.ui.chat.ActivityChatUser;
 import com.hwl.beta.ui.chat.ActivityChatUserSetting;
+import com.hwl.beta.ui.circle.ActivityCircleMessages;
 import com.hwl.beta.ui.dialog.ReloginDialogFragment;
 //import com.hwl.beta.ui.entry.ActivityGetpwd;
 //import com.hwl.beta.ui.entry.ActivityMain;
@@ -375,11 +375,11 @@ info) {
 //        intent.putExtra("circleid", circleId);
 //        context.startActivity(intent);
 //    }
-//
-//    public static void toCircleMessagesActivity(Activity context) {
-//        Intent intent = new Intent(context, ActivityCircleMessages.class);
-//        context.startActivity(intent);
-//    }
+
+    public static void toCircleMessagesActivity(Activity context) {
+        Intent intent = new Intent(context, ActivityCircleMessages.class);
+        context.startActivity(intent);
+    }
 
     public static void toGroupActivity(Activity context) {
         Intent intent = new Intent(context, ActivityGroup.class);

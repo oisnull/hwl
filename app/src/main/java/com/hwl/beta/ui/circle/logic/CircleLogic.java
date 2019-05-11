@@ -1,8 +1,21 @@
 package com.hwl.beta.ui.circle.logic;
 
+import com.hwl.beta.db.DBConstant;
 import com.hwl.beta.db.DaoUtils;
+import com.hwl.beta.db.entity.Circle;
+import com.hwl.beta.db.entity.CircleLike;
+import com.hwl.beta.net.NetConstant;
+import com.hwl.beta.net.circle.CircleService;
+import com.hwl.beta.net.circle.NetCircleMatchInfo;
+import com.hwl.beta.net.circle.body.DeleteCircleInfoResponse;
+import com.hwl.beta.net.circle.body.GetCircleInfosResponse;
+import com.hwl.beta.net.circle.body.SetLikeInfoResponse;
+import com.hwl.beta.sp.UserSP;
+import com.hwl.beta.ui.circle.standard.CircleStandard;
+import com.hwl.beta.ui.convert.DBCircleAction;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -14,24 +27,45 @@ import io.reactivex.schedulers.Schedulers;
 public class CircleLogic implements CircleStandard {
 
     final static int PAGE_COUNT = 15;
-    final static int COMMNET_PAGE_COUNT = 10;
+    final static int COMMENT_PAGE_COUNT = 10;
 
     @Override
     public Observable<List<Circle>> loadLocalInfos() {
         return Observable.fromCallable(new Callable<List<Circle>>() {
             @Override
-            public List<Circle> call() throws Exception {
-                return DaoUtils.getCircleManagerInstance().getCirclesV2(PAGE_COUNT,COMMNET_PAGE_COUNT);
+            public List<Circle> call() {
+                List<Circle> circles = DaoUtils.getCircleManagerInstance().getCircles(PAGE_COUNT,
+                        COMMENT_PAGE_COUNT);
+                if (circles == null)
+                    circles = new ArrayList<>();
+
+                return circles;
             }
-        }).subscribeOn(Schedulers.io());
+        })
+                .doOnNext(new Consumer<List<Circle>>() {
+                    @Override
+                    public void accept(List<Circle> circles) throws Exception {
+                        if (circles.size() <= 0) {
+                            circles.add(new Circle(DBConstant.CIRCLE_ITEM_NULL));
+                        }
+                        circles.add(0, new Circle(DBConstant.CIRCLE_ITEM_HEAD));
+                        circles.add(1, new Circle(DBConstant.CIRCLE_ITEM_MSGCOUNT));
+                    }
+                })
+                .subscribeOn(Schedulers.io());
     }
 
+    /*
+     * 首先获取本地已经存在的第一页的数据id和updatetime
+     * 根据id和updatetime去服务器请求数据，如果服务器端获取的数据中有存在的，就匹配是否需要更新，如果要更新则返回到客户端，否则返回null
+     * 客户端同样也要再次进行判断，如果更新时间不匹配，则进行存储，否则不存储到本地
+     * */
     @Override
     public Observable<List<Circle>> loadServerInfos(final long minCircleId,
-                                                        final List<Circle> localInfos) {
+                                                    final List<Circle> localInfos) {
         // minCircleId <=0 and get new data
         // minCircleId >0 and get old data
-        return CircleService.getCircleInfos(minCircleId, PAGE_COUNT,
+        return CircleService.getCircleInfos(UserSP.getUserId(), minCircleId, PAGE_COUNT,
                 this.getMatchInfos(minCircleId, localInfos))
                 .map(new Function<GetCircleInfosResponse, List<Circle>>() {
                     @Override
@@ -53,18 +87,16 @@ public class CircleLogic implements CircleStandard {
 
                         if (isClearLocalInfo) {
                             DaoUtils.getCircleManagerInstance().clearAll();
+                        } else {
+                            DaoUtils.getCircleManagerInstance().deleteAll(infos);
                         }
-
-                        for (int i = 0; i < infos.size(); i++) {
-                            DaoUtils.getCircleManagerInstance().deleteAll(infos.get(i).getCircleId());
-                            DaoUtils.getCircleManagerInstance().saveAll(infos);
-                        }
+                        DaoUtils.getCircleManagerInstance().saveAll(infos);
                     }
                 });
     }
 
     private List<NetCircleMatchInfo> getMatchInfos(long minCircleId,
-                                                       List<Circle> localInfos) {
+                                                   List<Circle> localInfos) {
         List<NetCircleMatchInfo> matchInfos = new ArrayList<>();
         for (int i = 0; i < localInfos.size(); i++) {
             if (minCircleId <= 0) {
@@ -81,13 +113,13 @@ public class CircleLogic implements CircleStandard {
     }
 
     @Override
-    public Observable deleteInfo(final long CircleId) {
-        return CircleService.deleteCircleInfo(CircleId)
+    public Observable deleteInfo(final long circleId) {
+        return CircleService.deleteCircleInfo(circleId)
                 .map(new Function<DeleteCircleInfoResponse, Boolean>() {
                     @Override
                     public Boolean apply(DeleteCircleInfoResponse response) throws Exception {
                         if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
-                            DaoUtils.getCircleManagerInstance().deleteAll(CircleId);
+                            DaoUtils.getCircleManagerInstance().deleteAll(circleId);
                         } else {
                             throw new Exception("Delete circle info failed.");
                         }
@@ -97,15 +129,41 @@ public class CircleLogic implements CircleStandard {
     }
 
     @Override
-    public Observable setLike(final long CircleId, final boolean isLike) {
-        return CircleService.setLikeInfo(isLike ? 1 : 0, CircleId)
-                .map(new Function<SetLikeInfoResponse, Boolean>() {
+    public Observable<CircleLike> setLike(final Circle info, final boolean isLike) {
+        if (info == null || info.getCircleId() <= 0) {
+            return Observable.error(new Throwable("Circle id con't be empty."));
+        }
+        return CircleService.setLikeInfo(isLike ? 1 : 0, info.getCircleId())
+                .map(new Function<SetLikeInfoResponse, CircleLike>() {
                     @Override
-                    public Boolean apply(SetLikeInfoResponse response) throws Exception {
+                    public CircleLike apply(SetLikeInfoResponse response) throws Exception {
                         if (response.getStatus() != NetConstant.RESULT_SUCCESS) {
                             throw new Exception("Set user like info failed.");
                         }
-                        return true;
+
+                        CircleLike likeInfo = new CircleLike();
+                        if (isLike) {
+                            likeInfo.setCircleId(info.getCircleId());
+                            likeInfo.setLikeUserId(UserSP.getUserId());
+                            likeInfo.setLikeUserName(UserSP.getUserName());
+                            likeInfo.setLikeUserImage(UserSP.getUserHeadImage());
+                            likeInfo.setLikeTime(new Date());
+                            DaoUtils.getCircleManagerInstance().saveLike(likeInfo);
+                        } else {
+                            DaoUtils.getCircleManagerInstance().deleteLike(info.getCircleId(),
+                                    UserSP.getUserId());
+                        }
+
+                        return likeInfo;
+                    }
+                })
+                .doOnNext(new Consumer<CircleLike>() {
+                    @Override
+                    public void accept(CircleLike likeInfo) {
+                        //send im message
+//                        IMClientEntry.sendCircleLikeMessage(info.getCircleId(), isLike,
+//                                info.getPublishUserId(),
+//                                new IMDefaultSendOperateListener("setLike"));
                     }
                 });
     }
