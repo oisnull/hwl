@@ -11,24 +11,22 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.hwl.beta.R;
-import com.hwl.beta.databinding.ActivityCircleMessagesBinding;
+import com.hwl.beta.databinding.CircleActivityMessagesBinding;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.CircleMessage;
 import com.hwl.beta.sp.MessageCountSP;
-import com.hwl.beta.ui.busbean.EventBusConstant;
 import com.hwl.beta.ui.circle.adp.CircleMessageAdapter;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.UITransfer;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityCircleMessages extends BaseActivity {
 
-    Activity activity;
-    ActivityCircleMessagesBinding binding;
+    FragmentActivity activity;
+    CircleActivityMessagesBinding binding;
     List<CircleMessage> messages;
     CircleMessageAdapter messageAdapter;
 
@@ -37,7 +35,7 @@ public class ActivityCircleMessages extends BaseActivity {
         super.onCreate(savedInstanceState);
         activity = this;
         messages = DaoUtils.getCircleMessageManagerInstance().getAll();
-        binding = DataBindingUtil.setContentView(activity, R.layout.activity_circle_messages);
+        binding = DataBindingUtil.setContentView(activity, R.layout.circle_activity_messages);
 
         initView();
     }
@@ -83,14 +81,14 @@ public class ActivityCircleMessages extends BaseActivity {
     public void onResume() {
         super.onResume();
         MessageCountSP.setCircleMessageCount(0);
-        EventBus.getDefault().post(EventBusConstant.EB_TYPE_CIRCLE_MESSAGE_UPDATE);
+//        EventBus.getDefault().post(EventBusConstant.EB_TYPE_CIRCLE_MESSAGE_UPDATE);
     }
 
     private class MessageItemListener implements CircleMessageAdapter.IMessageItemListener {
 
         @Override
         public void onItemClick(View v, CircleMessage message, int position) {
-            UITransfer.toCircleDetailActivity(activity, message.getCircleId(), null);
+//            UITransfer.toCircleDetailActivity(activity, message.getCircleId(), null);
         }
 
         @Override

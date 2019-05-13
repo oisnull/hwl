@@ -33,7 +33,7 @@ public interface ICircleItemListener {
 
     void onContentClick();
 
-    void onMoreActionClick(View view, int position);
+    void onMoreActionClick(View view, int position, Circle info);
 
     void onMoreCommentClick();
 

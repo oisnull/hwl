@@ -12,6 +12,8 @@ import com.hwl.beta.databinding.CircleHeadItemBinding;
 import com.hwl.beta.databinding.CircleIndexItemBinding;
 import com.hwl.beta.databinding.CircleItemNullBinding;
 import com.hwl.beta.databinding.CircleMsgcountItemBinding;
+import com.hwl.beta.db.DBConstant;
+import com.hwl.beta.db.entity.Circle;
 import com.hwl.beta.db.entity.CircleComment;
 import com.hwl.beta.db.entity.CircleLike;
 import com.hwl.beta.sp.MessageCountSP;
@@ -24,19 +26,25 @@ import com.hwl.beta.ui.circle.holder.CircleMsgcountItemViewHolder;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<Circle> infos;
+    private List<Circle> circles;
     private ICircleItemListener itemListener;
     private LayoutInflater inflater;
     private long myUserId;
 
-    public CircleIndexAdapter(Context context,ICircleItemListener itemListener) {
-        this.infos = new ArrayList<>();
+    public CircleIndexAdapter(Context context, ICircleItemListener itemListener) {
+        this.circles = new ArrayList<>();
         this.itemListener = itemListener;
         inflater = LayoutInflater.from(context);
         myUserId = UserSP.getUserId();
+    }
+
+    public List<Circle> getInfos() {
+        return this.circles;
     }
 
     @Override
@@ -77,7 +85,8 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             viewHolder.setItemBinding(itemListener);
         } else if (holder instanceof CircleHeadItemViewHolder) {
             CircleHeadItemViewHolder viewHolder = (CircleHeadItemViewHolder) holder;
-            viewHolder.setItemBinding(itemListener, UserSP.getUserName(), new ImageViewBean(UserSP.getUserHeadImage(), UserSP.getUserCirclebackimage()));
+            viewHolder.setItemBinding(itemListener, UserSP.getUserName(),
+                    new ImageViewBean(UserSP.getUserHeadImage(), UserSP.getUserCirclebackimage()));
         } else if (holder instanceof CircleMsgcountItemViewHolder) {
             CircleMsgcountItemViewHolder viewHolder = (CircleMsgcountItemViewHolder) holder;
             int messageCount = MessageCountSP.getCircleMessageCount();
@@ -89,7 +98,9 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
         } else if (holder instanceof CircleIndexItemViewHolder) {
             CircleIndexItemViewHolder viewHolder = (CircleIndexItemViewHolder) holder;
-            viewHolder.setItemBinding(itemListener, position, new ImageViewBean(info.getPublishUserImage()), info.getInfo(), info.getImages(), info.getLikes(), info.getComments());
+            viewHolder.setItemBinding(itemListener, position,
+                    new ImageViewBean(info.getPublishUserImage()), info, info.getImages(),
+                    info.getLikes(), info.getComments());
 
             if (info.getPublishUserId() == myUserId) {
                 viewHolder.getItemBinding().ivDelete.setVisibility(View.VISIBLE);
@@ -99,6 +110,52 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
+    public void updateInfos(List<Circle> infos) {
+        if (infos == null || infos.size() <= 0) return;
+
+        if (getItemCount() <= 0) {
+            circles.addAll(infos);
+            notifyDataSetChanged();
+        } else {
+            removeEmptyInfo();
+            sortInfos(infos);
+            circles.addAll(getCircleItemPosition(), infos);
+            notifyDataSetChanged();
+        }
+    }
+
+    private int getCircleItemPosition() {
+        for (int i = 0; i < circles.size(); i++) {
+            if (circles.get(i).getCircleId() > 0)
+                return i;
+        }
+        return circles.size();
+    }
+
+    private void sortInfos(List<Circle> infos) {
+        if (infos == null || infos.size() <= 0) return;
+        Collections.sort(infos, new Comparator<Circle>() {
+            public int compare(Circle arg0, Circle arg1) {
+                return (int) (arg1.getCircleId() - arg0.getCircleId());
+            }
+        });
+    }
+
+    private void removeEmptyInfo() {
+        for (int i = 0; i < circles.size(); i++) {
+            if (circles.get(i).getItemType() == DBConstant.CIRCLE_ITEM_NULL) {
+                circles.remove(i);
+                break;
+            }
+        }
+    }
+
+    public void setEmptyInfo() {
+        removeEmptyInfo();
+        circles.add(getCircleItemPosition(), new Circle(DBConstant.CIRCLE_ITEM_NULL));
+        notifyDataSetChanged();
+    }
+
     public void addComment(CircleComment comment) {
         if (comment == null || comment.getCircleId() <= 0 || comment.getCommentUserId() <= 0)
             return;
@@ -106,7 +163,7 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         int position = -1;
         List<CircleComment> comments = null;
         for (int i = 0; i < circles.size(); i++) {
-            if (circles.get(i).getInfo() != null && circles.get(i).getCircleId() == comment.getCircleId()) {
+            if (circles.get(i) != null && circles.get(i).getCircleId() == comment.getCircleId()) {
                 comments = circles.get(i).getComments();
                 if (comments == null) {
                     comments = new ArrayList<>();
@@ -128,7 +185,7 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         for (int i = 0; i < circles.size(); i++) {
-            if (circles.get(i).getInfo() != null && circles.get(i).getCircleId() == comment.getCircleId()) {
+            if (circles.get(i) != null && circles.get(i).getCircleId() == comment.getCircleId()) {
                 Circle info = circles.get(i);
                 if (info.getComments() != null && info.getComments().size() > 0) {
                     int len = info.getComments().size();
@@ -182,7 +239,7 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         int position = -1;
         List<CircleLike> likes = null;
         for (int i = 0; i < circles.size(); i++) {
-            if (circles.get(i).getInfo() != null && circles.get(i).getCircleId() == likeInfo.getCircleId()) {
+            if (circles.get(i) != null && circles.get(i).getCircleId() == likeInfo.getCircleId()) {
                 likes = circles.get(i).getLikes();
                 if (likes == null) {
                     likes = new ArrayList<>();
@@ -206,7 +263,7 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         if (likeInfo == null || likeInfo.getCircleId() <= 0 || likeInfo.getLikeUserId() <= 0)
             return;
         for (int i = 0; i < circles.size(); i++) {
-            if (circles.get(i).getInfo() != null && circles.get(i).getCircleId() == likeInfo.getCircleId()) {
+            if (circles.get(i) != null && circles.get(i).getCircleId() == likeInfo.getCircleId()) {
                 Circle info = circles.get(i);
                 if (info.getLikes() != null && info.getLikes().size() > 0) {
                     int len = info.getLikes().size();

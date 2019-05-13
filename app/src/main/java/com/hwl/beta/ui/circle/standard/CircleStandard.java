@@ -1,6 +1,7 @@
 package com.hwl.beta.ui.circle.standard;
 
 import com.hwl.beta.db.entity.Circle;
+import com.hwl.beta.db.entity.CircleLike;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface CircleStandard {
 
     Observable deleteInfo(long minCircleId);
 
-    Observable setLike(long minCircleId,boolean isLike);
+    Observable<CircleLike> setLike(Circle info, boolean isLike);
 }

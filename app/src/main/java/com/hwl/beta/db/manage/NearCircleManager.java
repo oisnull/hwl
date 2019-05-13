@@ -101,16 +101,16 @@ public class NearCircleManager extends BaseDao<NearCircle> {
 
     public void clearAll() {
         StringBuilder sb = new StringBuilder();
-        sb.append("truncate table ");
+        sb.append("DELETE FROM ");
         sb.append(NearCircleDao.TABLENAME);
         sb.append(";");
-        sb.append("truncate table ");
+        sb.append("DELETE FROM ");
         sb.append(NearCircleImageDao.TABLENAME);
         sb.append(";");
-        sb.append("truncate table ");
+        sb.append("DELETE FROM ");
         sb.append(NearCircleCommentDao.TABLENAME);
         sb.append(";");
-        sb.append("truncate table ");
+        sb.append("DELETE FROM ");
         sb.append(NearCircleLikeDao.TABLENAME);
         sb.append(";");
 
@@ -122,6 +122,13 @@ public class NearCircleManager extends BaseDao<NearCircle> {
             String deleteSql =
                     "delete from " + NearCircleDao.TABLENAME + " where " + NearCircleDao.Properties.NearCircleId.columnName + "=" + nearCircleId;
             daoSession.getDatabase().execSQL(deleteSql);
+        }
+    }
+
+    public void deleteAll(List<NearCircle> infos) {
+        if (infos == null || infos.size() <= 0) return;
+        for (NearCircle info : infos) {
+            deleteAll(info.getNearCircleId());
         }
     }
 

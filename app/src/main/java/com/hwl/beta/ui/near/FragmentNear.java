@@ -121,14 +121,14 @@ public class FragmentNear extends BaseFragment {
         });
         binding.refreshLayout.setEnableLoadMore(false);
 
-       binding.llMessageTip.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
+        binding.llMessageTip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 UITransfer.toNearMessagesActivity(activity);
-           }
-       });
+            }
+        });
 
-        emotionPanelListener=new EmotionPanelListener();
+        emotionPanelListener = new EmotionPanelListener();
         binding.ecpEmotion.setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
                 .setContentContainerView(binding.refreshLayout)
                 .setEmotionPanelListener(emotionPanelListener);
@@ -200,18 +200,18 @@ public class FragmentNear extends BaseFragment {
 
     @Override
     protected void receiveEventMessage(EventMessageModel messageModel) {
-		if(messageModel.getMessageType()== EventBusConstant.EB_TYPE_NEAR_CIRCLE_MESSAGE_UPDATE){
-           int count = MessageCountSP.getNearCircleMessageCount();
-           if (count > 0) {
-               binding.llMessageTip.setVisibility(View.VISIBLE);
-               binding.tvMessageCount.setText(count + "");
-           } else {
-               binding.llMessageTip.setVisibility(View.GONE);
-           }
-		}
+        if (messageModel.getMessageType() == EventBusConstant.EB_TYPE_NEAR_CIRCLE_MESSAGE_UPDATE) {
+            int count = MessageCountSP.getNearCircleMessageCount();
+            if (count > 0) {
+                binding.llMessageTip.setVisibility(View.VISIBLE);
+                binding.tvMessageCount.setText(count + "");
+            } else {
+                binding.llMessageTip.setVisibility(View.GONE);
+            }
+        }
     }
 
-    private class EmotionPanelListener implements EmotionDefaultPanelV2.IEmotionPanelListener{
+    private class EmotionPanelListener implements EmotionDefaultPanelV2.IEmotionPanelListener {
         private int position;
         private NearCircle info;
 
@@ -396,6 +396,7 @@ public class FragmentNear extends BaseFragment {
                         @Override
                         public void accept(Throwable throwable) {
                             LoadingDialog.hide();
+                            Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
         }

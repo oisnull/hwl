@@ -6,9 +6,11 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.OrderBy;
+import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Circle implements Serializable {
@@ -31,7 +33,7 @@ public class Circle implements Serializable {
     private int commentCount;
     private int likeCount;
     private boolean isLiked;
-	
+
     @Transient
     private int itemType;
     @Transient
@@ -83,6 +85,10 @@ public class Circle implements Serializable {
         if (this.publishTime != null)
             return DateUtils.dateToStrTime(this.publishTime);
         return null;
+    }
+
+    public Circle(int itemType) {
+        this.itemType = itemType;
     }
 
     @Generated(hash = 1559919035)
@@ -230,5 +236,14 @@ public class Circle implements Serializable {
 
     public void setIsLiked(boolean isLiked) {
         this.isLiked = isLiked;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Circle) {
+            Circle nc = (Circle) obj;
+            return this.getCircleId() == nc.getCircleId();
+        }
+        return super.equals(obj);
     }
 }
