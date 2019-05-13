@@ -63,8 +63,7 @@ public class CircleLogic implements CircleStandard {
                 });
     }
 
-    private List<NetCircleMatchInfo> getMatchInfos(long minCircleId,
-                                                       List<Circle> localInfos) {
+    private List<NetCircleMatchInfo> getMatchInfos(long minCircleId, List<Circle> localInfos) {
         List<NetCircleMatchInfo> matchInfos = new ArrayList<>();
         for (int i = 0; i < localInfos.size(); i++) {
             if (minCircleId <= 0) {
