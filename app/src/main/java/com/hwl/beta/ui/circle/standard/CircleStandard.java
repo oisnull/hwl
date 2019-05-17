@@ -16,4 +16,10 @@ public interface CircleStandard {
     Observable deleteInfo(long minCircleId);
 
     Observable<CircleLike> setLike(Circle info, boolean isLike);
+
+	Observable updateCircleBackImage(String localPath);
+
+    Observable<Circle> loadLocalDetails(long circleId);
+
+    Observable<Circle> loadServerDetails(long circleId,String updateTime);
 }

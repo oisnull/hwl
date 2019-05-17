@@ -14,6 +14,7 @@
             android:layout_height="wrap_content" />
 
         <ScrollView
+            android:id="@+id/llCirclePublishContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none">
@@ -23,45 +24,24 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <!--内容输入框-->
+                <com.hwl.beta.emotion.widget.EmotionEditText
+                    android:id="@+id/et_emotion_text"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="200dp"
                     android:background="@color/white"
-                    android:orientation="vertical">
-                    <!--内容输入框-->
-                    <com.hwl.beta.emotion.widget.EmotionEditText
-                        android:id="@+id/et_emotion_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:background="@color/white"
-                        android:gravity="top|left"
-                        android:hint="你想说些什么..."
-                        android:lines="5"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="15dp"
-                        android:textColor="@color/color_727270"
-                        android:textColorHint="@color/color_b2b2b2"
-                        android:textSize="15dp" />
+                    android:gravity="top|left"
+                    android:hint="你想说些什么..."
+                    android:maxHeight="200dp"
+                    android:padding="@dimen/dp_15"
+                    android:textColor="@color/color_727270"
+                    android:textColorHint="@color/color_b2b2b2"
+                    android:textSize="@dimen/dp_15" />
 
-                    <!--表情显示-->
-                    <com.hwl.beta.emotion.EmotionDefaultPanel
-                        android:id="@+id/ecp_emotion"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone" />
-                </LinearLayout>
-
-                <com.hwl.beta.ui.widget.WarpLinearLayout
-                    android:id="@+id/wll_image_container"
-                    app:grivate="left"
-                    app:isFull="true"
+                <com.hwl.beta.ui.widget.ImageAddItemView
+                    android:id="@+id/iav_images"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:background="@color/white">
-                    <!--动态加载图片-->
-                </com.hwl.beta.ui.widget.WarpLinearLayout>
+                    android:layout_height="wrap_content" />
 
                 <!--所在位置-->
                 <RelativeLayout
@@ -79,8 +59,8 @@
                         android:drawableLeft="@drawable/ic_location2"
                         android:drawablePadding="10dp"
                         android:gravity="center_vertical"
-                        android:paddingBottom="10dp"
                         android:paddingTop="15dp"
+                        android:paddingBottom="10dp"
                         android:text="所在位置"
                         android:textColor="@color/color_727270"
                         android:textSize="15dp" />
@@ -88,5 +68,11 @@
                 </RelativeLayout>
             </LinearLayout>
         </ScrollView>
+    
+        <com.hwl.beta.emotion.EmotionDefaultPanel
+            android:id="@+id/ecp_emotion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
     </LinearLayout>
 </layout>

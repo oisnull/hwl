@@ -42,6 +42,26 @@ public class Circle implements Serializable {
     private List<CircleComment> comments;
     @Transient
     private List<CircleLike> likes;
+    @Transient
+    private String circleBackImage;
+    @Transient
+    private String lifeNotes;
+
+    public int getLifeNotes() {
+        return this.lifeNotes;
+    }
+
+    public void setLifeNotes(int lifeNotes) {
+        this.lifeNotes = lifeNotes;
+    }
+
+    public int getCircleBackImage() {
+        return this.circleBackImage;
+    }
+
+    public void setCircleBackImage(int circleBackImage) {
+        this.circleBackImage = circleBackImage;
+    }
 
     public List<CircleImage> getImages() {
         return this.images;
@@ -89,6 +109,15 @@ public class Circle implements Serializable {
 
     public Circle(int itemType) {
         this.itemType = itemType;
+    }
+
+    public Circle(int itemType,long publishUserId,String publishUserName,String publishUserImage,String circleBackImage,String lifeNotes) {
+        this.itemType = itemType;
+        this.publishUserId = publishUserId;
+        this.publishUserName = publishUserName;
+        this.publishUserImage = publishUserImage;
+        this.circleBackImage = circleBackImage;
+        this.lifeNotes = lifeNotes;
     }
 
     @Generated(hash = 1559919035)

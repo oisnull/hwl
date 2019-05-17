@@ -119,20 +119,18 @@ public class CircleService {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-//    public static Observable<ResponseBase<GetUserCircleInfosResponse>> getUserCircleInfos(long
-//    viewUserId, long minCircleId, int pageCount) {
-//        GetUserCircleInfosRequest requestBody = new GetUserCircleInfosRequest();
-//        requestBody.setUserId(UserSP.getUserId());
-//        requestBody.setViewUserId(viewUserId);
-//        requestBody.setMinCircleId(minCircleId);
-//        requestBody.setCount(pageCount <= 0 ? 15 : pageCount);
-//        Observable<ResponseBase<GetUserCircleInfosResponse>> response = RetrofitUtils.createApi
-//        (ICircleService.class)
-//                .getUserCircleInfos(new RequestBase(UserSP.getUserToken(), requestBody))
-//                .subscribeOn(Schedulers.io());
-////                .observeOn(AndroidSchedulers.mainThread());
-//        return response;
-//    }
+    public static Observable<GetUserCircleInfosResponse> getUserCircleInfos(long viewUserId, long minCircleId, int pageCount) {
+        GetUserCircleInfosRequest requestBody = new GetUserCircleInfosRequest();
+        requestBody.setUserId(UserSP.getUserId());
+        requestBody.setViewUserId(viewUserId);
+        requestBody.setMinCircleId(minCircleId);
+        requestBody.setCount(pageCount <= 0 ? 15 : pageCount);
+		
+        return RetrofitUtils.createApi(ICircleService.class)
+                .getUserCircleInfos(new RequestBase(UserSP.getUserToken(), requestBody))
+                .map(new NetDefaultFunction<ResponseBase<GetUserCircleInfosResponse>>())
+                .subscribeOn(Schedulers.io());
+    }
 
     public static Observable<GetCircleDetailResponse> getCircleDetail(long circleId) {
         GetCircleDetailRequest requestBody = new GetCircleDetailRequest();
@@ -141,8 +139,7 @@ public class CircleService {
         return RetrofitUtils.createApi(ICircleService.class)
                 .getCircleDetail(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<GetCircleDetailResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public static Observable<DeleteCircleInfoResponse> deleteCircleInfo(long circleId) {

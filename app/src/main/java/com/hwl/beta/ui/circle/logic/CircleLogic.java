@@ -166,4 +166,70 @@ public class CircleLogic implements CircleStandard {
                     }
                 });
     }
+	
+    @Override
+    public Observable updateCircleBackImage(String localPath){
+		if (StringUtils.isBlank(localPath)) {
+			return Observable.error(new Throwable("Up load data can't be emtpy."));
+		}
+
+		return UploadService.upImage(new File(localPath), ResxType.CIRCLEBACK)
+		        .flatMap(new Function<UpResxResponse, Observable<SetUserCircleBackImageResponse>>() {
+                    @Override
+                    public Observable<SetUserCircleBackImageResponse> apply(UpResxResponse res) throws Exception {
+						if (!res.isSuccess()){
+							throw new Exception("Up load image failed.");
+						}
+
+						return UserService.setUserCircleBackImage(res.getOriginalUrl());
+                    }
+                })
+				.map(new Function<SetUserCircleBackImageResponse, String>() {
+					@Override
+					public String apply(SetUserCircleBackImageResponse res) throws Exception {
+						if (res.getStatus() != NetConstant.RESULT_SUCCESS) {
+							throw new Exception("Update circle back image failed.");
+						}
+
+						UserSP.setUserCirclebackimage(res.getCircleBackImageUrl());
+						return res.getCircleBackImageUrl();
+					}
+				});
+	}
+
+    @Override
+    public Observable<Circle> loadLocalDetails(final long circleId){
+        if (circleId <= 0) {
+            return Observable.error(new Throwable("Circle id con't be empty."));
+        }
+
+        return Observable.fromCallable(new Callable<Circle>() {
+            @Override
+            public Circle call() throws Exception {
+                return DaoUtils.getCircleManagerInstance().getCircle(circleId, COMMENT_PAGE_COUNT);
+            }
+        }).subscribeOn(Schedulers.io());
+	}
+
+    @Override
+    public Observable<Circle> loadServerDetails(final long circleId,String updateTime) {
+        if (circleId <= 0) {
+            return Observable.error(new Throwable("Circle id con't be empty."));
+        }
+
+        return CircleService.getCircleDetail(circleId,updateTime)
+                .map(new Function<GetCircleDetailResponse, Circle>() {
+                    @Override
+                    public Circle apply(GetCircleDetailResponse response) throws Exception {
+						if(response!=null&&response.getCircleInfo()!=null){
+							Circle info = DBCircleAction.convertToCircleInfo(response.getCircleInfo());
+                            DaoUtils.getCircleManagerInstance().deleteAll(circleId);
+                            DaoUtils.getCircleManagerInstance().save(info);
+							return info;
+						}
+                        
+						return null;
+                    }
+                });
+    }
 }

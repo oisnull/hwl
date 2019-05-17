@@ -103,6 +103,20 @@ public class DBFriendAction {
         return convertToFriendInfo(userId, userName, userHeadImage, null, isFriend);
     }
 
+	public static Friend convertToFriendInfo(NetUserInfo netUserInfo){
+		Friend friend = new Friend();
+        friend.setId(netUserInfo.getId());
+        friend.setSymbol(netUserInfo.setSymbol());
+        friend.setName(netUserInfo.getName());
+        friend.setSex(SexAction.OTHER_2);
+        friend.setRemark(netUserInfo.getName());
+        friend.setHeadImage(netUserInfo.getHeadImage());
+        friend.setCircleBackImage(netUserInfo.getCircleBackImage());
+        friend.setLifeNotes(netUserInfo.getLifeNotes());
+        friend.setIsFriend(false);
+        return friend;
+	}
+
     public static Friend convertToFriendInfo(long userId, String userName, String userHeadImage,
                                              String groupUserRemark,
                                              boolean isFriend) {

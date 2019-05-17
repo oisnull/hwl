@@ -403,7 +403,7 @@ public class FragmentNear extends BaseFragment {
 
         @Override
         public void onPublishClick() {
-//            UITransfer.toNearPublishActivity(activity);
+            UITransfer.toNearPublishActivity(activity);
         }
 
         @Override

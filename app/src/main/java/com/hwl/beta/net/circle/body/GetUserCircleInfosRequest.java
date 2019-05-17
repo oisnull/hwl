@@ -14,6 +14,7 @@ public class GetUserCircleInfosRequest {
     /// </summary>
     private long MinCircleId;
     private int Count;
+    private List<NetCircleMatchInfo> CircleMatchInfos;
 
     public long getUserId() {
         return UserId;
@@ -29,6 +30,14 @@ public class GetUserCircleInfosRequest {
 
     public void setViewUserId(long viewUserId) {
         ViewUserId = viewUserId;
+    }
+
+    public List<NetCircleMatchInfo> getCircleMatchInfos() {
+        return CircleMatchInfos;
+    }
+
+    public void setCircleMatchInfos(List<NetCircleMatchInfo> circleMatchInfos) {
+        CircleMatchInfos = circleMatchInfos;
     }
 
     public long getMinCircleId() {

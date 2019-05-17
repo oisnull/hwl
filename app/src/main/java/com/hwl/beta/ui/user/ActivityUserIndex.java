@@ -284,9 +284,7 @@ public class ActivityUserIndex extends BaseActivity {
 
         @Override
         public void onCircleClick() {
-//            UITransfer.toCircleUserIndexActivity(activity, userBean.getUserId(), userBean
-// .getShowName(), userBean.getUserImage(), userBean.getUserCircleBackImage(), userBean
-// .getUserLifeNotes());
+            UITransfer.toCircleUserIndexActivity(activity, userBean.getUserId(), userBean.getShowName(), userBean.getUserImage());
         }
 
         @Override

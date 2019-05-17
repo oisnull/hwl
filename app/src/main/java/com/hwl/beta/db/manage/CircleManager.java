@@ -65,6 +65,7 @@ public class CircleManager extends BaseDao<Circle> {
 
     public void saveAll(List<Circle> infos) {
         if (infos == null || infos.size() <= 0) return;
+
         for (Circle info : infos) {
             save(info);
             saveImages(info.getImages());
@@ -400,6 +401,25 @@ public class CircleManager extends BaseDao<Circle> {
                 DaoUtils.getFriendManagerInstance().getList(getCircleInfoUserIds(exts));
         setCircleFriendInfo(exts, friends);
         return exts;
+    }
+
+    public List<Circle> getUserCirclesV2(long userId) {
+        List<Circle> infos = daoSession.getCircleDao().queryBuilder()
+                .where(CircleDao.Properties.PublishUserId.eq(userId))
+                .orderDesc(CircleDao.Properties.CircleId)
+                .list();
+        if (infos == null || infos.size() <= 0) return null;
+
+        long circleId = 0;
+        for (int i = 0; i < infos.size(); i++) {
+            circleId = infos.get(i).getCircleId();
+            infos.get(i).setItemType(DBConstant.CIRCLE_ITEM_DATA);
+            infos.get(i).setImages(getImages(circleId));
+            infos.get(i).setComments(getComments(circleId, commentPageCount));
+            infos.get(i).setLikes(getLikes(circleId));
+        }
+
+        return infos;
     }
 
     public List<Circle> getCircles(int pageCount, int commentPageCount) {

@@ -107,7 +107,7 @@ public class ActivityCircleIndex extends BaseActivity {
                 .setImageRightClick(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //UITransfer.toCirclePublishActivity(activity);
+                        UITransfer.toCirclePublishActivity(activity);
                     }
                 })
                 .setImageLeftClick(new View.OnClickListener() {
@@ -129,7 +129,7 @@ public class ActivityCircleIndex extends BaseActivity {
         binding.refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
-                //loadCircleFromServer(circles.get(circles.size() - 1).getInfo().getCircleId());
+                loadServerInfos(circleAdapter.getMinId());
             }
         });
 
@@ -144,7 +144,7 @@ public class ActivityCircleIndex extends BaseActivity {
                     @Override
                     public void accept(List<Circle> infos) {
                         circleAdapter.updateInfos(infos);
-//                        loadServerInfos(0);
+                        loadServerInfos(0);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -160,7 +160,6 @@ public class ActivityCircleIndex extends BaseActivity {
             return;
         }
 
-//        final boolean isRefresh = infoId == 0;
         circleStandard.loadServerInfos(infoId, circleAdapter.getInfos())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<Circle>>() {
@@ -187,51 +186,30 @@ public class ActivityCircleIndex extends BaseActivity {
         binding.refreshLayout.finishLoadMore();
     }
 
-    // @Override
-    // protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    // super.onActivityResult(requestCode, resultCode, data);
-    // if (resultCode == Activity.RESULT_OK && requestCode == 1) {
-    // String localPath = data.getStringExtra("localpath");
-    // if (StringUtils.isBlank(localPath)) {
-    // Toast.makeText(activity, "上传数据不能为空", Toast.LENGTH_SHORT).show();
-    // return;
-    // }
-    // LoadingDialog.show(activity, "正在上传...");
-    // UploadService.upImage(new File(localPath), ResxType.CIRCLEBACK)
-    // .flatMap(new Function<ResponseBase<UpResxResponse>,
-    // Observable<ResponseBase<SetUserCircleBackImageResponse>>>() {
-    // @Override
-    // public Observable<ResponseBase<SetUserCircleBackImageResponse>> apply
-    // (ResponseBase<UpResxResponse> response) throws Exception {
-    // if (response != null && response.getResponseBody() != null && response.getResponseBody()
-    // .isSuccess()) {
-    // return UserService.setUserCircleBackImage(response.getResponseBody().getOriginalUrl());
-    // } else
-    // throw new Exception("圈子封面上传失败");
-    // }
-    // })
-    // .observeOn(AndroidSchedulers.mainThread())
-    // .subscribe(new NetDefaultObserver<SetUserCircleBackImageResponse>() {
-    // @Override
-    // protected void onSuccess(SetUserCircleBackImageResponse response) {
-    // LoadingDialog.hide();
-    // if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
-    // UserSP.setUserCirclebackimage(response.getCircleBackImageUrl());
-    // circleAdapter.notifyItemChanged(0);
-    // Toast.makeText(activity, "圈子封面上传成功", Toast.LENGTH_SHORT).show();
-    // } else {
-    // onError("圈子封面上传失败");
-    // }
-    // }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == Activity.RESULT_OK && requestCode == 1) {
 
-    // @Override
-    // protected void onError(String resultMessage) {
-    // super.onError(resultMessage);
-    // LoadingDialog.hide();
-    // }
-    // });
-    // }
-    // }
+			LoadingDialog.show(activity, "正在上传...");
+			circleStandard.updateCircleBackImage(data.getStringExtra("localpath"))
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe(new Consumer<String>() {
+					@Override
+					public void accept(String img) {
+						LoadingDialog.hide();
+						circleAdapter.notifyItemChanged(0);
+					}
+				}, new Consumer<Throwable>() {
+					@Override
+					public void accept(Throwable throwable) {
+						LoadingDialog.hide();
+						Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+					}
+				});
+
+		}
+    }
 
     private class CircleItemListener implements ICircleItemListener {
 
@@ -262,9 +240,7 @@ public class ActivityCircleIndex extends BaseActivity {
 
         @Override
         public void onMyUserHeadClick() {
-//            UITransfer.toCircleUserIndexActivity(activity, UserSP.getUserId(), UserSP
-//            .getUserName(), UserSP.getUserHeadImage(), UserSP.getUserCirclebackimage(), UserSP
-//            .getLifeNotes());
+            UITransfer.toCircleUserIndexActivity(activity, UserSP.getUserId(), UserSP.getUserName(), UserSP.getUserHeadImage());
         }
 
         @Override
@@ -404,7 +380,7 @@ public class ActivityCircleIndex extends BaseActivity {
 
         @Override
         public void onPublishClick() {
-            //UITransfer.toCirclePublishActivity(activity);
+            UITransfer.toCirclePublishActivity(activity);
         }
 
         @Override

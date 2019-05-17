@@ -16,7 +16,6 @@ import com.hwl.beta.databinding.CircleUserIndexItemBinding;
 import com.hwl.beta.databinding.CircleUserItemNullBinding;
 import com.hwl.beta.db.entity.CircleComment;
 import com.hwl.beta.db.entity.CircleImage;
-import com.hwl.beta.db.ext.CircleExt;
 import com.hwl.beta.ui.circle.action.ICircleUserItemListener;
 import com.hwl.beta.ui.circle.holder.CircleUserHeadItemViewHolder;
 import com.hwl.beta.ui.circle.holder.CircleUserIndexItemViewHolder;
@@ -31,7 +30,7 @@ import java.util.List;
 
 public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
-    private List<CircleExt> circles;
+    private List<Circle> circles;
     private ICircleUserItemListener itemListener;
     private LayoutInflater inflater;
     private int prevYear;
@@ -39,23 +38,78 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private int prevDay;
     private String prevShowDate;
 
-    public CircleUserIndexAdapter(Context context, List<CircleExt> circles, ICircleUserItemListener itemListener) {
+    public CircleUserIndexAdapter(Context context, ICircleUserItemListener itemListener) {
         this.context = context;
-        this.circles = circles;
+        this.circles = new ArrayList<Circle>();
         this.itemListener = itemListener;
         inflater = LayoutInflater.from(context);
         prevYear = Calendar.getInstance().get(Calendar.YEAR);
     }
 
+	public void addInfos(List<Circle> infos) {
+        if (infos == null || infos.size() <= 0) return;
+
+        this.circles.addAll(infos);
+        notifyDataSetChanged();
+    }
+
+    public void updateInfos(List<Circle> infos) {
+        if (infos == null || infos.size() <= 0) return;
+
+        if (getItemCount() <= 0) {
+            circles.addAll(infos);
+            notifyDataSetChanged();
+        } else {
+            removeEmptyInfo();
+            sortInfos(infos);
+            circles.addAll(getCircleItemPosition(), infos);
+            notifyDataSetChanged();
+        }
+    }
+
+    private void removeEmptyInfo() {
+        for (int i = 0; i < circles.size(); i++) {
+            if (circles.get(i).getItemType() == DBConstant.CIRCLE_ITEM_NULL) {
+                circles.remove(i);
+                break;
+            }
+        }
+    }
+
+    public void setEmptyInfo() {
+        removeEmptyInfo();
+        circles.add(getCircleItemPosition(), new Circle(DBConstant.CIRCLE_ITEM_NULL));
+        notifyDataSetChanged();
+    }
+
+    private int getCircleItemPosition() {
+        for (int i = 0; i < circles.size(); i++) {
+            if (circles.get(i).getCircleId() > 0)
+                return i;
+        }
+        return circles.size();
+    }
+
+	public long getMinId() {
+        if (getItemCount() <= 0) {
+            return 0;
+        }
+        return this.circles.get(getItemCount() - 1).getCircleId();
+    }
+
+    public List<Circle> getInfos() {
+        return this.circles;
+    }
+
     @Override
     public int getItemViewType(int position) {
         switch (circles.get(position).getCircleItemType()) {
-            case CircleExt.CircleNullItem:
+            case DBConstant.CIRCLE_ITEM_NULL:
             default:
                 return 0;
-            case CircleExt.CircleHeadItem:
+            case DBConstant.CIRCLE_ITEM_HEAD:
                 return 1;
-            case CircleExt.CircleIndexItem:
+            case DBConstant.CIRCLE_ITEM_DATA:
                 return 2;
         }
     }
@@ -75,13 +129,13 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        final CircleExt info = circles.get(position);
+        final Circle info = circles.get(position);
         if (holder instanceof CircleUserItemNullViewHolder) {
             CircleUserItemNullViewHolder viewHolder = (CircleUserItemNullViewHolder) holder;
             viewHolder.setItemBinding(itemListener, (Calendar.getInstance().get(Calendar.MONTH) + 1) + "月", Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "");
         } else if (holder instanceof CircleUserHeadItemViewHolder) {
             CircleUserHeadItemViewHolder viewHolder = (CircleUserHeadItemViewHolder) holder;
-            viewHolder.setItemBinding(itemListener, new ImageViewBean(info.getViewUserImage(), info.getViewCircleBackImage()), info.getViewUserName(), info.getViewUserLifeNotes());
+            viewHolder.setItemBinding(itemListener, new ImageViewBean(info.getPublishUserImage(), info.getCircleBackImage()), info.getPublishUserName(), info.getLifeNotes());
             prevShowDate = "";
             prevMonth = 0;
             prevDay = 0;

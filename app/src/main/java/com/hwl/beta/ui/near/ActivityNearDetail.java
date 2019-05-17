@@ -40,12 +40,12 @@ import io.reactivex.functions.Consumer;
 
 public class ActivityNearDetail extends BaseActivity {
 
-    Activity activity;
+    FragmentActivity activity;
     NearActivityDetailBinding binding;
     NearStandard nearStandard;
-    NearCircle info;
     INearCircleDetailListener itemListener;
     NearCircleCommentAdapter commentAdapter;
+    NearCircle currentInfo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,68 +73,27 @@ public class ActivityNearDetail extends BaseActivity {
                     }
                 });
 
-
-        // if (info == null) {
-        // info = new NearCircleExt(nearCircleId);
-        // binding.pbCircleLoading.setVisibility(View.VISIBLE);
-        // binding.svCircleContainer.setVisibility(View.GONE);
-        // this.loadFromServer(true);
-        // } else {
-        // binding.pbCircleLoading.setVisibility(View.GONE);
-        // binding.svCircleContainer.setVisibility(View.VISIBLE);
-        // bindData();
-        // this.loadFromServer(false);
-        // }
-
-        // this.setLikeViews(info.getLikes());
-        // commentAdapter = new NearCircleCommentAdapter(activity, info.getComments(), new
-        // NearCircleCommentItemListener());
-        // binding.rvComments.setAdapter(commentAdapter);
-        // binding.rvComments.setLayoutManager(new LinearLayoutManager(activity));
-    }
-
-    private void bindData() {
-        ImageViewBean.loadImage(binding.ivHeader, info.getPublishUserImage());
-        binding.tvUsername.setText(info.getPublishUserName());
-        binding.tvPosDesc.setText(info.getFromPosDesc());
-        binding.tvPublicTime.setText(info.getShowTime());
-
-        if (StringUtils.isBlank(info.getContent())) {
-            binding.tvContent.setVisibility(View.GONE);
-        } else {
-            binding.tvContent.setVisibility(View.VISIBLE);
-            binding.tvContent.setText(info.getContent());
-        }
-
-        if (info.getPublishUserId() == UserSP.getUserId()) {
-            binding.ivDelete.setVisibility(View.VISIBLE);
-        } else {
-            binding.ivDelete.setVisibility(View.GONE);
-        }
-
-        if (info.getImages() != null && info.getImages().size() > 0) {
-            binding.mivImages.setImageListener(new MultiImageView.IMultiImageListener() {
-                @Override
-                public void onImageClick(int position, String imageUrl) {
-                    itemListener.onImageClick(position);
-                }
-            });
-            binding.mivImages.setImagesData(DBNearCircleAction.convertToMultiImages(info.getImages()));
-            binding.mivImages.setVisibility(View.VISIBLE);
-        } else {
-            binding.mivImages.setVisibility(View.GONE);
-        }
+		this.loadDetails();
     }
 
     private void loadDetails() {
+        binding.pbCircleLoading.setVisibility(View.VISIBLE);
+        binding.svCircleContainer.setVisibility(View.GONE);
+		
         long nearCircleId = getIntent().getLongExtra("nearcircleid", 0);
-        nearStandard.loadDetails(nearCircleId)
+		nearStandard.loadLocalDetails(nearCircleId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<NearCircle>() {
+				.subscribe(new Consumer<NearCircle>() {
                     @Override
                     public void accept(NearCircle info) throws Exception {
-                        binding.pbCircleLoading.setVisibility(View.GONE);
-                        binding.svCircleContainer.setVisibility(View.VISIBLE);
+						if(info==null){
+							loadServerDetails(nearCircleId,null);
+						}else{
+							currentInfo=info;
+							bindData();
+							binding.pbCircleLoading.setVisibility(View.GONE);
+							binding.svCircleContainer.setVisibility(View.VISIBLE);
+						}
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -144,108 +103,119 @@ public class ActivityNearDetail extends BaseActivity {
                         Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
-        // nearStandard.loadDetails(nearCircleId)
-        // .subscribe(new NetDefaultObserver<GetNearCircleDetailResponse>() {
-        // @Override
-        // protected void onSuccess(GetNearCircleDetailResponse response) {
-        // List<NearCircleComment> comments = DBNearCircleAction.convertToNearCircleCommentInfos
-        // (response.getNearCircleInfo().getCommentInfos());
-        // if (comments != null && comments.size() > 0) {
-        // comments.removeAll(info.getComments());
-        // info.getComments().addAll(comments);
-        // }
-        // info.setLikes(DBNearCircleAction.convertToNearCircleLikeInfos(response
-        // .getNearCircleInfo().getLikeInfos()));
-        // if (response.getNearCircleInfo() != null) {
-        // if (isResetInfo) {
-        // info.setInfo(DBNearCircleAction.convertToNearCircleInfo(response.getNearCircleInfo()));
-        // info.setImages(DBNearCircleAction.convertToNearCircleImageInfos(response
-        // .getNearCircleInfo().getNearCircleId(), response.getNearCircleInfo().getPublishUserId
-        // (), response.getNearCircleInfo().getImages()));
-        // bindData();
-        // } else {
-        // if (response.getNearCircleInfo().getUpdateTime() != null && !response
-        // .getNearCircleInfo().getUpdateTime().equals(info.getUpdateTime())) {
-        // info.setUpdateTime(response.getNearCircleInfo().getUpdateTime());
-        // setLikeViews(info.getLikes());
-        // commentAdapter.notifyItemRangeChanged(0, info.getComments().size());
-        // }
-        // }
-        // saveInfo(response.getNearCircleInfo().getUpdateTime());
-        // } else {
-        // Toast.makeText(activity, "数据已经被用户删除!", Toast.LENGTH_SHORT).show();
-        // finish();
-        // }
-        // binding.pbCircleLoading.setVisibility(View.GONE);
-        // binding.svCircleContainer.setVisibility(View.VISIBLE);
-        // }
-
-        // @Override
-        // protected void onError(String resultMessage) {
-        // super.onError(resultMessage);
-        // binding.pbCircleLoading.setVisibility(View.GONE);
-        // binding.svCircleContainer.setVisibility(View.GONE);
-        // }
-        // });
     }
 
-    // private void saveInfo(String lastUpdateTime) {
-    // if (StringUtils.isBlank(lastUpdateTime) || lastUpdateTime.equals(info.getUpdateTime()))
-    // return;
-    // if (info != null && info != null && info.getPublishUserId() == myUserId) {
-    // DaoUtils.getNearCircleManagerInstance().save(info);
-    // DaoUtils.getNearCircleManagerInstance().deleteImages(info.getNearCircleId());
-    // DaoUtils.getNearCircleManagerInstance().deleteComments(info.getNearCircleId());
-    // DaoUtils.getNearCircleManagerInstance().deleteLikes(info.getNearCircleId());
-    // DaoUtils.getNearCircleManagerInstance().saveImages(info.getNearCircleId(), info.getImages());
-    // DaoUtils.getNearCircleManagerInstance().saveComments(info.getNearCircleId(), info
-    // .getComments());
-    // DaoUtils.getNearCircleManagerInstance().saveLikes(info.getNearCircleId(), info.getLikes());
-    // }
-    // }
+	private void loadServerDetails(long nearCircleId,String updateTime){
+        nearStandard.loadServerDetails(nearCircleId,updateTime)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<NearCircle>() {
+                    @Override
+                    public void accept(NearCircle info) throws Exception {
+						if(info!=null){
+							currentInfo=info;
+							bindData();
+						}
+						binding.pbCircleLoading.setVisibility(View.GONE);
+						binding.svCircleContainer.setVisibility(View.VISIBLE);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) {
+                        binding.pbCircleLoading.setVisibility(View.GONE);
+                        binding.svCircleContainer.setVisibility(View.GONE);
+                        Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+	}
 
-    // private void setLikeView(final NearCircleLike likeInfo) {
-    // if (likeInfo == null) {
-    // return;
-    // }
-    // int size = DisplayUtils.dp2px(activity, 25);
-    // FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(size, size);
-    // params.rightMargin = 2;
-    // params.bottomMargin = 2;
-    // ImageView ivLikeUser = new ImageView(activity);
-    // ImageViewBean.loadImage(ivLikeUser, likeInfo.getLikeUserImage());
-    // ivLikeUser.setOnClickListener(new View.OnClickListener() {
-    // @Override
-    // public void onClick(View v) {
-    // itemListener.onLikeUserHeadClick(likeInfo);
-    // }
-    // });
-    // binding.fblLikeContainer.addView(ivLikeUser, params);
-    // }
+    private void bindData() {
+		if(currentInfo==null) return;
 
-    // private void setLikeViews(final List<NearCircleLike> likes) {
-    // if (likes == null || likes.size() <= 0) return;
-    // binding.fblLikeContainer.removeAllViews();
-    // for (int i = 0; i < likes.size(); i++) {
-    // setLikeView(likes.get(i));
-    // }
-    // }
+        ImageViewBean.loadImage(binding.ivHeader, currentInfo.getPublishUserImage());
+        binding.tvUsername.setText(currentInfo.getPublishUserName());
+        binding.tvPosDesc.setText(currentInfo.getFromPosDesc());
+        binding.tvPublicTime.setText(currentInfo.getShowTime());
 
-    // private void removeLikeView() {
-    // if (info == null || info.getLikes() == null || info.getLikes().size() <= 0)
-    // return;
-    // for (int i = 0; i < info.getLikes().size(); i++) {
-    // if (info.getLikes().get(i).getLikeUserId() == myUserId) {
-    //EventBus.getDefault().post(new EventActionCircleLike(EventBusConstant
-    // .EB_TYPE_ACTINO_REMOVE, info.getLikes().get(i)));
-    // info.getLikes().remove(i);
-    // binding.fblLikeContainer.removeViewAt(i);
-    // break;
-    // }
-    // }
-    // }
+        if (StringUtils.isBlank(currentInfo.getContent())) {
+            binding.tvContent.setVisibility(View.GONE);
+        } else {
+            binding.tvContent.setVisibility(View.VISIBLE);
+            binding.tvContent.setText(currentInfo.getContent());
+        }
+
+        if (currentInfo.getPublishUserId() == UserSP.getUserId()) {
+            binding.ivDelete.setVisibility(View.VISIBLE);
+        } else {
+            binding.ivDelete.setVisibility(View.GONE);
+        }
+
+        if (currentInfo.getImages() != null && currentInfo.getImages().size() > 0) {
+            binding.mivImages.setImageListener(new MultiImageView.IMultiImageListener() {
+                @Override
+                public void onImageClick(int position, String imageUrl) {
+                    itemListener.onImageClick(position);
+                }
+            });
+            binding.mivImages.setImagesData(DBNearCircleAction.convertToMultiImages(currentInfo.getImages()));
+            binding.mivImages.setVisibility(View.VISIBLE);
+        } else {
+            binding.mivImages.setVisibility(View.GONE);
+        }
+
+		if (currentInfo.getLikes() != null && currentInfo.getLikes().size() > 0) {
+            binding.fblLikeContainer.setVisibility(View.VISIBLE);
+            this.setLikeViews(currentInfo.getLikes());
+        } else {
+            binding.fblLikeContainer.setVisibility(View.GONE);
+        }
+
+		if (currentInfo.getComments() != null && currentInfo.getComments().size() > 0) {
+            binding.rvComments.setVisibility(View.VISIBLE);
+            binding.rvComments.setAdapter(new NearCircleCommentAdapter(activity,currentInfo.getComments(),new NearCircleCommentItemListener()));
+            binding.rvComments.setLayoutManager(new LinearLayoutManager(activity));
+        } else {
+            binding.rlCommentContainer.setVisibility(View.GONE);
+        }
+    }
+
+    private void setLikeView(final NearCircleLike likeInfo) {
+		if (likeInfo == null) {
+			return;
+		}
+		int size = DisplayUtils.dp2px(activity, 25);
+		FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(size, size);
+		params.rightMargin = 2;
+		params.bottomMargin = 2;
+		ImageView ivLikeUser = new ImageView(activity);
+		ImageViewBean.loadImage(ivLikeUser, likeInfo.getLikeUserImage());
+		ivLikeUser.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				itemListener.onLikeUserHeadClick(likeInfo);
+			}
+		});
+		binding.fblLikeContainer.addView(ivLikeUser, params);
+    }
+
+    private void setLikeViews(final List<NearCircleLike> likes) {
+		if (likes == null || likes.size() <= 0) return;
+		binding.fblLikeContainer.removeAllViews();
+		for (int i = 0; i < likes.size(); i++) {
+			setLikeView(likes.get(i));
+		}
+    }
+
+    private void removeLikeView() {
+		if (info == null || info.getLikes() == null || info.getLikes().size() <= 0)
+			return;
+		for (int i = 0; i < info.getLikes().size(); i++) {
+			if (info.getLikes().get(i).getLikeUserId() == UserSP.getUserId()) {
+				info.getLikes().remove(i);
+				binding.fblLikeContainer.removeViewAt(i);
+				break;
+			}
+		}
+    }
 
     private class NearCircleDetailListener implements INearCircleDetailListener {
 
