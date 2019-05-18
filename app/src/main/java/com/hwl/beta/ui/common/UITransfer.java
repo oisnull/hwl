@@ -286,7 +286,7 @@ public class UITransfer {
         context.startActivity(intent);
     }
 
-   private static void toNearDetailActivity(Activity context, long nearCircleId) {
+    public static void toNearDetailActivity(Activity context, long nearCircleId) {
        Intent intent = new Intent(context, ActivityNearDetail.class);
        intent.putExtra("nearcircleid", nearCircleId);
        context.startActivity(intent);

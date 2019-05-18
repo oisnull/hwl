@@ -8,12 +8,20 @@ import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.net.circle.CircleService;
 import com.hwl.beta.net.circle.NetCircleMatchInfo;
 import com.hwl.beta.net.circle.body.DeleteCircleInfoResponse;
+import com.hwl.beta.net.circle.body.GetCircleDetailResponse;
 import com.hwl.beta.net.circle.body.GetCircleInfosResponse;
 import com.hwl.beta.net.circle.body.SetLikeInfoResponse;
+import com.hwl.beta.net.resx.ResxType;
+import com.hwl.beta.net.resx.UploadService;
+import com.hwl.beta.net.resx.body.UpResxResponse;
+import com.hwl.beta.net.user.UserService;
+import com.hwl.beta.net.user.body.SetUserCircleBackImageResponse;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.circle.standard.CircleStandard;
 import com.hwl.beta.ui.convert.DBCircleAction;
+import com.hwl.beta.utils.StringUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -166,39 +174,39 @@ public class CircleLogic implements CircleStandard {
                     }
                 });
     }
-	
-    @Override
-    public Observable updateCircleBackImage(String localPath){
-		if (StringUtils.isBlank(localPath)) {
-			return Observable.error(new Throwable("Up load data can't be emtpy."));
-		}
 
-		return UploadService.upImage(new File(localPath), ResxType.CIRCLEBACK)
-		        .flatMap(new Function<UpResxResponse, Observable<SetUserCircleBackImageResponse>>() {
+    @Override
+    public Observable updateCircleBackImage(String localPath) {
+        if (StringUtils.isBlank(localPath)) {
+            return Observable.error(new Throwable("Up load data can't be emtpy."));
+        }
+
+        return UploadService.upImage(new File(localPath), ResxType.CIRCLEBACK)
+                .flatMap(new Function<UpResxResponse, Observable<SetUserCircleBackImageResponse>>() {
                     @Override
                     public Observable<SetUserCircleBackImageResponse> apply(UpResxResponse res) throws Exception {
-						if (!res.isSuccess()){
-							throw new Exception("Up load image failed.");
-						}
+                        if (!res.isSuccess()) {
+                            throw new Exception("Up load image failed.");
+                        }
 
-						return UserService.setUserCircleBackImage(res.getOriginalUrl());
+                        return UserService.setUserCircleBackImage(res.getOriginalUrl());
                     }
                 })
-				.map(new Function<SetUserCircleBackImageResponse, String>() {
-					@Override
-					public String apply(SetUserCircleBackImageResponse res) throws Exception {
-						if (res.getStatus() != NetConstant.RESULT_SUCCESS) {
-							throw new Exception("Update circle back image failed.");
-						}
+                .map(new Function<SetUserCircleBackImageResponse, String>() {
+                    @Override
+                    public String apply(SetUserCircleBackImageResponse res) throws Exception {
+                        if (res.getStatus() != NetConstant.RESULT_SUCCESS) {
+                            throw new Exception("Update circle back image failed.");
+                        }
 
-						UserSP.setUserCirclebackimage(res.getCircleBackImageUrl());
-						return res.getCircleBackImageUrl();
-					}
-				});
-	}
+                        UserSP.setUserCirclebackimage(res.getCircleBackImageUrl());
+                        return res.getCircleBackImageUrl();
+                    }
+                });
+    }
 
     @Override
-    public Observable<Circle> loadLocalDetails(final long circleId){
+    public Observable<Circle> loadLocalDetails(final long circleId) {
         if (circleId <= 0) {
             return Observable.error(new Throwable("Circle id con't be empty."));
         }
@@ -206,29 +214,29 @@ public class CircleLogic implements CircleStandard {
         return Observable.fromCallable(new Callable<Circle>() {
             @Override
             public Circle call() throws Exception {
-                return DaoUtils.getCircleManagerInstance().getCircle(circleId, COMMENT_PAGE_COUNT);
+                return DaoUtils.getCircleManagerInstance().getCircle(circleId);
             }
         }).subscribeOn(Schedulers.io());
-	}
+    }
 
     @Override
-    public Observable<Circle> loadServerDetails(final long circleId,String updateTime) {
+    public Observable<Circle> loadServerDetails(final long circleId, String updateTime) {
         if (circleId <= 0) {
             return Observable.error(new Throwable("Circle id con't be empty."));
         }
 
-        return CircleService.getCircleDetail(circleId,updateTime)
+        return CircleService.getCircleDetail(circleId)
                 .map(new Function<GetCircleDetailResponse, Circle>() {
                     @Override
                     public Circle apply(GetCircleDetailResponse response) throws Exception {
-						if(response!=null&&response.getCircleInfo()!=null){
-							Circle info = DBCircleAction.convertToCircleInfo(response.getCircleInfo());
+                        if (response != null && response.getCircleInfo() != null) {
+                            Circle info = DBCircleAction.convertToCircleInfo(response.getCircleInfo());
                             DaoUtils.getCircleManagerInstance().deleteAll(circleId);
                             DaoUtils.getCircleManagerInstance().save(info);
-							return info;
-						}
-                        
-						return null;
+                            return info;
+                        }
+
+                        return null;
                     }
                 });
     }

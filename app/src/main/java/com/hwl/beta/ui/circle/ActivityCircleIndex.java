@@ -1,7 +1,9 @@
 package com.hwl.beta.ui.circle;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,7 +23,7 @@ import com.hwl.beta.db.entity.Circle;
 import com.hwl.beta.db.entity.CircleComment;
 import com.hwl.beta.db.entity.CircleImage;
 import com.hwl.beta.db.entity.CircleLike;
-import com.hwl.beta.db.ext.CircleExt;
+import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.circle.action.ICircleItemListener;
 import com.hwl.beta.ui.circle.adp.CircleIndexAdapter;
 import com.hwl.beta.ui.circle.logic.CircleLogic;

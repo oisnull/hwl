@@ -14,8 +14,11 @@ import com.hwl.beta.R;
 import com.hwl.beta.databinding.CircleUserHeadItemBinding;
 import com.hwl.beta.databinding.CircleUserIndexItemBinding;
 import com.hwl.beta.databinding.CircleUserItemNullBinding;
+import com.hwl.beta.db.DBConstant;
+import com.hwl.beta.db.entity.Circle;
 import com.hwl.beta.db.entity.CircleComment;
 import com.hwl.beta.db.entity.CircleImage;
+import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.ui.circle.action.ICircleUserItemListener;
 import com.hwl.beta.ui.circle.holder.CircleUserHeadItemViewHolder;
 import com.hwl.beta.ui.circle.holder.CircleUserIndexItemViewHolder;
@@ -40,7 +43,7 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     public CircleUserIndexAdapter(Context context, ICircleUserItemListener itemListener) {
         this.context = context;
-        this.circles = new ArrayList<Circle>();
+        this.circles = new ArrayList<>();
         this.itemListener = itemListener;
         inflater = LayoutInflater.from(context);
         prevYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -61,7 +64,7 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             notifyDataSetChanged();
         } else {
             removeEmptyInfo();
-            sortInfos(infos);
+            //sortInfos(infos);
             circles.addAll(getCircleItemPosition(), infos);
             notifyDataSetChanged();
         }
@@ -90,6 +93,23 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         return circles.size();
     }
 
+    public void updateHead(Friend info){
+        if(info==null) return;
+        if(circles.get(0).getItemType()!=DBConstant.CIRCLE_ITEM_HEAD) return;
+        boolean isChanged=false;
+        if(circles.get(0).getCircleBackImage()!=info.getCircleBackImage()){
+            circles.get(0).setCircleBackImage(info.getCircleBackImage());
+            isChanged=true;
+        }
+        if(circles.get(0).getLifeNotes()!=info.getLifeNotes()){
+            circles.get(0).setLifeNotes(info.getLifeNotes());
+            isChanged=true;
+        }
+
+        if(isChanged)
+            notifyItemChanged(0);
+    }
+
 	public long getMinId() {
         if (getItemCount() <= 0) {
             return 0;
@@ -103,7 +123,7 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemViewType(int position) {
-        switch (circles.get(position).getCircleItemType()) {
+        switch (circles.get(position).getItemType()) {
             case DBConstant.CIRCLE_ITEM_NULL:
             default:
                 return 0;
@@ -144,9 +164,9 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             String timeYear = "";
             String timeMonth = "";
             String timeDay = "";
-            if (info.getInfo().getPublishTime() != null && !info.getInfo().getShowDate().equals(prevShowDate)) {
+            if (info.getPublishTime() != null && !info.getShowDate().equals(prevShowDate)) {
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime(info.getInfo().getPublishTime());
+                calendar.setTime(info.getPublishTime());
                 if (calendar.get(Calendar.YEAR) != prevYear) {
                     timeYear = calendar.get(Calendar.YEAR) + "年";
                 }
@@ -155,9 +175,9 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     timeDay = calendar.get(Calendar.DAY_OF_MONTH) + "";
                 }
 
-                prevShowDate = info.getInfo().getShowDate();
+                prevShowDate = info.getShowDate();
                 Calendar prev = Calendar.getInstance();
-                prev.setTime(info.getInfo().getPublishTime());
+                prev.setTime(info.getPublishTime());
                 prevYear = prev.get(Calendar.YEAR);
                 prevMonth = prev.get(Calendar.MONTH) + 1;
                 prevDay = prev.get(Calendar.DAY_OF_MONTH);
@@ -168,7 +188,7 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     viewHolder.getItemBinding().llCircleContainer.setLayoutParams(params);
                 }
             }
-            viewHolder.setItemBinding(timeYear, timeMonth, timeDay, info.getInfo().getContent(), info.getImages());
+            viewHolder.setItemBinding(timeYear, timeMonth, timeDay, info.getContent(), info.getImages());
             viewHolder.getItemBinding().getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -185,7 +205,7 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         int position = -1;
         List<CircleComment> comments = null;
         for (int i = 0; i < circles.size(); i++) {
-            if (circles.get(i).getInfo() != null && circles.get(i).getInfo().getCircleId() == comment.getCircleId()) {
+            if (circles.get(i) != null && circles.get(i).getCircleId() == comment.getCircleId()) {
                 comments = circles.get(i).getComments();
                 if (comments == null) {
                     comments = new ArrayList<>();

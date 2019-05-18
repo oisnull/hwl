@@ -1,5 +1,9 @@
 package com.hwl.beta.net.circle.body;
 
+import com.hwl.beta.net.circle.NetCircleMatchInfo;
+
+import java.util.List;
+
 public class GetUserCircleInfosRequest {
     /// <summary>
     /// 当前登录的用户id

@@ -47,19 +47,19 @@ public class Circle implements Serializable {
     @Transient
     private String lifeNotes;
 
-    public int getLifeNotes() {
+    public String getLifeNotes() {
         return this.lifeNotes;
     }
 
-    public void setLifeNotes(int lifeNotes) {
+    public void setLifeNotes(String lifeNotes) {
         this.lifeNotes = lifeNotes;
     }
 
-    public int getCircleBackImage() {
+    public String getCircleBackImage() {
         return this.circleBackImage;
     }
 
-    public void setCircleBackImage(int circleBackImage) {
+    public void setCircleBackImage(String circleBackImage) {
         this.circleBackImage = circleBackImage;
     }
 

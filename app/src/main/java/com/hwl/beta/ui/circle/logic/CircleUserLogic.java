@@ -4,15 +4,21 @@ import com.hwl.beta.db.DBConstant;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.Circle;
 import com.hwl.beta.db.entity.CircleLike;
+import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.net.circle.CircleService;
 import com.hwl.beta.net.circle.NetCircleMatchInfo;
 import com.hwl.beta.net.circle.body.DeleteCircleInfoResponse;
 import com.hwl.beta.net.circle.body.GetCircleInfosResponse;
+import com.hwl.beta.net.circle.body.GetUserCircleInfosResponse;
 import com.hwl.beta.net.circle.body.SetLikeInfoResponse;
+import com.hwl.beta.net.user.UserService;
+import com.hwl.beta.net.user.body.GetUserDetailsResponse;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.circle.standard.CircleStandard;
+import com.hwl.beta.ui.circle.standard.CircleUserStandard;
 import com.hwl.beta.ui.convert.DBCircleAction;
+import com.hwl.beta.ui.convert.DBFriendAction;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,28 +34,30 @@ public class CircleUserLogic implements CircleUserStandard {
 
     final static int PAGE_COUNT = 15;
     final static int COMMENT_PAGE_COUNT = 10;
-	Friend currentUser;
+    Friend currentUser;
 
-	public CircleUserLogic(long viewUserId,String viewUserName,String viewUserImage){
-		if (viewUserId<=0||viewUserId == UserSP.getUserId()){
-			currentUser = DBFriendAction.convertToFriendInfo(UserSP.getUserInfo())
-		}else{
-			currentUser = DaoUtils.getFriendManagerInstance().get(viewUserId);
-		}
-		if(currentUser==null){
-			currentUser=new Friend();
-			currentUser.setId(viewUserId);
-			currentUser.setName(viewUserName);
-			currentUser.setHeadImage(viewUserImage);
-		}
-	}
+    public CircleUserLogic(long viewUserId, String viewUserName, String viewUserImage) {
+        if (viewUserId <= 0 || viewUserId == UserSP.getUserId()) {
+            currentUser = DBFriendAction.convertToFriendInfo(UserSP.getUserInfo());
+        } else {
+            currentUser = DaoUtils.getFriendManagerInstance().get(viewUserId);
+        }
+        if (currentUser == null) {
+            currentUser = new Friend();
+            currentUser.setId(viewUserId);
+            currentUser.setName(viewUserName);
+            currentUser.setHeadImage(viewUserImage);
+        }
+    }
 
     @Override
     public Observable<List<Circle>> loadLocalInfos() {
         return Observable.fromCallable(new Callable<List<Circle>>() {
             @Override
             public List<Circle> call() {
-                List<Circle> circles = DaoUtils.getCircleManagerInstance().getUserCirclesV2(currentUser.getUserId());
+                List<Circle> circles =
+                        DaoUtils.getCircleManagerInstance().getUserCirclesV2(currentUser.getId(),
+                                COMMENT_PAGE_COUNT);
                 if (circles == null)
                     circles = new ArrayList<>();
 
@@ -63,27 +71,28 @@ public class CircleUserLogic implements CircleUserStandard {
                             circles.add(new Circle(DBConstant.CIRCLE_ITEM_NULL));
                         }
                         circles.add(0, new Circle(DBConstant.CIRCLE_ITEM_HEAD,
-														currentUser.getUserId(),
-														currentUser.getShowName(),
-														currentUser.getHeadImage().
-														currentUser.getCircleBackImage(),
-														currentUser.getLifeNotes()));
+                                currentUser.getId(),
+                                currentUser.getShowName(),
+                                currentUser.getHeadImage(),
+                                currentUser.getCircleBackImage(),
+                                currentUser.getLifeNotes()));
                     }
                 })
                 .subscribeOn(Schedulers.io());
     }
 
-	 @Override
+    @Override
     public Observable<List<Circle>> loadServerInfos(final long minCircleId,
                                                     final List<Circle> localInfos) {
         // minCircleId <=0 and get new data
         // minCircleId >0 and get old data
-        return CircleService.getUserCircleInfos(currentUser.getUserId(), minCircleId, PAGE_COUNT,
+        return CircleService.getUserCircleInfos(currentUser.getId(), minCircleId, PAGE_COUNT,
                 this.getMatchInfos(minCircleId, localInfos))
                 .map(new Function<GetUserCircleInfosResponse, List<Circle>>() {
                     @Override
                     public List<Circle> apply(GetUserCircleInfosResponse response) {
-                        List<Circle> infos = DBCircleAction.convertToCircleInfos(response.getCircleInfos());
+                        List<Circle> infos =
+                                DBCircleAction.convertToCircleInfos(response.getCircleInfos());
                         if (infos == null) infos = new ArrayList<>();
                         return infos;
                     }
@@ -130,25 +139,26 @@ public class CircleUserLogic implements CircleUserStandard {
     }
 
     @Override
-    public Friend getLocalUserInfo(){
-		return currentUser;
-	}
+    public Friend getLocalUserInfo() {
+        return currentUser;
+    }
 
     @Override
-    public Observable loadServerUserInfo(){
-		if (currentUser.getUserId() == UserSP.getUserId()) return Observable.empty();
+    public Observable loadServerUserInfo() {
+        if (currentUser.getId() == UserSP.getUserId()) return Observable.empty();
 
-       return UserService.getUserDetails(currentUser.getUserId())
+        return UserService.getUserDetails(currentUser.getId())
                 .map(new Function<GetUserDetailsResponse, Friend>() {
                     @Override
                     public Friend apply(GetUserDetailsResponse response) throws Exception {
                         if (response.getUserDetailsInfo() != null) {
-                            Friend newInfo = DBFriendAction.convertToFriendInfo(response.getUserDetailsInfo());
+                            Friend newInfo =
+                                    DBFriendAction.convertToFriendInfo(response.getUserDetailsInfo());
                             DaoUtils.getFriendManagerInstance().save(newInfo);
-							return newInfo;
+                            return newInfo;
                         }
-						return null;
+                        return null;
                     }
                 });
-	}
+    }
 }

@@ -172,7 +172,7 @@ public class CircleManager extends BaseDao<Circle> {
         }
     }
 
-    public void deleteComment(long circleId, long userId, int commentId) {
+    public void deleteComment(long circleId, long userId, long commentId) {
         if (circleId > 0) {
             String deleteSql = "delete from " + CircleCommentDao.TABLENAME + " where " +
                     CircleCommentDao.Properties.CircleId.columnName + "=" + circleId + " and " +
@@ -182,7 +182,7 @@ public class CircleManager extends BaseDao<Circle> {
         }
     }
 
-    public CircleComment getComment(long circleId, long userId, int commentId) {
+    public CircleComment getComment(long circleId, long userId, long commentId) {
         if (circleId <= 0) return null;
         return daoSession.getCircleCommentDao().queryBuilder()
                 .where(CircleCommentDao.Properties.CircleId.eq(circleId))
@@ -210,8 +210,8 @@ public class CircleManager extends BaseDao<Circle> {
                 .list();
     }
 
-    public void saveComment(long circleId, CircleComment comment) {
-        if (circleId > 0 && comment != null) {
+    public void saveComment(CircleComment comment) {
+        if (comment != null) {
             daoSession.getCircleCommentDao().save(comment);
         }
     }
@@ -403,7 +403,7 @@ public class CircleManager extends BaseDao<Circle> {
         return exts;
     }
 
-    public List<Circle> getUserCirclesV2(long userId) {
+    public List<Circle> getUserCirclesV2(long userId, int commentPageCount) {
         List<Circle> infos = daoSession.getCircleDao().queryBuilder()
                 .where(CircleDao.Properties.PublishUserId.eq(userId))
                 .orderDesc(CircleDao.Properties.CircleId)

@@ -90,12 +90,12 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public void updateInfos(boolean isRefresh, List<NearCircle> infos) {
         if (infos == null || infos.size() <= 0) return;
+        removeEmptyInfo();
 
         if (getItemCount() <= 0) {
             nearCircles.addAll(infos);
             notifyDataSetChanged();
         } else {
-            removeEmptyInfo();
             if (isRefresh) {
                 boolean isClear =
                         (infos.get(infos.size() - 1).getNearCircleId() - nearCircles.get(0).getNearCircleId()) > 1;

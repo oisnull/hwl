@@ -119,13 +119,17 @@ public class CircleService {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public static Observable<GetUserCircleInfosResponse> getUserCircleInfos(long viewUserId, long minCircleId, int pageCount) {
+    public static Observable<GetUserCircleInfosResponse> getUserCircleInfos(long viewUserId,
+                                                                            long minCircleId,
+                                                                            int pageCount,
+                                                                            List<NetCircleMatchInfo> circleInfos) {
         GetUserCircleInfosRequest requestBody = new GetUserCircleInfosRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setViewUserId(viewUserId);
         requestBody.setMinCircleId(minCircleId);
+        requestBody.setCircleMatchInfos(circleInfos);
         requestBody.setCount(pageCount <= 0 ? 15 : pageCount);
-		
+
         return RetrofitUtils.createApi(ICircleService.class)
                 .getUserCircleInfos(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<GetUserCircleInfosResponse>>())

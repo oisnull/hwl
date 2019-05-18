@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import com.hwl.beta.ui.common.KeyBoardAction;
 import com.hwl.beta.ui.common.UITransfer;
-import com.hwl.beta.ui.common.rxext.RXDefaultObserverEmpty;
 import com.hwl.beta.ui.entry.logic.LoginLogic;
 
 import com.hwl.beta.R;
@@ -18,6 +17,7 @@ import com.hwl.beta.ui.entry.action.ILoginListener;
 import com.hwl.beta.ui.entry.bean.LoginBean;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Administrator on 2018/1/13.
@@ -78,17 +78,17 @@ public class ActivityLogin extends FragmentActivity {
 
             loginHandle.userLogin(loginBean)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new RXDefaultObserverEmpty() {
+                    .subscribe(new Consumer() {
                         @Override
-                        protected void onSuccess() {
+                        public void accept(Object o) {
                             UITransfer.toWelcomeActivity(activity);
                             finish();
                         }
-
+                    }, new Consumer<Throwable>() {
                         @Override
-                        protected void onError(String message) {
-                            super.onError(message);
+                        public void accept(Throwable throwable) {
                             isRunning = false;
+                            Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                             binding.btnLogin.setText("登   录");
                         }
                     });

@@ -1,7 +1,7 @@
 package com.hwl.beta.ui.circle.standard;
 
 import com.hwl.beta.db.entity.Circle;
-import com.hwl.beta.db.entity.CircleLike;
+import com.hwl.beta.db.entity.Friend;
 
 import java.util.List;
 

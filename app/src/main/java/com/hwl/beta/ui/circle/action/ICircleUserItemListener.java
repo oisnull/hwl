@@ -1,11 +1,11 @@
 package com.hwl.beta.ui.circle.action;
 
-import com.hwl.beta.db.ext.CircleExt;
+import com.hwl.beta.db.entity.Circle;
 
 public interface ICircleUserItemListener {
     void onItemNullViewClick();
 
-    void onItemViewClick(CircleExt info);
+    void onItemViewClick(Circle info);
 
     void onBackImageClick();
 }

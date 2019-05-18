@@ -1,15 +1,18 @@
 package com.hwl.beta.ui.near;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.NearActivityDetailBinding;
 import com.hwl.beta.db.entity.NearCircle;
@@ -30,6 +33,7 @@ import com.hwl.beta.ui.near.standard.NearStandard;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
 import com.hwl.beta.ui.widget.CircleActionMorePop;
 import com.hwl.beta.ui.widget.MultiImageView;
+import com.hwl.beta.utils.DisplayUtils;
 import com.hwl.beta.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -73,27 +77,27 @@ public class ActivityNearDetail extends BaseActivity {
                     }
                 });
 
-		this.loadDetails();
+        this.loadDetails();
     }
 
     private void loadDetails() {
         binding.pbCircleLoading.setVisibility(View.VISIBLE);
         binding.svCircleContainer.setVisibility(View.GONE);
-		
-        long nearCircleId = getIntent().getLongExtra("nearcircleid", 0);
-		nearStandard.loadLocalDetails(nearCircleId)
+
+        final long nearCircleId = getIntent().getLongExtra("nearcircleid", 0);
+        nearStandard.loadLocalDetails(nearCircleId)
                 .observeOn(AndroidSchedulers.mainThread())
-				.subscribe(new Consumer<NearCircle>() {
+                .subscribe(new Consumer<NearCircle>() {
                     @Override
                     public void accept(NearCircle info) throws Exception {
-						if(info==null){
-							loadServerDetails(nearCircleId,null);
-						}else{
-							currentInfo=info;
-							bindData();
-							binding.pbCircleLoading.setVisibility(View.GONE);
-							binding.svCircleContainer.setVisibility(View.VISIBLE);
-						}
+                        if (info == null) {
+                            loadServerDetails(nearCircleId, null);
+                        } else {
+                            currentInfo = info;
+                            bindData();
+                            binding.pbCircleLoading.setVisibility(View.GONE);
+                            binding.svCircleContainer.setVisibility(View.VISIBLE);
+                        }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -105,18 +109,18 @@ public class ActivityNearDetail extends BaseActivity {
                 });
     }
 
-	private void loadServerDetails(long nearCircleId,String updateTime){
-        nearStandard.loadServerDetails(nearCircleId,updateTime)
+    private void loadServerDetails(long nearCircleId, String updateTime) {
+        nearStandard.loadServerDetails(nearCircleId, updateTime)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<NearCircle>() {
                     @Override
                     public void accept(NearCircle info) throws Exception {
-						if(info!=null){
-							currentInfo=info;
-							bindData();
-						}
-						binding.pbCircleLoading.setVisibility(View.GONE);
-						binding.svCircleContainer.setVisibility(View.VISIBLE);
+                        if (info != null) {
+                            currentInfo = info;
+                            bindData();
+                        }
+                        binding.pbCircleLoading.setVisibility(View.GONE);
+                        binding.svCircleContainer.setVisibility(View.VISIBLE);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -126,10 +130,10 @@ public class ActivityNearDetail extends BaseActivity {
                         Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-	}
+    }
 
     private void bindData() {
-		if(currentInfo==null) return;
+        if (currentInfo == null) return;
 
         ImageViewBean.loadImage(binding.ivHeader, currentInfo.getPublishUserImage());
         binding.tvUsername.setText(currentInfo.getPublishUserName());
@@ -162,16 +166,17 @@ public class ActivityNearDetail extends BaseActivity {
             binding.mivImages.setVisibility(View.GONE);
         }
 
-		if (currentInfo.getLikes() != null && currentInfo.getLikes().size() > 0) {
+        if (currentInfo.getLikes() != null && currentInfo.getLikes().size() > 0) {
             binding.fblLikeContainer.setVisibility(View.VISIBLE);
             this.setLikeViews(currentInfo.getLikes());
         } else {
             binding.fblLikeContainer.setVisibility(View.GONE);
         }
 
-		if (currentInfo.getComments() != null && currentInfo.getComments().size() > 0) {
+        if (currentInfo.getComments() != null && currentInfo.getComments().size() > 0) {
             binding.rvComments.setVisibility(View.VISIBLE);
-            binding.rvComments.setAdapter(new NearCircleCommentAdapter(activity,currentInfo.getComments(),new NearCircleCommentItemListener()));
+            binding.rvComments.setAdapter(new NearCircleCommentAdapter(activity,
+                    currentInfo.getComments(), new NearCircleCommentItemListener()));
             binding.rvComments.setLayoutManager(new LinearLayoutManager(activity));
         } else {
             binding.rlCommentContainer.setVisibility(View.GONE);
@@ -179,42 +184,42 @@ public class ActivityNearDetail extends BaseActivity {
     }
 
     private void setLikeView(final NearCircleLike likeInfo) {
-		if (likeInfo == null) {
-			return;
-		}
-		int size = DisplayUtils.dp2px(activity, 25);
-		FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(size, size);
-		params.rightMargin = 2;
-		params.bottomMargin = 2;
-		ImageView ivLikeUser = new ImageView(activity);
-		ImageViewBean.loadImage(ivLikeUser, likeInfo.getLikeUserImage());
-		ivLikeUser.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				itemListener.onLikeUserHeadClick(likeInfo);
-			}
-		});
-		binding.fblLikeContainer.addView(ivLikeUser, params);
+        if (likeInfo == null) {
+            return;
+        }
+        int size = DisplayUtils.dp2px(activity, 25);
+        FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(size, size);
+        params.rightMargin = 2;
+        params.bottomMargin = 2;
+        ImageView ivLikeUser = new ImageView(activity);
+        ImageViewBean.loadImage(ivLikeUser, likeInfo.getLikeUserImage());
+        ivLikeUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemListener.onLikeUserHeadClick(likeInfo);
+            }
+        });
+        binding.fblLikeContainer.addView(ivLikeUser, params);
     }
 
     private void setLikeViews(final List<NearCircleLike> likes) {
-		if (likes == null || likes.size() <= 0) return;
-		binding.fblLikeContainer.removeAllViews();
-		for (int i = 0; i < likes.size(); i++) {
-			setLikeView(likes.get(i));
-		}
+        if (likes == null || likes.size() <= 0) return;
+        binding.fblLikeContainer.removeAllViews();
+        for (int i = 0; i < likes.size(); i++) {
+            setLikeView(likes.get(i));
+        }
     }
 
     private void removeLikeView() {
-		if (info == null || info.getLikes() == null || info.getLikes().size() <= 0)
-			return;
-		for (int i = 0; i < info.getLikes().size(); i++) {
-			if (info.getLikes().get(i).getLikeUserId() == UserSP.getUserId()) {
-				info.getLikes().remove(i);
-				binding.fblLikeContainer.removeViewAt(i);
-				break;
-			}
-		}
+        if (currentInfo == null || currentInfo.getLikes() == null || currentInfo.getLikes().size() <= 0)
+            return;
+        for (int i = 0; i < currentInfo.getLikes().size(); i++) {
+            if (currentInfo.getLikes().get(i).getLikeUserId() == UserSP.getUserId()) {
+                currentInfo.getLikes().remove(i);
+                binding.fblLikeContainer.removeViewAt(i);
+                break;
+            }
+        }
     }
 
     private class NearCircleDetailListener implements INearCircleDetailListener {
@@ -229,8 +234,8 @@ public class ActivityNearDetail extends BaseActivity {
 
         @Override
         public void onUserHeadClick() {
-            UITransfer.toUserIndexActivity(activity, info.getPublishUserId(),
-                    info.getPublishUserName(), info.getPublishUserImage());
+            UITransfer.toUserIndexActivity(activity, currentInfo.getPublishUserId(),
+                    currentInfo.getPublishUserName(), currentInfo.getPublishUserImage());
         }
 
         @Override
@@ -295,15 +300,15 @@ public class ActivityNearDetail extends BaseActivity {
                     setLike();
                 }
             });
-            mMorePopupWindow.show(0, view, info.getIsLiked());
+            mMorePopupWindow.show(0, view, currentInfo.getIsLiked());
         }
 
         private void setLike() {
             if (isRunning) return;
             isRunning = true;
 
-            final boolean isLike = !info.getIsLiked();
-            nearStandard.setLike(info, isLike)
+            final boolean isLike = !currentInfo.getIsLiked();
+            nearStandard.setLike(currentInfo, isLike)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<NearCircleLike>() {
                         @Override
@@ -326,7 +331,7 @@ public class ActivityNearDetail extends BaseActivity {
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            deleteCircle(info.getNearCircleId());
+                            deleteCircle(currentInfo.getNearCircleId());
                             dialog.dismiss();
                         }
                     })
@@ -359,10 +364,10 @@ public class ActivityNearDetail extends BaseActivity {
 
         @Override
         public void onImageClick(int position) {
-            if (info.getImages() != null && info.getImages().size() > 0) {
-                List<String> imageUrls = new ArrayList<>(info.getImages().size());
-                for (int i = 0; i < info.getImages().size(); i++) {
-                    imageUrls.add(info.getImages().get(i).getImageUrl());
+            if (currentInfo.getImages() != null && currentInfo.getImages().size() > 0) {
+                List<String> imageUrls = new ArrayList<>(currentInfo.getImages().size());
+                for (int i = 0; i < currentInfo.getImages().size(); i++) {
+                    imageUrls.add(currentInfo.getImages().get(i).getImageUrl());
                 }
                 UITransfer.toImageBrowseActivity(activity, ActivityImageBrowse.MODE_VIEW,
                         position, imageUrls);

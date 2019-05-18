@@ -1,8 +1,12 @@
 package com.hwl.beta.ui.circle.logic;
 
+import com.hwl.beta.net.circle.CircleService;
+import com.hwl.beta.net.circle.body.AddCircleInfoResponse;
+import com.hwl.beta.net.near.NetImageInfo;
 import com.hwl.beta.net.resx.ResxType;
 import com.hwl.beta.net.resx.UploadService;
 import com.hwl.beta.net.resx.body.UpResxResponse;
+import com.hwl.beta.ui.circle.standard.CirclePublishStandard;
 import com.hwl.beta.ui.imgcompress.CompressChatImage;
 import com.hwl.beta.utils.StringUtils;
 
@@ -84,10 +88,10 @@ public class CirclePublishLogic implements CirclePublishStandard {
 
     private Observable<Boolean> publishContent(String content, List<NetImageInfo> images) {
         return CircleService.addCircleInfo(content, images)
-                .map(new Function<AddNearCircleInfoResponse, Boolean>() {
+                .map(new Function<AddCircleInfoResponse, Boolean>() {
                     @Override
-                    public Boolean apply(AddNearCircleInfoResponse response) throws Exception {
-                        if (response == null || response.getNearCircleId() <= 0) {
+                    public Boolean apply(AddCircleInfoResponse response) throws Exception {
+                        if (response == null || response.getCircleId() <= 0) {
                             throw new Exception("发布失败.");
                         }
                         return true;

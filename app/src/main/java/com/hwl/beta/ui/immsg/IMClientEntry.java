@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import com.hwl.beta.AppConfig;
 import com.hwl.beta.ui.immsg.listen.AddFriendMessageListen;
 import com.hwl.beta.ui.immsg.listen.ChatSettingMessageListen;
+import com.hwl.beta.ui.immsg.listen.CircleOperateMessageListen;
 import com.hwl.beta.ui.immsg.listen.GroupOperateMessageListen;
 import com.hwl.beta.ui.immsg.listen.NearCircleOperateMessageListen;
 import com.hwl.beta.ui.immsg.listen.TestConnectionMessageListen;
@@ -15,6 +16,7 @@ import com.hwl.beta.ui.immsg.send.AddFriendMessageSend;
 import com.hwl.beta.ui.immsg.send.ChatGroupMessageSend;
 import com.hwl.beta.ui.immsg.send.ChatSettingMessageSend;
 import com.hwl.beta.ui.immsg.send.ChatUserMessageSend;
+import com.hwl.beta.ui.immsg.send.CircleOperateMessageSend;
 import com.hwl.beta.ui.immsg.send.ClientAckMessageSend;
 import com.hwl.beta.ui.immsg.send.GroupOperateMessageSend;
 import com.hwl.beta.ui.immsg.send.NearCircleOperateMessageSend;
@@ -31,9 +33,9 @@ import com.hwl.im.common.DefaultConsumer;
 import com.hwl.im.imaction.MessageSendExecutor;
 import com.hwl.im.immode.MessageRequestHeadOperate;
 import com.hwl.imcore.improto.ImChatSettingType;
+import com.hwl.imcore.improto.ImCircleOperateType;
 import com.hwl.imcore.improto.ImGroupOperateType;
 import com.hwl.imcore.improto.ImMessageType;
-import com.hwl.imcore.improto.ImNearCircleOperateType;
 import com.hwl.imcore.improto.ImTestConnectionMessageResponse;
 import com.hwl.imcore.improto.ImUserContent;
 
@@ -75,6 +77,8 @@ public class IMClientEntry {
                 GroupOperateMessageListen());
         messageOperate.registerListenExecutor(ImMessageType.NearCircleOperate, new
                 NearCircleOperateMessageListen());
+        messageOperate.registerListenExecutor(ImMessageType.CircleOperate, new
+                CircleOperateMessageListen());
     }
 
     public static void connectServer() {
@@ -393,9 +397,9 @@ public class IMClientEntry {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
                 NearCircleOperateMessageSend request =
-                        new NearCircleOperateMessageSend(isLike ? ImNearCircleOperateType
-                                .AddLike : ImNearCircleOperateType.CancelLike, originUserId, 0,
-                                nearCircleId, isLike, 0, null,
+                        new NearCircleOperateMessageSend(isLike ? ImCircleOperateType
+                                .AddLike : ImCircleOperateType.CancelLike, originUserId, 0,
+                                nearCircleId, 0, null,
                                 sendCallback);
                 messageOperate.send(request);
             }
@@ -412,9 +416,9 @@ public class IMClientEntry {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
                 NearCircleOperateMessageSend request =
-                        new NearCircleOperateMessageSend(ImNearCircleOperateType
+                        new NearCircleOperateMessageSend(ImCircleOperateType
                                 .PostComment, originUserId, replyUserId,
-                                nearCircleId, false, commentId, content,
+                                nearCircleId, commentId, content,
                                 sendCallback);
                 messageOperate.send(request);
             }
@@ -430,9 +434,63 @@ public class IMClientEntry {
             @Override
             public void accept(DefaultConsumer<Boolean> sendCallback) {
                 NearCircleOperateMessageSend request =
-                        new NearCircleOperateMessageSend(ImNearCircleOperateType
+                        new NearCircleOperateMessageSend(ImCircleOperateType
                                 .CancelComment, originUserId, replyUserId,
-                                nearCircleId, false, commentId, null,
+                                nearCircleId, commentId, null,
+                                sendCallback);
+                messageOperate.send(request);
+            }
+        });
+    }
+
+    public static void sendCircleLikeMessage(final long circleId,
+                                             final boolean isLike,
+                                             final long originUserId,
+                                             final IMDefaultSendOperateListener operateListener) {
+        commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+            @Override
+            public void accept(DefaultConsumer<Boolean> sendCallback) {
+                CircleOperateMessageSend request =
+                        new CircleOperateMessageSend(isLike ? ImCircleOperateType
+                                .AddLike : ImCircleOperateType.CancelLike, originUserId, 0,
+                                circleId, 0, null,
+                                sendCallback);
+                messageOperate.send(request);
+            }
+        });
+    }
+
+    public static void sendCircleCommentMessage(final long circleId,
+                                                final long commentId,
+                                                final String content,
+                                                final long originUserId,
+                                                final long replyUserId,
+                                                final IMDefaultSendOperateListener operateListener) {
+        commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+            @Override
+            public void accept(DefaultConsumer<Boolean> sendCallback) {
+                CircleOperateMessageSend request =
+                        new CircleOperateMessageSend(ImCircleOperateType
+                                .PostComment, originUserId, replyUserId,
+                                circleId, commentId, content,
+                                sendCallback);
+                messageOperate.send(request);
+            }
+        });
+    }
+
+    public static void sendCircleCancelCommentMessage(final long circleId,
+                                                      final long commentId,
+                                                      final long originUserId,
+                                                      final long replyUserId,
+                                                      final IMDefaultSendOperateListener operateListener) {
+        commonExec(operateListener, new DefaultConsumer<DefaultConsumer<Boolean>>() {
+            @Override
+            public void accept(DefaultConsumer<Boolean> sendCallback) {
+                CircleOperateMessageSend request =
+                        new CircleOperateMessageSend(ImCircleOperateType
+                                .CancelComment, originUserId, replyUserId,
+                                circleId, commentId, null,
                                 sendCallback);
                 messageOperate.send(request);
             }

@@ -1,6 +1,5 @@
 package com.hwl.beta.ui.circle;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -8,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
@@ -17,23 +15,20 @@ import android.widget.Toast;
 import com.google.android.flexbox.FlexboxLayout;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.CircleActivityDetailBinding;
-import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.Circle;
 import com.hwl.beta.db.entity.CircleComment;
 import com.hwl.beta.db.entity.CircleLike;
-import com.hwl.beta.db.ext.CircleExt;
-import com.hwl.beta.net.NetConstant;
-import com.hwl.beta.net.circle.CircleService;
-import com.hwl.beta.net.circle.body.GetCircleDetailResponse;
-import com.hwl.beta.net.circle.body.SetLikeInfoResponse;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.circle.action.ICircleCommentItemListener;
 import com.hwl.beta.ui.circle.action.ICircleDetailListener;
 import com.hwl.beta.ui.circle.adp.CircleCommentAdapter;
+import com.hwl.beta.ui.circle.logic.CircleLogic;
+import com.hwl.beta.ui.circle.standard.CircleStandard;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.KeyBoardAction;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.convert.DBCircleAction;
+import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.imgselect.ActivityImageBrowse;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
 import com.hwl.beta.ui.widget.CircleActionMorePop;
@@ -41,13 +36,11 @@ import com.hwl.beta.ui.widget.MultiImageView;
 import com.hwl.beta.utils.DisplayUtils;
 import com.hwl.beta.utils.StringUtils;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 
 public class ActivityCircleDetail extends BaseActivity {
 
@@ -62,7 +55,7 @@ public class ActivityCircleDetail extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = this;
-		circleStandard = new CircleLogic();
+        circleStandard = new CircleLogic();
         itemListener = new CircleDetailListener();
         binding = DataBindingUtil.setContentView(activity, R.layout.circle_activity_detail);
         binding.setAction(itemListener);
@@ -84,27 +77,27 @@ public class ActivityCircleDetail extends BaseActivity {
                     }
                 });
 
-		this.loadDetails();
+        this.loadDetails();
     }
 
     private void loadDetails() {
         binding.pbCircleLoading.setVisibility(View.VISIBLE);
         binding.svCircleContainer.setVisibility(View.GONE);
-		
-        long circleId = getIntent().getLongExtra("circleid", 0);
-		circleStandard.loadLocalDetails(circleId)
+
+        final long circleId = getIntent().getLongExtra("circleid", 0);
+        circleStandard.loadLocalDetails(circleId)
                 .observeOn(AndroidSchedulers.mainThread())
-				.subscribe(new Consumer<Circle>() {
+                .subscribe(new Consumer<Circle>() {
                     @Override
                     public void accept(Circle info) throws Exception {
-						if(info==null){
-							loadServerDetails(circleId,null);
-						}else{
-							currentInfo=info;
-							bindData();
-							binding.pbCircleLoading.setVisibility(View.GONE);
-							binding.svCircleContainer.setVisibility(View.VISIBLE);
-						}
+                        if (info == null) {
+                            loadServerDetails(circleId, null);
+                        } else {
+                            currentInfo = info;
+                            bindData();
+                            binding.pbCircleLoading.setVisibility(View.GONE);
+                            binding.svCircleContainer.setVisibility(View.VISIBLE);
+                        }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -116,18 +109,18 @@ public class ActivityCircleDetail extends BaseActivity {
                 });
     }
 
-	private void loadServerDetails(long circleId,String updateTime){
-        circleStandard.loadServerDetails(circleId,updateTime)
+    private void loadServerDetails(long circleId, String updateTime) {
+        circleStandard.loadServerDetails(circleId, updateTime)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Circle>() {
                     @Override
                     public void accept(Circle info) throws Exception {
-						if(info!=null){
-							currentInfo=info;
-							bindData();
-						}
-						binding.pbCircleLoading.setVisibility(View.GONE);
-						binding.svCircleContainer.setVisibility(View.VISIBLE);
+                        if (info != null) {
+                            currentInfo = info;
+                            bindData();
+                        }
+                        binding.pbCircleLoading.setVisibility(View.GONE);
+                        binding.svCircleContainer.setVisibility(View.VISIBLE);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -137,7 +130,7 @@ public class ActivityCircleDetail extends BaseActivity {
                         Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-	}
+    }
 
     private void bindData() {
         ImageViewBean.loadImage(binding.ivHeader, currentInfo.getPublishUserImage());
@@ -151,7 +144,7 @@ public class ActivityCircleDetail extends BaseActivity {
             binding.tvContent.setVisibility(View.VISIBLE);
             binding.tvContent.setText(currentInfo.getContent());
         }
-        if (currentInfo.getPublishUserId() == myUserId) {
+        if (currentInfo.getPublishUserId() == UserSP.getUserId()) {
             binding.ivDelete.setVisibility(View.VISIBLE);
         } else {
             binding.ivDelete.setVisibility(View.GONE);
@@ -170,10 +163,11 @@ public class ActivityCircleDetail extends BaseActivity {
             binding.mivImages.setVisibility(View.GONE);
         }
 
-       this.setLikeViews(currentInfo.getLikes());
-       commentAdapter = new CircleCommentAdapter(activity, currentInfo.getComments(), new CircleCommentItemListener());
-       binding.rvComments.setAdapter(commentAdapter);
-       binding.rvComments.setLayoutManager(new LinearLayoutManager(activity));
+        this.setLikeViews(currentInfo.getLikes());
+        commentAdapter = new CircleCommentAdapter(activity, currentInfo.getComments(),
+                new CircleCommentItemListener());
+        binding.rvComments.setAdapter(commentAdapter);
+        binding.rvComments.setLayoutManager(new LinearLayoutManager(activity));
     }
 
     private void setLikeView(final CircleLike likeInfo) {
@@ -215,7 +209,8 @@ public class ActivityCircleDetail extends BaseActivity {
 
         @Override
         public void onMyUserHeadClick() {
-            UITransfer.toCircleUserIndexActivity(activity, UserSP.getUserId(), UserSP.getUserName(), UserSP.getUserHeadImage());
+            UITransfer.toCircleUserIndexActivity(activity, UserSP.getUserId(),
+                    UserSP.getUserName(), UserSP.getUserHeadImage());
         }
 
         @Override
@@ -284,7 +279,7 @@ public class ActivityCircleDetail extends BaseActivity {
             mMorePopupWindow.show(0, view, currentInfo.getIsLiked());
         }
 
-       private void setLike() {
+        private void setLike() {
             if (isRunning) return;
             isRunning = true;
 
@@ -349,10 +344,10 @@ public class ActivityCircleDetail extends BaseActivity {
 
         @Override
         public void onImageClick(int position) {
-            if (info.getImages() != null && info.getImages().size() > 0) {
-                List<String> imageUrls = new ArrayList<>(info.getImages().size());
-                for (int i = 0; i < info.getImages().size(); i++) {
-                    imageUrls.add(info.getImages().get(i).getImageUrl());
+            if (currentInfo.getImages() != null && currentInfo.getImages().size() > 0) {
+                List<String> imageUrls = new ArrayList<>(currentInfo.getImages().size());
+                for (int i = 0; i < currentInfo.getImages().size(); i++) {
+                    imageUrls.add(currentInfo.getImages().get(i).getImageUrl());
                 }
                 UITransfer.toImageBrowseActivity(activity, ActivityImageBrowse.MODE_VIEW,
                         position, imageUrls);

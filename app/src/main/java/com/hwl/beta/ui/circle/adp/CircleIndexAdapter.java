@@ -16,6 +16,7 @@ import com.hwl.beta.db.DBConstant;
 import com.hwl.beta.db.entity.Circle;
 import com.hwl.beta.db.entity.CircleComment;
 import com.hwl.beta.db.entity.CircleLike;
+import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.circle.action.ICircleItemListener;

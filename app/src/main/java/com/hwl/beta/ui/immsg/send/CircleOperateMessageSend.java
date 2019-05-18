@@ -4,25 +4,25 @@ import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.utils.StringUtils;
 import com.hwl.im.common.DefaultConsumer;
 import com.hwl.im.imaction.AbstractMessageSendExecutor;
+import com.hwl.imcore.improto.ImCircleOperateMessageContent;
+import com.hwl.imcore.improto.ImCircleOperateMessageRequest;
 import com.hwl.imcore.improto.ImCircleOperateType;
 import com.hwl.imcore.improto.ImMessageRequest;
 import com.hwl.imcore.improto.ImMessageType;
-import com.hwl.imcore.improto.ImNearCircleOperateMessageContent;
-import com.hwl.imcore.improto.ImNearCircleOperateMessageRequest;
 import com.hwl.imcore.improto.ImUserContent;
 
-public class NearCircleOperateMessageSend extends AbstractMessageSendExecutor {
+public class CircleOperateMessageSend extends AbstractMessageSendExecutor {
 
-    ImNearCircleOperateMessageContent messageContent;
+    ImCircleOperateMessageContent messageContent;
     DefaultConsumer<Boolean> sendCallback;
 
-    public NearCircleOperateMessageSend(ImCircleOperateType operateType,
-                                        long originUserId,
-                                        long replyUserId,
-                                        long nearCircleId,
-                                        long commentId,
-                                        String content,
-                                        DefaultConsumer<Boolean> sendCallback) {
+    public CircleOperateMessageSend(ImCircleOperateType operateType,
+                                    long originUserId,
+                                    long replyUserId,
+                                    long CircleId,
+                                    long commentId,
+                                    String content,
+                                    DefaultConsumer<Boolean> sendCallback) {
 
         ImUserContent originUser = ImUserContent.newBuilder()
                 .setUserId(originUserId).build();
@@ -32,12 +32,12 @@ public class NearCircleOperateMessageSend extends AbstractMessageSendExecutor {
                 .setUserName(UserSP.getUserShowName())
                 .setUserImage(UserSP.getUserHeadImage()).build();
 
-        ImNearCircleOperateMessageContent.Builder builder =
-                ImNearCircleOperateMessageContent.newBuilder()
+        ImCircleOperateMessageContent.Builder builder =
+                ImCircleOperateMessageContent.newBuilder()
                         .setOperateType(operateType)
                         .setPostUser(postUser)
                         .setOriginUser(originUser)
-                        .setNearCircleId(nearCircleId)
+                        .setCircleId(CircleId)
                         .setCommentId(commentId)
                         .setCommentCont(StringUtils.nullStrToEmpty(content));
 
@@ -54,13 +54,13 @@ public class NearCircleOperateMessageSend extends AbstractMessageSendExecutor {
 
     @Override
     public ImMessageType getMessageType() {
-        return ImMessageType.NearCircleOperate;
+        return ImMessageType.CircleOperate;
     }
 
     @Override
     public void setRequestBody(ImMessageRequest.Builder request) {
-        request.setNearCircleOperateMessageRequest(
-                ImNearCircleOperateMessageRequest.newBuilder().setNearCircleOperateMessageContent
+        request.setCircleOperateMessageRequest(
+                ImCircleOperateMessageRequest.newBuilder().setCircleOperateMessageContent
                         (messageContent)
                         .build());
     }
