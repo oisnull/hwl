@@ -58,7 +58,7 @@ public class DisplayUtils {
     /**
      * 根据屏幕宽度与密度计算GridView显示的列数， 最少为三列，并获取Item宽度
      */
-    public static int getImageItemWidth(Activity context) {
+    public static int getImageItemWidth(Context context) {
         int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
         int densityDpi = context.getResources().getDisplayMetrics().densityDpi;
         int cols = screenWidth / densityDpi;

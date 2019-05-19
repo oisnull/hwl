@@ -5,6 +5,8 @@ import android.view.View;
 import com.hwl.beta.db.entity.NearCircleComment;
 import com.hwl.beta.db.entity.NearCircleLike;
 
+import java.util.List;
+
 /**
  * Created by Administrator on 2018/4/14.
  */
@@ -32,7 +34,6 @@ public interface INearCircleDetailListener {
     void onDeleteClick();
 
     void onPublishClick();
-
 
     void onImageClick(int position);
 

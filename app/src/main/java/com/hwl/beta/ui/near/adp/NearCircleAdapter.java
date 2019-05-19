@@ -50,8 +50,9 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (viewType == 0) {
             return new NearCircleNullViewHolder((NearItemNullBinding) DataBindingUtil.inflate(inflater, R.layout.near_item_null, parent, false));
         } else {
-            return new NearCircleViewHolder((NearItemBinding) DataBindingUtil.inflate(inflater,
-                    R.layout.near_item, parent, false));
+            return new NearCircleViewHolder(context,
+                    (NearItemBinding) DataBindingUtil.inflate(inflater,
+                            R.layout.near_item, parent, false));
         }
     }
 
@@ -105,7 +106,7 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 } else {
                     nearCircles.removeAll(infos);
                     nearCircles.addAll(0, infos);
-                    sortInfos(infos);
+                    sortInfos(nearCircles);
                 }
             } else {
                 nearCircles.addAll(infos);
@@ -118,7 +119,7 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (infos == null || infos.size() <= 0) return;
         Collections.sort(infos, new Comparator<NearCircle>() {
             public int compare(NearCircle arg0, NearCircle arg1) {
-                return (int) (arg0.getNearCircleId() - arg1.getNearCircleId());
+                return (int) (arg1.getNearCircleId() - arg0.getNearCircleId());
             }
         });
     }

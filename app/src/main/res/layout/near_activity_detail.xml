@@ -63,8 +63,8 @@
                     android:layout_width="10dp"
                     android:layout_height="10dp"
                     android:layout_alignParentRight="true"
-                    android:layout_marginRight="5dp"
                     android:layout_marginTop="5dp"
+                    android:layout_marginRight="5dp"
                     android:background="@drawable/ic_delete"
                     android:onClick="@{(view)->action.onDeleteClick()}"
                     android:visibility="visible" />
@@ -73,35 +73,34 @@
                     android:id="@+id/tv_content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/tv_username"
-                    android:layout_alignStart="@+id/tv_username"
                     android:layout_below="@+id/tv_username"
+                    android:layout_alignStart="@+id/tv_username"
+                    android:layout_alignLeft="@+id/tv_username"
                     android:onClick="@{(view)->action.onContentClick()}"
-                    android:paddingBottom="@dimen/dp_5"
-                    android:paddingRight="@dimen/dp_20"
                     android:paddingTop="@dimen/dp_5"
+                    android:paddingRight="@dimen/dp_20"
+                    android:paddingBottom="@dimen/dp_5"
                     android:text="content"
                     android:textColor="@color/color_727270"
                     android:textSize="15dp" />
 
-                <com.hwl.beta.ui.widget.MultiImageView
-                    android:id="@+id/miv_images"
-                    android:layout_width="match_parent"
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_images"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_toRightOf="@id/iv_header"
+                    android:layout_alignStart="@+id/tv_username"
+                    android:layout_alignLeft="@+id/tv_username"
                     android:background="@color/white"
-                    android:visibility="visible">
-                    <!--动态加载图片-->
-                </com.hwl.beta.ui.widget.MultiImageView>
+                    android:horizontalSpacing="10dp"
+                    android:paddingTop="@dimen/dp_10"
+                    android:paddingBottom="@dimen/dp_10" />
 
                 <RelativeLayout
                     android:id="@+id/rl_circle_action"
                     android:layout_width="match_parent"
                     android:layout_height="25dp"
-                    android:layout_below="@+id/miv_images"
+                    android:layout_below="@+id/rv_images"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_toRightOf="@+id/iv_header">
@@ -160,8 +159,8 @@
                             android:id="@+id/iv_like"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:layout_alignParentLeft="true"
                             android:layout_alignParentStart="true"
+                            android:layout_alignParentLeft="true"
                             android:src="@drawable/ic_unlike" />
 
                         <com.google.android.flexbox.FlexboxLayout
@@ -190,8 +189,8 @@
                             android:id="@+id/iv_comment"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:layout_alignParentLeft="true"
                             android:layout_alignParentStart="true"
+                            android:layout_alignParentLeft="true"
                             android:src="@drawable/ic_uncomment" />
 
                         <android.support.v7.widget.RecyclerView

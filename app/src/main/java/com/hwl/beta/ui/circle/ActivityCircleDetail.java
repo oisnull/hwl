@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.ImageView;
@@ -26,6 +27,7 @@ import com.hwl.beta.ui.circle.logic.CircleLogic;
 import com.hwl.beta.ui.circle.standard.CircleStandard;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.KeyBoardAction;
+import com.hwl.beta.ui.common.NineImagesAdapter;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.convert.DBCircleAction;
 import com.hwl.beta.ui.dialog.LoadingDialog;
@@ -151,16 +153,20 @@ public class ActivityCircleDetail extends BaseActivity {
         }
 
         if (currentInfo.getImages() != null && currentInfo.getImages().size() > 0) {
-            binding.mivImages.setImageListener(new MultiImageView.IMultiImageListener() {
-                @Override
-                public void onImageClick(int position, String imageUrl) {
-                    itemListener.onImageClick(position);
-                }
-            });
-            binding.mivImages.setImagesData(DBCircleAction.convertToMultiImages(currentInfo.getImages()));
-            binding.mivImages.setVisibility(View.VISIBLE);
+            NineImagesAdapter imagesAdapter = new NineImagesAdapter(activity,
+                    DBCircleAction.convertToNineImageModels(currentInfo.getImages()),
+                    new NineImagesAdapter.ImageItemListener() {
+                        @Override
+                        public void onImageClick(int position, String imageUrl) {
+                            itemListener.onImageClick(position);
+                        }
+                    });
+            binding.rvImages.setVisibility(View.VISIBLE);
+            binding.rvImages.setAdapter(imagesAdapter);
+            binding.rvImages.setLayoutManager(new GridLayoutManager(activity,
+                    imagesAdapter.getColumnCount()));
         } else {
-            binding.mivImages.setVisibility(View.GONE);
+            binding.rvImages.setVisibility(View.GONE);
         }
 
         this.setLikeViews(currentInfo.getLikes());

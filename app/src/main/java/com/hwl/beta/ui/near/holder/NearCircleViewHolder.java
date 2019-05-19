@@ -1,9 +1,9 @@
 package com.hwl.beta.ui.near.holder;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -17,8 +17,8 @@ import com.hwl.beta.ui.convert.DBNearCircleAction;
 import com.hwl.beta.ui.near.action.INearCircleCommentItemListener;
 import com.hwl.beta.ui.near.action.INearCircleItemListener;
 import com.hwl.beta.ui.near.adp.NearCircleCommentAdapter;
+import com.hwl.beta.ui.common.NineImagesAdapter;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
-import com.hwl.beta.ui.widget.MultiImageView;
 import com.hwl.beta.utils.DisplayUtils;
 
 import java.util.List;
@@ -30,10 +30,12 @@ import java.util.List;
 public class NearCircleViewHolder extends RecyclerView.ViewHolder {
 
     private NearItemBinding itemBinding;
+    private Context context;
 
-    public NearCircleViewHolder(NearItemBinding itemBinding) {
+    public NearCircleViewHolder(Context context, NearItemBinding itemBinding) {
         super(itemBinding.getRoot());
         this.itemBinding = itemBinding;
+        this.context = context;
     }
 
     public void setItemBinding(final INearCircleItemListener itemListener,
@@ -57,16 +59,20 @@ public class NearCircleViewHolder extends RecyclerView.ViewHolder {
         });
 
         if (images == null || images.size() <= 0) {
-            this.itemBinding.mivImages.setVisibility(View.GONE);
+            this.itemBinding.rvImages.setVisibility(View.GONE);
         } else {
-            this.itemBinding.mivImages.setVisibility(View.VISIBLE);
-            this.itemBinding.mivImages.setImagesData(DBNearCircleAction.convertToMultiImages(images));
-            this.itemBinding.mivImages.setImageListener(new MultiImageView.IMultiImageListener() {
-                @Override
-                public void onImageClick(int position, String imageUrl) {
-                    itemListener.onImageClick(position, images);
-                }
-            });
+            NineImagesAdapter imagesAdapter = new NineImagesAdapter(context,
+                    DBNearCircleAction.convertToNineImageModels(images),
+                    new NineImagesAdapter.ImageItemListener() {
+                        @Override
+                        public void onImageClick(int position, String imageUrl) {
+                            itemListener.onImageClick(position, images);
+                        }
+                    });
+            this.itemBinding.rvImages.setVisibility(View.VISIBLE);
+            this.itemBinding.rvImages.setAdapter(imagesAdapter);
+            this.itemBinding.rvImages.setLayoutManager(new GridLayoutManager(context,
+                    imagesAdapter.getColumnCount()));
         }
 
         boolean isShowActionContainer = false;
@@ -80,7 +86,6 @@ public class NearCircleViewHolder extends RecyclerView.ViewHolder {
         if (comments != null && comments.size() > 0) {
             isShowActionContainer = true;
             this.itemBinding.rlCommentContainer.setVisibility(View.VISIBLE);
-            Context context = this.itemBinding.rvComments.getContext();
             this.itemBinding.rvComments.setVisibility(View.VISIBLE);
             this.itemBinding.rvComments.setAdapter(
                     new NearCircleCommentAdapter(

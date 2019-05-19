@@ -17,8 +17,6 @@ import com.hwl.beta.ui.convert.DBNearCircleAction;
 import com.hwl.beta.ui.immsg.IMClientEntry;
 import com.hwl.beta.ui.immsg.IMDefaultSendOperateListener;
 import com.hwl.beta.ui.near.standard.NearStandard;
-import com.hwl.beta.utils.NetworkUtils;
-import com.hwl.beta.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;

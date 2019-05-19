@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,11 +29,11 @@ import com.hwl.beta.ui.imgselect.ActivityImageBrowse;
 import com.hwl.beta.ui.near.action.INearCircleCommentItemListener;
 import com.hwl.beta.ui.near.action.INearCircleDetailListener;
 import com.hwl.beta.ui.near.adp.NearCircleCommentAdapter;
+import com.hwl.beta.ui.common.NineImagesAdapter;
 import com.hwl.beta.ui.near.logic.NearLogic;
 import com.hwl.beta.ui.near.standard.NearStandard;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
 import com.hwl.beta.ui.widget.CircleActionMorePop;
-import com.hwl.beta.ui.widget.MultiImageView;
 import com.hwl.beta.utils.DisplayUtils;
 import com.hwl.beta.utils.StringUtils;
 
@@ -48,7 +49,6 @@ public class ActivityNearDetail extends BaseActivity {
     NearActivityDetailBinding binding;
     NearStandard nearStandard;
     INearCircleDetailListener itemListener;
-    NearCircleCommentAdapter commentAdapter;
     NearCircle currentInfo;
 
     @Override
@@ -154,16 +154,20 @@ public class ActivityNearDetail extends BaseActivity {
         }
 
         if (currentInfo.getImages() != null && currentInfo.getImages().size() > 0) {
-            binding.mivImages.setImageListener(new MultiImageView.IMultiImageListener() {
-                @Override
-                public void onImageClick(int position, String imageUrl) {
-                    itemListener.onImageClick(position);
-                }
-            });
-            binding.mivImages.setImagesData(DBNearCircleAction.convertToMultiImages(currentInfo.getImages()));
-            binding.mivImages.setVisibility(View.VISIBLE);
+            NineImagesAdapter imagesAdapter = new NineImagesAdapter(activity,
+                    DBNearCircleAction.convertToNineImageModels(currentInfo.getImages()),
+                    new NineImagesAdapter.ImageItemListener() {
+                        @Override
+                        public void onImageClick(int position, String imageUrl) {
+                            itemListener.onImageClick(position);
+                        }
+                    });
+            binding.rvImages.setVisibility(View.VISIBLE);
+            binding.rvImages.setAdapter(imagesAdapter);
+            binding.rvImages.setLayoutManager(new GridLayoutManager(activity,
+                    imagesAdapter.getColumnCount()));
         } else {
-            binding.mivImages.setVisibility(View.GONE);
+            binding.rvImages.setVisibility(View.GONE);
         }
 
         if (currentInfo.getLikes() != null && currentInfo.getLikes().size() > 0) {
@@ -176,7 +180,23 @@ public class ActivityNearDetail extends BaseActivity {
         if (currentInfo.getComments() != null && currentInfo.getComments().size() > 0) {
             binding.rvComments.setVisibility(View.VISIBLE);
             binding.rvComments.setAdapter(new NearCircleCommentAdapter(activity,
-                    currentInfo.getComments(), new NearCircleCommentItemListener()));
+                    currentInfo.getComments(),
+                    new INearCircleCommentItemListener() {
+                        @Override
+                        public void onCommentUserClick(NearCircleComment comment) {
+                            itemListener.onCommentUserClick(comment);
+                        }
+
+                        @Override
+                        public void onReplyUserClick(NearCircleComment comment) {
+                            itemListener.onReplyUserClick(comment);
+                        }
+
+                        @Override
+                        public void onContentClick(NearCircleComment comment) {
+                            itemListener.onCommentContentClick(comment);
+                        }
+                    }));
             binding.rvComments.setLayoutManager(new LinearLayoutManager(activity));
         } else {
             binding.rlCommentContainer.setVisibility(View.GONE);
@@ -372,23 +392,6 @@ public class ActivityNearDetail extends BaseActivity {
                 UITransfer.toImageBrowseActivity(activity, ActivityImageBrowse.MODE_VIEW,
                         position, imageUrls);
             }
-        }
-    }
-
-    private class NearCircleCommentItemListener implements INearCircleCommentItemListener {
-        @Override
-        public void onCommentUserClick(NearCircleComment comment) {
-            itemListener.onCommentUserClick(comment);
-        }
-
-        @Override
-        public void onReplyUserClick(NearCircleComment comment) {
-            itemListener.onReplyUserClick(comment);
-        }
-
-        @Override
-        public void onContentClick(NearCircleComment comment) {
-            itemListener.onCommentContentClick(comment);
         }
     }
 }

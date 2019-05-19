@@ -107,6 +107,7 @@ public class FragmentNear extends BaseFragment {
         binding.rvNearContainer.setAdapter(nearCircleAdapter);
         binding.rvNearContainer.setLayoutManager(new LinearLayoutManager(activity));
 
+        binding.refreshLayout.setEnableLoadMore(false);
         binding.refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
@@ -119,7 +120,6 @@ public class FragmentNear extends BaseFragment {
                 loadServerInfos(nearCircleAdapter.getMinId());
             }
         });
-        binding.refreshLayout.setEnableLoadMore(false);
 
         binding.llMessageTip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,6 +171,7 @@ public class FragmentNear extends BaseFragment {
                 .subscribe(new Consumer<List<NearCircle>>() {
                     @Override
                     public void accept(List<NearCircle> infos) {
+                        setEmotionStatus(false);
                         nearCircleAdapter.updateInfos(isRefresh, infos);
                         showResult();
                     }
