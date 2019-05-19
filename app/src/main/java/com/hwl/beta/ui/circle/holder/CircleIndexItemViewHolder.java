@@ -1,6 +1,7 @@
 package com.hwl.beta.ui.circle.holder;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -15,9 +16,9 @@ import com.hwl.beta.db.entity.CircleLike;
 import com.hwl.beta.ui.circle.action.ICircleCommentItemListener;
 import com.hwl.beta.ui.circle.action.ICircleItemListener;
 import com.hwl.beta.ui.circle.adp.CircleCommentAdapter;
+import com.hwl.beta.ui.common.NineImagesAdapter;
 import com.hwl.beta.ui.convert.DBCircleAction;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
-import com.hwl.beta.ui.widget.MultiImageView;
 import com.hwl.beta.utils.DisplayUtils;
 
 import java.util.List;
@@ -25,10 +26,12 @@ import java.util.List;
 public class CircleIndexItemViewHolder extends RecyclerView.ViewHolder {
 
     private CircleIndexItemBinding itemBinding;
+    private Context context;
 
-    public CircleIndexItemViewHolder(CircleIndexItemBinding itemBinding) {
+    public CircleIndexItemViewHolder(Context context, CircleIndexItemBinding itemBinding) {
         super(itemBinding.getRoot());
         this.itemBinding = itemBinding;
+        this.context = context;
     }
 
     public void setItemBinding(final ICircleItemListener itemListener,
@@ -44,16 +47,20 @@ public class CircleIndexItemViewHolder extends RecyclerView.ViewHolder {
         this.itemBinding.setInfo(info);
 
         if (images != null && images.size() > 0) {
-            this.itemBinding.mivImages.setImageListener(new MultiImageView.IMultiImageListener() {
-                @Override
-                public void onImageClick(int position, String imageUrl) {
-                    itemListener.onImageClick(position, images);
-                }
-            });
-            this.itemBinding.mivImages.setImagesData(DBCircleAction.convertToMultiImages(images));
-            this.itemBinding.mivImages.setVisibility(View.VISIBLE);
+            NineImagesAdapter imagesAdapter = new NineImagesAdapter(context,
+                    DBCircleAction.convertToNineImageModels(images),
+                    new NineImagesAdapter.ImageItemListener() {
+                        @Override
+                        public void onImageClick(int position, String imageUrl) {
+                            itemListener.onImageClick(position, images);
+                        }
+                    });
+            this.itemBinding.rvImages.setVisibility(View.VISIBLE);
+            this.itemBinding.rvImages.setAdapter(imagesAdapter);
+            this.itemBinding.rvImages.setLayoutManager(new GridLayoutManager(context,
+                    imagesAdapter.getColumnCount()));
         } else {
-            this.itemBinding.mivImages.setVisibility(View.GONE);
+            this.itemBinding.rvImages.setVisibility(View.GONE);
         }
 
         boolean isShowActionContainer = false;

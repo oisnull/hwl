@@ -9,6 +9,7 @@ import com.hwl.beta.net.circle.NetCircleCommentInfo;
 import com.hwl.beta.net.circle.NetCircleInfo;
 import com.hwl.beta.net.circle.NetCircleLikeInfo;
 import com.hwl.beta.net.near.NetImageInfo;
+import com.hwl.beta.ui.common.NineImagesAdapter;
 import com.hwl.beta.ui.widget.MultiImageView;
 
 import java.util.ArrayList;
@@ -132,5 +133,19 @@ public class DBCircleAction {
                     images.get(i).getImageHeight(), images.get(i).getImageUrl()));
         }
         return imageBeans;
+    }
+
+    public static List<NineImagesAdapter.NineImageModel> convertToNineImageModels(List<CircleImage> images) {
+        if (images == null || images.size() <= 0) return null;
+
+        List<NineImagesAdapter.NineImageModel> models = new ArrayList<>(images.size());
+        for (int i = 0; i < images.size(); i++) {
+            NineImagesAdapter.NineImageModel model = new NineImagesAdapter.NineImageModel();
+            model.imageHeight = images.get(i).getImageHeight();
+            model.imageWidth = images.get(i).getImageWidth();
+            model.imageUrl = images.get(i).getImageUrl();
+            models.add(model);
+        }
+        return models;
     }
 }

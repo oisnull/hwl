@@ -68,6 +68,7 @@ public class ActivityLogin extends FragmentActivity {
             }
             isRunning = true;
             binding.btnLogin.setText("登 录 中...");
+            KeyBoardAction.hideSoftInput(activity);
 
             if (!loginBean.checkParams()) {
                 isRunning = false;

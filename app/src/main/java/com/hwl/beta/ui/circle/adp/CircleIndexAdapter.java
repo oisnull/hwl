@@ -36,10 +36,12 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private ICircleItemListener itemListener;
     private LayoutInflater inflater;
     private long myUserId;
+    private Context context;
 
     public CircleIndexAdapter(Context context, ICircleItemListener itemListener) {
         this.circles = new ArrayList<>();
         this.itemListener = itemListener;
+        this.context = context;
         inflater = LayoutInflater.from(context);
         myUserId = UserSP.getUserId();
     }
@@ -48,7 +50,7 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return this.circles;
     }
 
-	public long getMinId() {
+    public long getMinId() {
         if (getItemCount() <= 0) {
             return 0;
         }
@@ -64,7 +66,9 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             case 1:
                 return new CircleHeadItemViewHolder((CircleHeadItemBinding) DataBindingUtil.inflate(inflater, R.layout.circle_head_item, parent, false));
             case 2:
-                return new CircleIndexItemViewHolder((CircleIndexItemBinding) DataBindingUtil.inflate(inflater, R.layout.circle_index_item, parent, false));
+                return new CircleIndexItemViewHolder(context,
+                        (CircleIndexItemBinding) DataBindingUtil.inflate(inflater,
+                                R.layout.circle_index_item, parent, false));
             case 3:
                 return new CircleMsgcountItemViewHolder((CircleMsgcountItemBinding) DataBindingUtil.inflate(inflater, R.layout.circle_msgcount_item, parent, false));
         }
@@ -132,22 +136,22 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-	public void updateHead(Friend info){
-		if(info==null) return;
-		if(circles.get(0).getItemType()!=DBConstant.CIRCLE_ITEM_HEAD) return;
-		boolean isChanged=false;
-		if(circles.get(0).getCircleBackImage()!=info.getCircleBackImage()){
-			circles.get(0).setCircleBackImage(info.getCircleBackImage());
-			isChanged=true;
-		}
-		if(circles.get(0).getLifeNotes()!=info.getLifeNotes()){
-			circles.get(0).setLifeNotes(info.getLifeNotes());
-			isChanged=true;
-		}
+    public void updateHead(Friend info) {
+        if (info == null) return;
+        if (circles.get(0).getItemType() != DBConstant.CIRCLE_ITEM_HEAD) return;
+        boolean isChanged = false;
+        if (circles.get(0).getCircleBackImage() != info.getCircleBackImage()) {
+            circles.get(0).setCircleBackImage(info.getCircleBackImage());
+            isChanged = true;
+        }
+        if (circles.get(0).getLifeNotes() != info.getLifeNotes()) {
+            circles.get(0).setLifeNotes(info.getLifeNotes());
+            isChanged = true;
+        }
 
-		if(isChanged)
-			notifyItemChanged(0);
-	}
+        if (isChanged)
+            notifyItemChanged(0);
+    }
 
     private int getCircleItemPosition() {
         for (int i = 0; i < circles.size(); i++) {

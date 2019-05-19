@@ -8,7 +8,7 @@ import com.hwl.beta.net.near.NetImageInfo;
 import com.hwl.beta.net.near.NetNearCircleCommentInfo;
 import com.hwl.beta.net.near.NetNearCircleInfo;
 import com.hwl.beta.net.near.NetNearCircleLikeInfo;
-import com.hwl.beta.ui.widget.MultiImageView;
+import com.hwl.beta.ui.common.NineImagesAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,13 +124,17 @@ public class DBNearCircleAction {
         return circleLikes;
     }
 
-    public static List<MultiImageView.ImageBean> convertToMultiImages(List<NearCircleImage> images) {
+    public static List<NineImagesAdapter.NineImageModel> convertToNineImageModels(List<NearCircleImage> images) {
         if (images == null || images.size() <= 0) return null;
-        List<MultiImageView.ImageBean> imageBeans = new ArrayList<>(images.size());
-        MultiImageView.ImageBean imageModel = null;
+
+        List<NineImagesAdapter.NineImageModel> models = new ArrayList<>(images.size());
         for (int i = 0; i < images.size(); i++) {
-            imageBeans.add(new MultiImageView.ImageBean(images.get(i).getImageWidth(), images.get(i).getImageHeight(), images.get(i).getImageUrl()));
+            NineImagesAdapter.NineImageModel model = new NineImagesAdapter.NineImageModel();
+            model.imageHeight = images.get(i).getImageHeight();
+            model.imageWidth = images.get(i).getImageWidth();
+            model.imageUrl = images.get(i).getImageUrl();
+            models.add(model);
         }
-        return imageBeans;
+        return models;
     }
 }

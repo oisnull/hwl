@@ -93,9 +93,9 @@ public class NearCircleManager extends BaseDao<NearCircle> {
         if (infos == null || infos.size() <= 0) return;
         for (NearCircle info : infos) {
             save(info);
-            saveImages(info.getImages());
-            saveComments(info.getComments());
-            saveLikes(info.getLikes());
+//            saveImages(info.getImages());
+//            saveComments(info.getComments());
+//            saveLikes(info.getLikes());
         }
     }
 
@@ -143,7 +143,9 @@ public class NearCircleManager extends BaseDao<NearCircle> {
             sb.append(" = ");
             sb.append(nearCircleId);
             sb.append(";");
+            daoSession.getDatabase().execSQL(sb.toString());
 
+            sb = new StringBuilder();
             //delete images sql
             sb.append("delete from ");
             sb.append(NearCircleImageDao.TABLENAME);
@@ -152,7 +154,9 @@ public class NearCircleManager extends BaseDao<NearCircle> {
             sb.append(" = ");
             sb.append(nearCircleId);
             sb.append(";");
+            daoSession.getDatabase().execSQL(sb.toString());
 
+            sb = new StringBuilder();
             //delete comments sql
             sb.append("delete from ");
             sb.append(NearCircleCommentDao.TABLENAME);
@@ -161,7 +165,9 @@ public class NearCircleManager extends BaseDao<NearCircle> {
             sb.append(" = ");
             sb.append(nearCircleId);
             sb.append(";");
+            daoSession.getDatabase().execSQL(sb.toString());
 
+            sb = new StringBuilder();
             //delete likes sql
             sb.append("delete from ");
             sb.append(NearCircleLikeDao.TABLENAME);
