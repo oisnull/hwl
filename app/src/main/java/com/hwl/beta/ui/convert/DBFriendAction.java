@@ -5,6 +5,7 @@ import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.db.entity.FriendRequest;
 import com.hwl.beta.net.user.NetGroupUserInfo;
 import com.hwl.beta.net.user.NetUserFriendInfo;
+import com.hwl.beta.net.user.NetUserInfo;
 import com.hwl.beta.net.user.UserDetailsInfo;
 import com.hwl.beta.utils.StringUtils;
 import com.hwl.imcore.improto.ImAddFriendMessageResponse;
@@ -101,6 +102,20 @@ public class DBFriendAction {
     public static Friend convertToFriendInfo(long userId, String userName, String userHeadImage,
                                              boolean isFriend) {
         return convertToFriendInfo(userId, userName, userHeadImage, null, isFriend);
+    }
+
+    public static Friend convertToFriendInfo(NetUserInfo netUserInfo) {
+        Friend friend = new Friend();
+        friend.setId(netUserInfo.getId());
+        friend.setSymbol(netUserInfo.getSymbol());
+        friend.setName(netUserInfo.getName());
+        friend.setSex(SexAction.OTHER_2);
+        friend.setRemark(netUserInfo.getName());
+        friend.setHeadImage(netUserInfo.getHeadImage());
+        friend.setCircleBackImage(netUserInfo.getCircleBackImage());
+        friend.setLifeNotes(netUserInfo.getLifeNotes());
+        friend.setIsFriend(false);
+        return friend;
     }
 
     public static Friend convertToFriendInfo(long userId, String userName, String userHeadImage,

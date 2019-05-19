@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="image"
+            type="com.hwl.beta.ui.user.bean.ImageViewBean"></variable>
+
+        <variable
+            name="comment"
+            type="com.hwl.beta.db.entity.CircleComment" />
+
+        <variable
+            name="action"
+            type="com.hwl.beta.ui.circle.action.ICircleCommentItemListener" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="1dp"
+        android:background="@color/white"
+        android:onClick="@{view->action.onContentClick(comment)}"
+        android:padding="@dimen/dp_10">
+
+        <ImageView
+            android:id="@+id/iv_header"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:onClick="@{view->action.onCommentUserClick(comment)}"
+            android:src="@drawable/empty_photo"
+            app:imageUrl="@{image.imageUrl}" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/iv_header"
+            android:onClick="@{view->action.onCommentUserClick(comment)}"
+            android:text="@{comment.commentUserName}"
+            android:textColor="@color/main"
+            android:textSize="@dimen/dp_12" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="@{comment.getShowTime()}"
+            android:textColor="@color/color_b2b2b2"
+            android:textSize="@dimen/dp_12" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_name"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/iv_header">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="回复 "
+                android:textColor="@color/color_424242"
+                android:textSize="@dimen/dp_12" />
+
+            <TextView
+                android:id="@+id/tv_reply_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/iv_header"
+                android:onClick="@{view->action.onReplyUserClick(comment)}"
+                android:text="@{comment.replyUserName}"
+                android:textColor="@color/main"
+                android:textSize="@dimen/dp_12" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" : "
+                android:textColor="@color/color_424242"
+                android:textSize="@dimen/dp_12" />
+
+            <com.hwl.beta.emotion.widget.EmotionTextView
+                android:id="@+id/tv_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{comment.content}"
+                android:textColor="@color/color_424242"
+                android:textSize="@dimen/dp_13" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</layout>

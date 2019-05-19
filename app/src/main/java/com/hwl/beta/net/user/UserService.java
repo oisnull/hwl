@@ -209,8 +209,7 @@ public class UserService {
                 .createApi(IUserService.class)
                 .setUserCircleBackImage(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<SetUserCircleBackImageResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public static Observable<SetFriendRemarkResponse> setFriendRemark(long friendId

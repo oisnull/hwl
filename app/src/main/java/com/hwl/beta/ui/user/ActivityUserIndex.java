@@ -248,16 +248,17 @@ public class ActivityUserIndex extends BaseActivity {
                 DefaultCallback<UserDetailsInfo, String>() {
                     @Override
                     public void success(UserDetailsInfo info) {
-                        if (!userBean.getUserImage().equals(info.getHeadImage())) {
+                        if (info == null) return;
+                        if (userBean.getUserImage() != (info.getHeadImage())) {
                             ImageViewBean.loadImage(binding.ivHeader, info.getHeadImage());
                         }
-                        if (!userBean.getSymbol().equals(info.getSymbol())) {
+                        if (userBean.getSymbol() != (info.getSymbol())) {
                             binding.tvSymbol.setText(userBean.getSymbol());
                         }
-                        if (!userBean.getUserName().equals(info.getName())) {
+                        if (userBean.getUserName() != (info.getName())) {
                             binding.tvUsername.setText(info.getName());
                         }
-                        if (!userBean.getRegisterAddress().equals(info.getCountry())) {
+                        if (userBean.getRegisterAddress() != (info.getCountry())) {
                             binding.tvArea.setText(info.getCountry());
                         }
                     }
@@ -284,9 +285,8 @@ public class ActivityUserIndex extends BaseActivity {
 
         @Override
         public void onCircleClick() {
-//            UITransfer.toCircleUserIndexActivity(activity, userBean.getUserId(), userBean
-// .getShowName(), userBean.getUserImage(), userBean.getUserCircleBackImage(), userBean
-// .getUserLifeNotes());
+            UITransfer.toCircleUserIndexActivity(activity, userBean.getUserId(),
+                    userBean.getShowName(), userBean.getUserImage());
         }
 
         @Override

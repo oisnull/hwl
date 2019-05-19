@@ -16,7 +16,7 @@ public class CircleMessage {
     private long circleId;
     private long userId;
     private String userName;
-    private int commentId;
+    private long commentId;
     private String comment;
     private long replyUserId;
     private String replyUserName;
@@ -25,9 +25,15 @@ public class CircleMessage {
     private Date actionTime;
     private int status;
 
-    @Generated(hash = 300962169)
+    public String getShowTime() {
+        if (this.actionTime != null)
+            return DateUtils.getChatShowTime(this.actionTime);
+        return null;
+    }
+
+    @Generated(hash = 1219415246)
     public CircleMessage(Long id, int type, long circleId, long userId,
-            String userName, int commentId, String comment, long replyUserId,
+            String userName, long commentId, String comment, long replyUserId,
             String replyUserName, String content, String userImage, Date actionTime,
             int status) {
         this.id = id;
@@ -44,119 +50,86 @@ public class CircleMessage {
         this.actionTime = actionTime;
         this.status = status;
     }
-
     @Generated(hash = 943442392)
     public CircleMessage() {
     }
-
-    public String getShowTime() {
-        if (this.actionTime != null)
-            return DateUtils.getChatShowTime(this.actionTime);
-        return null;
-    }
-
     public Long getId() {
         return this.id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public int getType() {
         return this.type;
     }
-
     public void setType(int type) {
         this.type = type;
     }
-
     public long getCircleId() {
         return this.circleId;
     }
-
     public void setCircleId(long circleId) {
         this.circleId = circleId;
     }
-
     public long getUserId() {
         return this.userId;
     }
-
     public void setUserId(long userId) {
         this.userId = userId;
     }
-
     public String getUserName() {
         return this.userName;
     }
-
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
-    public int getCommentId() {
+    public long getCommentId() {
         return this.commentId;
     }
-
-    public void setCommentId(int commentId) {
+    public void setCommentId(long commentId) {
         this.commentId = commentId;
     }
-
     public String getComment() {
         return this.comment;
     }
-
     public void setComment(String comment) {
         this.comment = comment;
     }
-
-    public String getContent() {
-        return this.content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getUserImage() {
-        return this.userImage;
-    }
-
-    public void setUserImage(String userImage) {
-        this.userImage = userImage;
-    }
-
-    public Date getActionTime() {
-        return this.actionTime;
-    }
-
-    public void setActionTime(Date actionTime) {
-        this.actionTime = actionTime;
-    }
-
-    public int getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
     public long getReplyUserId() {
         return this.replyUserId;
     }
-
     public void setReplyUserId(long replyUserId) {
         this.replyUserId = replyUserId;
     }
-
     public String getReplyUserName() {
         return this.replyUserName;
     }
-
     public void setReplyUserName(String replyUserName) {
         this.replyUserName = replyUserName;
+    }
+    public String getContent() {
+        return this.content;
+    }
+    public void setContent(String content) {
+        this.content = content;
+    }
+    public String getUserImage() {
+        return this.userImage;
+    }
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
+    }
+    public Date getActionTime() {
+        return this.actionTime;
+    }
+    public void setActionTime(Date actionTime) {
+        this.actionTime = actionTime;
+    }
+    public int getStatus() {
+        return this.status;
+    }
+    public void setStatus(int status) {
+        this.status = status;
     }
 
 }

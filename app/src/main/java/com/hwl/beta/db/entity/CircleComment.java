@@ -12,7 +12,7 @@ import java.util.Date;
 @Entity
 public class CircleComment implements Serializable {
     private static final long serialVersionUID = 6L;
-    private int commentId;
+    private long commentId;
     private long circleId ;
     private long commentUserId;
     private String commentUserName;
@@ -24,8 +24,14 @@ public class CircleComment implements Serializable {
     @OrderBy("commentTime desc")
     private Date commentTime ;
 
-    @Generated(hash = 597600175)
-    public CircleComment(int commentId, long circleId, long commentUserId,
+    public String getShowTime() {
+        if (this.commentTime != null)
+            return DateUtils.getChatShowTime(this.commentTime);
+        return null;
+    }
+
+    @Generated(hash = 2114185018)
+    public CircleComment(long commentId, long circleId, long commentUserId,
             String commentUserName, String commentUserImage, long replyUserId,
             String replyUserName, String replyUserImage, String content,
             Date commentTime) {
@@ -40,94 +46,68 @@ public class CircleComment implements Serializable {
         this.content = content;
         this.commentTime = commentTime;
     }
-
     @Generated(hash = 61999437)
     public CircleComment() {
     }
-
-    public String getShowTime() {
-        if (this.commentTime != null)
-            return DateUtils.getChatShowTime(this.commentTime);
-        return null;
-    }
-
-    public int getCommentId() {
+    public long getCommentId() {
         return this.commentId;
     }
-
-    public void setCommentId(int commentId) {
+    public void setCommentId(long commentId) {
         this.commentId = commentId;
     }
-
     public long getCircleId() {
         return this.circleId;
     }
-
     public void setCircleId(long circleId) {
         this.circleId = circleId;
     }
-
     public long getCommentUserId() {
         return this.commentUserId;
     }
-
     public void setCommentUserId(long commentUserId) {
         this.commentUserId = commentUserId;
     }
-
     public String getCommentUserName() {
         return this.commentUserName;
     }
-
     public void setCommentUserName(String commentUserName) {
         this.commentUserName = commentUserName;
     }
-
     public String getCommentUserImage() {
         return this.commentUserImage;
     }
-
     public void setCommentUserImage(String commentUserImage) {
         this.commentUserImage = commentUserImage;
     }
-
     public long getReplyUserId() {
         return this.replyUserId;
     }
-
     public void setReplyUserId(long replyUserId) {
         this.replyUserId = replyUserId;
     }
-
     public String getReplyUserName() {
         return this.replyUserName;
     }
-
     public void setReplyUserName(String replyUserName) {
         this.replyUserName = replyUserName;
     }
-
     public String getReplyUserImage() {
         return this.replyUserImage;
     }
-
     public void setReplyUserImage(String replyUserImage) {
         this.replyUserImage = replyUserImage;
     }
-
     public String getContent() {
         return this.content;
     }
-
     public void setContent(String content) {
         this.content = content;
     }
-
     public Date getCommentTime() {
         return this.commentTime;
     }
-
     public void setCommentTime(Date commentTime) {
         this.commentTime = commentTime;
     }
+
 }

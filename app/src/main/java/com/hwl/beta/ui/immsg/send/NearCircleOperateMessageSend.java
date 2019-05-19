@@ -4,11 +4,11 @@ import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.utils.StringUtils;
 import com.hwl.im.common.DefaultConsumer;
 import com.hwl.im.imaction.AbstractMessageSendExecutor;
+import com.hwl.imcore.improto.ImCircleOperateType;
 import com.hwl.imcore.improto.ImMessageRequest;
 import com.hwl.imcore.improto.ImMessageType;
 import com.hwl.imcore.improto.ImNearCircleOperateMessageContent;
 import com.hwl.imcore.improto.ImNearCircleOperateMessageRequest;
-import com.hwl.imcore.improto.ImNearCircleOperateType;
 import com.hwl.imcore.improto.ImUserContent;
 
 public class NearCircleOperateMessageSend extends AbstractMessageSendExecutor {
@@ -16,11 +16,10 @@ public class NearCircleOperateMessageSend extends AbstractMessageSendExecutor {
     ImNearCircleOperateMessageContent messageContent;
     DefaultConsumer<Boolean> sendCallback;
 
-    public NearCircleOperateMessageSend(ImNearCircleOperateType operateType,
+    public NearCircleOperateMessageSend(ImCircleOperateType operateType,
                                         long originUserId,
                                         long replyUserId,
                                         long nearCircleId,
-                                        boolean isLike,
                                         long commentId,
                                         String content,
                                         DefaultConsumer<Boolean> sendCallback) {
@@ -39,7 +38,6 @@ public class NearCircleOperateMessageSend extends AbstractMessageSendExecutor {
                         .setPostUser(postUser)
                         .setOriginUser(originUser)
                         .setNearCircleId(nearCircleId)
-                        .setIsLike(isLike)
                         .setCommentId(commentId)
                         .setCommentCont(StringUtils.nullStrToEmpty(content));
 

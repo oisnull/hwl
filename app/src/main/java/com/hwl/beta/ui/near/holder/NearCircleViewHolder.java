@@ -100,7 +100,6 @@ public class NearCircleViewHolder extends RecyclerView.ViewHolder {
                                 @Override
                                 public void onContentClick(NearCircleComment comment) {
                                     itemListener.onCommentContentClick(comment);
-
                                 }
                             }
                     )

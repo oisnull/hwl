@@ -6,9 +6,11 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.OrderBy;
+import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Circle implements Serializable {
@@ -32,6 +34,67 @@ public class Circle implements Serializable {
     private int likeCount;
     private boolean isLiked;
 
+    @Transient
+    private int itemType;
+    @Transient
+    private List<CircleImage> images;
+    @Transient
+    private List<CircleComment> comments;
+    @Transient
+    private List<CircleLike> likes;
+    @Transient
+    private String circleBackImage;
+    @Transient
+    private String lifeNotes;
+
+    public String getLifeNotes() {
+        return this.lifeNotes;
+    }
+
+    public void setLifeNotes(String lifeNotes) {
+        this.lifeNotes = lifeNotes;
+    }
+
+    public String getCircleBackImage() {
+        return this.circleBackImage;
+    }
+
+    public void setCircleBackImage(String circleBackImage) {
+        this.circleBackImage = circleBackImage;
+    }
+
+    public List<CircleImage> getImages() {
+        return this.images;
+    }
+
+    public void setImages(List<CircleImage> imgs) {
+        this.images = imgs;
+    }
+
+    public List<CircleComment> getComments() {
+        return this.comments;
+    }
+
+    public void setComments(List<CircleComment> cmts) {
+        this.comments = cmts;
+    }
+
+    public List<CircleLike> getLikes() {
+        return this.likes;
+    }
+
+    public void setLikes(List<CircleLike> likes) {
+        this.likes = likes;
+    }
+
+    public int getItemType() {
+        return this.itemType;
+    }
+
+    public void setItemType(int itemType) {
+        this.itemType = itemType;
+    }
+
     public String getShowTime() {
         if (this.publishTime != null)
             return DateUtils.getChatShowTime(this.publishTime);
@@ -42,6 +105,19 @@ public class Circle implements Serializable {
         if (this.publishTime != null)
             return DateUtils.dateToStrTime(this.publishTime);
         return null;
+    }
+
+    public Circle(int itemType) {
+        this.itemType = itemType;
+    }
+
+    public Circle(int itemType,long publishUserId,String publishUserName,String publishUserImage,String circleBackImage,String lifeNotes) {
+        this.itemType = itemType;
+        this.publishUserId = publishUserId;
+        this.publishUserName = publishUserName;
+        this.publishUserImage = publishUserImage;
+        this.circleBackImage = circleBackImage;
+        this.lifeNotes = lifeNotes;
     }
 
     @Generated(hash = 1559919035)
@@ -189,5 +265,14 @@ public class Circle implements Serializable {
 
     public void setIsLiked(boolean isLiked) {
         this.isLiked = isLiked;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Circle) {
+            Circle nc = (Circle) obj;
+            return this.getCircleId() == nc.getCircleId();
+        }
+        return super.equals(obj);
     }
 }

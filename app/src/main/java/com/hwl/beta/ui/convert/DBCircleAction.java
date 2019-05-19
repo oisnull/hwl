@@ -1,5 +1,6 @@
 package com.hwl.beta.ui.convert;
 
+import com.hwl.beta.db.DBConstant;
 import com.hwl.beta.db.entity.Circle;
 import com.hwl.beta.db.entity.CircleComment;
 import com.hwl.beta.db.entity.CircleImage;
@@ -14,6 +15,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBCircleAction {
+
+    public static List<Circle> convertToCircleInfos(List<NetCircleInfo> netInfos) {
+        if (netInfos == null || netInfos.size() <= 0) return null;
+
+        List<Circle> infos = new ArrayList<>(netInfos.size());
+        for (int i = 0; i < netInfos.size(); i++) {
+            infos.add(convertToCircleInfo(netInfos.get(i)));
+        }
+
+        return infos;
+    }
+
     public static Circle convertToCircleInfo(NetCircleInfo info) {
         if (info == null) return null;
         Circle model = new Circle();
@@ -32,10 +45,28 @@ public class DBCircleAction {
         model.setLinkUrl(info.getLinkUrl());
         model.setLinkTitle(info.getLinkTitle());
         model.setIsLiked(info.isLiked());
+        model.setItemType(DBConstant.CIRCLE_ITEM_DATA);
+
+        List<CircleImage> images = convertToCircleImageInfos(info.getCircleId(),
+                info.getPublishUserId(), info.getImages());
+        if (images != null && images.size() > 0) {
+            model.setImages(images);
+        }
+
+        List<CircleComment> comments = convertToCircleCommentInfos(info.getCommentInfos());
+        if (comments != null && comments.size() > 0) {
+            model.setComments(comments);
+        }
+
+        List<CircleLike> likes = convertToCircleLikeInfos(info.getLikeInfos());
+        if (likes != null && likes.size() > 0) {
+            model.setLikes(likes);
+        }
         return model;
     }
 
-    public static List<CircleImage> convertToCircleImageInfos(long circleId, int publishUserId, List<NetImageInfo> images) {
+    public static List<CircleImage> convertToCircleImageInfos(long circleId, int publishUserId,
+                                                              List<NetImageInfo> images) {
         if (circleId <= 0 || images == null || images.size() <= 0) return null;
         List<CircleImage> circleImages = new ArrayList<>(images.size());
         CircleImage imageModel = null;
@@ -97,7 +128,8 @@ public class DBCircleAction {
         List<MultiImageView.ImageBean> imageBeans = new ArrayList<>(images.size());
         MultiImageView.ImageBean imageModel = null;
         for (int i = 0; i < images.size(); i++) {
-            imageBeans.add(new MultiImageView.ImageBean(images.get(i).getImageWidth(), images.get(i).getImageHeight(), images.get(i).getImageUrl()));
+            imageBeans.add(new MultiImageView.ImageBean(images.get(i).getImageWidth(),
+                    images.get(i).getImageHeight(), images.get(i).getImageUrl()));
         }
         return imageBeans;
     }

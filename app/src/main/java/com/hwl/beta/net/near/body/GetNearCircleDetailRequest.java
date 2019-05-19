@@ -7,6 +7,15 @@ package com.hwl.beta.net.near.body;
 public class GetNearCircleDetailRequest {
     private long UserId;
     private long NearCircleId;
+	private String UpdateTime;
+
+    public String getUpdateTime() {
+        return UpdateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        UpdateTime = updateTime;
+    }
 
     public long getUserId() {
         return UserId;

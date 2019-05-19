@@ -76,14 +76,33 @@ public class CircleMessageManager extends BaseDao<CircleMessage> {
         daoSession.getCircleMessageDao().deleteAll();
     }
 
-    public boolean updateDelete(long nearCircleId, int type, long fromUserId, int commentId) {
-        if (nearCircleId <= 0 || fromUserId <= 0) return false;
+    public boolean updateDelete(long circleId, int type, long fromUserId, int commentId) {
+        if (circleId <= 0 || fromUserId <= 0) return false;
         QueryBuilder<CircleMessage> query = daoSession.getCircleMessageDao().queryBuilder()
-                .where(CircleMessageDao.Properties.CircleId.eq(nearCircleId))
+                .where(CircleMessageDao.Properties.CircleId.eq(circleId))
                 .where(CircleMessageDao.Properties.Type.eq(type))
                 .where(CircleMessageDao.Properties.Status.notEq(DBConstant.STAUTS_DELETE))
                 .where(CircleMessageDao.Properties.UserId.eq(fromUserId));
         if (commentId > 0) {
+            query = query.where(CircleMessageDao.Properties.CommentId.eq(commentId));
+        }
+        CircleMessage message = query.limit(1).unique();
+        if (message != null) {
+            message.setStatus(DBConstant.STAUTS_DELETE);
+            daoSession.getCircleMessageDao().update(message);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean updateStatus(long circleId, int type, long fromUserId, long commentId) {
+        if (circleId <= 0 || fromUserId <= 0) return false;
+        QueryBuilder<CircleMessage> query = daoSession.getCircleMessageDao().queryBuilder()
+                .where(CircleMessageDao.Properties.CircleId.eq(circleId))
+                .where(CircleMessageDao.Properties.Type.eq(type))
+                .where(CircleMessageDao.Properties.Status.notEq(DBConstant.STAUTS_DELETE))
+                .where(CircleMessageDao.Properties.UserId.eq(fromUserId));
+        if (commentId>0) {
             query = query.where(CircleMessageDao.Properties.CommentId.eq(commentId));
         }
         CircleMessage message = query.limit(1).unique();

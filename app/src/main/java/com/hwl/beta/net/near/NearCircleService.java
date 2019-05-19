@@ -67,10 +67,15 @@ public class NearCircleService {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public static Observable<GetNearCircleDetailResponse> getNearCircleDetail(long nearCircleId) {
+    public static Observable<GetNearCircleDetailResponse> getNearCircleDetail(long nearCircleId){
+		return getNearCircleDetail(nearCircleId,null);
+	}
+
+    public static Observable<GetNearCircleDetailResponse> getNearCircleDetail(long nearCircleId,String updateTime) {
         GetNearCircleDetailRequest requestBody = new GetNearCircleDetailRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setNearCircleId(nearCircleId);
+        requestBody.setUpdateTime(updateTime);
         return RetrofitUtils.createApi(INearCircleService.class)
                 .getNearCircleDetail(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<GetNearCircleDetailResponse>>())

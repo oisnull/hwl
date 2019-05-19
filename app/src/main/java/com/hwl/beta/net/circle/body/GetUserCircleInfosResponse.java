@@ -8,7 +8,25 @@ public class GetUserCircleInfosResponse {
     public int ViewUserId;
     public String ViewUserName;
     public String ViewUserImage;
+    public String CircleBackImage ;
+    public String LifeNotes ;
     public List<NetCircleInfo> CircleInfos;
+
+    public String getLifeNotes() {
+        return LifeNotes;
+    }
+
+    public void setLifeNotes(String lifeNotes) {
+        LifeNotes = lifeNotes;
+    }
+
+    public String getCircleBackImage() {
+        return CircleBackImage;
+    }
+
+    public void setCircleBackImage(String circleBackImage) {
+        CircleBackImage = circleBackImage;
+    }
 
     public int getViewUserId() {
         return ViewUserId;

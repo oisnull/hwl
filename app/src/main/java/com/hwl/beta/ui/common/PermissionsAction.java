@@ -9,6 +9,8 @@ import io.reactivex.functions.Consumer;
 
 public class PermissionsAction {
 
+//Ex: https://www.cnblogs.com/dingxiansen/p/10670707.html
+
     private static boolean isHas = false;
 
     public static boolean checkCamera(Activity activity) {

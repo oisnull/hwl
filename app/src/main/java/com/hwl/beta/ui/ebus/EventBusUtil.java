@@ -176,4 +176,8 @@ public class EventBusUtil {
     public static void sendNearMessageUpdateEvent() {
         sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_NEAR_CIRCLE_MESSAGE_UPDATE));
     }
+
+    public static void sendCircleMessageUpdateEvent() {
+        sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_CIRCLE_MESSAGE_UPDATE));
+    }
 }
