@@ -38,10 +38,10 @@ public class CircleManager extends BaseDao<Circle> {
         return false;
     }
 
-    public void delete(long nearCircleId) {
-        if (nearCircleId > 0) {
+    public void delete(long circleId) {
+        if (circleId > 0) {
             String deleteSql =
-                    "delete from " + CircleDao.TABLENAME + " where " + CircleDao.Properties.CircleId.columnName + "=" + nearCircleId;
+                    "delete from " + CircleDao.TABLENAME + " where " + CircleDao.Properties.CircleId.columnName + "=" + circleId;
             daoSession.getDatabase().execSQL(deleteSql);
         }
     }
@@ -486,5 +486,11 @@ public class CircleManager extends BaseDao<Circle> {
         fids.add(friendId);
         List<Friend> friends = DaoUtils.getFriendManagerInstance().getList(fids);
         setCircleFriendInfo(exts, friends, func);
+    }
+
+    public void setUpdateTime(long circleId,String updateTime) {
+		if(circleId<=0||StringUtils.isBlank(updateTime)) return;
+        String updateSql = String.format("update %s set %s='%s' where %s=%d",CircleDao.TABLENAME,CircleDao.Properties.UpdateTime.columnName,updateTime,CircleDao.Properties.CircleId.columnName,circleId);
+        daoSession.getDatabase().execSQL(updateSql);
     }
 }

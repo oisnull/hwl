@@ -127,12 +127,12 @@ public class NearLogic implements NearStandard {
                         }
 
                         NearCircleLike likeInfo = new NearCircleLike();
+                        likeInfo.setNearCircleId(info.getNearCircleId());
+                        likeInfo.setLikeUserId(UserSP.getUserId());
+                        likeInfo.setLikeUserName(UserSP.getUserName());
+                        likeInfo.setLikeUserImage(UserSP.getUserHeadImage());
+                        likeInfo.setLikeTime(DateUtils.strToDateLong(response.getLastUpdateTime()));
                         if (isLike) {
-                            likeInfo.setNearCircleId(info.getNearCircleId());
-                            likeInfo.setLikeUserId(UserSP.getUserId());
-                            likeInfo.setLikeUserName(UserSP.getUserName());
-                            likeInfo.setLikeUserImage(UserSP.getUserHeadImage());
-                            likeInfo.setLikeTime(new Date());
                             DaoUtils.getNearCircleManagerInstance().saveLike(likeInfo);
                         } else {
                             DaoUtils.getNearCircleManagerInstance().deleteLike(info.getNearCircleId(),

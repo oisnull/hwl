@@ -257,7 +257,7 @@ public class FragmentNear extends BaseFragment {
     private class NearCircleItemListener implements INearCircleItemListener {
 
         private CircleActionMorePop mMorePopupWindow;
-        boolean isRunning = false;
+        private boolean isRunning = false;
 
         @Override
         public void onItemViewClick(View view) {
@@ -349,10 +349,7 @@ public class FragmentNear extends BaseFragment {
                         @Override
                         public void accept(NearCircleLike info) {
                             isRunning = false;
-                            if (isLike)
-                                nearCircleAdapter.addLike(position, info);
-                            else
-                                nearCircleAdapter.addLike(position, null);
+                            nearCircleAdapter.setLike(position, info,isLike);
                         }
                     }, new Consumer<Throwable>() {
                         @Override

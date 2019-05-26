@@ -170,28 +170,22 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    public void addLike(int position, NearCircleLike likeInfo) {
+    public void setLike(int position, NearCircleLike likeInfo,boolean isLike) {
         NearCircle info = nearCircles.get(position);
         if (info.getLikes() == null) {
             info.setLikes(new ArrayList<NearCircleLike>());
         }
 
-        if (likeInfo == null) {
-            //取消点赞
-            info.setIsLiked(false);
-            for (int i = 0; i < info.getLikes().size(); i++) {
-                if (info.getLikes().get(i).getLikeUserId() == myUserId) {
-                    info.getLikes().remove(i);
-                    notifyItemChanged(position);
-                    break;
-                }
-            }
-        } else {
+        if (isLike) {
             //点赞
             info.setIsLiked(true);
             info.getLikes().add(info.getLikes().size(), likeInfo);
-            notifyItemChanged(position);
+        } else {
+            //取消点赞
+            info.setIsLiked(false);
+			info.getLikes().remove(likeInfo);
         }
+        notifyItemChanged(position);
     }
 
     public void remove(int position) {
