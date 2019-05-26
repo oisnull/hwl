@@ -34,6 +34,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/ThemeActivity"
+        android:usesCleartextTraffic="true"
         tools:replace="android:name">
         <activity android:name=".ui.entry.ActivityWelcome">
             <intent-filter>
@@ -46,7 +47,7 @@
             android:theme="@style/SwipeTheme" />
         <activity android:name=".ui.TestActivity" />
         <activity android:name=".ui.TestActivityLocation" />
-        <activity android:name=".ui.TestActivityIm"/>
+        <activity android:name=".ui.TestActivityIm" />
         <!--<activity android:name=".ui.entry.ActivityQRCode" />-->
         <activity android:name=".ui.entry.ActivityLogin" />
         <activity android:name=".ui.entry.ActivityRegister" />
@@ -64,14 +65,13 @@
         <activity android:name=".ui.imgselect.ActivityImageBrowse" />
         <activity android:name=".ui.video.ActivityVideoPlay" />
         <activity android:name=".ui.video.ActivityVideoSelect" />
-        <activity android:name=".ui.chat.ActivityChatGroup"
+        <activity
+            android:name=".ui.chat.ActivityChatGroup"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity android:name=".ui.chat.ActivityChatGroupSetting" />
         <activity android:name=".ui.chat.ActivityChatGroupSettingEdit" />
         <activity android:name=".ui.chat.ActivityChatUserSetting" />
-        <activity
-            android:name=".ui.chat.ActivityChatUser"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity android:name=".ui.chat.ActivityChatUser" />
         <activity android:name=".ui.near.ActivityNearPublish" />
         <activity android:name=".ui.near.ActivityNearMessages" />
         <activity android:name=".ui.near.ActivityNearDetail" />

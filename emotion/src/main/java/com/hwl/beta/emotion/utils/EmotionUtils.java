@@ -141,7 +141,7 @@ public class EmotionUtils {
     //    return defaultEmotionNamePatternString;
     //}
 
-    public static int getDefaultEmotionByName(String name) {
+    public static Integer getDefaultEmotionByName(String name) {
         Integer integer = defaultEmotions.get(name);
         return integer == null ? -1 : integer;
     }

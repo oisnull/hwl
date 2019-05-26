@@ -75,7 +75,7 @@ public class NineImagesAdapter extends RecyclerView.Adapter<NineImagesAdapter.Im
         LinearLayout.LayoutParams layoutParams =
                 (LinearLayout.LayoutParams) iv.getLayoutParams();
         layoutParams.width = getFactWidth(position);
-        layoutParams.height = layoutParams.width;
+        layoutParams.height = getFactHeight(position, layoutParams.width);
         int index = position + 1;
         if (index > 1) {
             if (index > columnCount) {
@@ -96,6 +96,13 @@ public class NineImagesAdapter extends RecyclerView.Adapter<NineImagesAdapter.Im
             return images.get(position).imageWidth;
         }
         return imageWidth;
+    }
+
+    private int getFactHeight(int position, int factWidth) {
+        if (columnCount == 1 && images.get(position).imageHeight > 0 && images.get(position).imageHeight <= factWidth) {
+            return images.get(position).imageHeight;
+        }
+        return factWidth;
     }
 
     @Override

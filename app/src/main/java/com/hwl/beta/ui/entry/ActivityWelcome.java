@@ -20,7 +20,7 @@ import io.reactivex.disposables.Disposable;
 public class ActivityWelcome extends FragmentActivity {
 
     private TextView tvCountdown;
-    private int tmrCount = 3;
+    private int tmrCount = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

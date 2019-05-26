@@ -171,7 +171,6 @@ public class FragmentNear extends BaseFragment {
                 .subscribe(new Consumer<List<NearCircle>>() {
                     @Override
                     public void accept(List<NearCircle> infos) {
-                        setEmotionStatus(false);
                         nearCircleAdapter.updateInfos(isRefresh, infos);
                         showResult();
                     }
@@ -239,6 +238,7 @@ public class FragmentNear extends BaseFragment {
                     .subscribe(new Consumer<NearCircleComment>() {
                         @Override
                         public void accept(NearCircleComment info) throws Exception {
+                            setEmotionStatus(false);
                             LoadingDialog.hide();
                             nearCircleAdapter.addComment(info);
                         }
