@@ -15,6 +15,7 @@ import com.hwl.beta.db.entity.NearCircleComment;
 import com.hwl.beta.db.entity.NearCircleImage;
 import com.hwl.beta.db.entity.NearCircleLike;
 import com.hwl.beta.db.ext.NearCircleExt;
+import com.hwl.beta.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -467,9 +468,11 @@ public class NearCircleManager extends BaseDao<NearCircle> {
         return userIds;
     }
 
-    public void setUpdateTime(long nearCircleId,String updateTime) {
-		if(nearCircleId<=0||StringUtils.isBlank(updateTime)) return;
-        String updateSql = String.format("update %s set %s='%s' where %s=%d",NearCircleDao.TABLENAME,NearCircleDao.Properties.UpdateTime.columnName,updateTime,NearCircleDao.Properties.NearCircleId.columnName,nearCircleId);
+    public void setUpdateTime(long nearCircleId, String updateTime) {
+        if (nearCircleId <= 0 || StringUtils.isBlank(updateTime)) return;
+        String updateSql = String.format("update %s set %s='%s' where %s=%d",
+                NearCircleDao.TABLENAME, NearCircleDao.Properties.UpdateTime.columnName,
+                updateTime, NearCircleDao.Properties.NearCircleId.columnName, nearCircleId);
         daoSession.getDatabase().execSQL(updateSql);
     }
 }

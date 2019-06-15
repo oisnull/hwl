@@ -10,4 +10,7 @@
     <color name="color_727270">#727270</color>
     <color name="color_424242">#424242</color>
     <color name="color_b2b2b2">#b2b2b2</color>
+
+    <color name="spilt_line">#CFCFCF</color>
+    <color name="toolbar_spilt_line">#CDCDCD</color>
 </resources>
