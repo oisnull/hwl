@@ -36,7 +36,7 @@ public abstract class AutoHeightLayout extends SoftKeyboardSizeWatchLayout imple
         }
         super.addView(child, index, params);
         if (childSum == 0) {
-            if ((int)child.getId() < 0) {
+            if ((int) child.getId() < 0) {
                 child.setId(ID_CHILD);
             }
             LayoutParams paramsChild = (LayoutParams) child.getLayoutParams();
@@ -59,8 +59,8 @@ public abstract class AutoHeightLayout extends SoftKeyboardSizeWatchLayout imple
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         if (mMaxParentHeight == 0) {
             mMaxParentHeight = h;
-            Log.d("Emotion", "onSizeChanged.mMaxParentHeight=" + mMaxParentHeight);
         }
+        Log.d("Emotion", "onSizeChanged.mMaxParentHeight=" + mMaxParentHeight);
     }
 
     public void updateMaxParentHeight(int maxParentHeight) {
@@ -68,6 +68,7 @@ public abstract class AutoHeightLayout extends SoftKeyboardSizeWatchLayout imple
         if (maxParentHeightChangeListener != null) {
             maxParentHeightChangeListener.onMaxParentHeightChange(maxParentHeight);
         }
+        Log.d("Emotion", "updateMaxParentHeight.mMaxParentHeight=" + mMaxParentHeight);
     }
 
     @Override
