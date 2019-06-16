@@ -7,6 +7,7 @@ import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.hwl.beta.emotion.interfaces.IDefaultEmotionListener;
 import com.hwl.beta.emotion.utils.EmotionUtils;
 
 import java.util.List;

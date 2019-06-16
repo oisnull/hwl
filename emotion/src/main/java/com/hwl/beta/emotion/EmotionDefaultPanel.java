@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.hwl.beta.emotion.interfaces.IDefaultEmotionListener;
 import com.hwl.beta.emotion.utils.EmotionUtils;
 import com.hwl.beta.emotion.widget.EmotionEditText;
 

@@ -1,19 +1,11 @@
 package com.hwl.beta.emotion.widget;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.annotation.Nullable;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 
 import com.hwl.beta.emotion.utils.EmotionUtils;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by Administrator on 2018/4/7.

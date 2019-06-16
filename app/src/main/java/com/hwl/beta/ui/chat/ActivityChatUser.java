@@ -100,23 +100,23 @@ public class ActivityChatUser extends BaseActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    binding.ecpEmotion.hideEmotionPanel();
+//                    binding.ecpEmotion.hideEmotionPanel();
                 }
                 return false;
             }
         });
 
         emotionPanelListener = new ChatUserEmotionPanelListener(activity, user);
-        binding.ecpEmotion.setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
-                .setContentContainerView(binding.refreshLayout)
-                .setEmotionPanelListener(emotionPanelListener)
-                .setOnPanelHeightChanged(new Runnable() {
-                    @Override
-                    public void run() {
-                        binding.rvMessageContainer.scrollToPosition(messageAdapter.getItemCount()
-                                - 1);
-                    }
-                });
+//        binding.ecpEmotion.setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
+//                .setContentContainerView(binding.refreshLayout)
+//                .setEmotionPanelListener(emotionPanelListener)
+//                .setOnPanelHeightChanged(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        binding.rvMessageContainer.scrollToPosition(messageAdapter.getItemCount()
+//                                - 1);
+//                    }
+//                });
 
         binding.refreshLayout.setEnableLoadMore(false);
         binding.refreshLayout.setEnableScrollContentWhenLoaded(false);
@@ -130,7 +130,7 @@ public class ActivityChatUser extends BaseActivity {
         binding.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                binding.ecpEmotion.setContentContainerHeight(binding.refreshLayout.getHeight());
+//                binding.ecpEmotion.setContentContainerHeight(binding.refreshLayout.getHeight());
             }
         });
     }

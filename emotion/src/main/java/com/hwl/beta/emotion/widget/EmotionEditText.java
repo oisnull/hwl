@@ -1,13 +1,7 @@
 package com.hwl.beta.emotion.widget;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
@@ -15,9 +9,6 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
 
 import com.hwl.beta.emotion.utils.EmotionUtils;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by Administrator on 2018/2/22.

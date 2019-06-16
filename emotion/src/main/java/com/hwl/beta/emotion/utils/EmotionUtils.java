@@ -150,70 +150,70 @@ public class EmotionUtils {
         return defaultEmotions;
     }
 
-    public static void addEmotion(EmotionEditText emotionEditText, String emotionName){
-       int start = emotionEditText.getSelectionStart();
-       emotionEditText.setText(emotionEditText.getText().insert(start, emotionName));
-       CharSequence info = emotionEditText.getText();
-       if (info instanceof Spannable) {
-           Spannable spanText = (Spannable) info;
-           Selection.setSelection(spanText, start + emotionName.length());
-       }
-   }
+    public static void addEmotion(EmotionEditText emotionEditText, String emotionName) {
+        int start = emotionEditText.getSelectionStart();
+        emotionEditText.setText(emotionEditText.getText().insert(start, emotionName));
+        CharSequence info = emotionEditText.getText();
+        if (info instanceof Spannable) {
+            Spannable spanText = (Spannable) info;
+            Selection.setSelection(spanText, start + emotionName.length());
+        }
+    }
 
-   public static void deleteEmotion(EmotionEditText emotionEditText){
-       String content = emotionEditText.getText().toString();
-       if (TextUtils.isEmpty(content)) {
-           return;
-       }
-       int start = emotionEditText.getSelectionStart();
-       String startContent = content.substring(0, start);
-       String endContent = content.substring(start, content.length());
-       String lastContent = content.substring(start - 1, start);
-       int last = startContent.lastIndexOf("[");
-       int lastChar = startContent.substring(0, startContent.length() - 1).lastIndexOf("]");
+    public static void deleteEmotion(EmotionEditText emotionEditText) {
+        String content = emotionEditText.getText().toString();
+        if (TextUtils.isEmpty(content)) {
+            return;
+        }
+        int start = emotionEditText.getSelectionStart();
+        String startContent = content.substring(0, start);
+        String endContent = content.substring(start, content.length());
+        String lastContent = content.substring(start - 1, start);
+        int last = startContent.lastIndexOf("[");
+        int lastChar = startContent.substring(0, startContent.length() - 1).lastIndexOf("]");
 
-       if ("]".equals(lastContent) && last > lastChar) {
-           if (last != -1) {
-               emotionEditText.setText(startContent.substring(0, last) + endContent);
-               CharSequence info = emotionEditText.getText();
-               if (info instanceof Spannable) {
-                   Spannable spanText = (Spannable) info;
-                   Selection.setSelection(spanText, last);
-               }
-               return;
-           }
-       }
-       emotionEditText.setText(startContent.substring(0, start - 1) + endContent);
-       CharSequence info = emotionEditText.getText();
-       if (info instanceof Spannable) {
-           Spannable spanText = (Spannable) info;
-           Selection.setSelection(spanText, start - 1);
-       }
-   }
+        if ("]".equals(lastContent) && last > lastChar) {
+            if (last != -1) {
+                emotionEditText.setText(startContent.substring(0, last) + endContent);
+                CharSequence info = emotionEditText.getText();
+                if (info instanceof Spannable) {
+                    Spannable spanText = (Spannable) info;
+                    Selection.setSelection(spanText, last);
+                }
+                return;
+            }
+        }
+        emotionEditText.setText(startContent.substring(0, start - 1) + endContent);
+        CharSequence info = emotionEditText.getText();
+        if (info instanceof Spannable) {
+            Spannable spanText = (Spannable) info;
+            Selection.setSelection(spanText, start - 1);
+        }
+    }
 
-   public static CharSequence replaceEmotionText(Context context, CharSequence text) {
-    try {
-        SpannableStringBuilder builder = new SpannableStringBuilder(text);
-        Pattern pattern = Pattern.compile(REGEXDEFAULTEMOTION);
-        Matcher matcher = pattern.matcher(text);
-        while (matcher.find()) {
-            if (defaultEmotions.containsKey(matcher.group())) {
-                int id = defaultEmotions.get(matcher.group());
+    public static CharSequence replaceEmotionText(Context context, CharSequence text) {
+        try {
+            SpannableStringBuilder builder = new SpannableStringBuilder(text);
+            Pattern pattern = Pattern.compile(REGEXDEFAULTEMOTION);
+            Matcher matcher = pattern.matcher(text);
+            while (matcher.find()) {
+                if (defaultEmotions.containsKey(matcher.group())) {
+                    int id = defaultEmotions.get(matcher.group());
 //                    Drawable drawable = getResources().getDrawable(id);
 //                    drawable.setBounds(0, 0, 25, 25);
 //                    builder.setSpan(new ImageSpan(drawable), matcher.start(), matcher.end(),
 //                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), id);
-                if (bitmap != null) {
-                    ImageSpan span = new ImageSpan(context, bitmap);
-                    builder.setSpan(span, matcher.start(), matcher.end(),
-                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), id);
+                    if (bitmap != null) {
+                        ImageSpan span = new ImageSpan(context, bitmap);
+                        builder.setSpan(span, matcher.start(), matcher.end(),
+                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
                 }
             }
+            return builder;
+        } catch (Exception e) {
+            return text;
         }
-        return builder;
-    } catch (Exception e) {
-        return text;
     }
-}
 }
