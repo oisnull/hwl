@@ -22,7 +22,6 @@ public class EmotionPagerAdapter extends PagerAdapter {
     private List<View> views = new ArrayList<>();
     private List<EmojiPageContainer> pageContainers = new ArrayList<>();
     private Activity context;
-    private String preTag;
 
     public EmotionPagerAdapter(Context context) {
         this.context = (Activity) context;
@@ -39,6 +38,13 @@ public class EmotionPagerAdapter extends PagerAdapter {
         pageContainers.clear();
         views.clear();
     }
+
+	public String getPageTag(int position){
+		View view = views.get(position);
+		if(view==null) return null;
+
+		return view.getTag().toString();
+	}
 
     @Override
     public int getCount() {
@@ -58,8 +64,7 @@ public class EmotionPagerAdapter extends PagerAdapter {
         } else {
             view = createView(position);
         }
-        preTag = view.getTag().toString();
-        Log.d("instantiateItem=", preTag);
+        Log.d("instantiateItem=", view.getTag().toString());
         container.addView(view);
         return view;
     }
@@ -87,8 +92,6 @@ public class EmotionPagerAdapter extends PagerAdapter {
         int screenWidth = DisplayUtils.getScreenWidthPixels(context);
         int itemPadding = DisplayUtils.dp2px(context, 10);
         int itemWidth = (screenWidth - itemPadding * 8) / container.getLine();
-//        //DisplayUtils.dp2px(getActivity(), 40);
-//        int gvHeight = itemWidth * container.getRow() + itemPadding * 6;
 
         for (int i = 0; i < container.getPageCount(); i++) {
             GridView gvContainer = new GridView(context);

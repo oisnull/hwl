@@ -6,6 +6,7 @@ import java.util.UUID;
 
 public class EmojiPageContainer {
     private String id;
+	private int defaultResId;
     private int line;
     private int row;
     private int pageCount = 0;
@@ -18,7 +19,12 @@ public class EmojiPageContainer {
         this.emojiPages = builder.emojiPages;
         this.line = builder.line;
         this.row = builder.row;
+        this.defaultResId = builder.defaultResId;
         this.id = UUID.randomUUID().toString();
+    }
+
+    public int getDefaultResId() {
+        return defaultResId;
     }
 
     public int getRow() {
@@ -50,6 +56,7 @@ public class EmojiPageContainer {
     }
 
     public static class Builder {
+		private int defaultResId;
         private int line = 7;
         private int row = 3;
         private boolean lastItemIsDeleteButton = true;
@@ -64,6 +71,11 @@ public class EmojiPageContainer {
 
         public void setLastItemIsDeleteButton(boolean lastItemIsDeleteButton) {
             this.lastItemIsDeleteButton = lastItemIsDeleteButton;
+        }
+
+        public Builder setDefaultResId(int defaultResId) {
+            this.defaultResId = defaultResId;
+            return this;
         }
 
         public Builder setLine(int line) {

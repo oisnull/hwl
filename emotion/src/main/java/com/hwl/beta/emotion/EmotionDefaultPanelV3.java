@@ -148,54 +148,77 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
 
     private void initEmotionData() {
         EmojiPageContainer defaultEmojiContainer = new EmojiPageContainer.Builder()
+				.setDefaultResId(R.drawable.ic_emotion_default)
                 .setAllEmojis(EmotionLocal.defaultEmotions)
+                .build();
+				
+        EmojiPageContainer extendEmojiContainer = new EmojiPageContainer.Builder()
+                .setAllEmojis(EmotionExtends.extendEmotions)
                 .build();
 
         EmotionPagerAdapter emotionPagerAdapter = new EmotionPagerAdapter(context);
         emotionPagerAdapter.add(defaultEmojiContainer);
+        emotionPagerAdapter.add(extendEmojiContainer);
+
+		Runnable showDots = new Runnable() {
+                @Override
+                public void run() {
+					if (defaultEmojiContainer.IsShowIndicator()) {
+						eivDotContainer.setVisibility(VISIBLE);
+						eivDotContainer.updateCount(defaultEmojiContainer.getPageCount());
+					} else {
+						eivDotContainer.setVisibility(GONE);
+					}
+                }
+        };
+		showDots.run();
 
         efvContainer.setAdapter(emotionPagerAdapter);
         efvContainer.setCurrentItem(0);
         efvContainer.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             int currIndex = 0;
+			String currTag = null;
 
             @Override
             public void onPageScrolled(int position, float positionOffset,
                                        int positionOffsetPixels) {
-                //页面在滑动后调用
             }
 
             @Override
             public void onPageSelected(int position) {
-                //页面跳转完后调用
                 eivDotContainer.setSelectIndicator(position, currIndex);
                 currIndex = position;
+
+				String tag=emotionPagerAdapter.getPageTag(position);
+				etvEmotionBar.setSelected(tag);
+				if(currTag!=null&&currTag!=tag){
+					showDots.run();
+				}
+				currTag = tag;
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                //页面状态改变时调用 1:表示正在滑动 ，2：表示滑动完毕，0：表示什么都没做
             }
         });
 
-        if (defaultEmojiContainer.IsShowIndicator()) {
-            eivDotContainer.setVisibility(VISIBLE);
-            eivDotContainer.updateCount(defaultEmojiContainer.getPageCount());
-        } else {
-            eivDotContainer.setVisibility(GONE);
-        }
-
-        etvEmotionBar.AddItemButton(R.drawable.ic_emotion_default, "default");
-        etvEmotionBar.AddItemButton(R.drawable.chat_add, "default1");
-        etvEmotionBar.AddItemButton(R.drawable.chat_context, "default2");
-        etvEmotionBar.AddItemButton(R.drawable.chat_emotion, "default3");
-        etvEmotionBar.AddItemButton(R.drawable.chat_emotion_add, "default4");
-        etvEmotionBar.AddItemButton(R.drawable.chat_emotion_setting, "default5");
-        etvEmotionBar.AddItemButton(R.drawable.chat_keyboard, "default6");
-        etvEmotionBar.AddItemButton(R.drawable.chat_location, "default7");
-        etvEmotionBar.AddItemButton(R.drawable.chat_take_photo, "default8");
-        etvEmotionBar.AddItemButton(R.drawable.ic_emotion_default, "default9");
-        etvEmotionBar.AddItemButton(R.drawable.chat_video, "default10");
+        etvEmotionBar.addItemButton(defaultEmojiContainer.getDefaultResId(), defaultEmojiContainer.getId(),new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					etvEmotionBar.setSelected(defaultEmojiContainer.getId());
+					efvContainer.setCurrentItem(0);
+				}
+			});
+        //etvEmotionBar.addItemButton(R.drawable.chat_add, "default1");
+        //etvEmotionBar.addItemButton(R.drawable.chat_context, "default2");
+        //etvEmotionBar.addItemButton(R.drawable.chat_emotion, "default3");
+        //etvEmotionBar.addItemButton(R.drawable.chat_emotion_add, "default4");
+        //etvEmotionBar.addItemButton(R.drawable.chat_emotion_setting, "default5");
+        //etvEmotionBar.addItemButton(R.drawable.chat_keyboard, "default6");
+        //etvEmotionBar.addItemButton(R.drawable.chat_location, "default7");
+        //etvEmotionBar.addItemButton(R.drawable.chat_take_photo, "default8");
+        //etvEmotionBar.addItemButton(R.drawable.ic_emotion_default, "default9");
+        //etvEmotionBar.addItemButton(R.drawable.chat_video, "default10");
     }
 
     protected void toggleFuncView(int key) {
@@ -333,56 +356,4 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
         }
         super.requestChildFocus(child, focused);
     }
-
-//    public boolean dispatchKeyEventInFullScreen(KeyEvent event) {
-//        if (event == null) {
-//            return false;
-//        }
-//        switch (event.getKeyCode()) {
-//            case KeyEvent.KEYCODE_BACK:
-//                if (EmotionKeyboardUtils.isFullScreen((Activity) getContext()) &&
-//                eflEmotionFunction.isShown()) {
-//                    reset();
-//                    return true;
-//                }
-//            default:
-//                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-//                    boolean isFocused;
-//                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES
-//                    .LOLLIPOP) {
-//                        isFocused = etChatText.getShowSoftInputOnFocus();
-//                    } else {
-//                        isFocused = etChatText.isFocused();
-//                    }
-//                    if (isFocused) {
-//                        etChatText.onKeyDown(event.getKeyCode(), event);
-//                    }
-//                }
-//                return false;
-//        }
-//    }
-
-//    public EmoticonsEditText getEtChat() {
-//        return etChatText;
-//    }
-//
-//    public Button getBtnVoice() {
-//        return mBtnVoice;
-//    }
-//
-//    public Button getBtnSend() {
-//        return mBtnSend;
-//    }
-//
-//    public EmoticonsFuncView getEmoticonsFuncView() {
-//        return mEmoticonsFuncView;
-//    }
-//
-//    public EmoticonsIndicatorView getEmoticonsIndicatorView() {
-//        return mEmoticonsIndicatorView;
-//    }
-//
-//    public EmoticonsToolBarView getEmoticonsToolBarView() {
-//        return mEmoticonsToolBarView;
-//    }
 }

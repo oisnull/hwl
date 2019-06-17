@@ -28,6 +28,7 @@ public class EmotionToolBarViewV2 extends RelativeLayout {
 
     protected HorizontalScrollView hsv_toolbar;
     protected LinearLayout ll_toolbar;
+	private IEmotionToolbarListener toolbarListener;
 
     public EmotionToolBarViewV2(Context context) {
         this(context, null);
@@ -54,6 +55,10 @@ public class EmotionToolBarViewV2 extends RelativeLayout {
         }
     }
 
+    public void setEmotionToolbarListener(IEmotionToolbarListener toolbarListener) {
+        this.toolbarListener=toolbarListener;
+    }
+
     protected View getCommonButtonView() {
         return mInflater.inflate(R.layout.item_toolbar_button, null);
     }
@@ -74,6 +79,15 @@ public class EmotionToolBarViewV2 extends RelativeLayout {
         LayoutParams hsvParams = (LayoutParams) hsv_toolbar.getLayoutParams();
         hsvParams.addRule(RIGHT_OF, emotionAddButton.getId());
         hsv_toolbar.setLayoutParams(hsvParams);
+
+		if(this.toolbarListener!=null){
+			emotionAddButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					toolbarListener.onAddClick();
+				}
+			});
+		}
     }
 
     private void initEmotionSetButton() {
@@ -92,19 +106,47 @@ public class EmotionToolBarViewV2 extends RelativeLayout {
         LayoutParams hsvParams2 = (LayoutParams) hsv_toolbar.getLayoutParams();
         hsvParams2.addRule(LEFT_OF, emotionSetButton.getId());
         hsv_toolbar.setLayoutParams(hsvParams2);
-
+		
+		if(this.toolbarListener!=null){
+			emotionSetButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					toolbarListener.onSetClick();
+				}
+			});
+		}
     }
 
-    public void AddItemButton(int rec, String tag) {
+    public void addItemButton(int res, String tag,View.OnClickListener itemListener) {
         View buttonView = getCommonButtonView();
         ImageView iv_icon = buttonView.findViewById(R.id.iv_icon);
-        iv_icon.setImageResource(rec);
+        iv_icon.setImageResource(res);
         iv_icon.setTag(R.id.id_tag_pageset, tag);
         iv_icon.setLayoutParams(new LinearLayout.LayoutParams(buttonWidth,
                 LayoutParams.MATCH_PARENT));
 
         ll_toolbar.addView(buttonView);
         mToolBtnList.add(iv_icon);
+		buttonView.setOnClickListener(itemListener);
+    }
+
+	public void setSelected(String tag) {
+        if (TextUtils.isEmpty(tag)) {
+            return;
+        }
+
+        int select = 0;
+        for (int i = 0; i < mToolBtnList.size(); i++) {
+            String currentTag = mToolBtnList.get(i).getTag(R.id.id_tag_pageset);
+            if (currentTag.equals(tag)) {
+                mToolBtnList.get(i).setBackgroundColor(getResources().getColor(R.color.toolbar_btn_select));
+                select = i;
+            } else {
+                mToolBtnList.get(i).setBackgroundResource(R.drawable.emotion_toolbar_bg);
+            }
+        }
+
+        scrollToBtnPosition(select);
     }
 
 //    public void addFixedToolItemView(View view, boolean isRight) {
@@ -211,7 +253,7 @@ public class EmotionToolBarViewV2 extends RelativeLayout {
         scrollToBtnPosition(select);
     }
 
-    protected void scrollToBtnPosition(final int position) {
+    private void scrollToBtnPosition(final int position) {
         int childCount = ll_toolbar.getChildCount();
         if (position < childCount) {
             hsv_toolbar.post(new Runnable() {
