@@ -48,7 +48,7 @@ public class EmojiPageContainer {
     }
 
     public boolean IsShowIndicator() {
-        return pageCount != 1;
+        return pageCount > 1;
     }
 
     public List<EmojiPageModel> getEmojiPages() {
@@ -60,6 +60,7 @@ public class EmojiPageContainer {
         private int line = 7;
         private int row = 3;
         private boolean lastItemIsDeleteButton = true;
+        private boolean isShowTitle = false;
         private int pageCount = 0;
         private List<EmojiModel> allEmojis;
         private List<EmojiPageModel> emojiPages = new ArrayList<>();
@@ -88,6 +89,11 @@ public class EmojiPageContainer {
             return this;
         }
 
+        public Builder setShowTitle(boolean isShowTitle) {
+            this.isShowTitle = isShowTitle;
+            return this;
+        }
+
         public EmojiPageContainer build() {
             if (allEmojis == null || allEmojis.size() <= 0)
                 return new EmojiPageContainer(this);
@@ -103,6 +109,7 @@ public class EmojiPageContainer {
                 EmojiPageModel model = new EmojiPageModel();
 //                model.setLine(line);
 //                model.setRow(row);
+                model.setShowTitle(isShowTitle);
                 model.setEmojis(allEmojis.subList(start, end));
                 model.setLastItemIsDeleteButton(lastItemIsDeleteButton);
                 emojiPages.add(model);

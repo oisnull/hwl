@@ -62,40 +62,18 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
         ivEmotionExtends = view.findViewById(R.id.iv_emotion_extends);
         btnSend = view.findViewById(R.id.btn_send);
         eflEmotionFunction = view.findViewById(R.id.efl_emotion_function);
+
         ivVoice.setOnClickListener(this);
         ivKeyboard.setOnClickListener(this);
         ivEmotions.setOnClickListener(this);
         ivEmotionExtends.setOnClickListener(this);
 
         View funcView = mInflater.inflate(R.layout.emotion_function_panel, null);
-        eflEmotionFunction.addFuncView(FUNC_TYPE_EMOTION, funcView);
         efvContainer = funcView.findViewById(R.id.efv_container);
         eivDotContainer = funcView.findViewById(R.id.eiv_dot_container);
         etvEmotionBar = funcView.findViewById(R.id.etv_emotion_bar);
-//        efvContainer.setOnIndicatorListener(new EmotionFunctionViewPager
-//        .OnEmoticonsPageViewListener() {
-//            @Override
-//            public void emoticonSetChanged(PageSetEntity pageSetEntity) {
-//                etvEmotionBar.setToolBtnSelect(pageSetEntity.getUuid());
-//            }
-//
-//            @Override
-//            public void playTo(int position, PageSetEntity pageSetEntity) {
-//                eivDotContainer.playTo(position, pageSetEntity);
-//            }
-//
-//            @Override
-//            public void playBy(int oldPosition, int newPosition, PageSetEntity pageSetEntity) {
-//                eivDotContainer.playBy(oldPosition, newPosition, pageSetEntity);
-//            }
-//        });
-//        etvEmotionBar.setOnToolBarItemClickListener(new EmotionToolBarView
-//        .OnToolBarItemClickListener() {
-//            @Override
-//            public void onToolBarItemClick(PageSetEntity pageSetEntity) {
-////                efvContainer.setCurrentPageSet(pageSetEntity);
-//            }
-//        });
+
+        eflEmotionFunction.addFuncView(FUNC_TYPE_EMOTION, funcView);
         eflEmotionFunction.setOnFuncChangeListener(new EmotionFunctionLayout.OnFuncChangeListener() {
             @Override
             public void onFuncChange(int key) {
@@ -153,28 +131,28 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
                 .build();
 				
         EmojiPageContainer extendEmojiContainer = new EmojiPageContainer.Builder()
+				.setLine(4)
+				.setRow(2)
+				.setLastItemIsDeleteButton(false)
                 .setAllEmojis(EmotionExtends.extendEmotions)
+				.setShowTitle(true)
                 .build();
 
         EmotionPagerAdapter emotionPagerAdapter = new EmotionPagerAdapter(context);
         emotionPagerAdapter.add(defaultEmojiContainer);
         emotionPagerAdapter.add(extendEmojiContainer);
+		emotionPagerAdapter.setEmotionListener(new IDefaultEmotionListener() {
+			@Override
+			public void onDefaultItemClick(EmojiModel emoji) {
 
-		Runnable showDots = new Runnable() {
-                @Override
-                public void run() {
-					if (defaultEmojiContainer.IsShowIndicator()) {
-						eivDotContainer.setVisibility(VISIBLE);
-						eivDotContainer.updateCount(defaultEmojiContainer.getPageCount());
-					} else {
-						eivDotContainer.setVisibility(GONE);
-					}
-                }
-        };
-		showDots.run();
+			}
 
-        efvContainer.setAdapter(emotionPagerAdapter);
-        efvContainer.setCurrentItem(0);
+			@Override
+			public void onDefaultItemDeleteClick() {
+                //EmotionUtils.deleteEmotion(etChatText);
+			}
+		});
+
         efvContainer.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             int currIndex = 0;
 			String currTag = null;
@@ -189,18 +167,25 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
                 eivDotContainer.setSelectIndicator(position, currIndex);
                 currIndex = position;
 
-				String tag=emotionPagerAdapter.getPageTag(position);
-				etvEmotionBar.setSelected(tag);
-				if(currTag!=null&&currTag!=tag){
-					showDots.run();
+				EmojiPageContainer pageContainer = emotionPagerAdapter.getPageContainer(position);
+				etvEmotionBar.setSelected(pageContainer.getId());
+				if(currTag!=null&&currTag!=pageContainer.getId()){
+					if (pageContainer.IsShowIndicator()) {
+						eivDotContainer.setVisibility(VISIBLE);
+						eivDotContainer.updateCount(pageContainer.getPageCount());
+					} else {
+						eivDotContainer.setVisibility(GONE);
+					}
 				}
-				currTag = tag;
+				currTag = pageContainer.getId();
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
             }
         });
+        efvContainer.setAdapter(emotionPagerAdapter);
+        efvContainer.setCurrentItem(0);
 
         etvEmotionBar.addItemButton(defaultEmojiContainer.getDefaultResId(), defaultEmojiContainer.getId(),new View.OnClickListener() {
 				@Override

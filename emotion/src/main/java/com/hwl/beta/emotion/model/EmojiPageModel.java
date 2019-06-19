@@ -5,6 +5,7 @@ import java.util.List;
 public class EmojiPageModel {
 //    private int line;
 //    private int row;
+	private boolean isShowTitle;
     private List<EmojiModel> emojis;
     private boolean lastItemIsDeleteButton;
 
@@ -23,6 +24,14 @@ public class EmojiPageModel {
 //    public void setRow(int row) {
 //        this.row = row;
 //    }
+
+    public boolean getShowTitle() {
+        return isShowTitle;
+    }
+
+    public void setShowTitle(boolean isShowTitle) {
+        this.isShowTitle = isShowTitle;
+    }
 
     public List<EmojiModel> getEmojis() {
         return emojis;

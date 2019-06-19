@@ -5,7 +5,7 @@ package com.hwl.beta.emotion.interfaces;
  */
 
 public interface IDefaultEmotionListener {
-    void onDefaultItemClick(String key);
+    void onDefaultItemClick(EmojiModel emoji);
 
     void onDefaultItemDeleteClick();
 }

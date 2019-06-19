@@ -22,9 +22,14 @@ public class EmotionPagerAdapter extends PagerAdapter {
     private List<View> views = new ArrayList<>();
     private List<EmojiPageContainer> pageContainers = new ArrayList<>();
     private Activity context;
+	private IDefaultEmotionListener emotionListener;
 
     public EmotionPagerAdapter(Context context) {
         this.context = (Activity) context;
+    }
+
+    public void setEmotionListener(IDefaultEmotionListener emotionListener) {
+        this.emotionListener = emotionListener;
     }
 
     public void add(EmojiPageContainer pageContainer) {
@@ -104,17 +109,7 @@ public class EmotionPagerAdapter extends PagerAdapter {
             gvContainer.setAdapter(new EmotionGridAdapter(context,
                     container.getEmojiPages().get(i),
                     itemWidth,
-                    new IDefaultEmotionListener() {
-                        @Override
-                        public void onDefaultItemClick(String key) {
-
-                        }
-
-                        @Override
-                        public void onDefaultItemDeleteClick() {
-
-                        }
-                    }));
+                    emotionListener));
             views.add(gvContainer);
         }
 

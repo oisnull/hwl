@@ -28,10 +28,10 @@ public class EmotionExtends {
     public final static ArrayList<EmojiModel> extendEmotions = new ArrayList<>();
 
     static {
-        defaultEmotions.add(new EmojiModel("图片", R.drawable.chat_photo));
-        defaultEmotions.add(new EmojiModel("拍照", R.drawable.chat_take_photo));
-        defaultEmotions.add(new EmojiModel("位置", R.drawable.chat_location));
-        defaultEmotions.add(new EmojiModel("视频", R.drawable.chat_video));
-        defaultEmotions.add(new EmojiModel("收藏", R.drawable.chat_video));
+        defaultEmotions.add(new EmojiModel("photo", R.drawable.chat_photo,"图片"));
+        defaultEmotions.add(new EmojiModel("take_photo", R.drawable.chat_take_photo,"拍照"));
+        defaultEmotions.add(new EmojiModel("location", R.drawable.chat_location,"位置"));
+        defaultEmotions.add(new EmojiModel("video", R.drawable.chat_video,"视频"));
+        defaultEmotions.add(new EmojiModel("favorite", R.drawable.chat_video,"收藏"));
     }
 }

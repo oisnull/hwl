@@ -22,6 +22,7 @@ public class EmotionGridAdapter extends BaseAdapter {
     List<EmojiModel> emojis = new ArrayList<>();
     IDefaultEmotionListener defaultEmotionListener;
     int emotionWidth;
+	boolean isShowTitle;
 
     public EmotionGridAdapter(Context context,
                               EmojiPageModel pageModel,
@@ -30,25 +31,12 @@ public class EmotionGridAdapter extends BaseAdapter {
         this.context = context;
         this.defaultEmotionListener = defaultEmotionListener;
         this.emotionWidth = emotionWidth;
+        this.isShowTitle = pageModel.getShowTitle();
         this.emojis.addAll(pageModel.getEmojis());
         if (pageModel.isLastItemIsDeleteButton()) {
             this.emojis.add(null);
         }
-
-//        calc(pageModel.getLine());
     }
-
-//    private void calc(int line) {
-//        Activity activity = (Activity) context;
-//        // 获取屏幕宽度
-//        int screenWidth = DisplayUtils.getScreenWidthPixels(activity);
-//        // item的间距
-//        int padding = DisplayUtils.dp2px(activity, 10);
-//        // 动态计算item的宽度和高度
-//        emotionWidth = (screenWidth - padding * 8) / line;//DisplayUtils.dp2px(getActivity(), 40);
-//        //动态计算gridview的总高度
-////        gvHeight = itemWidth * 3 + padding * 6;
-//    }
 
     @Override
     public int getCount() {
@@ -66,7 +54,15 @@ public class EmotionGridAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if(isShowTitle){
+			return getTitleView(position,convertView,parent);
+		}else{
+			return getImageView(position,convertView,parent);
+		}
+    }
+
+    private View getImageView(final int position, View convertView, ViewGroup parent) {
         ImageView iv = new ImageView(context);
         iv.setPadding(emotionWidth / 8, emotionWidth / 8, emotionWidth / 8, emotionWidth / 8);
         iv.setLayoutParams(new AbsListView.LayoutParams(emotionWidth, emotionWidth));
@@ -81,15 +77,44 @@ public class EmotionGridAdapter extends BaseAdapter {
             });
         } else {
             iv.setImageResource(emojis.get(position).res);
-//            iv.setImageResource(R.drawable.emotion_delete);
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    defaultEmotionListener.onDefaultItemClick(emojis.get(position).key);
+                    defaultEmotionListener.onDefaultItemClick(emojis.get(position));
                 }
             });
         }
 
         return iv;
+    }
+
+	 private View getTitleView(int position, View convertView, ViewGroup parent) {
+        ViewHolder viewHolder;
+        if (convertView == null) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.chat_extend_item, parent, false);
+            viewHolder = new ViewHolder();
+            viewHolder.ivIcon = convertView.findViewById(R.id.iv_icon);
+			viewHolder.ivIcon.setPadding(emotionWidth / 8, emotionWidth / 8, emotionWidth / 8, emotionWidth / 8);
+			viewHolder.ivIcon.setLayoutParams(new AbsListView.LayoutParams(emotionWidth, emotionWidth));
+            viewHolder.tvTitle = convertView.findViewById(R.id.tv_title);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+
+        viewHolder.ivIcon.setImageResource(emojis.get(position).res);
+        viewHolder.tvTitle.setText(emojis.get(position).title);
+		convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    defaultEmotionListener.onDefaultItemClick(emojis.get(position));
+                }
+            });
+        return convertView;
+    }
+
+	 class ViewHolder {
+        ImageView ivIcon;
+        TextView tvTitle;
     }
 }
