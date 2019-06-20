@@ -8,7 +8,7 @@ import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.hwl.beta.emotion.interfaces.IDefaultEmotionListener;
+import com.hwl.beta.emotion.interfaces.IEmotionItemListener;
 import com.hwl.beta.emotion.R;
 import com.hwl.beta.emotion.model.EmojiModel;
 import com.hwl.beta.emotion.model.EmojiPageModel;
@@ -20,16 +20,16 @@ import java.util.List;
 public class EmotionGridAdapter extends BaseAdapter {
     Context context;
     List<EmojiModel> emojis = new ArrayList<>();
-    IDefaultEmotionListener defaultEmotionListener;
+    IEmotionItemListener emotionListener;
     int emotionWidth;
 	boolean isShowTitle;
 
     public EmotionGridAdapter(Context context,
                               EmojiPageModel pageModel,
                               int emotionWidth,
-                              IDefaultEmotionListener defaultEmotionListener) {
+                              IEmotionItemListener emotionListener) {
         this.context = context;
-        this.defaultEmotionListener = defaultEmotionListener;
+        this.emotionListener = emotionListener;
         this.emotionWidth = emotionWidth;
         this.isShowTitle = pageModel.getShowTitle();
         this.emojis.addAll(pageModel.getEmojis());
@@ -72,7 +72,7 @@ public class EmotionGridAdapter extends BaseAdapter {
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    defaultEmotionListener.onDefaultItemDeleteClick();
+                    emotionListener.onItemDeleteClick();
                 }
             });
         } else {
@@ -80,7 +80,7 @@ public class EmotionGridAdapter extends BaseAdapter {
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    defaultEmotionListener.onDefaultItemClick(emojis.get(position));
+                    emotionListener.onItemClick(emojis.get(position));
                 }
             });
         }
@@ -107,7 +107,7 @@ public class EmotionGridAdapter extends BaseAdapter {
 		convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    defaultEmotionListener.onDefaultItemClick(emojis.get(position));
+                    emotionListener.onItemClick(emojis.get(position));
                 }
             });
         return convertView;

@@ -34,9 +34,7 @@ public class EmotionPagerAdapter extends PagerAdapter {
 
     public void add(EmojiPageContainer pageContainer) {
         pageContainers.add(pageContainer);
-        if (views.size() <= 0) {
-            createView(0);
-        }
+        createView(views.size());
     }
 
     public void clear() {
@@ -54,8 +52,8 @@ public class EmotionPagerAdapter extends PagerAdapter {
     @Override
     public int getCount() {
         int count = 0;
-        for (EmojiPageContainer pageSetEntity : pageContainers) {
-            count += pageSetEntity.getPageCount();
+        for (EmojiPageContainer container : pageContainers) {
+            count += container.getPageCount();
         }
         return count;
     }
@@ -79,12 +77,38 @@ public class EmotionPagerAdapter extends PagerAdapter {
         container.removeView((View) object);
     }
 
+	public int getLastPageContainerPosition(){
+		int size = pageContainers.size();
+		if(size>0){
+			return getPageContainerStartPosition(pageContainer.get(size-1).getId());
+		}
+		return 0;
+	}
+
+	public int getPageContainerStartPosition(String id) {
+        if (TextUtils.isEmpty(id)) {
+            return 0;
+        }
+
+        int startPosition = 0;
+        for (int i = 0; i < pageContainers.size(); i++) {
+            if (i == pageContainers.size() - 1 && !id.equals(pageContainers.get(i).getId())) {
+                return 0;
+            }
+            if (id.equals(pageContainers.get(i).getId())) {
+                return startPosition;
+            }
+            startPosition += pageContainers.get(i).getPageCount();
+        }
+        return startPosition;
+    }
+
     public EmojiPageContainer getPageContainer(int position) {
-        for (EmojiPageContainer pageSetEntity : pageContainers) {
-            if (pageSetEntity.getPageCount() > position) {
-                return pageSetEntity;
+        for (EmojiPageContainer container : pageContainers) {
+            if (container.getPageCount() > position) {
+                return container;
             } else {
-                position -= pageSetEntity.getPageCount();
+                position -= container.getPageCount();
             }
         }
         return null;

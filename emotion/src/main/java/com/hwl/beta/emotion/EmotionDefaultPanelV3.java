@@ -41,8 +41,14 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
     EmotionFunctionViewPagerV2 efvContainer;
     EmotionIndicatorViewV2 eivDotContainer;
     EmotionToolBarViewV2 etvEmotionBar;
+	IEmotionPanelListener panelListener;
 
-    protected boolean mDispatchKeyEventPreImeLock = false;
+    boolean mDispatchKeyEventPreImeLock = false;
+	EmotionPagerAdapter emotionPagerAdapter;
+
+	public void setEmotionPanelListener(IEmotionPanelListener panelListener){
+		this.panelListener = panelListener;
+	}
 
     public EmotionDefaultPanelV3(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -67,6 +73,13 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
         ivKeyboard.setOnClickListener(this);
         ivEmotions.setOnClickListener(this);
         ivEmotionExtends.setOnClickListener(this);
+        btnSend.setOnClickListener(this);
+		btnVoiceRecord.setAudioFinishRecorderListener(new AudioRecorderButton.AudioFinishRecorderListener() {
+            @Override
+            public void onFinish(float seconds, String filePath) {
+                panelListener.onSendSoundClick(seconds, filePath);
+            }
+        });
 
         View funcView = mInflater.inflate(R.layout.emotion_function_panel, null);
         efvContainer = funcView.findViewById(R.id.efv_container);
@@ -138,17 +151,29 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
 				.setShowTitle(true)
                 .build();
 
-        EmotionPagerAdapter emotionPagerAdapter = new EmotionPagerAdapter(context);
+        emotionPagerAdapter = new EmotionPagerAdapter(context);
         emotionPagerAdapter.add(defaultEmojiContainer);
         emotionPagerAdapter.add(extendEmojiContainer);
-		emotionPagerAdapter.setEmotionListener(new IDefaultEmotionListener() {
+		emotionPagerAdapter.setEmotionListener(new IEmotionItemListener() {
 			@Override
-			public void onDefaultItemClick(EmojiModel emoji) {
-
+			public void onItemClick(EmojiModel emoji) {
+				if(emoji.key=="photo"){
+					panelListener.onSelectImageClick();
+				}else if(emoji.key=="take_photo"){
+					panelListener.onCameraClick();
+				}else if(emoji.key=="video"){
+					panelListener.onSelectVideoClick();
+				}else if(emoji.key=="location"){
+					panelListener.onLocationClick();
+				}else if(emoji.key=="favorite"){
+					panelListener.onSelectFavoriteClick();
+				}else{
+					EmotionUtils.addEmotion(etChatText, emoji.key);
+				}
 			}
 
 			@Override
-			public void onDefaultItemDeleteClick() {
+			public void onItemDeleteClick() {
                 //EmotionUtils.deleteEmotion(etChatText);
 			}
 		});
@@ -239,18 +264,22 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
 
     @Override
     public void onClick(View v) {
-        int i = v.getId();
-        if (i == R.id.iv_keyboard) {
+        int id = v.getId();
+        if (id == R.id.iv_keyboard) {
             showKeyboard();
-            toggleFuncView(FUNC_TYPE_EMOTION);
-        } else if (i == R.id.iv_voice) {
+            //toggleFuncView(FUNC_TYPE_EMOTION);
+        } else if (id == R.id.iv_voice) {
             showVoice();
-        } else if (i == R.id.iv_emotions) {
+        } else if (id == R.id.iv_emotions) {
             showEmotions();
             toggleFuncView(FUNC_TYPE_EMOTION);
-        } else if (i == R.id.iv_emotion_extends) {
-            toggleFuncView(FUNC_TYPE_EXTENDS);
-        }
+        } else if (id == R.id.iv_emotion_extends) {
+			showExtends();
+        } else if (id == R.id.btn_send){
+			if(panelListener.onSendMessageClick(etChatText.getText()+"")){
+				//etChatText.clear();
+			}
+		}
     }
 
     public void reset() {
@@ -299,6 +328,12 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
             btnSend.setVisibility(View.GONE);
         }
     }
+
+	private void showExtends(){
+		int extendPosition = emotionPagerAdapter.getLastPageContainerPosition();
+		efvContainer.setCurrentItem(extendPosition);
+        toggleFuncView(FUNC_TYPE_EMOTION);
+	}
 
 //    @Override
 //    public void onBackKeyClick() {
