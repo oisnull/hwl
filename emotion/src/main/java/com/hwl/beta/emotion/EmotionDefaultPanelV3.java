@@ -272,7 +272,6 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
             showVoice();
         } else if (id == R.id.iv_emotions) {
             showEmotions();
-            toggleFuncView(FUNC_TYPE_EMOTION);
         } else if (id == R.id.iv_emotion_extends) {
 			showExtends();
         } else if (id == R.id.btn_send){
@@ -294,6 +293,7 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
         etChatText.setVisibility(View.GONE);
         ivEmotionExtends.setVisibility(View.VISIBLE);
         btnSend.setVisibility(View.GONE);
+		etvEmotionBar.setVisibility(VISIBLE);
 
         reset();
     }
@@ -303,6 +303,7 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
         ivKeyboard.setVisibility(View.GONE);
         btnVoiceRecord.setVisibility(View.GONE);
         etChatText.setVisibility(View.VISIBLE);
+		etvEmotionBar.setVisibility(VISIBLE);
 
         if (etChatText.getText().length() > 0) {
             ivEmotionExtends.setVisibility(View.GONE);
@@ -319,6 +320,7 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
         etChatText.setVisibility(View.VISIBLE);
         ivKeyboard.setVisibility(View.GONE);
         btnVoiceRecord.setVisibility(View.GONE);
+		etvEmotionBar.setVisibility(VISIBLE);
 
         if (etChatText.getText().length() > 0) {
             ivEmotionExtends.setVisibility(View.GONE);
@@ -327,11 +329,14 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
             ivEmotionExtends.setVisibility(View.VISIBLE);
             btnSend.setVisibility(View.GONE);
         }
+		
+        toggleFuncView(FUNC_TYPE_EMOTION);
     }
 
 	private void showExtends(){
 		int extendPosition = emotionPagerAdapter.getLastPageContainerPosition();
 		efvContainer.setCurrentItem(extendPosition);
+		etvEmotionBar.setVisibility(GONE);
         toggleFuncView(FUNC_TYPE_EMOTION);
 	}
 
