@@ -1,18 +1,19 @@
 package com.hwl.beta.emotion.adapter;
 
-import android.app.Activity;
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.hwl.beta.emotion.interfaces.IEmotionItemListener;
 import com.hwl.beta.emotion.R;
 import com.hwl.beta.emotion.model.EmojiModel;
 import com.hwl.beta.emotion.model.EmojiPageModel;
-import com.hwl.beta.emotion.utils.DisplayUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class EmotionGridAdapter extends BaseAdapter {
     List<EmojiModel> emojis = new ArrayList<>();
     IEmotionItemListener emotionListener;
     int emotionWidth;
-	boolean isShowTitle;
+    boolean isShowTitle;
 
     public EmotionGridAdapter(Context context,
                               EmojiPageModel pageModel,
@@ -55,11 +56,11 @@ public class EmotionGridAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(isShowTitle){
-			return getTitleView(position,convertView,parent);
-		}else{
-			return getImageView(position,convertView,parent);
-		}
+        if (isShowTitle) {
+            return getTitleView(position, convertView, parent);
+        } else {
+            return getImageView(position, convertView, parent);
+        }
     }
 
     private View getImageView(final int position, View convertView, ViewGroup parent) {
@@ -88,14 +89,17 @@ public class EmotionGridAdapter extends BaseAdapter {
         return iv;
     }
 
-	 private View getTitleView(int position, View convertView, ViewGroup parent) {
+    private View getTitleView(final int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.chat_extend_item, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.chat_extend_item, parent,
+                    false);
             viewHolder = new ViewHolder();
             viewHolder.ivIcon = convertView.findViewById(R.id.iv_icon);
-			viewHolder.ivIcon.setPadding(emotionWidth / 8, emotionWidth / 8, emotionWidth / 8, emotionWidth / 8);
-			viewHolder.ivIcon.setLayoutParams(new AbsListView.LayoutParams(emotionWidth, emotionWidth));
+            viewHolder.ivIcon.setPadding(emotionWidth / 8, emotionWidth / 8, emotionWidth / 8,
+                    emotionWidth / 8);
+            viewHolder.ivIcon.setLayoutParams(new LinearLayout.LayoutParams(emotionWidth,
+                    emotionWidth));
             viewHolder.tvTitle = convertView.findViewById(R.id.tv_title);
             convertView.setTag(viewHolder);
         } else {
@@ -104,16 +108,16 @@ public class EmotionGridAdapter extends BaseAdapter {
 
         viewHolder.ivIcon.setImageResource(emojis.get(position).res);
         viewHolder.tvTitle.setText(emojis.get(position).title);
-		convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    emotionListener.onItemClick(emojis.get(position));
-                }
-            });
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                emotionListener.onItemClick(emojis.get(position));
+            }
+        });
         return convertView;
     }
 
-	 class ViewHolder {
+    class ViewHolder {
         ImageView ivIcon;
         TextView tvTitle;
     }

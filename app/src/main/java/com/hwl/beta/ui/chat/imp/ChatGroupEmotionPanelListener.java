@@ -52,14 +52,13 @@ import okhttp3.ResponseBody;
  * Created by Administrator on 2018/4/6.
  */
 
-public class ChatGroupEmotionPanelListener implements EmotionControlPanelV2.PanelListener {
+public class ChatGroupEmotionPanelListener extends ChatEmotionPanelListener {
 
-    Activity activity;
     GroupInfo groupInfo;
     AudioPlay audioPlay;
 
     public ChatGroupEmotionPanelListener(Activity activity, GroupInfo groupInfo) {
-        this.activity = activity;
+        super(activity);
         this.groupInfo = groupInfo;
     }
 
@@ -68,7 +67,7 @@ public class ChatGroupEmotionPanelListener implements EmotionControlPanelV2.Pane
     }
 
     @Override
-    public boolean onSendMessageClick(String text) {
+    public boolean onSendTextClick(String text) {
         if (StringUtils.isBlank(text)) return false;
         this.sendChatMessage(IMConstant.CHAT_MESSAGE_CONTENT_TYPE_TEXT, text, null, text
                 .length(), 0);
@@ -83,38 +82,28 @@ public class ChatGroupEmotionPanelListener implements EmotionControlPanelV2.Pane
     }
 
     @Override
-    public boolean onSendExtendsClick() {
-        return false;
-    }
-
-    @Override
     public void onSelectImageClick() {
-        UITransfer.toImageSelectActivity(activity, ImageSelectType.CHAT_PUBLISH, 6, 1);
+        UITransfer.toImageSelectActivity(context, ImageSelectType.CHAT_PUBLISH, 6, 1);
     }
 
     @Override
     public void onSelectVideoClick() {
-        UITransfer.toVideoSelectActivity(activity, 3);
+        UITransfer.toVideoSelectActivity(context, 3);
     }
 
     @Override
     public void onSelectFavoriteClick() {
-        Toast.makeText(activity, "发送收藏信息功能稍后开放", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "发送收藏信息功能稍后开放", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onCameraClick() {
-        UITransfer.toSystemCamera(activity, 2);
+        UITransfer.toSystemCamera(context, 2);
     }
 
     @Override
-    public void onPositionClick() {
-        Toast.makeText(activity, "发送位置信息功能稍后开放", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onFunctionPop(int popHeight) {
-
+    public void onLocationClick() {
+        Toast.makeText(context, "发送位置信息功能稍后开放", Toast.LENGTH_SHORT).show();
     }
 
     public void resendMessage(ChatGroupMessage message) {
@@ -132,7 +121,7 @@ public class ChatGroupEmotionPanelListener implements EmotionControlPanelV2.Pane
     }
 
     public void sendChatGroupImageMessage(String localPath) {
-        File file = CompressChatImage.chatImage(activity, localPath);
+        File file = CompressChatImage.chatImage(context, localPath);
         if (file == null) {//说明压缩失败
             file = new File(localPath);//直接发原图
         }
@@ -142,7 +131,7 @@ public class ChatGroupEmotionPanelListener implements EmotionControlPanelV2.Pane
 
     private boolean checkGroupDismiss() {
         if (groupInfo == null || groupInfo.getIsDismiss()) {
-            new AlertDialog.Builder(activity)
+            new AlertDialog.Builder(context)
                     .setMessage("已经被解散群组不能发送消息!")
                     .setPositiveButton("返回", new DialogInterface.OnClickListener() {
                         @Override
@@ -389,14 +378,14 @@ public class ChatGroupEmotionPanelListener implements EmotionControlPanelV2.Pane
         final String showUrl = ChatImageViewBean.getShowUrl(message.getLocalUrl(), message
                 .getPreviewUrl(), message.getOriginalUrl());
         if (StringUtils.isBlank(showUrl)) {
-            Toast.makeText(activity, "语音不存在", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "语音不存在", Toast.LENGTH_SHORT).show();
             return;
         }
 
         final int playDirection = (message.getFromUserId() == UserSP.getUserId()) ? AudioPlay
                 .PLAY_RIGHT : AudioPlay.PLAY_LEFT;
         if (showUrl.startsWith("http")) {
-            final String localFilePath = AudioRecorderButton.getAudioStoreDir(activity) + showUrl
+            final String localFilePath = AudioRecorderButton.getAudioStoreDir(context) + showUrl
                     .substring(showUrl.lastIndexOf("/") + 1, showUrl.length());
             //如果是远程地址就下载文件
             DownloadService.downloadFile(showUrl)
@@ -432,12 +421,12 @@ public class ChatGroupEmotionPanelListener implements EmotionControlPanelV2.Pane
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
-                            Toast.makeText(activity, "语音下载失败", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "语音下载失败", Toast.LENGTH_SHORT).show();
                         }
                     });
         } else {
             if (!FileUtils.isExists(showUrl)) {
-                Toast.makeText(activity, "语音播放失败", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "语音播放失败", Toast.LENGTH_SHORT).show();
                 return;
             }
             audioPlay = new AudioPlay(iv, playDirection);
@@ -705,7 +694,7 @@ public class ChatGroupEmotionPanelListener implements EmotionControlPanelV2.Pane
 //        final String showUrl = ChatImageViewBean.getShowUrl(message.getLocalUrl(), message
 // .getPreviewUrl(), message.getOriginalUrl());
 //        if (StringUtils.isBlank(showUrl)) {
-//            Toast.makeText(activity, "语音不存在", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, "语音不存在", Toast.LENGTH_SHORT).show();
 //            return;
 //        }
 //
@@ -749,12 +738,12 @@ public class ChatGroupEmotionPanelListener implements EmotionControlPanelV2.Pane
 //                    }, new Consumer<Throwable>() {
 //                        @Override
 //                        public void accept(Throwable throwable) throws Exception {
-//                            Toast.makeText(activity, "语音下载失败", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(context, "语音下载失败", Toast.LENGTH_SHORT).show();
 //                        }
 //                    });
 //        } else {
 //            if (!FileUtils.isExists(showUrl)) {
-//                Toast.makeText(activity, "语音播放失败", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "语音播放失败", Toast.LENGTH_SHORT).show();
 //                return;
 //            }
 //            audioPlay = new AudioPlay(iv, playDirection);

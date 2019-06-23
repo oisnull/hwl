@@ -1,54 +1,57 @@
 package com.hwl.beta.emotion;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Rect;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.hwl.beta.emotion.adapter.ChatExtendAdapter;
 import com.hwl.beta.emotion.adapter.EmotionPagerAdapter;
+import com.hwl.beta.emotion.audio.AudioRecorderButton;
 import com.hwl.beta.emotion.data.EmotionLocal;
+import com.hwl.beta.emotion.interfaces.IEmotionItemListener;
+import com.hwl.beta.emotion.interfaces.IEmotionPanelListener;
+import com.hwl.beta.emotion.model.EmojiModel;
 import com.hwl.beta.emotion.model.EmojiPageContainer;
 import com.hwl.beta.emotion.utils.EmotionKeyboardUtils;
+import com.hwl.beta.emotion.utils.EmotionUtils;
 import com.hwl.beta.emotion.widget.AutoHeightLayout;
 import com.hwl.beta.emotion.widget.EmotionEditText;
 import com.hwl.beta.emotion.widget.EmotionFunctionLayout;
-import com.hwl.beta.emotion.widget.EmotionFunctionViewPagerV2;
-import com.hwl.beta.emotion.widget.EmotionIndicatorViewV2;
-import com.hwl.beta.emotion.widget.EmotionToolBarViewV2;
+import com.hwl.beta.emotion.widget.EmotionFunctionViewPager;
+import com.hwl.beta.emotion.widget.EmotionIndicatorView;
+import com.hwl.beta.emotion.widget.EmotionToolBarView;
 
 public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnClickListener {
     public static final int FUNC_TYPE_EMOTION = -1;
     public static final int FUNC_TYPE_EXTENDS = -2;
+    public static final String TAG = "EmotionDefaultPanelV3";
 
     LayoutInflater mInflater;
     Context context;
     ImageView ivVoice, ivKeyboard, ivEmotions, ivEmotionExtends;
     EmotionEditText etChatText;
-    Button btnVoiceRecord, btnSend;
+    AudioRecorderButton btnVoiceRecord;
+    Button btnSend;
     EmotionFunctionLayout eflEmotionFunction;
 
     //emotion function
-    EmotionFunctionViewPagerV2 efvContainer;
-    EmotionIndicatorViewV2 eivDotContainer;
-    EmotionToolBarViewV2 etvEmotionBar;
-	IEmotionPanelListener panelListener;
-
-    boolean mDispatchKeyEventPreImeLock = false;
-	EmotionPagerAdapter emotionPagerAdapter;
-
-	public void setEmotionPanelListener(IEmotionPanelListener panelListener){
-		this.panelListener = panelListener;
-	}
+    EmotionFunctionViewPager efvContainer;
+    EmotionIndicatorView eivDotContainer;
+    EmotionToolBarView etvEmotionBar;
+    IEmotionPanelListener panelListener;
+    Runnable onHeightChanged;
 
     public EmotionDefaultPanelV3(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -74,7 +77,8 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
         ivEmotions.setOnClickListener(this);
         ivEmotionExtends.setOnClickListener(this);
         btnSend.setOnClickListener(this);
-		btnVoiceRecord.setAudioFinishRecorderListener(new AudioRecorderButton.AudioFinishRecorderListener() {
+        btnVoiceRecord.setAudioFinishRecorderListener(new AudioRecorderButton
+                .AudioFinishRecorderListener() {
             @Override
             public void onFinish(float seconds, String filePath) {
                 panelListener.onSendSoundClick(seconds, filePath);
@@ -86,18 +90,53 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
         eivDotContainer = funcView.findViewById(R.id.eiv_dot_container);
         etvEmotionBar = funcView.findViewById(R.id.etv_emotion_bar);
 
-        eflEmotionFunction.addFuncView(FUNC_TYPE_EMOTION, funcView);
-        eflEmotionFunction.setOnFuncChangeListener(new EmotionFunctionLayout.OnFuncChangeListener() {
+        View extendView = mInflater.inflate(R.layout.emotion_extends_panel, null);
+        GridView gvExtends = extendView.findViewById(R.id.gv_extends);
+        gvExtends.setAdapter(new ChatExtendAdapter(context));
+        gvExtends.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onFuncChange(int key) {
-//        if (FUNC_TYPE_EMOTION == key) {
-//            ivEmotions.setImageResource(R.drawable.chat_emotion);
-//        } else {
-//            ivEmotions.setImageResource(R.drawable.chat_emotion);
-//        }
-//        checkVoice();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        panelListener.onSelectImageClick();
+                        break;
+                    case 1:
+                        panelListener.onCameraClick();
+                        break;
+                    case 2:
+                        panelListener.onLocationClick();
+                        break;
+                    case 3:
+                        panelListener.onSelectVideoClick();
+                        break;
+                    case 4:
+                        panelListener.onSelectFavoriteClick();
+                        break;
+                    default:
+                        break;
+                }
             }
         });
+
+        eflEmotionFunction.addFuncView(FUNC_TYPE_EMOTION, funcView);
+        eflEmotionFunction.addFuncView(FUNC_TYPE_EXTENDS, extendView);
+        eflEmotionFunction.addOnKeyBoardListener(new EmotionFunctionLayout.OnFuncKeyBoardListener() {
+            @Override
+            public void OnFuncPop(int height) {
+                if (onHeightChanged != null)
+                    onHeightChanged.run();
+            }
+
+            @Override
+            public void OnFuncClose() {
+            }
+        });
+//        eflEmotionFunction.setOnFuncChangeListener(new EmotionFunctionLayout
+//        .OnFuncChangeListener() {
+//            @Override
+//            public void onFuncChange(int key) {
+//            }
+//        });
 
         initEditView();
         initEmotionData();
@@ -138,49 +177,44 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
     }
 
     private void initEmotionData() {
-        EmojiPageContainer defaultEmojiContainer = new EmojiPageContainer.Builder()
-				.setDefaultResId(R.drawable.ic_emotion_default)
+        final EmojiPageContainer defaultEmojiContainer = new EmojiPageContainer.Builder()
+                .setDefaultResId(R.drawable.chat_emotion)
                 .setAllEmojis(EmotionLocal.defaultEmotions)
                 .build();
-				
-        EmojiPageContainer extendEmojiContainer = new EmojiPageContainer.Builder()
-				.setLine(4)
-				.setRow(2)
-				.setLastItemIsDeleteButton(false)
-                .setAllEmojis(EmotionExtends.extendEmotions)
-				.setShowTitle(true)
-                .build();
 
-        emotionPagerAdapter = new EmotionPagerAdapter(context);
+//        final EmojiPageContainer extendEmojiContainer = new EmojiPageContainer.Builder()
+//                .setLine(4)
+//                .setRow(2)
+//                .setDefaultResId(R.drawable.chat_add)
+//                .setLastItemIsDeleteButton(false)
+//                .setAllEmojis(EmotionExtends.extendEmotions)
+//                .setShowTitle(true)
+//                .build();
+
+        final EmotionPagerAdapter emotionPagerAdapter = new EmotionPagerAdapter(context,
+                new IEmotionItemListener() {
+                    @Override
+                    public void onItemClick(EmojiModel emoji) {
+                        if (emoji.source == 0) {
+                            EmotionUtils.addEmotion(etChatText, emoji.key);
+                        } else {
+                            panelListener.onSendImageClick(emoji.key);
+                        }
+                    }
+
+                    @Override
+                    public void onItemDeleteClick() {
+                        EmotionUtils.deleteEmotion(etChatText);
+                    }
+                });
         emotionPagerAdapter.add(defaultEmojiContainer);
-        emotionPagerAdapter.add(extendEmojiContainer);
-		emotionPagerAdapter.setEmotionListener(new IEmotionItemListener() {
-			@Override
-			public void onItemClick(EmojiModel emoji) {
-				if(emoji.key=="photo"){
-					panelListener.onSelectImageClick();
-				}else if(emoji.key=="take_photo"){
-					panelListener.onCameraClick();
-				}else if(emoji.key=="video"){
-					panelListener.onSelectVideoClick();
-				}else if(emoji.key=="location"){
-					panelListener.onLocationClick();
-				}else if(emoji.key=="favorite"){
-					panelListener.onSelectFavoriteClick();
-				}else{
-					EmotionUtils.addEmotion(etChatText, emoji.key);
-				}
-			}
+//        emotionPagerAdapter.add(extendEmojiContainer);
 
-			@Override
-			public void onItemDeleteClick() {
-                //EmotionUtils.deleteEmotion(etChatText);
-			}
-		});
-
+        efvContainer.setAdapter(emotionPagerAdapter);
+        efvContainer.setCurrentItem(0);
         efvContainer.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             int currIndex = 0;
-			String currTag = null;
+            String currTag = null;
 
             @Override
             public void onPageScrolled(int position, float positionOffset,
@@ -189,50 +223,57 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
 
             @Override
             public void onPageSelected(int position) {
-                eivDotContainer.setSelectIndicator(position, currIndex);
-                currIndex = position;
+                EmojiPageContainer pageContainer = emotionPagerAdapter.getPageContainer(position);
+                if (currTag != null && currTag != pageContainer.getId()) {
+                    if (pageContainer.IsShowIndicator()) {
+                        eivDotContainer.setVisibility(VISIBLE);
+                        eivDotContainer.updateCount(pageContainer.getPageCount());
+                    } else {
+                        eivDotContainer.setVisibility(GONE);
+                    }
 
-				EmojiPageContainer pageContainer = emotionPagerAdapter.getPageContainer(position);
-				etvEmotionBar.setSelected(pageContainer.getId());
-				if(currTag!=null&&currTag!=pageContainer.getId()){
-					if (pageContainer.IsShowIndicator()) {
-						eivDotContainer.setVisibility(VISIBLE);
-						eivDotContainer.updateCount(pageContainer.getPageCount());
-					} else {
-						eivDotContainer.setVisibility(GONE);
-					}
-				}
-				currTag = pageContainer.getId();
+                } else {
+                    if (pageContainer.IsShowIndicator())
+                        eivDotContainer.setSelectIndicator(position, currIndex);
+                }
+                etvEmotionBar.setSelected(pageContainer.getId());
+
+                currIndex = position;
+                currTag = pageContainer.getId();
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
             }
         });
-        efvContainer.setAdapter(emotionPagerAdapter);
-        efvContainer.setCurrentItem(0);
 
-        etvEmotionBar.addItemButton(defaultEmojiContainer.getDefaultResId(), defaultEmojiContainer.getId(),new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					etvEmotionBar.setSelected(defaultEmojiContainer.getId());
-					efvContainer.setCurrentItem(0);
-				}
-			});
-        //etvEmotionBar.addItemButton(R.drawable.chat_add, "default1");
-        //etvEmotionBar.addItemButton(R.drawable.chat_context, "default2");
-        //etvEmotionBar.addItemButton(R.drawable.chat_emotion, "default3");
-        //etvEmotionBar.addItemButton(R.drawable.chat_emotion_add, "default4");
-        //etvEmotionBar.addItemButton(R.drawable.chat_emotion_setting, "default5");
-        //etvEmotionBar.addItemButton(R.drawable.chat_keyboard, "default6");
-        //etvEmotionBar.addItemButton(R.drawable.chat_location, "default7");
-        //etvEmotionBar.addItemButton(R.drawable.chat_take_photo, "default8");
-        //etvEmotionBar.addItemButton(R.drawable.ic_emotion_default, "default9");
-        //etvEmotionBar.addItemButton(R.drawable.chat_video, "default10");
+        etvEmotionBar.addItemButton(defaultEmojiContainer.getDefaultResId(),
+                defaultEmojiContainer.getId(), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        etvEmotionBar.setSelected(defaultEmojiContainer.getId());
+                        efvContainer.setCurrentItem(0);
+                    }
+                });
+//        etvEmotionBar.addItemButton(extendEmojiContainer.getDefaultResId(),
+//                extendEmojiContainer.getId(), new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        etvEmotionBar.setSelected(extendEmojiContainer.getId());
+//                        efvContainer.setCurrentItem(emotionPagerAdapter
+//                        .getPageContainerStartPosition(extendEmojiContainer.getId()));
+//                    }
+//                });
+        etvEmotionBar.setSelected(defaultEmojiContainer.getId());
+        eivDotContainer.updateCount(defaultEmojiContainer.getPageCount());
     }
 
-    protected void toggleFuncView(int key) {
-        eflEmotionFunction.toggleFuncView(key, isSoftKeyboardPop(), etChatText);
+    protected void toggleEmotionView() {
+        eflEmotionFunction.toggleFuncView(FUNC_TYPE_EMOTION, isSoftKeyboardPop(), etChatText);
+    }
+
+    protected void toggleExtendsView() {
+        eflEmotionFunction.toggleFuncView(FUNC_TYPE_EXTENDS, isSoftKeyboardPop(), etChatText);
     }
 
     @Override
@@ -244,7 +285,8 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
     public void OnSoftPop(int height) {
         super.OnSoftPop(height);
         eflEmotionFunction.setVisibility(true);
-//        onFuncChange(eflEmotionFunction.DEF_KEY);
+        if (onHeightChanged != null)
+            onHeightChanged.run();
     }
 
     @Override
@@ -252,33 +294,34 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
         super.OnSoftClose();
         if (eflEmotionFunction.isOnlyShowSoftKeyboard()) {
             reset();
-        } else {
-//            onFuncChange(eflEmotionFunction.getCurrentFuncKey());
         }
     }
 
-//    public void addOnFuncKeyBoardListener(EmotionFunctionLayout.OnFuncKeyBoardListener l) {
-//        eflEmotionFunction.addOnKeyBoardListener(l);
-//    }
-
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && eflEmotionFunction.isShown()) {
+            reset();
+            return true;
+        }
+        return super.dispatchKeyEvent(event);
+    }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.iv_keyboard) {
             showKeyboard();
-            //toggleFuncView(FUNC_TYPE_EMOTION);
         } else if (id == R.id.iv_voice) {
             showVoice();
         } else if (id == R.id.iv_emotions) {
             showEmotions();
         } else if (id == R.id.iv_emotion_extends) {
-			showExtends();
-        } else if (id == R.id.btn_send){
-			if(panelListener.onSendMessageClick(etChatText.getText()+"")){
-				//etChatText.clear();
-			}
-		}
+            toggleExtendsView();
+        } else if (id == R.id.btn_send) {
+            if (panelListener.onSendTextClick(etChatText.getText() + "")) {
+                etChatText.setText(null);
+            }
+        }
     }
 
     public void reset() {
@@ -286,14 +329,13 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
         eflEmotionFunction.hideAllFuncView();
     }
 
-    protected void showVoice() {
+    private void showVoice() {
         ivVoice.setVisibility(View.GONE);
         ivKeyboard.setVisibility(View.VISIBLE);
         btnVoiceRecord.setVisibility(View.VISIBLE);
         etChatText.setVisibility(View.GONE);
         ivEmotionExtends.setVisibility(View.VISIBLE);
         btnSend.setVisibility(View.GONE);
-		etvEmotionBar.setVisibility(VISIBLE);
 
         reset();
     }
@@ -303,7 +345,6 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
         ivKeyboard.setVisibility(View.GONE);
         btnVoiceRecord.setVisibility(View.GONE);
         etChatText.setVisibility(View.VISIBLE);
-		etvEmotionBar.setVisibility(VISIBLE);
 
         if (etChatText.getText().length() > 0) {
             ivEmotionExtends.setVisibility(View.GONE);
@@ -320,7 +361,6 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
         etChatText.setVisibility(View.VISIBLE);
         ivKeyboard.setVisibility(View.GONE);
         btnVoiceRecord.setVisibility(View.GONE);
-		etvEmotionBar.setVisibility(VISIBLE);
 
         if (etChatText.getText().length() > 0) {
             ivEmotionExtends.setVisibility(View.GONE);
@@ -329,56 +369,17 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
             ivEmotionExtends.setVisibility(View.VISIBLE);
             btnSend.setVisibility(View.GONE);
         }
-		
-        toggleFuncView(FUNC_TYPE_EMOTION);
+
+        toggleEmotionView();
     }
 
-	private void showExtends(){
-		int extendPosition = emotionPagerAdapter.getLastPageContainerPosition();
-		efvContainer.setCurrentItem(extendPosition);
-		etvEmotionBar.setVisibility(GONE);
-        toggleFuncView(FUNC_TYPE_EMOTION);
-	}
-
-//    @Override
-//    public void onBackKeyClick() {
-//        if (eflEmotionFunction.isShown()) {
-//            mDispatchKeyEventPreImeLock = true;
-//            reset();
-//        }
-//    }
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        switch (event.getKeyCode()) {
-            case KeyEvent.KEYCODE_BACK:
-                if (mDispatchKeyEventPreImeLock) {
-                    mDispatchKeyEventPreImeLock = false;
-                    return true;
-                }
-                if (eflEmotionFunction.isShown()) {
-                    reset();
-                    return true;
-                } else {
-                    return super.dispatchKeyEvent(event);
-                }
-        }
-        return super.dispatchKeyEvent(event);
+    public void setEmotionPanelListener(IEmotionPanelListener panelListener) {
+        this.panelListener = panelListener;
+        if (panelListener != null)
+            etvEmotionBar.setEmotionToolbarListener(panelListener);
     }
 
-    @Override
-    public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
-        if (EmotionKeyboardUtils.isFullScreen((Activity) getContext())) {
-            return false;
-        }
-        return super.requestFocus(direction, previouslyFocusedRect);
-    }
-
-    @Override
-    public void requestChildFocus(View child, View focused) {
-        if (EmotionKeyboardUtils.isFullScreen((Activity) getContext())) {
-            return;
-        }
-        super.requestChildFocus(child, focused);
+    public void setOnHeightChanged(Runnable onHeightChanged) {
+        this.onHeightChanged = onHeightChanged;
     }
 }

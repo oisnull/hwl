@@ -75,6 +75,7 @@ public class ActivityChatGroup extends BaseActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.chat_activity_group);
 
         initView();
+        initEmotionPanel();
     }
 
     private void initView() {
@@ -102,23 +103,12 @@ public class ActivityChatGroup extends BaseActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    binding.ecpEmotion.hideEmotionPanel();
+                    binding.edpEmotion.reset();
                 }
                 return false;
             }
         });
 
-        emotionPanelListener = new ChatGroupEmotionPanelListener(activity, groupInfo);
-        binding.ecpEmotion.setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
-                .setContentContainerView(binding.refreshLayout)
-                .setEmotionPanelListener(emotionPanelListener)
-                .setOnPanelHeightChanged(new Runnable() {
-                    @Override
-                    public void run() {
-                        binding.rvMessageContainer.scrollToPosition(messageAdapter.getItemCount()
-                                - 1);
-                    }
-                });
 
         binding.refreshLayout.setEnableLoadMore(false);
         binding.refreshLayout.setEnableScrollContentWhenLoaded(false);
@@ -129,10 +119,15 @@ public class ActivityChatGroup extends BaseActivity {
                 loadMessages();
             }
         });
-        binding.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+    }
+
+    private void initEmotionPanel() {
+        emotionPanelListener = new ChatGroupEmotionPanelListener(activity, groupInfo);
+        binding.edpEmotion.setEmotionPanelListener(emotionPanelListener);
+        binding.edpEmotion.setOnHeightChanged(new Runnable() {
             @Override
-            public void onGlobalLayout() {
-                binding.ecpEmotion.setContentContainerHeight(binding.refreshLayout.getHeight());
+            public void run() {
+                binding.rvMessageContainer.scrollToPosition(messageAdapter.getItemCount() - 1);
             }
         });
     }

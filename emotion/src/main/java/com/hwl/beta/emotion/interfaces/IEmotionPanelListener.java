@@ -4,12 +4,12 @@ package com.hwl.beta.emotion.interfaces;
  * Created by Administrator on 2019/6/20.
  */
 
-public interface IEmotionPanelListener {
-    boolean onSendMessageClick(String text);
+public interface IEmotionPanelListener extends IEmotionToolbarListener {
+    boolean onSendTextClick(String text);
+
+    void onSendImageClick(String key);
 
     void onSendSoundClick(float seconds, String filePath);
-
-    boolean onSendExtendsClick();
 
     void onSelectImageClick();
 
@@ -20,4 +20,6 @@ public interface IEmotionPanelListener {
     void onCameraClick();
 
     void onLocationClick();
+
+//    void onHeightChanged(int height);
 }

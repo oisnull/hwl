@@ -4,7 +4,7 @@
         <attr name="panelTheme_theme" format="integer" />
     </declare-styleable>
 
-    <declare-styleable name="EmotionIndicatorView">
+    <declare-styleable name="EmotionIndicatorViewV3">
         <attr name="bmpNormal" format="reference" />
         <attr name="bmpSelect" format="reference" />
     </declare-styleable>

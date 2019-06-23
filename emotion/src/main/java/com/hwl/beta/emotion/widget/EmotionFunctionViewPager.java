@@ -1,117 +1,50 @@
 package com.hwl.beta.emotion.widget;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-
-import com.hwl.beta.emotion.adapter.PageSetAdapter;
-import com.hwl.beta.emotion.model.PageSetEntity;
+import android.view.MotionEvent;
 
 public class EmotionFunctionViewPager extends ViewPager {
 
-    protected PageSetAdapter mPageSetAdapter;
-    protected int mCurrentPagePosition;
+    public EmotionFunctionViewPager(@NonNull Context context) {
+        super(context);
+    }
 
-    public EmotionFunctionViewPager(Context context, AttributeSet attrs) {
+    public EmotionFunctionViewPager(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public void setAdapter(PageSetAdapter adapter) {
-        super.setAdapter(adapter);
-        this.mPageSetAdapter = adapter;
+    float mLastX;
+    float mLastY;
 
-        setOnPageChangeListener(new OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                checkPageChange(position);
-                mCurrentPagePosition = position;
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
-
-        if (mOnEmoticonsPageViewListener == null
-                || mPageSetAdapter.getPageSetEntityList().isEmpty()) {
-            return;
-        }
-        PageSetEntity pageSetEntity = mPageSetAdapter.getPageSetEntityList().get(0);
-        mOnEmoticonsPageViewListener.playTo(0, pageSetEntity);
-        mOnEmoticonsPageViewListener.emoticonSetChanged(pageSetEntity);
-    }
-
-    public void setCurrentPageSet(PageSetEntity pageSetEntity) {
-        if (mPageSetAdapter == null || mPageSetAdapter.getCount() <= 0) {
-            return;
-        }
-        setCurrentItem(mPageSetAdapter.getPageSetStartPosition(pageSetEntity));
-    }
-
-    public void checkPageChange(int position) {
-        if (mPageSetAdapter == null) {
-            return;
-        }
-        int end = 0;
-        for (PageSetEntity pageSetEntity : mPageSetAdapter.getPageSetEntityList()) {
-
-            int size = pageSetEntity.getPageCount();
-
-            if (end + size > position) {
-
-                boolean isEmoticonSetChanged = true;
-                // 上一表情集
-                if (mCurrentPagePosition - end >= size) {
-                    if (mOnEmoticonsPageViewListener != null) {
-                        mOnEmoticonsPageViewListener.playTo(position - end, pageSetEntity);
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (getCurrentItem() == 0) {
+            float x = ev.getX();
+            float y = ev.getY();
+            switch (ev.getAction()) {
+                case MotionEvent.ACTION_MOVE:
+                    float xDiff = Math.abs(x - mLastY);
+                    float yDiff = Math.abs(y - mLastY);
+                    //在第一页，判断到是向左边滑动，即想滑动第二页
+                    if (xDiff > 0 && x - mLastX < 0 && xDiff * 0.5f > yDiff) {
+                        //告诉父容器不要拦截事件
+                        getParent().requestDisallowInterceptTouchEvent(true);
                     }
-                }
-                // 下一表情集
-                else if (mCurrentPagePosition - end < 0) {
-                    if (mOnEmoticonsPageViewListener != null) {
-                        mOnEmoticonsPageViewListener.playTo(0, pageSetEntity);
-                    }
-                }
-                // 当前表情集
-                else {
-                    if (mOnEmoticonsPageViewListener != null) {
-                        mOnEmoticonsPageViewListener.playBy(mCurrentPagePosition - end, position - end, pageSetEntity);
-                    }
-                    isEmoticonSetChanged = false;
-                }
-
-                if (isEmoticonSetChanged && mOnEmoticonsPageViewListener != null) {
-                    mOnEmoticonsPageViewListener.emoticonSetChanged(pageSetEntity);
-                }
-                return;
+                    break;
+                case MotionEvent.ACTION_UP:
+                    getParent().requestDisallowInterceptTouchEvent(false);
+                    break;
             }
-            end += size;
+            mLastX = x;
+            mLastY = y;
+        } else {
+            getParent().requestDisallowInterceptTouchEvent(true);
         }
+        return super.dispatchTouchEvent(ev);
     }
 
-    private OnEmoticonsPageViewListener mOnEmoticonsPageViewListener;
-
-    public void setOnIndicatorListener(OnEmoticonsPageViewListener listener) {
-        mOnEmoticonsPageViewListener = listener;
-    }
-
-    public interface OnEmoticonsPageViewListener {
-
-        void emoticonSetChanged(PageSetEntity pageSetEntity);
-
-        /**
-         * @param position 相对于当前表情集的位置
-         */
-        void playTo(int position, PageSetEntity pageSetEntity);
-
-        /**
-         * @param oldPosition 相对于当前表情集的始点位置
-         * @param newPosition 相对于当前表情集的终点位置
-         */
-        void playBy(int oldPosition, int newPosition, PageSetEntity pageSetEntity);
-    }
 }

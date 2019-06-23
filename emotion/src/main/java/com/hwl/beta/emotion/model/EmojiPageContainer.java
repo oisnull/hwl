@@ -70,8 +70,9 @@ public class EmojiPageContainer {
             return this;
         }
 
-        public void setLastItemIsDeleteButton(boolean lastItemIsDeleteButton) {
+        public Builder setLastItemIsDeleteButton(boolean lastItemIsDeleteButton) {
             this.lastItemIsDeleteButton = lastItemIsDeleteButton;
+            return this;
         }
 
         public Builder setDefaultResId(int defaultResId) {

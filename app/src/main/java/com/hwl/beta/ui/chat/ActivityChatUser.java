@@ -12,7 +12,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -21,7 +20,6 @@ import com.hwl.beta.R;
 import com.hwl.beta.databinding.ChatActivityUserBinding;
 import com.hwl.beta.db.entity.ChatUserMessage;
 import com.hwl.beta.db.entity.Friend;
-import com.hwl.beta.sp.AppInstallStatus;
 import com.hwl.beta.ui.chat.action.IChatMessageItemListener;
 import com.hwl.beta.ui.chat.adp.ChatUserMessageAdapter;
 import com.hwl.beta.ui.chat.bean.ChatImageViewBean;
@@ -72,6 +70,7 @@ public class ActivityChatUser extends BaseActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.chat_activity_user);
 
         initView();
+        initEmotionPanel();
     }
 
     private void initView() {
@@ -100,23 +99,11 @@ public class ActivityChatUser extends BaseActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//                    binding.ecpEmotion.hideEmotionPanel();
+                    binding.edpEmotion.reset();
                 }
                 return false;
             }
         });
-
-        emotionPanelListener = new ChatUserEmotionPanelListener(activity, user);
-//        binding.ecpEmotion.setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
-//                .setContentContainerView(binding.refreshLayout)
-//                .setEmotionPanelListener(emotionPanelListener)
-//                .setOnPanelHeightChanged(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        binding.rvMessageContainer.scrollToPosition(messageAdapter.getItemCount()
-//                                - 1);
-//                    }
-//                });
 
         binding.refreshLayout.setEnableLoadMore(false);
         binding.refreshLayout.setEnableScrollContentWhenLoaded(false);
@@ -127,10 +114,15 @@ public class ActivityChatUser extends BaseActivity {
                 loadMessages();
             }
         });
-        binding.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+    }
+
+    private void initEmotionPanel() {
+        emotionPanelListener = new ChatUserEmotionPanelListener(activity, user);
+        binding.edpEmotion.setEmotionPanelListener(emotionPanelListener);
+        binding.edpEmotion.setOnHeightChanged(new Runnable() {
             @Override
-            public void onGlobalLayout() {
-//                binding.ecpEmotion.setContentContainerHeight(binding.refreshLayout.getHeight());
+            public void run() {
+                binding.rvMessageContainer.scrollToPosition(messageAdapter.getItemCount() - 1);
             }
         });
     }

@@ -2,6 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <com.hwl.beta.emotion.EmotionDefaultPanelV3
+        android:id="@+id/edp_emotion"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -27,12 +28,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </com.scwang.smartrefresh.layout.SmartRefreshLayout>
-
-            <!--<com.hwl.beta.emotion.EmotionControlPanelV2-->
-            <!--android:id="@+id/ecp_emotion"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--app:panel_theme="0" />-->
 
         </LinearLayout>
 

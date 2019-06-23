@@ -31,7 +31,7 @@ public class SoftKeyboardSizeWatchLayout extends RelativeLayout {
                     mScreenHeight = r.bottom;
                 }
                 mNowh = mScreenHeight - r.bottom;
-                Log.d("Emotion", "SoftKeyboardSizeWatchLayout.mNowh=" + mNowh);
+//                Log.d("Emotion", "SoftKeyboardSizeWatchLayout.mNowh=" + mNowh);
                 if (mOldh != -1 && mNowh != mOldh) {
                     if (mNowh > 0) {
                         mIsSoftKeyboardPop = true;

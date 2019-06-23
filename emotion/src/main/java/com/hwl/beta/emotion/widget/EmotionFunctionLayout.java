@@ -34,10 +34,16 @@ public class EmotionFunctionLayout extends LinearLayout {
             return;
         }
         mFuncViewArrayMap.put(key, view);
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        ViewGroup.LayoutParams params =
+                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
         addView(view, params);
         view.setVisibility(GONE);
     }
+
+//    public void hideAllFuncView() {
+//        hideAllFuncView(true);
+//    }
 
     public void hideAllFuncView() {
         for (int i = 0; i < mFuncViewArrayMap.size(); i++) {
@@ -45,13 +51,14 @@ public class EmotionFunctionLayout extends LinearLayout {
             mFuncViewArrayMap.get(keyTemp).setVisibility(GONE);
         }
         mCurrentFuncKey = DEF_KEY;
+//        if (containSelf)
         setVisibility(false);
     }
 
     public void toggleFuncView(int key, boolean isSoftKeyboardPop, EditText editText) {
         if (getCurrentFuncKey() == key) {
             if (isSoftKeyboardPop) {
-                if(EmotionKeyboardUtils.isFullScreen((Activity) getContext())){
+                if (EmotionKeyboardUtils.isFullScreen((Activity) getContext())) {
                     EmotionKeyboardUtils.closeSoftKeyboard(editText);
                 } else {
                     EmotionKeyboardUtils.closeSoftKeyboard(getContext());
@@ -61,7 +68,7 @@ public class EmotionFunctionLayout extends LinearLayout {
             }
         } else {
             if (isSoftKeyboardPop) {
-                if(EmotionKeyboardUtils.isFullScreen((Activity) getContext())){
+                if (EmotionKeyboardUtils.isFullScreen((Activity) getContext())) {
                     EmotionKeyboardUtils.closeSoftKeyboard(editText);
                 } else {
                     EmotionKeyboardUtils.closeSoftKeyboard(getContext());

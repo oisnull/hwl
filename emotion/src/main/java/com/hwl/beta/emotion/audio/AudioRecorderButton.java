@@ -10,7 +10,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
-import com.hwl.beta.emotion.utils.FileUtils;
 import com.hwl.beta.emotion.utils.PermissionsUtils;
 
 import java.io.File;

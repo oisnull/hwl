@@ -6,5 +6,6 @@ package com.hwl.beta.emotion.interfaces;
 
 public interface IEmotionToolbarListener {
     void onAddClick();
+
     void onSettingClick();
 }

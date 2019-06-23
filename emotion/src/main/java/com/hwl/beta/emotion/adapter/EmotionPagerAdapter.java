@@ -2,16 +2,15 @@ package com.hwl.beta.emotion.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.GridView;
 
-import com.hwl.beta.emotion.interfaces.IDefaultEmotionListener;
+import com.hwl.beta.emotion.interfaces.IEmotionItemListener;
 import com.hwl.beta.emotion.model.EmojiPageContainer;
 import com.hwl.beta.emotion.utils.DisplayUtils;
 
@@ -22,13 +21,10 @@ public class EmotionPagerAdapter extends PagerAdapter {
     private List<View> views = new ArrayList<>();
     private List<EmojiPageContainer> pageContainers = new ArrayList<>();
     private Activity context;
-	private IDefaultEmotionListener emotionListener;
+	private IEmotionItemListener emotionListener;
 
-    public EmotionPagerAdapter(Context context) {
+    public EmotionPagerAdapter(Context context,IEmotionItemListener emotionListener) {
         this.context = (Activity) context;
-    }
-
-    public void setEmotionListener(IDefaultEmotionListener emotionListener) {
         this.emotionListener = emotionListener;
     }
 
@@ -80,7 +76,7 @@ public class EmotionPagerAdapter extends PagerAdapter {
 	public int getLastPageContainerPosition(){
 		int size = pageContainers.size();
 		if(size>0){
-			return getPageContainerStartPosition(pageContainer.get(size-1).getId());
+			return getPageContainerStartPosition(pageContainers.get(size-1).getId());
 		}
 		return 0;
 	}
