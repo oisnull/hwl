@@ -24,189 +24,144 @@ import java.util.List;
  * Created by Administrator on 2018/1/4.
  */
 
-public class EmotionDefaultPanel extends LinearLayout {
+public class EmotionDefaultPanel extends AutoHeightLayout {
+    public static final int FUNC_TYPE_EMOTION = -1;
 
     Context context;
+    LayoutInflater inflater;
+
     ImageView ivDefaultEmotions;
     EmotionEditText etMessage;
-    LinearLayout llSysEmotion, llEmotionContainer;
-    ViewGroup contentContainerView;
-    NoHorizontalScrollerViewPager vpEmotionContainer;
-    InputMethodManager softInputManager;
-    FragmentActivity activity;
-    int localSoftInputHeight = 0;
-    int contentContainerHeight = 0;
+    EmotionFunctionLayout eflEmotionFunction;
+
+    //emotion function
+    EmotionFunctionViewPager efvContainer;
+    EmotionIndicatorView eivDotContainer;
 
     public EmotionDefaultPanel(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
-        this.activity = ((FragmentActivity) context);
+        inflater = LayoutInflater.from(context);
 
-        init();
+        initEmotionPanel();
     }
 
-    public EmotionDefaultPanel setLocalSoftInputHeight(int localSoftInputHeight) {
-        this.localSoftInputHeight = localSoftInputHeight;
-        return this;
-    }
-
-    public EmotionDefaultPanel setContentContainerView(ViewGroup contentContainerView) {
-        this.contentContainerView = contentContainerView;
-        return this;
-    }
-
-    public EmotionDefaultPanel setContentContainerHeight(int contentContainerHeight) {
-        if (this.contentContainerHeight <= 0) // just set once
-            this.contentContainerHeight = contentContainerHeight - localSoftInputHeight;
-        return this;
-    }
-
-    public EmotionDefaultPanel setEditText(EmotionEditText et) {
-        this.etMessage = et;
-        this.bindEditTextEvents();
-        return this;
-    }
-
-    private void init() {
-        View view = LayoutInflater.from(context).inflate(R.layout.emotion_default_panel,
-                this, false);
-        softInputManager = (InputMethodManager) activity.getSystemService(Context
-                .INPUT_METHOD_SERVICE);
-        llSysEmotion = view.findViewById(R.id.ll_sys_emotion);
-        llEmotionContainer = view.findViewById(R.id.ll_emotion_container);
-        vpEmotionContainer = view.findViewById(R.id.vp_emotion_container);
+    private void initEmotionPanel() {
+        View view = inflater.inflate(R.layout.emotion_default_panel, this);
+        eflEmotionFunction = view.findViewById(R.id.efl_emotion_function);
         ivDefaultEmotions = view.findViewById(R.id.iv_default_emotions);
+
         ivDefaultEmotions.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDefaultEmotion();
+                toggleEmotionView();
             }
         });
-        llSysEmotion.setOnTouchListener(new View.OnTouchListener() {
+
+        View funcView = inflater.inflate(R.layout.emotion_function_panel, null);
+        efvContainer = funcView.findViewById(R.id.efv_container);
+        eivDotContainer = funcView.findViewById(R.id.eiv_dot_container);
+
+        eflEmotionFunction.addFuncView(FUNC_TYPE_EMOTION, funcView);
+    }
+
+    public void setEditText(EmotionEditText et) {
+        etMessage = et;
+        etMessage.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    hideEmotionPanel();
+                if (!etMessage.isFocused()) {
+                    etMessage.setFocusable(true);
+                    etMessage.setFocusableInTouchMode(true);
                 }
                 return false;
             }
         });
 
-        this.bindSysEmotionData();
-        this.addView(view);
+        initEmotionData();
     }
 
-    private void bindSysEmotionData() {
-        List<Fragment> emotionExtendFragments = new ArrayList<>(1);
-        EmotionTemplateFragment emotionTemplateFragment = new EmotionTemplateFragment();
-        emotionTemplateFragment.setDefaultEmotionListener(new IDefaultEmotionListener() {
+    private void initEmotionData() {
+        final EmojiPageContainer defaultEmojiContainer = new EmojiPageContainer.Builder()
+                .setDefaultResId(R.drawable.chat_emotion)
+                .setAllEmojis(EmotionLocal.defaultEmotions)
+                .build();
+
+        final EmotionPagerAdapter emotionPagerAdapter = new EmotionPagerAdapter(context,
+                new IEmotionItemListener() {
+                    @Override
+                    public void onItemClick(EmojiModel emoji) {
+                        if (emoji.source == 0) {
+                            EmotionUtils.addEmotion(etMessage, emoji.key);
+                        }
+                    }
+
+                    @Override
+                    public void onItemDeleteClick() {
+                        EmotionUtils.deleteEmotion(etMessage);
+                    }
+                });
+        emotionPagerAdapter.add(defaultEmojiContainer);
+		
+        eivDotContainer.updateCount(defaultEmojiContainer.getPageCount());
+        efvContainer.setAdapter(emotionPagerAdapter);
+        efvContainer.setCurrentItem(0);
+        efvContainer.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            int currIndex = 0;
+
             @Override
-            public void onDefaultItemClick(String name) {
-                EmotionUtils.addEmotion(etMessage, name);
+            public void onPageScrolled(int position, float positionOffset,
+                                       int positionOffsetPixels) {
             }
 
             @Override
-            public void onDefaultItemDeleteClick() {
-                EmotionUtils.deleteEmotion(etMessage);
+            public void onPageSelected(int position) {
+                EmojiPageContainer pageContainer = emotionPagerAdapter.getPageContainer(position);
+                if (pageContainer.IsShowIndicator())
+                    eivDotContainer.setSelectIndicator(position, currIndex);
+                currIndex = position;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
             }
         });
-        emotionExtendFragments.add(emotionTemplateFragment);
-        vpEmotionContainer.setAdapter(new EmotionExtendContainerPagerAdapter(activity
-                .getSupportFragmentManager(), emotionExtendFragments));
-
     }
 
-    private void bindEditTextEvents() {
-        etMessage.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showKeyboard();
-            }
-        });
-//        etMessage.setOnTouchListener(new OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//                    showKeyboard();
-//                }
-//                return false;
-//            }
-//        });
-        etMessage.setSoftKeyListener(new OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.KEYCODE_DEL == KeyEvent.KEYCODE_DEL) {
-                    EmotionUtils.deleteEmotion(etMessage);
-                }
-                return false;
-            }
-        });
+    public void toggleEmotionView() {
+        eflEmotionFunction.toggleFuncView(FUNC_TYPE_EMOTION, isSoftKeyboardPop(), etMessage);
     }
 
-    public void hideEmotionPanel() {
-        this.setVisibility(GONE);
-        hideSoftInput();
+	public void reset() {
+        EmotionKeyboardUtils.closeSoftKeyboard(this);
+        eflEmotionFunction.hideAllFuncView();
     }
 
-    private void showKeyboard() {
-        if (!this.isShown())
-            this.setVisibility(VISIBLE);
-        lockContentHeight();
-        showSoftInput();
-        hideEmotionContainer();
-        unlockContentHeightDelayed();
+	 @Override
+    public void onSoftKeyboardHeightChanged(int height) {
+        eflEmotionFunction.updateHeight(height);
     }
 
-    private void showDefaultEmotion() {
-        if (llEmotionContainer.isShown()) {
-            showKeyboard();
-        } else {
-            lockContentHeight();
-            hideSoftInput();
-            showEmotionContainer();
-            unlockContentHeightDelayed();
+    @Override
+    public void OnSoftPop(int height) {
+        super.OnSoftPop(height);
+        eflEmotionFunction.setVisibility(true);
+    }
+
+    @Override
+    public void OnSoftClose() {
+        super.OnSoftClose();
+        if (eflEmotionFunction.isOnlyShowSoftKeyboard()) {
+            reset();
         }
     }
 
-    private void lockContentHeight() {
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) contentContainerView
-                .getLayoutParams();
-        params.height = contentContainerView.getHeight() > this.contentContainerHeight ? this
-                .contentContainerHeight : contentContainerView.getHeight();
-        params.weight = 0.0F;
-    }
-
-    private void unlockContentHeightDelayed() {
-        etMessage.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                ((LinearLayout.LayoutParams) contentContainerView.getLayoutParams()).weight = 1.0F;
-            }
-        }, 300L);
-    }
-
-    private void showEmotionContainer() {
-        etMessage.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                llEmotionContainer.getLayoutParams().height = localSoftInputHeight;
-                llEmotionContainer.setVisibility(View.VISIBLE);
-            }
-        }, 300L);
-    }
-
-    private void hideEmotionContainer() {
-        if (llEmotionContainer.isShown()) {
-            llEmotionContainer.setVisibility(View.GONE);
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && eflEmotionFunction.isShown()) {
+            reset();
+            return true;
         }
-    }
-
-    private void showSoftInput() {
-        etMessage.requestFocus();
-        softInputManager.showSoftInput(etMessage, 0);
-    }
-
-    private void hideSoftInput() {
-        softInputManager.hideSoftInputFromWindow(etMessage.getWindowToken(), 0);
+        return super.dispatchKeyEvent(event);
     }
 }

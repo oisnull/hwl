@@ -56,16 +56,16 @@ public class ActivityCirclePublish extends BaseActivity {
                     }
                 });
 
-        binding.ecpEmotion.setEditText(binding.etEmotionText)
-                .setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
-                .setContentContainerView(binding.llCirclePublishContainer);
-
-        binding.llCirclePublishContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                binding.ecpEmotion.setContentContainerHeight(binding.llCirclePublishContainer.getHeight() - binding.tbTitle.getHeight());
-            }
-        });
+        //binding.ecpEmotion.setEditText(binding.etEmotionText)
+        //        .setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
+        //        .setContentContainerView(binding.llCirclePublishContainer);
+		//
+        //binding.llCirclePublishContainer.getViewTreeObserver().addOnGlobalLayoutListener(new //ViewTreeObserver.OnGlobalLayoutListener() {
+        //    @Override
+        //    public void onGlobalLayout() {
+        //        binding.ecpEmotion.setContentContainerHeight//(binding.llCirclePublishContainer.getHeight() - binding.tbTitle.getHeight());
+        //    }
+        //});
     }
 
     @Override

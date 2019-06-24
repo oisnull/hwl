@@ -68,10 +68,10 @@
 
         </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
-        <com.hwl.beta.emotion.EmotionDefaultPanelV2
+        <!--<com.hwl.beta.emotion.EmotionDefaultPanelV2
             android:id="@+id/ecp_emotion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone" />
+            android:visibility="gone" />-->
     </LinearLayout>
 </layout>

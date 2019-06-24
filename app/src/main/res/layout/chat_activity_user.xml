@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <com.hwl.beta.emotion.EmotionDefaultPanelV3
+    <com.hwl.beta.emotion.EmotionFullPanel
         android:id="@+id/edp_emotion"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -31,5 +31,5 @@
 
         </LinearLayout>
 
-    </com.hwl.beta.emotion.EmotionDefaultPanelV3>
+    </com.hwl.beta.emotion.EmotionFullPanel>
 </layout>

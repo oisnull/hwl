@@ -33,10 +33,10 @@ import com.hwl.beta.emotion.widget.EmotionFunctionViewPager;
 import com.hwl.beta.emotion.widget.EmotionIndicatorView;
 import com.hwl.beta.emotion.widget.EmotionToolBarView;
 
-public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnClickListener {
+public class EmotionFullPanel extends AutoHeightLayout implements View.OnClickListener {
     public static final int FUNC_TYPE_EMOTION = -1;
     public static final int FUNC_TYPE_EXTENDS = -2;
-    public static final String TAG = "EmotionDefaultPanelV3";
+    public static final String TAG = "EmotionFullPanel";
 
     LayoutInflater mInflater;
     Context context;
@@ -53,7 +53,7 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
     IEmotionPanelListener panelListener;
     Runnable onHeightChanged;
 
-    public EmotionDefaultPanelV3(Context context, AttributeSet attrs) {
+    public EmotionFullPanel(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -62,7 +62,7 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
     }
 
     protected void initEmotionPanel() {
-        View view = mInflater.inflate(R.layout.emotion_control_panel_v3, this);
+        View view = mInflater.inflate(R.layout.emotion_full_panel, this);
         ivVoice = view.findViewById(R.id.iv_voice);
         ivKeyboard = view.findViewById(R.id.iv_keyboard);
         btnVoiceRecord = view.findViewById(R.id.btn_voice_record);
@@ -268,11 +268,11 @@ public class EmotionDefaultPanelV3 extends AutoHeightLayout implements View.OnCl
         eivDotContainer.updateCount(defaultEmojiContainer.getPageCount());
     }
 
-    protected void toggleEmotionView() {
+    public void toggleEmotionView() {
         eflEmotionFunction.toggleFuncView(FUNC_TYPE_EMOTION, isSoftKeyboardPop(), etChatText);
     }
 
-    protected void toggleExtendsView() {
+    public void toggleExtendsView() {
         eflEmotionFunction.toggleFuncView(FUNC_TYPE_EXTENDS, isSoftKeyboardPop(), etChatText);
     }
 

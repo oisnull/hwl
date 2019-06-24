@@ -4,12 +4,12 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="vertical">
+  
+  <include layout="@layout/view_split_horizontal" />
 
     <LinearLayout
-        android:id="@+id/ll_sys_emotion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/layout_border"
         android:gravity="center_vertical">
 
         <ImageView
@@ -25,21 +25,15 @@
 
     </LinearLayout>
 
-    <!--默认表情和扩展表情列表-->
-    <LinearLayout
-        android:id="@+id/ll_emotion_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
-        android:visibility="gone">
 
-        <com.hwl.beta.emotion.NoHorizontalScrollerViewPager
-            android:id="@+id/vp_emotion_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="visible" />
-    </LinearLayout>
+  <include layout="@layout/view_split_horizontal" />
 
+  <com.hwl.beta.emotion.widget.EmotionFunctionLayout
+      android:id="@+id/efl_emotion_function"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center_vertical"
+      android:orientation="vertical"
+      android:visibility="visible" />
 
 </LinearLayout>

@@ -129,16 +129,16 @@ public class FragmentNear extends BaseFragment {
         });
 
         emotionPanelListener = new EmotionPanelListener();
-        binding.ecpEmotion.setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
-                .setContentContainerView(binding.refreshLayout)
-                .setEmotionPanelListener(emotionPanelListener);
-
-        binding.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                binding.ecpEmotion.setContentContainerHeight(binding.refreshLayout.getHeight());
-            }
-        });
+        //binding.ecpEmotion.setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
+        //        .setContentContainerView(binding.refreshLayout)
+        //        .setEmotionPanelListener(emotionPanelListener);
+		//
+        //binding.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new //ViewTreeObserver.OnGlobalLayoutListener() {
+        //    @Override
+        //    public void onGlobalLayout() {
+        //        binding.ecpEmotion.setContentContainerHeight(binding.refreshLayout.getHeight());
+        //    }
+        //});
     }
 
     public void setEmotionStatus(boolean isShow) {
@@ -146,17 +146,17 @@ public class FragmentNear extends BaseFragment {
     }
 
     public void setEmotionStatus(boolean isShow, String hintText) {
-        ActivityMain parentActivity = (ActivityMain) getActivity();
-        if (isShow) {
-            parentActivity.setBottomNavVisibility(false);
-            binding.ecpEmotion.showKeyboard();
-            binding.ecpEmotion.setVisibility(View.VISIBLE);
-        } else {
-            parentActivity.setBottomNavVisibility(true);
-            binding.ecpEmotion.hideEmotionPanel();
-            binding.ecpEmotion.setVisibility(View.GONE);
-        }
-        binding.ecpEmotion.setHintMessage(hintText);
+       //ActivityMain parentActivity = (ActivityMain) getActivity();
+       //if (isShow) {
+       //    parentActivity.setBottomNavVisibility(false);
+       //    binding.ecpEmotion.showKeyboard();
+       //    binding.ecpEmotion.setVisibility(View.VISIBLE);
+       //} else {
+       //    parentActivity.setBottomNavVisibility(true);
+       //    binding.ecpEmotion.hideEmotionPanel();
+       //    binding.ecpEmotion.setVisibility(View.GONE);
+       //}
+       //binding.ecpEmotion.setHintMessage(hintText);
     }
 
     private void loadServerInfos(long infoId) {
@@ -211,7 +211,7 @@ public class FragmentNear extends BaseFragment {
         }
     }
 
-    private class EmotionPanelListener implements EmotionDefaultPanelV2.IEmotionPanelListener {
+    private class EmotionPanelListener implements EmotionDefaultPanelV2.IPanelListener {
         private int position;
         private NearCircle info;
 

@@ -60,17 +60,18 @@ public class ActivityNearPublish extends BaseActivity {
                     }
                 });
 
-        binding.ecpEmotion.setEditText(binding.etEmotionText)
-                .setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
-                .setContentContainerView(binding.llNearPublishContainer);
+		binding.edpEmotion.setEditText(binding.etEmotionText);
+        //binding.ecpEmotion.setEditText(binding.etEmotionText)
+        //        .setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
+        //        .setContentContainerView(binding.llNearPublishContainer);
 
-        binding.llNearPublishContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                binding.ecpEmotion.setContentContainerHeight(binding.llNearPublishContainer
-                        .getHeight() - binding.tbTitle.getHeight());
-            }
-        });
+        //binding.llNearPublishContainer.getViewTreeObserver().addOnGlobalLayoutListener(new //ViewTreeObserver.OnGlobalLayoutListener() {
+        //    @Override
+        //    public void onGlobalLayout() {
+        //        binding.ecpEmotion.setContentContainerHeight(binding.llNearPublishContainer
+        //                .getHeight() - binding.tbTitle.getHeight());
+        //    }
+        //});
     }
 
     @Override
