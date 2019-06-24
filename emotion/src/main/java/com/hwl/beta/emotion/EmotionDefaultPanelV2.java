@@ -1,25 +1,27 @@
 package com.hwl.beta.emotion;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
-import com.hwl.beta.emotion.interfaces.IDefaultEmotionListener;
+import com.hwl.beta.emotion.adapter.EmotionPagerAdapter;
+import com.hwl.beta.emotion.data.EmotionLocal;
+import com.hwl.beta.emotion.interfaces.IEmotionItemListener;
+import com.hwl.beta.emotion.model.EmojiModel;
+import com.hwl.beta.emotion.model.EmojiPageContainer;
+import com.hwl.beta.emotion.utils.EmotionKeyboardUtils;
 import com.hwl.beta.emotion.utils.EmotionUtils;
+import com.hwl.beta.emotion.widget.AutoHeightLayout;
 import com.hwl.beta.emotion.widget.EmotionEditText;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.hwl.beta.emotion.widget.EmotionFunctionLayout;
+import com.hwl.beta.emotion.widget.EmotionFunctionViewPager;
+import com.hwl.beta.emotion.widget.EmotionIndicatorView;
 
 /**
  * Created by Administrator on 2018/1/4.
@@ -35,6 +37,7 @@ public class EmotionDefaultPanelV2 extends AutoHeightLayout {
     EmotionEditText etMessage;
     Button btnSend, btnCancel;
     IPanelListener panelListener;
+    EmotionFunctionLayout eflEmotionFunction;
 
     //emotion function
     EmotionFunctionViewPager efvContainer;
@@ -58,7 +61,7 @@ public class EmotionDefaultPanelV2 extends AutoHeightLayout {
         ivDefaultEmotions.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDefaultEmotion();
+                toggleEmotionView();
             }
         });
         btnCancel.setOnClickListener(new View.OnClickListener() {

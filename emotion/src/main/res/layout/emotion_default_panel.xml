@@ -4,10 +4,11 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="vertical">
-  
-  <include layout="@layout/view_split_horizontal" />
+
+    <include layout="@layout/view_split_horizontal" />
 
     <LinearLayout
+        android:id="@+id/ll_emotion_panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical">
@@ -26,14 +27,14 @@
     </LinearLayout>
 
 
-  <include layout="@layout/view_split_horizontal" />
+    <include layout="@layout/view_split_horizontal" />
 
-  <com.hwl.beta.emotion.widget.EmotionFunctionLayout
-      android:id="@+id/efl_emotion_function"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:gravity="center_vertical"
-      android:orientation="vertical"
-      android:visibility="visible" />
+    <com.hwl.beta.emotion.widget.EmotionFunctionLayout
+        android:id="@+id/efl_emotion_function"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:visibility="visible" />
 
 </LinearLayout>
