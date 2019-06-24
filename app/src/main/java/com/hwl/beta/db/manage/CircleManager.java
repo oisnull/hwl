@@ -15,6 +15,7 @@ import com.hwl.beta.db.entity.CircleImage;
 import com.hwl.beta.db.entity.CircleLike;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.db.ext.CircleExt;
+import com.hwl.beta.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -488,9 +489,11 @@ public class CircleManager extends BaseDao<Circle> {
         setCircleFriendInfo(exts, friends, func);
     }
 
-    public void setUpdateTime(long circleId,String updateTime) {
-		if(circleId<=0||StringUtils.isBlank(updateTime)) return;
-        String updateSql = String.format("update %s set %s='%s' where %s=%d",CircleDao.TABLENAME,CircleDao.Properties.UpdateTime.columnName,updateTime,CircleDao.Properties.CircleId.columnName,circleId);
+    public void setUpdateTime(long circleId, String updateTime) {
+        if (circleId <= 0 || StringUtils.isBlank(updateTime)) return;
+        String updateSql = String.format("update %s set %s='%s' where %s=%d", CircleDao.TABLENAME
+                , CircleDao.Properties.UpdateTime.columnName, updateTime,
+                CircleDao.Properties.CircleId.columnName, circleId);
         daoSession.getDatabase().execSQL(updateSql);
     }
 }

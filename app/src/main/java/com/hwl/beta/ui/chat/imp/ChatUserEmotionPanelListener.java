@@ -8,10 +8,8 @@ import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.ChatRecordMessage;
 import com.hwl.beta.db.entity.ChatUserMessage;
 import com.hwl.beta.db.entity.Friend;
-import com.hwl.beta.emotion.EmotionControlPanelV2;
 import com.hwl.beta.emotion.audio.AudioPlay;
 import com.hwl.beta.emotion.audio.AudioRecorderButton;
-import com.hwl.beta.net.ResponseBase;
 import com.hwl.beta.net.resx.DownloadService;
 import com.hwl.beta.net.resx.ResxType;
 import com.hwl.beta.net.resx.UpVideoChunk;
@@ -21,12 +19,10 @@ import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.GetUserRelationInfoResponse;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.chat.bean.ChatImageViewBean;
-import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.common.exception.CustomException;
 import com.hwl.beta.ui.common.exception.ExceptionCode;
 import com.hwl.beta.ui.ebus.EventBusUtil;
 import com.hwl.beta.ui.imgcompress.CompressChatImage;
-import com.hwl.beta.ui.imgselect.bean.ImageSelectType;
 import com.hwl.beta.ui.immsg.IMClientEntry;
 import com.hwl.beta.ui.immsg.IMConstant;
 import com.hwl.beta.ui.immsg.IMDefaultSendOperateListener;
@@ -51,19 +47,18 @@ import okhttp3.ResponseBody;
  * Created by Administrator on 2018/4/6.
  */
 
-public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.PanelListener {
+public class ChatUserEmotionPanelListener extends ChatEmotionPanelListener {
 
-    Activity activity;
     Friend user;
     AudioPlay audioPlay;
 
     public ChatUserEmotionPanelListener(Activity activity, Friend user) {
-        this.activity = activity;
+        super(activity);
         this.user = user;
     }
 
     @Override
-    public boolean onSendMessageClick(String text) {
+    public boolean onSendTextClick(String text) {
         if (StringUtils.isBlank(text)) return false;
         this.sendChatMessage(IMConstant.CHAT_MESSAGE_CONTENT_TYPE_TEXT, text, null, text
                 .length(), 0);
@@ -74,41 +69,6 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
     public void onSendSoundClick(float seconds, String filePath) {
         this.sendChatMessage(IMConstant.CHAT_MESSAGE_CONTENT_TYPE_VOICE, "[语音]", filePath, 0,
                 (int) seconds);
-    }
-
-    @Override
-    public boolean onSendExtendsClick() {
-        return false;
-    }
-
-    @Override
-    public void onSelectImageClick() {
-        UITransfer.toImageSelectActivity(activity, ImageSelectType.CHAT_PUBLISH, 6, 1);
-    }
-
-    @Override
-    public void onSelectVideoClick() {
-        UITransfer.toVideoSelectActivity(activity, 3);
-    }
-
-    @Override
-    public void onSelectFavoriteClick() {
-        Toast.makeText(activity, "发送收藏信息功能稍后开放", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onCameraClick() {
-        UITransfer.toSystemCamera(activity, 2);
-    }
-
-    @Override
-    public void onPositionClick() {
-        Toast.makeText(activity, "发送位置信息功能稍后开放", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onFunctionPop(int popHeigth) {
-
     }
 
     public void resendMessage(ChatUserMessage message) {
@@ -127,7 +87,7 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
     }
 
     public void sendChatUserImageMessage(String localPath) {
-        File file = CompressChatImage.chatImage(activity, localPath);
+        File file = CompressChatImage.chatImage(context, localPath);
         if (file == null) {
             file = new File(localPath);
         }
@@ -381,14 +341,14 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
         final String showUrl = ChatImageViewBean.getShowUrl(message.getLocalUrl(), message
                 .getPreviewUrl(), message.getOriginalUrl());
         if (StringUtils.isBlank(showUrl)) {
-            Toast.makeText(activity, "语音不存在", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "语音不存在", Toast.LENGTH_SHORT).show();
             return;
         }
 
         final int playDirection = (message.getFromUserId() == UserSP.getUserId()) ? AudioPlay
                 .PLAY_RIGHT : AudioPlay.PLAY_LEFT;
         if (showUrl.startsWith("http")) {
-            final String localFilePath = AudioRecorderButton.getAudioStoreDir(activity) + showUrl
+            final String localFilePath = AudioRecorderButton.getAudioStoreDir(context) + showUrl
                     .substring(showUrl.lastIndexOf("/") + 1, showUrl.length());
             //如果是远程地址就下载文件
             DownloadService.downloadFile(showUrl)
@@ -424,12 +384,12 @@ public class ChatUserEmotionPanelListener implements EmotionControlPanelV2.Panel
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
-                            Toast.makeText(activity, "语音下载失败", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "语音下载失败", Toast.LENGTH_SHORT).show();
                         }
                     });
         } else {
             if (!FileUtils.isExists(showUrl)) {
-                Toast.makeText(activity, "语音播放失败", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "语音播放失败", Toast.LENGTH_SHORT).show();
                 return;
             }
             audioPlay = new AudioPlay(iv, playDirection);

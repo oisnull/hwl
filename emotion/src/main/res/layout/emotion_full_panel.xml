@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <include layout="@layout/view_split_horizontal" />
+
+    <LinearLayout
+        android:id="@+id/ll_emotion_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_5"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_voice"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:background="@drawable/chat_voice"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/iv_keyboard"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:background="@drawable/chat_keyboard"
+            android:visibility="gone" />
+
+        <com.hwl.beta.emotion.audio.AudioRecorderButton
+            android:id="@+id/btn_voice_record"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_weight="1"
+            android:background="@drawable/chat_context"
+            android:gravity="center"
+            android:maxHeight="200dp"
+            android:minHeight="40dp"
+            android:padding="@dimen/dp_5"
+            android:text="按住说话"
+            android:textColor="@color/color_b2b2b2"
+            android:textSize="@dimen/dp_15"
+            android:visibility="gone" />
+
+        <com.hwl.beta.emotion.widget.EmotionEditText
+            android:id="@+id/et_chat_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_weight="1"
+            android:background="@drawable/chat_context"
+            android:gravity="center_vertical"
+            android:hint="输入聊天内容"
+            android:maxHeight="250dp"
+            android:maxLines="5"
+            android:minHeight="40dp"
+            android:minLines="1"
+            android:padding="@dimen/dp_5"
+            android:textColor="@color/black"
+            android:textColorHint="@color/color_b2b2b2"
+            android:textSize="@dimen/dp_15"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/iv_emotions"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:src="@drawable/chat_emotion"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/iv_emotion_extends"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginRight="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:src="@drawable/chat_add"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="@dimen/dp_5">
+
+            <Button
+                android:id="@+id/btn_send"
+                android:layout_width="48dp"
+                android:layout_height="31dp"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5"
+                android:background="@color/main"
+                android:text="发送"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dp_15"
+                android:visibility="gone" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <include layout="@layout/view_split_horizontal" />
+
+    <com.hwl.beta.emotion.widget.EmotionFunctionLayout
+        android:id="@+id/efl_emotion_function"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:visibility="visible" />
+</LinearLayout>

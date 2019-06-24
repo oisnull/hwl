@@ -131,7 +131,7 @@ public class NearLogic implements NearStandard {
                         likeInfo.setLikeUserId(UserSP.getUserId());
                         likeInfo.setLikeUserName(UserSP.getUserName());
                         likeInfo.setLikeUserImage(UserSP.getUserHeadImage());
-                        likeInfo.setLikeTime(DateUtils.strToDateLong(response.getLastUpdateTime()));
+//                        likeInfo.setLikeTime(DateUtils.strToDateLong(response.getLastUpdateTime()));
                         if (isLike) {
                             DaoUtils.getNearCircleManagerInstance().saveLike(likeInfo);
                         } else {

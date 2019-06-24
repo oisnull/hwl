@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 
+import com.hwl.beta.emotion.interfaces.IDefaultEmotionListener;
 import com.hwl.beta.emotion.utils.DisplayUtils;
 import com.hwl.beta.emotion.utils.EmotionUtils;
 import com.hwl.beta.emotion.widget.DotView;

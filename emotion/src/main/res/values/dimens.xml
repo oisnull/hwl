@@ -9,4 +9,9 @@
     <dimen name="dp_20">20dp</dimen>
     <dimen name="dp_30">30dp</dimen>
     <dimen name="dp_35">35dp</dimen>
+
+    <dimen name="item_emotion_default_size">32dp</dimen>
+    <dimen name="def_keyboard_height">272dp</dimen>
+    <dimen name="emotion_toolbar_btn_width">56dp</dimen>
+    <dimen name="emotion_toolbar_height">32dp</dimen>
 </resources>

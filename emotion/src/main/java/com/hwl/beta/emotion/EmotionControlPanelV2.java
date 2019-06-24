@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.hwl.beta.emotion.adapter.ChatExtendAdapter;
 import com.hwl.beta.emotion.audio.AudioRecorderButton;
+import com.hwl.beta.emotion.interfaces.IDefaultEmotionListener;
 import com.hwl.beta.emotion.utils.EmotionUtils;
 import com.hwl.beta.emotion.widget.EmotionEditText;
 
