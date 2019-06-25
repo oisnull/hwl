@@ -218,10 +218,31 @@ public class ChatUserMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     return 203;
                 }
             default:
-//            case IMConstant.CHAT_MESSAGE_CONTENT_TYPE_REJECT:
                 return 300;
         }
     }
+
+	public int getCurrentImageIndex(int position,List<String> images){
+		int imageIndex = 0;
+        int imagePosition = 0;
+        for (int i = 0; i < messages.size(); i++) {
+            if (messages.get(i).getContentType() == NetConstant.CIRCLE_CONTENT_IMAGE) {
+                if (StringUtils.isNotBlank(messages.get(i).getLocalUrl())) {
+                    images.add(messages.get(i).getLocalUrl());
+                } else if (StringUtils.isNotBlank(messages.get(i).getOriginalUrl())) {
+                    images.add(messages.get(i).getOriginalUrl());
+                } else {
+                    images.add(messages.get(i).getPreviewUrl());
+                }
+                if (i == position) {
+                    imagePosition = imageIndex;
+                }
+                imageIndex++;
+            }
+        }
+
+		return imagePosition;
+	}
 
     public void updateMessage(ChatUserMessage msg) {
         if (msg == null) return;
@@ -235,6 +256,13 @@ public class ChatUserMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             notifyItemChanged(position);
         }
     }
+
+	public void deleteMessage(int position){
+        if (position<0) return;
+        messages.remove(position);
+		notifyItemRemoved(position);
+		notifyItemRangeChanged(position, messages.size() - position);
+	}
 
     public void addMessages(List<ChatUserMessage> messages) {
         if (messages == null || messages.size() <= 0) return;

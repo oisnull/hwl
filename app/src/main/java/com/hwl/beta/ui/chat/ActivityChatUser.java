@@ -165,34 +165,6 @@ public class ActivityChatUser extends BaseActivity {
                 break;
         }
     }
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void updateMessage(ChatUserMessage message) {
-//        if (message == null) return;
-//        if (message.getFromUserId() != user.getId() && message.getFromUserId() != myUserId)
-// return;
-// //        checkFriendInfo(message);
-//        messageAdapter.addMessage(message);
-//        rvMessageContainer.scrollToPosition(messageAdapter.getItemCount() - 1);
-//    }
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void updateRemark(EventUpdateFriendRemark remark) {
-//        if (remark == null || remark.getFriendId() <= 0 || remark.getFriendId() != user.getId())
-//            return;
-
-//        user.setRemark(remark.getFriendRemark());
-//        tbTitle.setTitle(user.getShowName());
-//    }
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void updateMessage(EventClearUserMessages info) {
-//        if (info == null || info.getMyUserId() <= 0 || info.getViewUserId() <= 0) return;
-//        if (info.getActionType() == EventBusConstant.EB_TYPE_ACTINO_CLEAR && info.getViewUserId
-// () == user.getId()) {
-//            messages.clear();
-//            messageAdapter.notifyDataSetChanged();
-//        }
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -200,9 +172,7 @@ public class ActivityChatUser extends BaseActivity {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case 1:
-                    ArrayList<ImageBean> list = data.getExtras().getParcelableArrayList
-                            ("selectimages");
-                    //Toast.makeText(activity, list.size() + " 张图片！", Toast.LENGTH_SHORT).show();
+                    ArrayList<ImageBean> list = data.getExtras().getParcelableArrayList("selectimages");
                     for (int i = 0; i < list.size(); i++) {
                         emotionPanelListener.sendChatUserImageMessage(list.get(i).getPath());
                     }
@@ -211,8 +181,6 @@ public class ActivityChatUser extends BaseActivity {
                     emotionPanelListener.sendChatUserImageMessage();
                     break;
                 case 3:
-                    //Toast.makeText(activity, data.getStringExtra("videopath"), Toast
-// .LENGTH_SHORT).show();
                     emotionPanelListener.sendChatUserVideoMessage(data.getStringExtra
                             ("videopath"));
                     break;
@@ -238,59 +206,39 @@ public class ActivityChatUser extends BaseActivity {
 
         @Override
         public boolean onChatItemLongClick(View view, final int position) {
-            //    final PopupMenu popup = new PopupMenu(activity, view);
-            //    popup.getMenuInflater().inflate(R.menu.popup_message_menu, popup.getMenu());
-            //    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            //        public boolean onMenuItemClick(MenuItem item) {
-            //ChatUserMessage message = messageAdapter.getChatUserMessage(position);
-            //            switch (item.getItemId()) {
-            //                case R.id.pop_copy:
-            //                    ClipboardAction.copy(activity, message.getContent());
-            //                    break;
-            //                case R.id.pop_send_friend:
-            //                    break;
-            //                case R.id.pop_delete:
-            //                    if (DaoUtils.getChatUserMessageManagerInstance().deleteMessage
-            // (message)) {
-            //                        messages.remove(message);
-            //                        messageAdapter.notifyItemRemoved(position);
-            //                        messageAdapter.notifyItemRangeChanged(position, messages
-            // .size() - position);
-            //                    }
-            //                    break;
-            //                case R.id.pop_collection:
-            //                    break;
-            //            }
-            //            return true;
-            //        }
-            //    });
-            //    popup.show();
+            final PopupMenu popup = new PopupMenu(activity, view);
+            popup.getMenuInflater().inflate(R.menu.popup_message_menu, popup.getMenu());
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+            ChatUserMessage message = messageAdapter.getChatUserMessage(position);
+                        switch (item.getItemId()) {
+                            case R.id.pop_copy:
+                                ClipboardAction.copy(activity, message.getContent());
+                                break;
+                            case R.id.pop_forward:
+								Toast.makeText(activity, "转发功能稍后开放...", Toast.LENGTH_SHORT).show();
+                                break;
+                            case R.id.pop_delete:
+                                if (DaoUtils.getChatUserMessageManagerInstance().deleteMessage(message)) {
+                                   messageAdapter.deleteMessage(position);
+                                }
+                                break;
+                            case R.id.pop_favourite:
+								Toast.makeText(activity, "收藏功能稍后开放...", Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                        return true;
+                    }
+                });
+                popup.show();
             return true;
         }
 
         @Override
         public void onImageItemClick(int position) {
-            //    int imageIndex = 0;
-            //    int imagePosition = 0;
-            //    List<String> images = new ArrayList<>();
-            //    for (int i = 0; i < messages.size(); i++) {
-            //        if (messages.get(i).getContentType() == NetConstant.CIRCLE_CONTENT_IMAGE) {
-            //            if (StringUtils.isNotBlank(messages.get(i).getLocalUrl())) {
-            //                images.add(messages.get(i).getLocalUrl());
-            //            } else if (StringUtils.isNotBlank(messages.get(i).getOriginalUrl())) {
-            //                images.add(messages.get(i).getOriginalUrl());
-            //            } else {
-            //                images.add(messages.get(i).getPreviewUrl());
-            //            }
-            //            if (i == position) {
-            //                imagePosition = imageIndex;
-            //            }
-            //            imageIndex++;
-            //        }
-            //    }
-            //    //Toast.makeText(activity, "查看图片功能稍后开放", Toast.LENGTH_SHORT).show();
-            //    UITransfer.toImageBrowseActivity(activity, ActivityImageBrowse.MODE_VIEW,
-            // imagePosition, images);
+			List<String> images = new ArrayList<>();
+			int imagePosition = messageAdapter.getCurrentImageIndex(position,images);
+            UITransfer.toImageBrowseActivity(activity, ActivityImageBrowse.MODE_VIEW,imagePosition, images);
         }
 
         @Override

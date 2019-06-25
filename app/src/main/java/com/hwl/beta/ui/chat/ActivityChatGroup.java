@@ -190,9 +190,7 @@ public class ActivityChatGroup extends BaseActivity {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case 1:
-                    ArrayList<ImageBean> list = data.getExtras().getParcelableArrayList
-                            ("selectimages");
-                    //Toast.makeText(activity, list.size() + " 张图片！", Toast.LENGTH_SHORT).show();
+                    ArrayList<ImageBean> list = data.getExtras().getParcelableArrayList("selectimages");
                     for (int i = 0; i < list.size(); i++) {
                         emotionPanelListener.sendChatGroupImageMessage(list.get(i).getPath());
                     }
@@ -201,51 +199,11 @@ public class ActivityChatGroup extends BaseActivity {
                     emotionPanelListener.sendChatGroupImageMessage();
                     break;
                 case 3:
-                    emotionPanelListener.sendChatGroupVideoMessage(data.getStringExtra
-                            ("videopath"));
+                    emotionPanelListener.sendChatGroupVideoMessage(data.getStringExtra("videopath"));
                     break;
             }
         }
     }
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void updateGroupInfo(GroupInfo group) {
-//        if (group == null || !group.getGroupGuid().equals(groupInfo.getGroupGuid())) return;
-//        if (!group.getGroupName().equals(tbTitle.getTitle())) {
-//            tbTitle.setTitle(group.getGroupName());
-//        }
-//        groupInfo = group;
-//        emotionPannelListener.setGroupInfo(groupInfo);
-//    }
-//
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void clearGroupMessage(EventActionGroup actionGroup) {
-//        if (actionGroup == null || actionGroup.getGroupInfo() == null || !actionGroup
-// .getGroupInfo().getGroupGuid().equals(groupInfo.getGroupGuid()))
-//            return;
-//        if (actionGroup.getActionType() == EventBusConstant.EB_TYPE_ACTINO_CLEAR) {
-//            messages.clear();
-//            messageAdapter.notifyDataSetChanged();
-//        } else if (actionGroup.getActionType() == EventBusConstant.EB_TYPE_ACTINO_EXIT) {
-//            finish();
-//        }
-//    }
-//
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void updateGroupMessage(ChatGroupMessage message) {
-//        if (message == null) return;
-//        if (!message.getGroupGuid().equals(groupInfo.getGroupGuid())) return;
-//        messageAdapter.addMessage(message);
-//        rvMessageContainer.scrollToPosition(messageAdapter.getItemCount() - 1);
-//    }
-//
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void updateRemark(EventUpdateFriendRemark remark) {
-//        if (remark == null || remark.getFriendId() <= 0)
-//            return;
-//
-//        messageAdapter.updateUserName(remark.getFriendId(), remark.getFriendRemark());
-//    }
 
     @Override
     protected void onPause() {
@@ -264,59 +222,39 @@ public class ActivityChatGroup extends BaseActivity {
 
         @Override
         public boolean onChatItemLongClick(View view, final int position) {
-//            PopupMenu popup = new PopupMenu(activity, view);
-//            popup.getMenuInflater().inflate(R.menu.popup_message_menu, popup.getMenu());
-//            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//                public boolean onMenuItemClick(MenuItem item) {
-//                    ChatGroupMessage message = messageAdapter.getChatGroupMessage(position)
-//                    switch (item.getItemId()) {
-//                        case R.id.pop_copy:
-//                            ClipboardAction.copy(activity, message.getContent());
-//                            break;
-//                        case R.id.pop_send_friend:
-//                            break;
-//                        case R.id.pop_delete:
-//                            if (DaoUtils.getChatGroupMessageManagerInstance().deleteMessage
-//                                    (message)) {
-//                                messages.remove(position);
-//                                messageAdapter.notifyItemRemoved(position);
-//                                messageAdapter.notifyItemRangeChanged(position, messages.size() -
-//                                        position);
-//                            }
-//                            break;
-//                        case R.id.pop_collection:
-//                            break;
-//                    }
-//                    return true;
-//                }
-//            });
-//            popup.show();
+            PopupMenu popup = new PopupMenu(activity, view);
+            popup.getMenuInflater().inflate(R.menu.popup_message_menu, popup.getMenu());
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    ChatGroupMessage message = messageAdapter.getChatGroupMessage(position)
+                    switch (item.getItemId()) {
+                        case R.id.pop_copy:
+                            ClipboardAction.copy(activity, message.getContent());
+                            break;
+                        case R.id.pop_forward:
+							Toast.makeText(activity, "转发功能稍后开放...", Toast.LENGTH_SHORT).show();
+                            break;
+                        case R.id.pop_delete:
+                            if (DaoUtils.getChatGroupMessageManagerInstance().deleteMessage(message)) {
+                                messageAdapter.deleteMessage(position);
+                            }
+                            break;
+                        case R.id.pop_favourite:
+							Toast.makeText(activity, "收藏功能稍后开放...", Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                    return true;
+                }
+            });
+            popup.show();
             return true;
         }
 
         @Override
         public void onImageItemClick(int position) {
-//            int imageIndex = 0;
-//            int imagePosition = 0;
-//            List<String> images = new ArrayList<>();
-//            for (int i = 0; i < messages.size(); i++) {
-//                if (messages.get(i).getContentType() == NetConstant.CIRCLE_CONTENT_IMAGE) {
-//                    if (StringUtils.isNotBlank(messages.get(i).getLocalUrl())) {
-//                        images.add(messages.get(i).getLocalUrl());
-//                    } else if (StringUtils.isNotBlank(messages.get(i).getOriginalUrl())) {
-//                        images.add(messages.get(i).getOriginalUrl());
-//                    } else {
-//                        images.add(messages.get(i).getPreviewUrl());
-//                    }
-//                    if (i == position) {
-//                        imagePosition = imageIndex;
-//                    }
-//                    imageIndex++;
-//                }
-//            }
-//            //Toast.makeText(activity, "查看图片功能稍后开放", Toast.LENGTH_SHORT).show();
-//            UITransfer.toImageBrowseActivity(activity, ActivityImageBrowse.MODE_VIEW,
-//                    imagePosition, images);
+			List<String> images = new ArrayList<>();
+			int imagePosition = messageAdapter.getCurrentImageIndex(position,images);
+            UITransfer.toImageBrowseActivity(activity, ActivityImageBrowse.MODE_VIEW,imagePosition, images);
         }
 
         @Override

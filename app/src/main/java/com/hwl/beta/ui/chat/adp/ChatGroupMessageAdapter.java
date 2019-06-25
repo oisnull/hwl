@@ -219,6 +219,28 @@ public class ChatGroupMessageAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
+	public int getCurrentImageIndex(int position,List<String> images){
+		int imageIndex = 0;
+        int imagePosition = 0;
+        for (int i = 0; i < messages.size(); i++) {
+            if (messages.get(i).getContentType() == NetConstant.CIRCLE_CONTENT_IMAGE) {
+                if (StringUtils.isNotBlank(messages.get(i).getLocalUrl())) {
+                    images.add(messages.get(i).getLocalUrl());
+                } else if (StringUtils.isNotBlank(messages.get(i).getOriginalUrl())) {
+                    images.add(messages.get(i).getOriginalUrl());
+                } else {
+                    images.add(messages.get(i).getPreviewUrl());
+                }
+                if (i == position) {
+                    imagePosition = imageIndex;
+                }
+                imageIndex++;
+            }
+        }
+
+		return imagePosition;
+	}
+
     public void updateMessage(ChatGroupMessage msg) {
         if (msg == null) return;
         boolean isExists = false;
@@ -232,6 +254,13 @@ public class ChatGroupMessageAdapter extends RecyclerView.Adapter<RecyclerView.V
             notifyItemChanged(position);
         }
     }
+
+	public void deleteMessage(int position){
+        if (position<0) return;
+        messages.remove(position);
+		notifyItemRemoved(position);
+		notifyItemRangeChanged(position, messages.size() - position);
+	}
 
     public void addMessages(List<ChatGroupMessage> msgs) {
         if (msgs == null || msgs.size() <= 0) return;

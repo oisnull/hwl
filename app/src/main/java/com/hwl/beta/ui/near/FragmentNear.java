@@ -129,16 +129,6 @@ public class FragmentNear extends BaseFragment {
         });
 
         emotionPanelListener = new EmotionPanelListener();
-        //binding.ecpEmotion.setLocalSoftInputHeight(AppInstallStatus.getSoftInputHeight())
-        //        .setContentContainerView(binding.refreshLayout)
-        //        .setEmotionPanelListener(emotionPanelListener);
-		//
-        //binding.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new //ViewTreeObserver.OnGlobalLayoutListener() {
-        //    @Override
-        //    public void onGlobalLayout() {
-        //        binding.ecpEmotion.setContentContainerHeight(binding.refreshLayout.getHeight());
-        //    }
-        //});
     }
 
     public void setEmotionStatus(boolean isShow) {
