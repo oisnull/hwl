@@ -10,6 +10,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.ChatActivityUserBinding;
+import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.ChatUserMessage;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.ui.chat.action.IChatMessageItemListener;
@@ -27,10 +30,12 @@ import com.hwl.beta.ui.chat.imp.ChatUserEmotionPanelListener;
 import com.hwl.beta.ui.chat.logic.ChatUserLogic;
 import com.hwl.beta.ui.chat.standard.ChatUserStandard;
 import com.hwl.beta.ui.common.BaseActivity;
+import com.hwl.beta.ui.common.ClipboardAction;
 import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.ebus.EventBusConstant;
 import com.hwl.beta.ui.ebus.EventMessageModel;
+import com.hwl.beta.ui.imgselect.ActivityImageBrowse;
 import com.hwl.beta.ui.imgselect.bean.ImageBean;
 import com.hwl.beta.ui.video.ActivityVideoPlay;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -172,7 +177,8 @@ public class ActivityChatUser extends BaseActivity {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case 1:
-                    ArrayList<ImageBean> list = data.getExtras().getParcelableArrayList("selectimages");
+                    ArrayList<ImageBean> list = data.getExtras().getParcelableArrayList(
+                            "selectimages");
                     for (int i = 0; i < list.size(); i++) {
                         emotionPanelListener.sendChatUserImageMessage(list.get(i).getPath());
                     }
@@ -210,35 +216,36 @@ public class ActivityChatUser extends BaseActivity {
             popup.getMenuInflater().inflate(R.menu.popup_message_menu, popup.getMenu());
             popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
-            ChatUserMessage message = messageAdapter.getChatUserMessage(position);
-                        switch (item.getItemId()) {
-                            case R.id.pop_copy:
-                                ClipboardAction.copy(activity, message.getContent());
-                                break;
-                            case R.id.pop_forward:
-								Toast.makeText(activity, "转发功能稍后开放...", Toast.LENGTH_SHORT).show();
-                                break;
-                            case R.id.pop_delete:
-                                if (DaoUtils.getChatUserMessageManagerInstance().deleteMessage(message)) {
-                                   messageAdapter.deleteMessage(position);
-                                }
-                                break;
-                            case R.id.pop_favourite:
-								Toast.makeText(activity, "收藏功能稍后开放...", Toast.LENGTH_SHORT).show();
-                                break;
-                        }
-                        return true;
+                    ChatUserMessage message = messageAdapter.getChatUserMessage(position);
+                    switch (item.getItemId()) {
+                        case R.id.pop_copy:
+                            ClipboardAction.copy(activity, message.getContent());
+                            break;
+                        case R.id.pop_forward:
+                            Toast.makeText(activity, "转发功能稍后开放...", Toast.LENGTH_SHORT).show();
+                            break;
+                        case R.id.pop_delete:
+                            if (DaoUtils.getChatUserMessageManagerInstance().deleteMessage(message)) {
+                                messageAdapter.deleteMessage(position);
+                            }
+                            break;
+                        case R.id.pop_favourite:
+                            Toast.makeText(activity, "收藏功能稍后开放...", Toast.LENGTH_SHORT).show();
+                            break;
                     }
-                });
-                popup.show();
+                    return true;
+                }
+            });
+            popup.show();
             return true;
         }
 
         @Override
         public void onImageItemClick(int position) {
-			List<String> images = new ArrayList<>();
-			int imagePosition = messageAdapter.getCurrentImageIndex(position,images);
-            UITransfer.toImageBrowseActivity(activity, ActivityImageBrowse.MODE_VIEW,imagePosition, images);
+            List<String> images = new ArrayList<>();
+            int imagePosition = messageAdapter.getCurrentImageIndex(position, images);
+            UITransfer.toImageBrowseActivity(activity, ActivityImageBrowse.MODE_VIEW,
+                    imagePosition, images);
         }
 
         @Override

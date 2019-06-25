@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.Toast;
@@ -23,7 +22,6 @@ import com.hwl.beta.db.entity.NearCircleComment;
 import com.hwl.beta.db.entity.NearCircleImage;
 import com.hwl.beta.db.entity.NearCircleLike;
 import com.hwl.beta.emotion.EmotionDefaultPanelV2;
-import com.hwl.beta.sp.AppInstallStatus;
 import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.common.BaseFragment;
 import com.hwl.beta.ui.common.KeyBoardAction;
@@ -129,6 +127,7 @@ public class FragmentNear extends BaseFragment {
         });
 
         emotionPanelListener = new EmotionPanelListener();
+        binding.edpEmotion.setPanelVisibility(View.GONE);
     }
 
     public void setEmotionStatus(boolean isShow) {
@@ -136,17 +135,17 @@ public class FragmentNear extends BaseFragment {
     }
 
     public void setEmotionStatus(boolean isShow, String hintText) {
-       //ActivityMain parentActivity = (ActivityMain) getActivity();
-       //if (isShow) {
-       //    parentActivity.setBottomNavVisibility(false);
-       //    binding.ecpEmotion.showKeyboard();
-       //    binding.ecpEmotion.setVisibility(View.VISIBLE);
-       //} else {
-       //    parentActivity.setBottomNavVisibility(true);
-       //    binding.ecpEmotion.hideEmotionPanel();
-       //    binding.ecpEmotion.setVisibility(View.GONE);
-       //}
-       //binding.ecpEmotion.setHintMessage(hintText);
+        ActivityMain parentActivity = (ActivityMain) getActivity();
+        if (isShow) {
+            parentActivity.setBottomNavVisibility(false);
+            binding.edpEmotion.toggleEmotionView();
+            binding.edpEmotion.setPanelVisibility(View.VISIBLE);
+        } else {
+            parentActivity.setBottomNavVisibility(true);
+            binding.edpEmotion.reset();
+            binding.edpEmotion.setPanelVisibility(View.GONE);
+        }
+        binding.edpEmotion.setHintMessage(hintText);
     }
 
     private void loadServerInfos(long infoId) {
@@ -339,7 +338,7 @@ public class FragmentNear extends BaseFragment {
                         @Override
                         public void accept(NearCircleLike info) {
                             isRunning = false;
-                            nearCircleAdapter.setLike(position, info,isLike);
+                            nearCircleAdapter.setLike(position, info, isLike);
                         }
                     }, new Consumer<Throwable>() {
                         @Override

@@ -20,6 +20,7 @@ import com.hwl.beta.databinding.ChatSendMessageItemBinding;
 import com.hwl.beta.databinding.ChatSendVideoItemBinding;
 import com.hwl.beta.databinding.ChatSendVoiceItemBinding;
 import com.hwl.beta.db.entity.ChatGroupMessage;
+import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.chat.action.IChatMessageItemListener;
 import com.hwl.beta.ui.chat.bean.ChatImageViewBean;

@@ -37,7 +37,8 @@
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:background="@drawable/layout_border"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="visible">
 
             <RelativeLayout
                 android:id="@+id/rl_tab_message"

@@ -20,6 +20,7 @@ import com.hwl.beta.databinding.ChatSendMessageItemBinding;
 import com.hwl.beta.databinding.ChatSendVideoItemBinding;
 import com.hwl.beta.databinding.ChatSendVoiceItemBinding;
 import com.hwl.beta.db.entity.ChatUserMessage;
+import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.chat.action.IChatMessageItemListener;
 import com.hwl.beta.ui.chat.bean.ChatImageViewBean;
@@ -34,6 +35,7 @@ import com.hwl.beta.ui.chat.holder.ChatMessageSendVideoViewHolder;
 import com.hwl.beta.ui.chat.holder.ChatMessageSendVoiceViewHolder;
 import com.hwl.beta.ui.immsg.IMConstant;
 import com.hwl.beta.utils.DateUtils;
+import com.hwl.beta.utils.StringUtils;
 
 import java.util.List;
 
@@ -222,8 +224,8 @@ public class ChatUserMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
-	public int getCurrentImageIndex(int position,List<String> images){
-		int imageIndex = 0;
+    public int getCurrentImageIndex(int position, List<String> images) {
+        int imageIndex = 0;
         int imagePosition = 0;
         for (int i = 0; i < messages.size(); i++) {
             if (messages.get(i).getContentType() == NetConstant.CIRCLE_CONTENT_IMAGE) {
@@ -241,8 +243,8 @@ public class ChatUserMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             }
         }
 
-		return imagePosition;
-	}
+        return imagePosition;
+    }
 
     public void updateMessage(ChatUserMessage msg) {
         if (msg == null) return;
@@ -257,12 +259,12 @@ public class ChatUserMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
-	public void deleteMessage(int position){
-        if (position<0) return;
+    public void deleteMessage(int position) {
+        if (position < 0) return;
         messages.remove(position);
-		notifyItemRemoved(position);
-		notifyItemRangeChanged(position, messages.size() - position);
-	}
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, messages.size() - position);
+    }
 
     public void addMessages(List<ChatUserMessage> messages) {
         if (messages == null || messages.size() <= 0) return;

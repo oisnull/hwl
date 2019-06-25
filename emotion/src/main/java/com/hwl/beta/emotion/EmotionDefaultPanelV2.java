@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.hwl.beta.emotion.adapter.EmotionPagerAdapter;
 import com.hwl.beta.emotion.data.EmotionLocal;
@@ -29,7 +30,7 @@ import com.hwl.beta.emotion.widget.EmotionIndicatorView;
 
 public class EmotionDefaultPanelV2 extends AutoHeightLayout {
     public static final int FUNC_TYPE_EMOTION = -1;
-	
+
     Context context;
     LayoutInflater inflater;
 
@@ -37,6 +38,7 @@ public class EmotionDefaultPanelV2 extends AutoHeightLayout {
     EmotionEditText etMessage;
     Button btnSend, btnCancel;
     IPanelListener panelListener;
+    LinearLayout llEmotionPanel;
     EmotionFunctionLayout eflEmotionFunction;
 
     //emotion function
@@ -52,11 +54,13 @@ public class EmotionDefaultPanelV2 extends AutoHeightLayout {
     }
 
     private void initEmotionPanel() {
-        View view = inflater.inflate(R.layout.emotion_default_panel_v2,this);
+        View view = inflater.inflate(R.layout.emotion_default_panel_v2, this);
         etMessage = view.findViewById(R.id.et_message);
         ivDefaultEmotions = view.findViewById(R.id.iv_default_emotions);
         btnSend = view.findViewById(R.id.btn_send);
         btnCancel = view.findViewById(R.id.btn_cancel);
+        eflEmotionFunction = view.findViewById(R.id.efl_emotion_function);
+        llEmotionPanel = view.findViewById(R.id.ll_emotion_panel);
 
         ivDefaultEmotions.setOnClickListener(new OnClickListener() {
             @Override
@@ -67,6 +71,8 @@ public class EmotionDefaultPanelV2 extends AutoHeightLayout {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setPanelVisibility(GONE);
+                reset();
                 if (panelListener != null)
                     panelListener.cancelClick();
             }
@@ -74,9 +80,9 @@ public class EmotionDefaultPanelV2 extends AutoHeightLayout {
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (panelListener != null&&panelListener.sentClick(etMessage.getText()+"")){
-					etMessage.setText(null);
-				}                    
+                if (panelListener != null && panelListener.sentClick(etMessage.getText() + "")) {
+                    etMessage.setText(null);
+                }
             }
         });
 
@@ -89,13 +95,17 @@ public class EmotionDefaultPanelV2 extends AutoHeightLayout {
         initEmotionData();
     }
 
+    public void setPanelVisibility(int visibility) {
+        llEmotionPanel.setVisibility(visibility);
+    }
+
     public void setPanelListener(IPanelListener panelListener) {
         this.panelListener = panelListener;
     }
 
-	public void setHintMessage(String hintText){
-		etMessage.setHint(hintText);
-	}
+    public void setHintMessage(String hintText) {
+        etMessage.setHint(hintText);
+    }
 
     private void bindEditTextEvents() {
         etMessage.setOnTouchListener(new View.OnTouchListener() {
@@ -118,8 +128,8 @@ public class EmotionDefaultPanelV2 extends AutoHeightLayout {
             }
         });
     }
-	
-	private void initEmotionData() {
+
+    private void initEmotionData() {
         final EmojiPageContainer defaultEmojiContainer = new EmojiPageContainer.Builder()
                 .setDefaultResId(R.drawable.chat_emotion)
                 .setAllEmojis(EmotionLocal.defaultEmotions)
@@ -140,7 +150,7 @@ public class EmotionDefaultPanelV2 extends AutoHeightLayout {
                     }
                 });
         emotionPagerAdapter.add(defaultEmojiContainer);
-		
+
         eivDotContainer.updateCount(defaultEmojiContainer.getPageCount());
         efvContainer.setAdapter(emotionPagerAdapter);
         efvContainer.setCurrentItem(0);
@@ -170,12 +180,12 @@ public class EmotionDefaultPanelV2 extends AutoHeightLayout {
         eflEmotionFunction.toggleFuncView(FUNC_TYPE_EMOTION, isSoftKeyboardPop(), etMessage);
     }
 
-	public void reset() {
+    public void reset() {
         EmotionKeyboardUtils.closeSoftKeyboard(this);
         eflEmotionFunction.hideAllFuncView();
     }
 
-	 @Override
+    @Override
     public void onSoftKeyboardHeightChanged(int height) {
         eflEmotionFunction.updateHeight(height);
     }
@@ -203,8 +213,9 @@ public class EmotionDefaultPanelV2 extends AutoHeightLayout {
         return super.dispatchKeyEvent(event);
     }
 
-	public interface IPanelListener{
-		void cancelClick();
-		boolean sentClick(String content);
-	}
+    public interface IPanelListener {
+        void cancelClick();
+
+        boolean sentClick(String content);
+    }
 }
