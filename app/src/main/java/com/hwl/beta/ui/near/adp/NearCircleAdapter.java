@@ -81,6 +81,22 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolde holder, int position, List<Object> payloads) {
+        if(payloads==null||payloads.size()<=0){
+			onBindViewHolder(holder, position);
+		}else{
+            NearCircleViewHolder viewHolder = (NearCircleViewHolder) holder;
+
+			Object obj = payloads.get(0);
+			if(obj instanceof NearCircleLike){
+				viewHolder.setLikeInfo((NearCircleLike)obj,itemListener);	
+			}else if(obj instanceof NearCircleComment){
+				ViewHolde.setCommentInfo((NearCircleComment)obj,itemListener);
+			}
+		}
+    }
+
     public List<NearCircle> getInfos() {
         return this.nearCircles;
     }
@@ -177,11 +193,9 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         if (isLike) {
-            //点赞
             info.setIsLiked(true);
-            info.getLikes().add(info.getLikes().size(), likeInfo);
+            info.getLikes().add(likeInfo);
         } else {
-            //取消点赞
             info.setIsLiked(false);
 			info.getLikes().remove(likeInfo);
         }

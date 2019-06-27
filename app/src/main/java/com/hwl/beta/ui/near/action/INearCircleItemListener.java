@@ -13,19 +13,11 @@ import java.util.List;
  * Created by Administrator on 2018/4/14.
  */
 
-public interface INearCircleItemListener {
+public interface INearCircleItemListener extends INearLikeItemListener,INearCircleCommentItemListener {
 
-    void onItemViewClick(View view);
+    //void onItemViewClick(View view);
 
     void onUserHeadClick(NearCircle info);
-
-    void onLikeUserHeadClick(NearCircleLike likeInfo);
-
-    void onCommentUserClick(NearCircleComment comment);
-
-    void onReplyUserClick(NearCircleComment comment);
-
-    void onCommentContentClick(NearCircleComment comment);
 
     void onContentClick(NearCircle info);
 
