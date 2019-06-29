@@ -184,7 +184,7 @@ public class EmotionDefaultPanel extends AutoHeightLayout {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && eflEmotionFunction.isShown()) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && eflEmotionFunction.hasViewShow()) {
             reset();
             return true;
         }

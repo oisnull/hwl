@@ -132,6 +132,18 @@ public class EmotionFunctionLayout extends LinearLayout {
         return mCurrentFuncKey == DEF_KEY;
     }
 
+    public boolean hasViewShow() {
+        if (mFuncViewArrayMap.size() <= 0) return false;
+
+        for (int i = 0; i < mFuncViewArrayMap.size(); i++) {
+            if (mFuncViewArrayMap.valueAt(i).isShown()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private List<OnFuncKeyBoardListener> mListenerList;
 
     public void addOnKeyBoardListener(OnFuncKeyBoardListener l) {

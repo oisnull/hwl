@@ -59,17 +59,17 @@ public abstract class AutoHeightLayout extends SoftKeyboardSizeWatchLayout imple
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         if (mMaxParentHeight == 0) {
             mMaxParentHeight = h;
+            onParentHeightChanged(mMaxParentHeight);
         }
-        Log.d("Emotion", "onSizeChanged.mMaxParentHeight=" + mMaxParentHeight);
     }
 
-    public void updateMaxParentHeight(int maxParentHeight) {
-        this.mMaxParentHeight = maxParentHeight;
-        if (maxParentHeightChangeListener != null) {
-            maxParentHeightChangeListener.onMaxParentHeightChange(maxParentHeight);
-        }
-        Log.d("Emotion", "updateMaxParentHeight.mMaxParentHeight=" + mMaxParentHeight);
-    }
+//    public void updateMaxParentHeight(int maxParentHeight) {
+//        this.mMaxParentHeight = maxParentHeight;
+//        if (maxParentHeightChangeListener != null) {
+//            maxParentHeightChangeListener.onMaxParentHeightChange(maxParentHeight);
+//        }
+////        Log.d("Emotion", "updateMaxParentHeight.mMaxParentHeight=" + mMaxParentHeight);
+//    }
 
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
@@ -87,8 +87,7 @@ public abstract class AutoHeightLayout extends SoftKeyboardSizeWatchLayout imple
             if (mScreenHeight == 0) {
                 mScreenHeight = r.bottom;
             }
-            int mNowh = mScreenHeight - r.bottom;
-            mMaxParentHeight = mNowh;
+            mMaxParentHeight = mScreenHeight - r.bottom;
         }
 
         if (mMaxParentHeight != 0) {
@@ -115,13 +114,16 @@ public abstract class AutoHeightLayout extends SoftKeyboardSizeWatchLayout imple
 
     public abstract void onSoftKeyboardHeightChanged(int height);
 
-    private OnMaxParentHeightChangeListener maxParentHeightChangeListener;
+    protected void onParentHeightChanged(int currentHeight) {
 
-    public interface OnMaxParentHeightChangeListener {
-        void onMaxParentHeightChange(int height);
     }
-
-    public void setOnMaxParentHeightChangeListener(OnMaxParentHeightChangeListener listener) {
-        this.maxParentHeightChangeListener = listener;
-    }
+//    private OnMaxParentHeightChangeListener maxParentHeightChangeListener;
+//
+//    public interface OnMaxParentHeightChangeListener {
+//        void onMaxParentHeightChange(int height);
+//    }
+//
+//    public void setOnMaxParentHeightChangeListener(OnMaxParentHeightChangeListener listener) {
+//        this.maxParentHeightChangeListener = listener;
+//    }
 }

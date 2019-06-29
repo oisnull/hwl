@@ -298,7 +298,7 @@ public class EmotionFullPanel extends AutoHeightLayout implements View.OnClickLi
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && eflEmotionFunction.isShown()) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && eflEmotionFunction.hasViewShow()) {
             reset();
             return true;
         }

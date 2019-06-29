@@ -56,6 +56,7 @@ public class FragmentNear extends BaseFragment {
 
     NearFragmentMainBinding binding;
     FragmentActivity activity;
+    ActivityMain parentActivity;
     NearCircleAdapter nearCircleAdapter;
     NearStandard nearStandard;
     EmotionPanelListener emotionPanelListener;
@@ -65,6 +66,7 @@ public class FragmentNear extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         activity = getActivity();
+        parentActivity = (ActivityMain) getActivity();
         activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         nearStandard = new NearLogic();
         binding = DataBindingUtil.inflate(inflater, R.layout.near_fragment_main, container, false);
@@ -128,6 +130,7 @@ public class FragmentNear extends BaseFragment {
 
         emotionPanelListener = new EmotionPanelListener();
         binding.edpEmotion.setPanelVisibility(View.GONE);
+        binding.edpEmotion.setPanelListener(emotionPanelListener);
     }
 
     public void setEmotionStatus(boolean isShow) {
@@ -135,17 +138,26 @@ public class FragmentNear extends BaseFragment {
     }
 
     public void setEmotionStatus(boolean isShow, String hintText) {
-        ActivityMain parentActivity = (ActivityMain) getActivity();
         if (isShow) {
-            parentActivity.setBottomNavVisibility(false);
-            binding.edpEmotion.toggleEmotionView();
+            binding.edpEmotion.toggleKeyboardView();
+            binding.edpEmotion.setHintMessage(hintText);
             binding.edpEmotion.setPanelVisibility(View.VISIBLE);
+            binding.edpEmotion.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    parentActivity.setBottomNavVisibility(false);
+                }
+            }, 300);
         } else {
-            parentActivity.setBottomNavVisibility(true);
             binding.edpEmotion.reset();
             binding.edpEmotion.setPanelVisibility(View.GONE);
+            binding.edpEmotion.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    parentActivity.setBottomNavVisibility(true);
+                }
+            }, 300);
         }
-        binding.edpEmotion.setHintMessage(hintText);
     }
 
     private void loadServerInfos(long infoId) {
@@ -207,6 +219,11 @@ public class FragmentNear extends BaseFragment {
         public void setNearCircleInfo(int position, NearCircle info) {
             this.position = position;
             this.info = info;
+        }
+
+        @Override
+        public void onHeightChanged(int currentHeight) {
+            parentActivity.setBottomNavVisibility(true);
         }
 
         @Override

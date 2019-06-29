@@ -23,6 +23,7 @@ import com.hwl.beta.emotion.widget.EmotionEditText;
 import com.hwl.beta.emotion.widget.EmotionFunctionLayout;
 import com.hwl.beta.emotion.widget.EmotionFunctionViewPager;
 import com.hwl.beta.emotion.widget.EmotionIndicatorView;
+import com.hwl.beta.emotion.widget.EmotionToolBarView;
 
 /**
  * Created by Administrator on 2018/1/4.
@@ -89,6 +90,9 @@ public class EmotionDefaultPanelV2 extends AutoHeightLayout {
         View funcView = inflater.inflate(R.layout.emotion_function_panel, null);
         efvContainer = funcView.findViewById(R.id.efv_container);
         eivDotContainer = funcView.findViewById(R.id.eiv_dot_container);
+        EmotionToolBarView etvEmotionBar = funcView.findViewById(R.id.etv_emotion_bar);
+        etvEmotionBar.setVisibility(GONE);
+
         eflEmotionFunction.addFuncView(FUNC_TYPE_EMOTION, funcView);
 
         bindEditTextEvents();
@@ -180,6 +184,10 @@ public class EmotionDefaultPanelV2 extends AutoHeightLayout {
         eflEmotionFunction.toggleFuncView(FUNC_TYPE_EMOTION, isSoftKeyboardPop(), etMessage);
     }
 
+    public void toggleKeyboardView() {
+        EmotionKeyboardUtils.openSoftKeyboard(etMessage);
+    }
+
     public void reset() {
         EmotionKeyboardUtils.closeSoftKeyboard(this);
         eflEmotionFunction.hideAllFuncView();
@@ -205,8 +213,13 @@ public class EmotionDefaultPanelV2 extends AutoHeightLayout {
     }
 
     @Override
+    protected void onParentHeightChanged(int currentHeight) {
+        panelListener.onHeightChanged(currentHeight);
+    }
+
+    @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && eflEmotionFunction.isShown()) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && eflEmotionFunction.hasViewShow()) {
             reset();
             return true;
         }
@@ -214,6 +227,8 @@ public class EmotionDefaultPanelV2 extends AutoHeightLayout {
     }
 
     public interface IPanelListener {
+        void onHeightChanged(int currentHeight);
+
         void cancelClick();
 
         boolean sentClick(String content);

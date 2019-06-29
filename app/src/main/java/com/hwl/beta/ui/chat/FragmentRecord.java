@@ -144,17 +144,17 @@ public class FragmentRecord extends BaseFragment {
                                             which) {
                                         recordStandard.clearMessages(record, new
                                                 DefaultCallback<Boolean, String>() {
-                                            @Override
-                                            public void success(Boolean successMessage) {
-                                                recordAdapter.removeRecord(record.getRecordId());
-                                            }
+                                                    @Override
+                                                    public void success(Boolean successMessage) {
+                                                        recordAdapter.removeRecord(record.getRecordId());
+                                                    }
 
-                                            @Override
-                                            public void error(String errorMessage) {
-                                                Toast.makeText(activity, errorMessage, Toast
-                                                        .LENGTH_SHORT).show();
-                                            }
-                                        });
+                                                    @Override
+                                                    public void error(String errorMessage) {
+                                                        Toast.makeText(activity, errorMessage, Toast
+                                                                .LENGTH_SHORT).show();
+                                                    }
+                                                });
                                         dialog.dismiss();
                                     }
                                 })

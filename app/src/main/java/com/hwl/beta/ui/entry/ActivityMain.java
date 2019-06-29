@@ -70,6 +70,7 @@ public class ActivityMain extends BaseActivity {
     }
 
     private void initView() {
+        setBottomNavVisibility(false);
         mainListener.initVPContainer();
 
         binding.tbTitle.setTitle("位置获取中...")
@@ -166,6 +167,9 @@ public class ActivityMain extends BaseActivity {
     }
 
     public void setBottomNavVisibility(boolean isShow) {
+        if (isShow && binding.llNavBottom.isShown()) {
+            return;
+        }
         binding.llNavBottom.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
 
