@@ -31,6 +31,7 @@ public class NearCircleViewHolder extends RecyclerView.ViewHolder {
 
     private NearItemBinding itemBinding;
     private Context context;
+	private NearCircleCommentAdapter commentAdapter;
 
     public NearCircleViewHolder(Context context, NearItemBinding itemBinding) {
         super(itemBinding.getRoot());
@@ -50,13 +51,6 @@ public class NearCircleViewHolder extends RecyclerView.ViewHolder {
         this.itemBinding.setPosition(position);
         this.itemBinding.setInfo(info);
         this.itemBinding.setImage(headImage);
-
-        this.itemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                itemListener.onItemViewClick(v);
-            }
-        });
 
         if (images == null || images.size() <= 0) {
             this.itemBinding.rvImages.setVisibility(View.GONE);
@@ -79,71 +73,50 @@ public class NearCircleViewHolder extends RecyclerView.ViewHolder {
         if (likes != null && likes.size() > 0) {
             isShowActionContainer = true;
             this.itemBinding.rlLikeContainer.setVisibility(View.VISIBLE);
-            this.setLikeViews(likes, itemListener);
+			this.itemBinding.fblLikeContainer.removeAllViews();
+			UserLikeOperate.setLikeInfos(this.itemBinding.rlLikeContainer,likes,itemListener);
         } else {
             this.itemBinding.rlLikeContainer.setVisibility(View.GONE);
         }
+
         if (comments != null && comments.size() > 0) {
             isShowActionContainer = true;
+			commentAdapter =  new NearCircleCommentAdapter(context,comments,itemListener);
             this.itemBinding.rlCommentContainer.setVisibility(View.VISIBLE);
             this.itemBinding.rvComments.setVisibility(View.VISIBLE);
-            this.itemBinding.rvComments.setAdapter(
-                    new NearCircleCommentAdapter(
-                            context,
-                            comments,
-                            new INearCircleCommentItemListener() {
-                                @Override
-                                public void onCommentUserClick(NearCircleComment comment) {
-                                    itemListener.onCommentUserClick(comment);
-                                }
-
-                                @Override
-                                public void onReplyUserClick(NearCircleComment comment) {
-                                    itemListener.onReplyUserClick(comment);
-                                }
-
-                                @Override
-                                public void onContentClick(NearCircleComment comment) {
-                                    itemListener.onCommentContentClick(comment);
-                                }
-                            }
-                    )
-            );
+            this.itemBinding.rvComments.setAdapter(commentAdapter);
             this.itemBinding.rvComments.setLayoutManager(new LinearLayoutManager(context));
         } else {
             this.itemBinding.rlCommentContainer.setVisibility(View.GONE);
         }
+
         if (isShowActionContainer) {
             this.itemBinding.llActionContainer.setVisibility(View.VISIBLE);
         } else {
             this.itemBinding.llActionContainer.setVisibility(View.GONE);
         }
-        this.itemBinding.executePendingBindings();
     }
 
-    private void setLikeViews(final List<NearCircleLike> likes,
-                              final INearCircleItemListener itemListener) {
-        if (likes == null || likes.size() <= 0) return;
-        this.itemBinding.fblLikeContainer.removeAllViews();
-        Context context = this.itemBinding.rlLikeContainer.getContext();
-        int size = DisplayUtils.dp2px(context, 25);
-        FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(size, size);
-        params.rightMargin = 2;
-        params.bottomMargin = 2;
-        ImageView ivLikeUser;
-        for (int i = 0; i < likes.size(); i++) {
-            final NearCircleLike like = likes.get(i);
-            ivLikeUser = new ImageView(context);
-            ImageViewBean.loadImage(ivLikeUser, like.getLikeUserImage());
-            ivLikeUser.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    itemListener.onLikeUserHeadClick(like);
-                }
-            });
-            this.itemBinding.fblLikeContainer.addView(ivLikeUser, params);
-        }
-    }
+	public void setLikeInfo(NearCircleLike likeInfo,INearLikeItemListener itemListener){
+		if(likeInfo==null) return;
+		UserLikeOperate.setLikeInfo(itemBinding.rlLikeContainer,likeInfo,itemListener);
+        itemBinding.rlLikeContainer.setVisibility(View.VISIBLE);
+	}
+
+	public void setCommentInfo(NearCircleComment comment,INearCircleCommentItemListener itemListener){
+		if(comment==null) return;
+		if(commentAdapter==null){
+			List<NearCircleComment> comments=new ArrayList<>();
+			comments.add(comment);
+			commentAdapter =  new NearCircleCommentAdapter(context,comments,itemListener);
+			itemBinding.rvComments.setAdapter(commentAdapter);
+			itemBinding.rvComments.setLayoutManager(new LinearLayoutManager(context));
+		}else{
+			commentAdapter.addComment(comment);
+		}
+        itemBinding.rlCommentContainer.setVisibility(View.VISIBLE);
+        itemBinding.rvComments.setVisibility(View.VISIBLE);
+	}
 
     public NearItemBinding getItemBinding() {
         return this.itemBinding;

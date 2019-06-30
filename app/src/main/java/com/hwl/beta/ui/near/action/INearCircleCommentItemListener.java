@@ -11,5 +11,5 @@ public interface INearCircleCommentItemListener {
 
     void onReplyUserClick(NearCircleComment comment);
 
-    void onContentClick(NearCircleComment comment);
+    void onCommentContentClick(NearCircleComment comment);
 }
