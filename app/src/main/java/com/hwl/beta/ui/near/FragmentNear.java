@@ -24,7 +24,6 @@ import com.hwl.beta.db.entity.NearCircleLike;
 import com.hwl.beta.emotion.EmotionDefaultPanelV2;
 import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.common.BaseFragment;
-import com.hwl.beta.ui.common.KeyBoardAction;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.ebus.EventBusConstant;
@@ -246,7 +245,7 @@ public class FragmentNear extends BaseFragment {
                         public void accept(NearCircleComment info) throws Exception {
                             setEmotionStatus(false);
                             LoadingDialog.hide();
-                            nearCircleAdapter.addComment(info);
+                            nearCircleAdapter.addComment(position, info);
                         }
                     }, new Consumer<Throwable>() {
                         @Override
@@ -265,10 +264,10 @@ public class FragmentNear extends BaseFragment {
         private CircleActionMorePop mMorePopupWindow;
         private boolean isRunning = false;
 
-        @Override
-        public void onItemViewClick(View view) {
-            KeyBoardAction.hideSoftInput(view);
-        }
+//        @Override
+//        public void onItemViewClick(View view) {
+//            binding.edpEmotion.reset();
+//        }
 
         @Override
         public void onUserHeadClick(NearCircle info) {
@@ -315,7 +314,7 @@ public class FragmentNear extends BaseFragment {
 
         @Override
         public void onContentClick(NearCircle info) {
-            UITransfer.toNearDetailActivity(activity, info.getNearCircleId());
+//            UITransfer.toNearDetailActivity(activity, info.getNearCircleId());
         }
 
         @Override

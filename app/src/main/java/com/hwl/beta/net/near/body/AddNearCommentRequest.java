@@ -15,6 +15,15 @@ public class AddNearCommentRequest {
     /// </summary>
     private long ReplyUserId;
     private String Content;
+    private String NearCircleUpdateTime;
+
+    public String getNearCircleUpdateTime() {
+        return NearCircleUpdateTime;
+    }
+
+    public void setNearCircleUpdateTime(String nearCircleUpdateTime) {
+        NearCircleUpdateTime = nearCircleUpdateTime;
+    }
 
     public long getNearCircleId() {
         return NearCircleId;

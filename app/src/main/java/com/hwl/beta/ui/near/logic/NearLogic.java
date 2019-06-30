@@ -1,5 +1,7 @@
 package com.hwl.beta.ui.near.logic;
 
+import android.text.TextUtils;
+
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.NearCircle;
 import com.hwl.beta.db.entity.NearCircleComment;
@@ -17,6 +19,7 @@ import com.hwl.beta.ui.convert.DBNearCircleAction;
 import com.hwl.beta.ui.immsg.IMClientEntry;
 import com.hwl.beta.ui.immsg.IMDefaultSendOperateListener;
 import com.hwl.beta.ui.near.standard.NearStandard;
+import com.hwl.beta.utils.DateUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -118,7 +121,8 @@ public class NearLogic implements NearStandard {
         if (info == null || info.getNearCircleId() <= 0) {
             return Observable.error(new Throwable("Near circle id con't be empty."));
         }
-        return NearCircleService.setNearLikeInfo(isLike ? 1 : 0, info.getNearCircleId())
+        return NearCircleService.setNearLikeInfo(isLike ? 1 : 0, info.getNearCircleId(),
+                info.getUpdateTime())
                 .map(new Function<SetNearLikeInfoResponse, NearCircleLike>() {
                     @Override
                     public NearCircleLike apply(SetNearLikeInfoResponse response) throws Exception {
@@ -126,12 +130,16 @@ public class NearLogic implements NearStandard {
                             throw new Exception("Set user like info failed.");
                         }
 
+                        if (!TextUtils.isEmpty(response.getNearCircleLastUpdateTime())) {
+                            DaoUtils.getNearCircleManagerInstance().setUpdateTime(info.getNearCircleId(), response.getNearCircleLastUpdateTime());
+                        }
+
                         NearCircleLike likeInfo = new NearCircleLike();
                         likeInfo.setNearCircleId(info.getNearCircleId());
                         likeInfo.setLikeUserId(UserSP.getUserId());
                         likeInfo.setLikeUserName(UserSP.getUserName());
                         likeInfo.setLikeUserImage(UserSP.getUserHeadImage());
-//                        likeInfo.setLikeTime(DateUtils.strToDateLong(response.getLastUpdateTime()));
+                        likeInfo.setLastUpdateTime(response.getNearCircleLastUpdateTime());
                         if (isLike) {
                             DaoUtils.getNearCircleManagerInstance().saveLike(likeInfo);
                         } else {
@@ -162,15 +170,21 @@ public class NearLogic implements NearStandard {
             return Observable.error(new Throwable("Near circle id con't be empty."));
         }
 
-        return NearCircleService.addComment(info.getNearCircleId(), content, replyUserId)
+        return NearCircleService.addComment(info.getNearCircleId(), content, replyUserId,
+                info.getUpdateTime())
                 .map(new Function<AddNearCommentResponse, NearCircleComment>() {
                     @Override
                     public NearCircleComment apply(AddNearCommentResponse response) throws Exception {
                         if (response.getNearCircleCommentInfo() == null || response.getNearCircleCommentInfo().getCommentId() <= 0)
                             throw new Exception("Post user comment info failed.");
 
+                        if (!TextUtils.isEmpty(response.getNearCircleLastUpdateTime())) {
+                            DaoUtils.getNearCircleManagerInstance().setUpdateTime(info.getNearCircleId(), response.getNearCircleLastUpdateTime());
+                        }
+
                         NearCircleComment commentInfo =
                                 DBNearCircleAction.convertToNearCircleCommentInfo(response.getNearCircleCommentInfo());
+                        commentInfo.setLastUpdateTime(response.getNearCircleLastUpdateTime());
                         DaoUtils.getNearCircleManagerInstance().saveComment(commentInfo);
                         return commentInfo;
                     }
@@ -188,7 +202,7 @@ public class NearLogic implements NearStandard {
     }
 
     @Override
-    public Observable<NearCircle> loadLocalDetails(final long nearCircleId){
+    public Observable<NearCircle> loadLocalDetails(final long nearCircleId) {
         if (nearCircleId <= 0) {
             return Observable.error(new Throwable("Near circle id con't be empty."));
         }
@@ -196,29 +210,31 @@ public class NearLogic implements NearStandard {
         return Observable.fromCallable(new Callable<NearCircle>() {
             @Override
             public NearCircle call() throws Exception {
-                return DaoUtils.getNearCircleManagerInstance().getNearCircle(nearCircleId, COMMENT_PAGE_COUNT);
+                return DaoUtils.getNearCircleManagerInstance().getNearCircle(nearCircleId,
+                        COMMENT_PAGE_COUNT);
             }
         }).subscribeOn(Schedulers.io());
-	}
+    }
 
     @Override
-    public Observable<NearCircle> loadServerDetails(final long nearCircleId,String updateTime) {
+    public Observable<NearCircle> loadServerDetails(final long nearCircleId, String updateTime) {
         if (nearCircleId <= 0) {
             return Observable.error(new Throwable("Near circle id con't be empty."));
         }
 
-        return NearCircleService.getNearCircleDetail(nearCircleId,updateTime)
+        return NearCircleService.getNearCircleDetail(nearCircleId, updateTime)
                 .map(new Function<GetNearCircleDetailResponse, NearCircle>() {
                     @Override
                     public NearCircle apply(GetNearCircleDetailResponse response) throws Exception {
-						if(response!=null&&response.getNearCircleInfo()!=null){
-                        NearCircle info = DBNearCircleAction.convertToNearCircleInfo(response.getNearCircleInfo());
+                        if (response != null && response.getNearCircleInfo() != null) {
+                            NearCircle info =
+                                    DBNearCircleAction.convertToNearCircleInfo(response.getNearCircleInfo());
                             DaoUtils.getNearCircleManagerInstance().deleteAll(nearCircleId);
                             DaoUtils.getNearCircleManagerInstance().save(info);
-							return info;
-						}
-                        
-						return null;
+                            return info;
+                        }
+
+                        return null;
                     }
                 });
     }

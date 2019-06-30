@@ -3,6 +3,7 @@ package com.hwl.beta.db.entity;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.OrderBy;
+import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -20,6 +21,16 @@ public class NearCircleLike implements Serializable {
     private String likeUserImage;
     @OrderBy("likeTime desc")
     private Date likeTime;
+    @Transient
+    private String lastUpdateTime;
+
+    public String getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
+    public void setLastUpdateTime(String lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
+    }
 
     @Generated(hash = 684760537)
     public NearCircleLike(long nearCircleId, long likeUserId, String likeUserName,

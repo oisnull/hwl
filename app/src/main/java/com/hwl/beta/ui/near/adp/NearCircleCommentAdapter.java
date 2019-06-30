@@ -14,6 +14,7 @@ import com.hwl.beta.ui.near.action.INearCircleCommentItemListener;
 import com.hwl.beta.ui.near.holder.NearCommentReplyViewHolder;
 import com.hwl.beta.ui.near.holder.NearCommentViewHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,7 +27,8 @@ public class NearCircleCommentAdapter extends RecyclerView.Adapter<RecyclerView.
     LayoutInflater inflater;
     INearCircleCommentItemListener itemListener;
 
-    public NearCircleCommentAdapter(Context context, List<NearCircleComment> comments, INearCircleCommentItemListener itemListener) {
+    public NearCircleCommentAdapter(Context context, List<NearCircleComment> comments,
+                                    INearCircleCommentItemListener itemListener) {
         this.context = context;
         this.comments = comments;
         this.itemListener = itemListener;
@@ -63,9 +65,9 @@ public class NearCircleCommentAdapter extends RecyclerView.Adapter<RecyclerView.
 
     public void addComment(NearCircleComment comment) {
         if (comment == null) return;
-		if(comments==null){
-			comments=new ArrayList<>();
-		}
+        if (comments == null) {
+            comments = new ArrayList<>();
+        }
         comments.add(comment);
         notifyItemChanged(comments.size() - 1);
     }

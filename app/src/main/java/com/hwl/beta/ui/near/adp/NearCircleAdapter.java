@@ -2,6 +2,7 @@ package com.hwl.beta.ui.near.adp;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,19 +83,23 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolde holder, int position, List<Object> payloads) {
-        if(payloads==null||payloads.size()<=0){
-			onBindViewHolder(holder, position);
-		}else{
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position,
+                                 @NonNull List<Object> payloads) {
+        if (payloads == null || payloads.size() <= 0) {
+            super.onBindViewHolder(holder, position, payloads);
+        } else {
             NearCircleViewHolder viewHolder = (NearCircleViewHolder) holder;
-
-			Object obj = payloads.get(0);
-			if(obj instanceof NearCircleLike){
-				viewHolder.setLikeInfo((NearCircleLike)obj,itemListener);	
-			}else if(obj instanceof NearCircleComment){
-				ViewHolde.setCommentInfo((NearCircleComment)obj,itemListener);
-			}
-		}
+            Object obj = payloads.get(0);
+            if (obj instanceof NearCircleLike) {
+                if (nearCircles.get(position).getIsLiked()) {
+                    viewHolder.setLikeInfo((NearCircleLike) obj, itemListener);
+                } else {
+                    viewHolder.cancelLikeInfo((NearCircleLike) obj);
+                }
+            } else if (obj instanceof NearCircleComment) {
+                viewHolder.setCommentInfo((NearCircleComment) obj, itemListener);
+            }
+        }
     }
 
     public List<NearCircle> getInfos() {
@@ -160,33 +165,21 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return nearCircles.get(getItemCount() - 1).getNearCircleId();
     }
 
-    public void addComment(NearCircleComment comment) {
+    public void addComment(int position, NearCircleComment comment) {
         if (comment == null || comment.getNearCircleId() <= 0 || comment.getCommentUserId() <= 0)
             return;
 
-        int position = -1;
-        List<NearCircleComment> comments = null;
-        for (int i = 0; i < nearCircles.size(); i++) {
-            if (nearCircles.get(i).getNearCircleId() == comment.getNearCircleId()) {
-                comments = nearCircles.get(i).getComments();
-                if (comments == null) {
-                    comments = new ArrayList<>();
-                    nearCircles.get(i).setComments(comments);
-                }
-                position = i;
-                break;
-            }
-        }
+        NearCircle info = nearCircles.get(position);
+//        if (info.getComments() == null) {
+//            info.setComments(new ArrayList<NearCircleComment>());
+//        }
 
-        comments.add(comment);
-        if (position == -1) {
-            notifyItemChanged(0);
-        } else {
-            notifyItemChanged(position);
-        }
+//        info.getComments().add(comment);
+        info.setUpdateTime(comment.getLastUpdateTime());
+        notifyItemChanged(position, comment);
     }
 
-    public void setLike(int position, NearCircleLike likeInfo,boolean isLike) {
+    public void setLike(int position, NearCircleLike likeInfo, boolean isLike) {
         NearCircle info = nearCircles.get(position);
         if (info.getLikes() == null) {
             info.setLikes(new ArrayList<NearCircleLike>());
@@ -194,12 +187,15 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         if (isLike) {
             info.setIsLiked(true);
+            info.setUpdateTime(likeInfo.getLastUpdateTime());
             info.getLikes().add(likeInfo);
         } else {
             info.setIsLiked(false);
-			info.getLikes().remove(likeInfo);
+            info.setUpdateTime(likeInfo.getLastUpdateTime());
+            info.getLikes().remove(likeInfo);
         }
-        notifyItemChanged(position);
+//        notifyItemChanged(position);
+        notifyItemChanged(position, likeInfo);
     }
 
     public void remove(int position) {

@@ -11,6 +11,15 @@ public class SetNearLikeInfoRequest {
     /// </summary>
     private long LikeUserId;
     private long NearCircleId;
+    private String NearCircleUpdateTime;
+
+    public String getNearCircleUpdateTime() {
+        return NearCircleUpdateTime;
+    }
+
+    public void setNearCircleUpdateTime(String nearCircleUpdateTime) {
+        NearCircleUpdateTime = nearCircleUpdateTime;
+    }
 
     public int getActionType() {
         return ActionType;

@@ -18,4 +18,9 @@ public class AddNearCommentResponse {
 
     private NetNearCircleCommentInfo NearCircleCommentInfo;
     private long NearCirclePublishUserId;
+    private String NearCircleLastUpdateTime;
+
+    public String getNearCircleLastUpdateTime() {
+        return NearCircleLastUpdateTime;
+    }
 }

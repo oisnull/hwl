@@ -26,7 +26,6 @@ import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.convert.DBNearCircleAction;
 import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.imgselect.ActivityImageBrowse;
-import com.hwl.beta.ui.near.action.INearCircleCommentItemListener;
 import com.hwl.beta.ui.near.action.INearCircleDetailListener;
 import com.hwl.beta.ui.near.adp.NearCircleCommentAdapter;
 import com.hwl.beta.ui.common.NineImagesAdapter;
@@ -181,22 +180,7 @@ public class ActivityNearDetail extends BaseActivity {
             binding.rvComments.setVisibility(View.VISIBLE);
             binding.rvComments.setAdapter(new NearCircleCommentAdapter(activity,
                     currentInfo.getComments(),
-                    new INearCircleCommentItemListener() {
-                        @Override
-                        public void onCommentUserClick(NearCircleComment comment) {
-                            itemListener.onCommentUserClick(comment);
-                        }
-
-                        @Override
-                        public void onReplyUserClick(NearCircleComment comment) {
-                            itemListener.onReplyUserClick(comment);
-                        }
-
-                        @Override
-                        public void onContentClick(NearCircleComment comment) {
-                            itemListener.onCommentContentClick(comment);
-                        }
-                    }));
+                    itemListener));
             binding.rvComments.setLayoutManager(new LinearLayoutManager(activity));
         } else {
             binding.rlCommentContainer.setVisibility(View.GONE);
