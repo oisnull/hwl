@@ -64,17 +64,21 @@ public class NearCircleCommentAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
     public void addComment(NearCircleComment comment) {
-        if (comment == null||comment.getCommentId()<=0) return;
+        if (comment == null || comment.getCommentId() <= 0) return;
 
-        //comments.add(comment);
-        notifyItemChanged(comments.size() - 1);
+        int pos = comments.indexOf(comment);
+        if (pos == -1) {
+            comments.add(comment);
+            notifyItemChanged(comments.size() - 1);
+        } else
+            notifyItemChanged(pos);
     }
 
     public void deleteComment(NearCircleComment comment) {
-        if (comment == null||comment.getCommentId()<=0) return;
+        if (comment == null || comment.getCommentId() <= 0) return;
 
         //comments.remove(comment);
-        notifyDataChanged();
+        notifyDataSetChanged();
     }
 
     @Override

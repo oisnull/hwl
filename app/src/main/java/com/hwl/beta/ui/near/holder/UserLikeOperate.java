@@ -43,6 +43,8 @@ public class UserLikeOperate {
                                    INearCircleLikeItemListener itemListener) {
         if (like == null) return;
 
+        if (isExists(fblLikeContainer, like.getLikeUserId())) return;
+
         Context context = fblLikeContainer.getContext();
         ImageView iv = createLikeView(context, like, itemListener);
         fblLikeContainer.addView(iv, getDefaultLayoutParams(context));
@@ -60,6 +62,18 @@ public class UserLikeOperate {
                 break;
             }
         }
+    }
+
+    private static boolean isExists(FlexboxLayout fblLikeContainer, long userId) {
+        int childCount = fblLikeContainer.getChildCount();
+        if (childCount <= 0) return false;
+        for (int i = 0; i < childCount; i++) {
+            View iv = fblLikeContainer.getChildAt(i);
+            if (((long) iv.getTag(R.id.id_tag_userlike)) == userId) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static ImageView createLikeView(Context context, final NearCircleLike like,
