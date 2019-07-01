@@ -30,37 +30,35 @@ public class NearCircleViewHolder extends RecyclerView.ViewHolder {
 
     private NearItemBinding itemBinding;
     private Context context;
-    private NearCircleCommentAdapter commentAdapter;
+	//private NearCircleCommentAdapter commentAdapter;
 
     public NearCircleViewHolder(Context context, NearItemBinding itemBinding) {
         super(itemBinding.getRoot());
         this.itemBinding = itemBinding;
         this.context = context;
-        this.commentAdapter = null;
     }
 
     public void setItemBinding(final INearCircleItemListener itemListener,
                                int position,
-                               final NearCircle info,
-                               final List<NearCircleImage> images,
-                               List<NearCircleLike> likes,
-                               List<NearCircleComment> comments,
-                               ImageViewBean headImage
+                               final NearCircle info
     ) {
         this.itemBinding.setAction(itemListener);
         this.itemBinding.setPosition(position);
         this.itemBinding.setInfo(info);
-        this.itemBinding.setImage(headImage);
+        this.itemBinding.setImage(new ImageViewBean(info.getPublishUserImage()));
+        //this.commentAdapter = null;
+        this.itemBinding.rvComments.setAdapter(new NearCircleCommentAdapter(context, info.getComments(), itemListener));
+        this.itemBinding.rvComments.setLayoutManager(new LinearLayoutManager(context));
 
-        if (images == null || images.size() <= 0) {
+        if (info.getImages() == null || info.getImages().size() <= 0) {
             this.itemBinding.rvImages.setVisibility(View.GONE);
         } else {
             NineImagesAdapter imagesAdapter = new NineImagesAdapter(context,
-                    DBNearCircleAction.convertToNineImageModels(images),
+                    DBNearCircleAction.convertToNineImageModels(info.getImages()),
                     new NineImagesAdapter.ImageItemListener() {
                         @Override
                         public void onImageClick(int position, String imageUrl) {
-                            itemListener.onImageClick(position, images);
+                            itemListener.onImageClick(position, info.getImages());
                         }
                     });
             this.itemBinding.rvImages.setVisibility(View.VISIBLE);
@@ -69,26 +67,19 @@ public class NearCircleViewHolder extends RecyclerView.ViewHolder {
                     imagesAdapter.getColumnCount()));
         }
 
-        if ("哈哈".equals(info.getContent())) {
-            String te = info.getContent();
-        }
-
         boolean isShowActionContainer = false;
-        if (likes != null && likes.size() > 0) {
+        if (info.getLikes() != null && info.getLikes().size() > 0) {
             isShowActionContainer = true;
             this.itemBinding.rlLikeContainer.setVisibility(View.VISIBLE);
             this.itemBinding.fblLikeContainer.removeAllViews();
-            UserLikeOperate.setLikeInfos(itemBinding.fblLikeContainer, likes, itemListener);
+            UserLikeOperate.setLikeInfos(itemBinding.fblLikeContainer, info.getLikes(), itemListener);
         } else {
             this.itemBinding.rlLikeContainer.setVisibility(View.GONE);
         }
 
-        if (comments != null && comments.size() > 0) {
+        if (info.getComments() != null && info.getComments().size() > 0) {
             isShowActionContainer = true;
-            commentAdapter = new NearCircleCommentAdapter(context, comments, itemListener);
             this.itemBinding.rlCommentContainer.setVisibility(View.VISIBLE);
-            this.itemBinding.rvComments.setAdapter(commentAdapter);
-            this.itemBinding.rvComments.setLayoutManager(new LinearLayoutManager(context));
         } else {
             this.itemBinding.rlCommentContainer.setVisibility(View.GONE);
         }
@@ -125,14 +116,24 @@ public class NearCircleViewHolder extends RecyclerView.ViewHolder {
         if (!itemBinding.llActionContainer.isShown())
             itemBinding.llActionContainer.setVisibility(View.VISIBLE);
 
-        if (commentAdapter == null) {
-            List<NearCircleComment> comments = new ArrayList<>();
-            comments.add(comment);
-            commentAdapter = new NearCircleCommentAdapter(context, comments, itemListener);
-            itemBinding.rvComments.setAdapter(commentAdapter);
-            itemBinding.rvComments.setLayoutManager(new LinearLayoutManager(context));
-        } else {
-            commentAdapter.addComment(comment);
+        //if (commentAdapter == null) {
+        //    List<NearCircleComment> comments = new ArrayList<>();
+        //    comments.add(comment);
+        //    commentAdapter = new NearCircleCommentAdapter(context, comments, itemListener);
+        //    itemBinding.rvComments.setAdapter(commentAdapter);
+        //    itemBinding.rvComments.setLayoutManager(new LinearLayoutManager(context));
+        //} else {
+        //    commentAdapter.addComment(comment);
+        //}
+
+        itemBinding.rvComments.getAdapter().addComment(comment);
+    }
+
+    public void deleteCommentInfo(NearCircleComment comment) {
+        if (comment == null) return;
+        itemBinding.rvComments.getAdapter().deleteComment(comment);
+        if (itemBinding.rvComments.getAdapter().getCount() <= 0) {
+            itemBinding.rlCommentContainer.setVisibility(View.GONE);
         }
     }
 

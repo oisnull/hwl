@@ -150,8 +150,7 @@ public class NearCircleComment implements Serializable {
     public boolean equals(Object obj) {
         if (obj instanceof NearCircleComment) {
             NearCircleComment comment = (NearCircleComment) obj;
-            return this.getNearCircleId() == comment.getNearCircleId()
-                    && this.getCommentId() == comment.getCommentId();
+            return this.getCommentId() == comment.getCommentId();
         }
         return super.equals(obj);
     }

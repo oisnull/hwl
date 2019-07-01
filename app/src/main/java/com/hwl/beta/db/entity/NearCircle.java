@@ -53,6 +53,9 @@ public class NearCircle implements Serializable {
     }
 
     public List<NearCircleComment> getComments() {
+		if(this.comments==null){
+			this.comments=new ArrayList<>();
+		}
         return this.comments;
     }
 
@@ -61,6 +64,9 @@ public class NearCircle implements Serializable {
     }
 
     public List<NearCircleLike> getLikes() {
+		if(this.likes==null){
+			this.likes=new ArrayList<>();
+		}
         return this.likes;
     }
 
