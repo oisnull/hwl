@@ -144,10 +144,11 @@ public class NearCircleService {
                 .subscribeOn(Schedulers.io());
     }
 
-    public static Observable<DeleteNearCommentResponse> deleteComment(int commentId) {
+    public static Observable<DeleteNearCommentResponse> deleteComment(int commentId, String lastUpdateTime) {
         DeleteNearCommentRequest requestBody = new DeleteNearCommentRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setCommentId(commentId);
+        requestBody.setNearCircleUpdateTime(lastUpdateTime);
         return RetrofitUtils.createApi(INearCircleService.class)
                 .deleteNearComment(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<DeleteNearCommentResponse>>())

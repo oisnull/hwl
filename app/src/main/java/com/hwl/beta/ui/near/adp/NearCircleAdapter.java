@@ -103,6 +103,28 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return this.nearCircles;
     }
 
+    public NearCircle getInfo(long nearCircleId) {
+		if(nearCircleId<=0) return null;
+        
+        for (int i = 0; i < nearCircles.size(); i++){
+			if(nearCircles.get(i).getNearCircleId()==nearCircleId){
+				return nearCircles.get(i); 
+			}
+		}
+		return null;
+    }
+
+    public int getInfoPosition(long nearCircleId) {
+		if(nearCircleId<=0) return -1;
+        
+        for (int i = 0; i < nearCircles.size(); i++){
+			if(nearCircles.get(i).getNearCircleId()==nearCircleId){
+				return i; 
+			}
+		}
+		return -1;
+    }
+
     public void updateInfos(List<NearCircle> infos) {
         updateInfos(false, infos);
     }

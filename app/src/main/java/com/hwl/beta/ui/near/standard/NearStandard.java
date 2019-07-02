@@ -20,6 +20,8 @@ public interface NearStandard {
 
     Observable<NearCircleComment> addComment(NearCircle info, String content, long replyUserId);
 
+    Observable<String> deleteComment(NearCircle info,NearCircleComment comment);
+
     Observable<NearCircle> loadLocalDetails(long nearCircleId);
 
     Observable<NearCircle> loadServerDetails(long nearCircleId,String updateTime);

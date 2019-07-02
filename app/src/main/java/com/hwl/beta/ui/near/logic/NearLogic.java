@@ -202,6 +202,33 @@ public class NearLogic implements NearStandard {
     }
 
     @Override
+    public Observable<String> deleteComment(NearCircle info, NearCircleComment comment){
+		return NearCircleService.deleteComment(comment.getCommentId(),info.getUpdateTime())
+                .map(new Function<DeleteNearCommentResponse, String>() {
+                    @Override
+                    public String apply(DeleteNearCommentResponse response) throws Exception {
+                        if (response.getStatus() != NetConstant.RESULT_SUCCESS) {
+                            throw new Exception("Delete near circle info failed.");
+                        }
+
+                        if (!TextUtils.isEmpty(response.getNearCircleLastUpdateTime())) {
+                            DaoUtils.getNearCircleManagerInstance().setUpdateTime(comment.getNearCircleId(), response.getNearCircleLastUpdateTime());
+                        }
+
+                        DaoUtils.getNearCircleManagerInstance().deleteComment(comment.getNearCircleId(),comment.getCommentUserId(),comment.getCommentId());
+                        return response.getNearCircleLastUpdateTime();
+                    }
+                })
+                .doOnNext(new Consumer<String>() {
+                    @Override
+                    public void accept(String lastUpdateTime) {
+                        //send im message
+                        
+                    }
+                });
+	}
+
+    @Override
     public Observable<NearCircle> loadLocalDetails(final long nearCircleId) {
         if (nearCircleId <= 0) {
             return Observable.error(new Throwable("Near circle id con't be empty."));

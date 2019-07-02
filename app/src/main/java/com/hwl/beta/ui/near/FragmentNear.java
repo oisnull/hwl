@@ -313,6 +313,46 @@ public class FragmentNear extends BaseFragment {
         }
 
         @Override
+        public void onCommentLongClick(View view,NearCircleComment comment) {
+			//Toast.makeText(activity, comment.getContent(), Toast.LENGTH_SHORT).show
+			PopupMenu popup = new PopupMenu(activity, view);
+			popup.getMenuInflater().inflate(R.menu.popup_comment_menu, popup.getMenu());
+			popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+				public boolean onMenuItemClick(MenuItem item) {
+					switch (item.getItemId()) {
+						case R.id.pop_comment_copy:
+                            ClipboardAction.copy(activity, comment.getContent());
+							break;
+						case R.id.pop_near_delete:
+							deleteComment(comment);
+							break;
+					}
+					return true;
+				}
+			});
+			popup.show();
+        }
+
+        private void deleteComment(NearCircleComment comment) {
+			NearCircle info=nearCircleAdapter.getInfo(comment.getNearCircleId());
+            nearStandard.deleteComment(info, comment)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<String>() {
+                        @Override
+                        public void accept(String lastUpdateTime) {
+							comment.setLastUpdateTime(lastUpdateTime);
+							int pos=nearCircleAdapter.getInfoPosition(comment.getNearCircleId());
+                            nearCircleAdapter.deleteComment(pos, comment);
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) {
+                            Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+
+        @Override
         public void onContentClick(NearCircle info) {
 //            UITransfer.toNearDetailActivity(activity, info.getNearCircleId());
         }
