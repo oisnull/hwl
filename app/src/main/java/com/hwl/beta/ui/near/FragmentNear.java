@@ -25,6 +25,7 @@ import com.hwl.beta.db.entity.NearCircleImage;
 import com.hwl.beta.db.entity.NearCircleLike;
 import com.hwl.beta.emotion.EmotionDefaultPanelV2;
 import com.hwl.beta.sp.MessageCountSP;
+import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.BaseFragment;
 import com.hwl.beta.ui.common.ClipboardAction;
 import com.hwl.beta.ui.common.UITransfer;
@@ -217,10 +218,21 @@ public class FragmentNear extends BaseFragment {
     private class EmotionPanelListener implements EmotionDefaultPanelV2.IPanelListener {
         private int position;
         private NearCircle info;
+        private long replyUserId;
 
         public void setNearCircleInfo(int position, NearCircle info) {
             this.position = position;
             this.info = info;
+            this.replyUserId = 0;
+        }
+
+        public void setNearCircleInfo(int position, NearCircle info, long replyUserId) {
+            setNearCircleInfo(position, info);
+            this.replyUserId = replyUserId;
+        }
+
+        public void setReplyUserId(long replyUserId) {
+            this.replyUserId = replyUserId;
         }
 
         @Override
@@ -241,7 +253,7 @@ public class FragmentNear extends BaseFragment {
             }
 
             LoadingDialog.show(activity, "正在发送,请稍后...");
-            nearStandard.addComment(info, content, 0)
+            nearStandard.addComment(info, content, replyUserId)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<NearCircleComment>() {
                         @Override
@@ -293,14 +305,14 @@ public class FragmentNear extends BaseFragment {
 
         @Override
         public void onCommentContentClick(NearCircleComment comment) {
-            if (StringUtils.isNotBlank(comment.getReplyUserName())) {
-                setEmotionStatus(true, "回复 " + comment.getReplyUserName() + " :");
+            if (StringUtils.isNotBlank(comment.getCommentUserName()) && !UserSP.getUserShowName().equals(comment.getCommentUserName())) {
+                setEmotionStatus(true, "回复 " + comment.getCommentUserName() + " :");
             } else {
                 setEmotionStatus(true, "输入评论内容");
             }
             NearCircle currentInfo = nearCircleAdapter.getInfo(comment.getNearCircleId());
             if (currentInfo == null) return;
-            emotionPanelListener.setNearCircleInfo(nearCircleAdapter.getInfoPosition(comment.getNearCircleId()), currentInfo);
+            emotionPanelListener.setNearCircleInfo(nearCircleAdapter.getInfoPosition(comment.getNearCircleId()), currentInfo, comment.getCommentUserId());
         }
 
         @Override
