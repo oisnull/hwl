@@ -8,7 +8,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -24,6 +26,7 @@ import com.hwl.beta.db.entity.NearCircleLike;
 import com.hwl.beta.emotion.EmotionDefaultPanelV2;
 import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.common.BaseFragment;
+import com.hwl.beta.ui.common.ClipboardAction;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.ebus.EventBusConstant;
@@ -264,11 +267,6 @@ public class FragmentNear extends BaseFragment {
         private CircleActionMorePop mMorePopupWindow;
         private boolean isRunning = false;
 
-//        @Override
-//        public void onItemViewClick(View view) {
-//            binding.edpEmotion.reset();
-//        }
-
         @Override
         public void onUserHeadClick(NearCircle info) {
             UITransfer.toUserIndexActivity(activity, info.getPublishUserId(),
@@ -295,53 +293,46 @@ public class FragmentNear extends BaseFragment {
 
         @Override
         public void onCommentContentClick(NearCircleComment comment) {
-            // if (StringUtils.isNotBlank(replyUserName)) {
-            // edpEmotion.setHintText("回复 " + replyUserName + " :");
-            // } else {
-            // edpEmotion.setHintText("输入评论内容");
-            // }
-//            NearCircleExt currnetInfo = this.getNearCircleInfo(comment.getNearCircleId());
-//            if (currnetInfo == null) return;
-//            if (comment.getCommentUserId() == myUserId) {
-//                UITransfer.toNearCommentPublishActivity(activity, comment.getNearCircleId(),
-// currnetInfo.getInfo().getPublishUserId(), currnetInfo.getNearCircleMessageContent());
-//            } else {
-//                UITransfer.toNearCommentPublishActivity(activity, comment.getNearCircleId(),
-// currnetInfo.getInfo().getPublishUserId(), comment.getCommentUserId(), comment
-// .getCommentUserName(), currnetInfo.getNearCircleMessageContent());
-//            }
+            if (StringUtils.isNotBlank(comment.getReplyUserName())) {
+                setEmotionStatus(true, "回复 " + comment.getReplyUserName() + " :");
+            } else {
+                setEmotionStatus(true, "输入评论内容");
+            }
+            NearCircle currentInfo = nearCircleAdapter.getInfo(comment.getNearCircleId());
+            if (currentInfo == null) return;
+            emotionPanelListener.setNearCircleInfo(nearCircleAdapter.getInfoPosition(comment.getNearCircleId()), currentInfo);
         }
 
         @Override
-        public void onCommentLongClick(View view,NearCircleComment comment) {
-			//Toast.makeText(activity, comment.getContent(), Toast.LENGTH_SHORT).show
-			PopupMenu popup = new PopupMenu(activity, view);
-			popup.getMenuInflater().inflate(R.menu.popup_comment_menu, popup.getMenu());
-			popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-				public boolean onMenuItemClick(MenuItem item) {
-					switch (item.getItemId()) {
-						case R.id.pop_comment_copy:
+        public boolean onCommentLongClick(View view, final NearCircleComment comment) {
+            PopupMenu popup = new PopupMenu(activity, view);
+            popup.getMenuInflater().inflate(R.menu.popup_comment_menu, popup.getMenu());
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.pop_comment_copy:
                             ClipboardAction.copy(activity, comment.getContent());
-							break;
-						case R.id.pop_near_delete:
-							deleteComment(comment);
-							break;
-					}
-					return true;
-				}
-			});
-			popup.show();
+                            break;
+                        case R.id.pop_near_delete:
+                            deleteComment(comment);
+                            break;
+                    }
+                    return true;
+                }
+            });
+            popup.show();
+            return false;
         }
 
-        private void deleteComment(NearCircleComment comment) {
-			NearCircle info=nearCircleAdapter.getInfo(comment.getNearCircleId());
+        private void deleteComment(final NearCircleComment comment) {
+            NearCircle info = nearCircleAdapter.getInfo(comment.getNearCircleId());
             nearStandard.deleteComment(info, comment)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<String>() {
                         @Override
                         public void accept(String lastUpdateTime) {
-							comment.setLastUpdateTime(lastUpdateTime);
-							int pos=nearCircleAdapter.getInfoPosition(comment.getNearCircleId());
+                            comment.setLastUpdateTime(lastUpdateTime);
+                            int pos = nearCircleAdapter.getInfoPosition(comment.getNearCircleId());
                             nearCircleAdapter.deleteComment(pos, comment);
                         }
                     }, new Consumer<Throwable>() {

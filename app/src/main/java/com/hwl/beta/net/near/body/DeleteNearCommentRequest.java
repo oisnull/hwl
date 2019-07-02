@@ -2,7 +2,7 @@ package com.hwl.beta.net.near.body;
 
 public class DeleteNearCommentRequest {
     private long UserId;
-    private int CommentId;
+    private long CommentId;
     private String NearCircleUpdateTime;
 
     public String getNearCircleUpdateTime() {
@@ -21,11 +21,11 @@ public class DeleteNearCommentRequest {
         UserId = userId;
     }
 
-    public int getCommentId() {
+    public long getCommentId() {
         return CommentId;
     }
 
-    public void setCommentId(int commentId) {
+    public void setCommentId(long commentId) {
         CommentId = commentId;
     }
 }

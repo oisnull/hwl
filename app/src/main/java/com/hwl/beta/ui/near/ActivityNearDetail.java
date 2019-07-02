@@ -273,6 +273,12 @@ public class ActivityNearDetail extends BaseActivity {
         }
 
         @Override
+        public boolean onCommentLongClick(View view, NearCircleComment comment) {
+
+            return false;
+        }
+
+        @Override
         public void onContentClick() {
 
         }

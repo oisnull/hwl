@@ -144,7 +144,7 @@ public class NearCircleService {
                 .subscribeOn(Schedulers.io());
     }
 
-    public static Observable<DeleteNearCommentResponse> deleteComment(int commentId, String lastUpdateTime) {
+    public static Observable<DeleteNearCommentResponse> deleteComment(long commentId, String lastUpdateTime) {
         DeleteNearCommentRequest requestBody = new DeleteNearCommentRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setCommentId(commentId);

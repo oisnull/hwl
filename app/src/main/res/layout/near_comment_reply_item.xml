@@ -21,9 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="1dp"
-        android:background="@drawable/item_selector"
-        android:onClick="@{view->action.onCommentContentClick(comment)}"
-        android:onLongClick="@{view->action.onCommentLongClick(view,comment)}"
+        android:background="@color/white"
         android:padding="@dimen/dp_10">
 
         <ImageView
@@ -56,11 +54,15 @@
             android:textSize="@dimen/dp_12" />
 
         <LinearLayout
+            android:id="@+id/ll_comment_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_name"
             android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/iv_header">
+            android:layout_toRightOf="@id/iv_header"
+            android:background="@drawable/item_selector"
+            android:onClick="@{view->action.onCommentContentClick(comment)}"
+            android:onLongClick="@{view->action.onCommentLongClick(view,comment)}">
 
             <TextView
                 android:layout_width="wrap_content"

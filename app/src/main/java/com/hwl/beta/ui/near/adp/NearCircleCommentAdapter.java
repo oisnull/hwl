@@ -14,7 +14,6 @@ import com.hwl.beta.ui.near.action.INearCircleCommentItemListener;
 import com.hwl.beta.ui.near.holder.NearCommentReplyViewHolder;
 import com.hwl.beta.ui.near.holder.NearCommentViewHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

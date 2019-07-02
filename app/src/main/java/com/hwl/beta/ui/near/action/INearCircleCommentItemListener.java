@@ -1,5 +1,7 @@
 package com.hwl.beta.ui.near.action;
 
+import android.view.View;
+
 import com.hwl.beta.db.entity.NearCircleComment;
 
 /**
@@ -13,5 +15,5 @@ public interface INearCircleCommentItemListener {
 
     void onCommentContentClick(NearCircleComment comment);
 
-	void onCommentLongClick(View view,NearCircleComment comment);
+    boolean onCommentLongClick(View view, NearCircleComment comment);
 }

@@ -11,6 +11,7 @@ import com.hwl.beta.net.near.NearCircleService;
 import com.hwl.beta.net.near.NetNearCircleMatchInfo;
 import com.hwl.beta.net.near.body.AddNearCommentResponse;
 import com.hwl.beta.net.near.body.DeleteNearCircleInfoResponse;
+import com.hwl.beta.net.near.body.DeleteNearCommentResponse;
 import com.hwl.beta.net.near.body.GetNearCircleDetailResponse;
 import com.hwl.beta.net.near.body.GetNearCircleInfosResponse;
 import com.hwl.beta.net.near.body.SetNearLikeInfoResponse;
@@ -202,8 +203,8 @@ public class NearLogic implements NearStandard {
     }
 
     @Override
-    public Observable<String> deleteComment(NearCircle info, NearCircleComment comment){
-		return NearCircleService.deleteComment(comment.getCommentId(),info.getUpdateTime())
+    public Observable<String> deleteComment(NearCircle info, final NearCircleComment comment) {
+        return NearCircleService.deleteComment(comment.getCommentId(), info.getUpdateTime())
                 .map(new Function<DeleteNearCommentResponse, String>() {
                     @Override
                     public String apply(DeleteNearCommentResponse response) throws Exception {
@@ -215,7 +216,7 @@ public class NearLogic implements NearStandard {
                             DaoUtils.getNearCircleManagerInstance().setUpdateTime(comment.getNearCircleId(), response.getNearCircleLastUpdateTime());
                         }
 
-                        DaoUtils.getNearCircleManagerInstance().deleteComment(comment.getNearCircleId(),comment.getCommentUserId(),comment.getCommentId());
+                        DaoUtils.getNearCircleManagerInstance().deleteComment(comment.getNearCircleId(), comment.getCommentUserId(), comment.getCommentId());
                         return response.getNearCircleLastUpdateTime();
                     }
                 })
@@ -223,10 +224,10 @@ public class NearLogic implements NearStandard {
                     @Override
                     public void accept(String lastUpdateTime) {
                         //send im message
-                        
+
                     }
                 });
-	}
+    }
 
     @Override
     public Observable<NearCircle> loadLocalDetails(final long nearCircleId) {
