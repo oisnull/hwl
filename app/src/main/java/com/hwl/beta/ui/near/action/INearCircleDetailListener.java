@@ -9,7 +9,7 @@ import android.view.View;
 public interface INearCircleDetailListener extends INearCircleCommentItemListener,
         INearCircleLikeItemListener {
 
-    void onItemViewClick(View view);
+    //void onItemViewClick(View view);
 
     void onUserHeadClick();
 

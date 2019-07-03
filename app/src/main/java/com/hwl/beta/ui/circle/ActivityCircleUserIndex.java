@@ -62,9 +62,7 @@ public class ActivityCircleUserIndex extends BaseActivity {
                 .setImageRightClick(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //UITransfer.toCirclePublishActivity(activity);
-                        //Toast.makeText(activity, "查看消息列表", Toast.LENGTH_SHORT).show();
-                        //UITransfer.toCircleMessagesActivity(activity);
+                        UITransfer.toCircleMessagesActivity(activity);
                     }
                 })
                 .setImageLeftClick(new View.OnClickListener() {

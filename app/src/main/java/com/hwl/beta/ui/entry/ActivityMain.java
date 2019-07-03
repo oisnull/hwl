@@ -193,7 +193,7 @@ public class ActivityMain extends BaseActivity {
                         UITransfer.toChatGroupActivity(activity, UserPosSP.getGroupGuid());
                         break;
                     case R.id.pop_near_message:
-//                        UITransfer.toNearMessagesActivity(activity);
+                        UITransfer.toNearMessagesActivity(activity);
                         break;
                     case R.id.pop_near_publish:
                         UITransfer.toNearPublishActivity(activity);

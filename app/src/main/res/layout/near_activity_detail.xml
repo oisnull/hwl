@@ -9,6 +9,10 @@
             type="com.hwl.beta.ui.near.action.INearCircleDetailListener" />
     </data>
 
+  <com.hwl.beta.emotion.EmotionDefaultPanelV2
+      android:id="@+id/edp_emotion"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -229,4 +233,5 @@
             </RelativeLayout>
         </ScrollView>
     </LinearLayout>
+  </com.hwl.beta.emotion.EmotionDefaultPanelV2>
 </layout>
