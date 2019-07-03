@@ -231,10 +231,6 @@ public class FragmentNear extends BaseFragment {
             this.replyUserId = replyUserId;
         }
 
-        public void setReplyUserId(long replyUserId) {
-            this.replyUserId = replyUserId;
-        }
-
         @Override
         public void onHeightChanged(int currentHeight) {
             parentActivity.setBottomNavVisibility(true);
@@ -325,7 +321,7 @@ public class FragmentNear extends BaseFragment {
                         case R.id.pop_comment_copy:
                             ClipboardAction.copy(activity, comment.getContent());
                             break;
-                        case R.id.pop_near_delete:
+                        case R.id.pop_comment_delete:
                             deleteComment(comment);
                             break;
                     }

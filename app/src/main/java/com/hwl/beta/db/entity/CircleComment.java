@@ -23,6 +23,16 @@ public class CircleComment implements Serializable {
     private String content ;
     @OrderBy("commentTime desc")
     private Date commentTime ;
+    @Transient
+    private String lastUpdateTime;
+
+    public void setLastUpdateTime(String lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
+    }
+
+    public String getLastUpdateTime() {
+        return lastUpdateTime;
+    }
 
     public String getShowTime() {
         if (this.commentTime != null)
@@ -109,5 +119,13 @@ public class CircleComment implements Serializable {
     public void setCommentTime(Date commentTime) {
         this.commentTime = commentTime;
     }
-
+	
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof CircleComment) {
+            CircleComment cc = (CircleComment) obj;
+            return this.getCommentId() == cc.getCommentId();
+        }
+        return super.equals(obj);
+    }
 }

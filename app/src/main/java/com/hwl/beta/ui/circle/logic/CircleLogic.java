@@ -240,4 +240,64 @@ public class CircleLogic implements CircleStandard {
                     }
                 });
     }
+
+    @Override
+    public Observable<CircleComment> addComment(final Circle info,
+                                                final String content,
+                                                final long replyUserId) {
+        if (info == null || info.getCircleId() <= 0) {
+            return Observable.error(new Throwable("Circle id con't be empty."));
+        }
+
+        return CircleService.addComment(info.getCircleId(), content, replyUserId, info.getUpdateTime())
+                .map(new Function<AddCircleCommentInfoResponse, CircleComment>() {
+                    @Override
+                    public CircleComment apply(AddCircleCommentInfoResponse response) throws Exception {
+                        if (response.getCommentInfo() == null || response.getCommentInfo().getCommentId() <= 0)
+                            throw new Exception("Post user comment info failed.");
+
+                        if (!TextUtils.isEmpty(response.getCircleLastUpdateTime())) {
+                            DaoUtils.getCircleManagerInstance().setUpdateTime(info.getCircleId(), response.getCircleLastUpdateTime());
+                        }
+
+                        CircleComment commentInfo = DBCircleAction.convertToCircleCommentInfo(response.getCommentInfo());
+                        commentInfo.setLastUpdateTime(response.getCircleLastUpdateTime());
+                        DaoUtils.getCircleManagerInstance().saveComment(commentInfo);
+                        return commentInfo;
+                    }
+                })
+                .doOnNext(new Consumer<CircleComment>() {
+                    @Override
+                    public void accept(CircleComment comment) {
+                        //send im message
+                    }
+                });
+    }
+
+    @Override
+    public Observable<String> deleteComment(Circle info, final CircleComment comment) {
+        return CircleService.deleteCommentInfo(comment.getCommentId(), info.getUpdateTime())
+                .map(new Function<DeleteCommentInfoResponse, String>() {
+                    @Override
+                    public String apply(DeleteCommentInfoResponse response) throws Exception {
+                        if (response.getStatus() != NetConstant.RESULT_SUCCESS) {
+                            throw new Exception("Delete circle info failed.");
+                        }
+
+                        if (!TextUtils.isEmpty(response.getCircleLastUpdateTime())) {
+                            DaoUtils.getCircleManagerInstance().setUpdateTime(comment.getCircleId(), response.getCircleLastUpdateTime());
+                        }
+
+                        DaoUtils.getCircleManagerInstance().deleteComment(comment.getCircleId(), comment.getCommentUserId(), comment.getCommentId());
+                        return response.getCircleLastUpdateTime();
+                    }
+                })
+                .doOnNext(new Consumer<String>() {
+                    @Override
+                    public void accept(String lastUpdateTime) {
+                        //send im message
+
+                    }
+                });
+    }
 }

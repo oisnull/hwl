@@ -162,7 +162,6 @@ public class NearLogic implements NearStandard {
                 });
     }
 
-
     @Override
     public Observable<NearCircleComment> addComment(final NearCircle info,
                                                     final String content,

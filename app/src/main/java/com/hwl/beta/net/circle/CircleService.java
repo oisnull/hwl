@@ -34,16 +34,6 @@ import retrofit2.http.POST;
 
 public class CircleService {
 
-//    public static Observable<GetCircleInfosResponse> getCircleInfos(long viewUserId, long
-//    minCircleId, int pageCount) {
-//        return getCircleInfos(viewUserId, minCircleId, pageCount, null);
-//    }
-
-//    public static Observable<GetCircleInfosResponse> getCircleInfos(long minCircleId, int
-//    pageCount, List<NetCircleMatchInfo> circleMatchInfos) {
-//        return getCircleInfos(0, minCircleId, pageCount, circleMatchInfos);
-//    }
-
     public static Observable<GetCircleInfosResponse> getCircleInfos(long viewUserId,
                                                                     long minCircleId,
                                                                     int pageCount,
@@ -84,39 +74,50 @@ public class CircleService {
         return RetrofitUtils.createApi(ICircleService.class)
                 .addCircleInfo(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<AddCircleInfoResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
-    public static Observable<SetLikeInfoResponse> setLikeInfo(int actionType, long CircleId) {
+    public static Observable<SetLikeInfoResponse> setLikeInfo(int actionType, long CircleId, String lastUpdateTime) {
         SetLikeInfoRequest requestBody = new SetLikeInfoRequest();
         requestBody.setLikeUserId(UserSP.getUserId());
         requestBody.setActionType(actionType);
         requestBody.setCircleId(CircleId);
+        requestBody.setCircleUpdateTime(lastUpdateTime);
         return RetrofitUtils.createApi(ICircleService.class)
                 .setCircleLikeInfo(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<SetLikeInfoResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
-    public static void addComment(long nearCircleId, String content) {
-        addComment(nearCircleId, content, 0);
+    public static void addComment(long nearCircleId, String content, String lastUpdateTime) {
+        addComment(nearCircleId, content, 0, lastUpdateTime);
     }
 
     public static Observable<AddCircleCommentInfoResponse> addComment(long CircleId,
                                                                       String content,
-                                                                      long replyUserId) {
+                                                                      long replyUserId, 
+																	  String lastUpdateTime) {
         AddCircleCommentInfoRequest requestBody = new AddCircleCommentInfoRequest();
         requestBody.setCommentUserId(UserSP.getUserId());
         requestBody.setCircleId(CircleId);
         requestBody.setContent(content);
         requestBody.setReplyUserId(replyUserId);
+        requestBody.setCircleUpdateTime(lastUpdateTime);
         return RetrofitUtils.createApi(ICircleService.class)
                 .AddCircleCommentInfo(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<AddCircleCommentInfoResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
+    }
+
+    public static Observable<DeleteCommentInfoResponse> deleteCommentInfo(int commentId, String lastUpdateTime) {
+        DeleteCommentInfoRequest requestBody = new DeleteCommentInfoRequest();
+        requestBody.setUserId(UserSP.getUserId());
+        requestBody.setCommentId(commentId);
+        requestBody.setCircleUpdateTime(lastUpdateTime);
+        return RetrofitUtils.createApi(ICircleService.class)
+                .deleteCommentInfo(new RequestBase(UserSP.getUserToken(), requestBody))
+                .map(new NetDefaultFunction<ResponseBase<DeleteCommentInfoResponse>>())
+                .subscribeOn(Schedulers.io());
     }
 
     public static Observable<GetUserCircleInfosResponse> getUserCircleInfos(long viewUserId,
@@ -153,19 +154,7 @@ public class CircleService {
         return RetrofitUtils.createApi(ICircleService.class)
                 .deleteCircleInfo(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<DeleteCircleInfoResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    public static Observable<DeleteCommentInfoResponse> deleteCommentInfo(int commentId) {
-        DeleteCommentInfoRequest requestBody = new DeleteCommentInfoRequest();
-        requestBody.setUserId(UserSP.getUserId());
-        requestBody.setCommentId(commentId);
-        return RetrofitUtils.createApi(ICircleService.class)
-                .deleteCommentInfo(new RequestBase(UserSP.getUserToken(), requestBody))
-                .map(new NetDefaultFunction<ResponseBase<DeleteCommentInfoResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public interface ICircleService {

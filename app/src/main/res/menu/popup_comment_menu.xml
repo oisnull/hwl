@@ -5,7 +5,7 @@
         android:id="@+id/pop_comment_copy"
         android:title="复制" />
     <item
-        android:id="@+id/pop_near_delete"
+        android:id="@+id/pop_comment_delete"
         android:title="删除" />
 
 </menu>

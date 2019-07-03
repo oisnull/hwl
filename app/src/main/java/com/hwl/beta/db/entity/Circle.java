@@ -72,6 +72,9 @@ public class Circle implements Serializable {
     }
 
     public List<CircleComment> getComments() {
+		if(this.comments==null){
+			this.comments=new ArrayList<>();
+		}
         return this.comments;
     }
 
@@ -80,6 +83,9 @@ public class Circle implements Serializable {
     }
 
     public List<CircleLike> getLikes() {
+		if(this.likes==null){
+			this.likes=new ArrayList<>();
+		}
         return this.likes;
     }
 

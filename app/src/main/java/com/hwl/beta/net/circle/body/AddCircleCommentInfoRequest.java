@@ -11,6 +11,15 @@ public class AddCircleCommentInfoRequest {
     private long ReplyUserId ;
     private long CircleId ;
     private String Content ;
+	private String CircleUpdateTime;
+
+    public long getCircleUpdateTime() {
+        return CircleUpdateTime;
+    }
+
+    public void setCircleUpdateTime(String circleUpdateTime) {
+        CircleUpdateTime = circleUpdateTime;
+    }
 
     public long getCommentUserId() {
         return CommentUserId;

@@ -16,6 +16,17 @@ public class CircleLike implements Serializable {
     private String likeUserImage;
     @OrderBy("likeTime desc")
     private Date likeTime;
+    @Transient
+    private String lastUpdateTime;
+
+    public void setLastUpdateTime(String lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
+    }
+
+    public String getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
     @Generated(hash = 273748114)
     public CircleLike(long circleId, long likeUserId, String likeUserName,
             String likeUserImage, Date likeTime) {
@@ -57,5 +68,15 @@ public class CircleLike implements Serializable {
     }
     public void setLikeTime(Date likeTime) {
         this.likeTime = likeTime;
+    }
+	
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof CircleLike) {
+            CircleLike like = (CircleLike) obj;
+            return this.getCircleId() == like.getCircleId()
+                    && this.getLikeUserId() == like.getLikeUserId();
+        }
+        return super.equals(obj);
     }
 }
