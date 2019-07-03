@@ -9,6 +9,7 @@ import org.greenrobot.greendao.annotation.OrderBy;
 import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -72,9 +73,9 @@ public class Circle implements Serializable {
     }
 
     public List<CircleComment> getComments() {
-		if(this.comments==null){
-			this.comments=new ArrayList<>();
-		}
+        if (this.comments == null) {
+            this.comments = new ArrayList<>();
+        }
         return this.comments;
     }
 
@@ -83,9 +84,9 @@ public class Circle implements Serializable {
     }
 
     public List<CircleLike> getLikes() {
-		if(this.likes==null){
-			this.likes=new ArrayList<>();
-		}
+        if (this.likes == null) {
+            this.likes = new ArrayList<>();
+        }
         return this.likes;
     }
 
@@ -117,7 +118,8 @@ public class Circle implements Serializable {
         this.itemType = itemType;
     }
 
-    public Circle(int itemType,long publishUserId,String publishUserName,String publishUserImage,String circleBackImage,String lifeNotes) {
+    public Circle(int itemType, long publishUserId, String publishUserName,
+                  String publishUserImage, String circleBackImage, String lifeNotes) {
         this.itemType = itemType;
         this.publishUserId = publishUserId;
         this.publishUserName = publishUserName;

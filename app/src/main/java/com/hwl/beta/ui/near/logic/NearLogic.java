@@ -94,6 +94,8 @@ public class NearLogic implements NearStandard {
                 if (localInfos.get(i).getNearCircleId() >= minNearCircleId) continue;
             }
 
+            if (TextUtils.isEmpty(localInfos.get(i).getUpdateTime())) continue;
+
             matchInfos.add(new NetNearCircleMatchInfo(localInfos.get(i).getNearCircleId(),
                     localInfos.get(i).getUpdateTime()));
             if (matchInfos.size() >= PAGE_COUNT) break;

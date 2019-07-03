@@ -50,26 +50,26 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return this.circles;
     }
 
-    public NearCircle getInfo(long circleId) {
-		if(circleId<=0) return null;
-        
-        for (int i = 0; i < circles.size(); i++){
-			if(circles.get(i).getCircleId()==circleId){
-				return circles.get(i); 
-			}
-		}
-		return null;
+    public Circle getInfo(long circleId) {
+        if (circleId <= 0) return null;
+
+        for (int i = 0; i < circles.size(); i++) {
+            if (circles.get(i).getCircleId() == circleId) {
+                return circles.get(i);
+            }
+        }
+        return null;
     }
 
     public int getInfoPosition(long circleId) {
-		if(circleId<=0) return -1;
-        
-        for (int i = 0; i < circles.size(); i++){
-			if(circles.get(i).getCircleId()==circleId){
-				return i; 
-			}
-		}
-		return -1;
+        if (circleId <= 0) return -1;
+
+        for (int i = 0; i < circles.size(); i++) {
+            if (circles.get(i).getCircleId() == circleId) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public long getMinId() {
@@ -130,9 +130,9 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 viewHolder.itemView.setVisibility(View.GONE);
             }
         } else if (holder instanceof CircleIndexItemViewHolder) {
-			Circle info = circles.get(position);
+            Circle info = circles.get(position);
             CircleIndexItemViewHolder viewHolder = (CircleIndexItemViewHolder) holder;
-            viewHolder.setItemBinding(itemListener, position,info);
+            viewHolder.setItemBinding(itemListener, position, info);
 
             if (info.getPublishUserId() == myUserId) {
                 viewHolder.getItemBinding().ivDelete.setVisibility(View.VISIBLE);
@@ -143,8 +143,8 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position,
-                                 @NonNull List<Object> payloads) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position,
+                                 List<Object> payloads) {
         if (payloads != null && payloads.size() > 0) {
             InfoPayload payload = (InfoPayload) payloads.get(0);
             CircleIndexItemViewHolder viewHolder = (CircleIndexItemViewHolder) holder;
@@ -172,13 +172,13 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         if (getItemCount() <= 0) {
             circles.addAll(infos);
-            notifyDataSetChanged();
         } else {
             removeEmptyInfo();
-            sortInfos(infos);
-            circles.addAll(getCircleItemPosition(), infos);
-            notifyDataSetChanged();
+            circles.removeAll(infos);
+            circles.addAll(infos);
         }
+        sortInfos(circles);
+        notifyDataSetChanged();
     }
 
     public void updateHead(Friend info) {
@@ -210,6 +210,7 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         if (infos == null || infos.size() <= 0) return;
         Collections.sort(infos, new Comparator<Circle>() {
             public int compare(Circle arg0, Circle arg1) {
+                if (arg0.getCircleId() == 0 || arg1.getCircleId() == 0) return 0;
                 return (int) (arg1.getCircleId() - arg0.getCircleId());
             }
         });
@@ -255,7 +256,7 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public void setLike(int position, CircleLike likeInfo, boolean isLike) {
-        Circle info = Circles.get(position);
+        Circle info = circles.get(position);
         if (info == null) return;
 
         if (isLike) {

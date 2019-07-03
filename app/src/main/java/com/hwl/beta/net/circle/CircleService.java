@@ -27,7 +27,6 @@ import com.hwl.beta.sp.UserSP;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -43,7 +42,7 @@ public class CircleService {
         requestBody.setViewUserId(viewUserId);
         requestBody.setMinCircleId(minCircleId);
         requestBody.setCircleMatchInfos(circleMatchInfos);
-        requestBody.setCount(pageCount <= 0 ? 15 : pageCount);
+        requestBody.setCount(pageCount);
         return RetrofitUtils.createApi(ICircleService.class)
                 .getCircleInfos(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<GetCircleInfosResponse>>())
@@ -109,7 +108,7 @@ public class CircleService {
                 .subscribeOn(Schedulers.io());
     }
 
-    public static Observable<DeleteCommentInfoResponse> deleteCommentInfo(int commentId, String lastUpdateTime) {
+    public static Observable<DeleteCommentInfoResponse> deleteCommentInfo(long commentId, String lastUpdateTime) {
         DeleteCommentInfoRequest requestBody = new DeleteCommentInfoRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setCommentId(commentId);

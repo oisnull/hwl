@@ -12,7 +12,7 @@ public class SetLikeInfoRequest {
     private long CircleId;
 	private String CircleUpdateTime;
 
-    public long getCircleUpdateTime() {
+    public String getCircleUpdateTime() {
         return CircleUpdateTime;
     }
 

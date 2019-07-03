@@ -111,7 +111,9 @@ public class CircleManager extends BaseDao<Circle> {
             sb.append(" = ");
             sb.append(circleId);
             sb.append(";");
+            daoSession.getDatabase().execSQL(sb.toString());
 
+            sb = new StringBuilder();
             //delete images sql
             sb.append("delete from ");
             sb.append(CircleImageDao.TABLENAME);
@@ -120,7 +122,9 @@ public class CircleManager extends BaseDao<Circle> {
             sb.append(" = ");
             sb.append(circleId);
             sb.append(";");
+            daoSession.getDatabase().execSQL(sb.toString());
 
+            sb = new StringBuilder();
             //delete comments sql
             sb.append("delete from ");
             sb.append(CircleCommentDao.TABLENAME);
@@ -129,7 +133,9 @@ public class CircleManager extends BaseDao<Circle> {
             sb.append(" = ");
             sb.append(circleId);
             sb.append(";");
+            daoSession.getDatabase().execSQL(sb.toString());
 
+            sb = new StringBuilder();
             //delete likes sql
             sb.append("delete from ");
             sb.append(CircleLikeDao.TABLENAME);

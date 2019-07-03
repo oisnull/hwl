@@ -15,6 +15,7 @@ import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.NearCircleMessage;
 import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.common.BaseActivity;
+import com.hwl.beta.ui.near.adp.NearMessageAdapter;
 
 import java.util.List;
 

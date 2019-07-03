@@ -373,8 +373,13 @@ public class ActivityCircleDetail extends BaseActivity {
         }
 
         @Override
-        public void onContentClick(CircleComment comment) {
+        public void onCommentContentClick(CircleComment comment) {
             itemListener.onCommentContentClick(comment);
+        }
+
+        @Override
+        public boolean onCommentLongClick(View view, CircleComment comment) {
+            return false;
         }
     }
 }

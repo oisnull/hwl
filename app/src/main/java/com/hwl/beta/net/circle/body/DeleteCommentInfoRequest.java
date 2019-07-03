@@ -2,10 +2,10 @@ package com.hwl.beta.net.circle.body;
 
 public class DeleteCommentInfoRequest {
     private long UserId;
-    private int CommentId;
+    private long CommentId;
 	private String CircleUpdateTime;
 
-    public long getCircleUpdateTime() {
+    public String getCircleUpdateTime() {
         return CircleUpdateTime;
     }
 
@@ -21,11 +21,11 @@ public class DeleteCommentInfoRequest {
         UserId = userId;
     }
 
-    public int getCommentId() {
+    public long getCommentId() {
         return CommentId;
     }
 
-    public void setCommentId(int commentId) {
+    public void setCommentId(long commentId) {
         CommentId = commentId;
     }
 }

@@ -8,20 +8,21 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
-import com.google.android.flexbox.FlexboxLayout;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.NearActivityDetailBinding;
 import com.hwl.beta.db.entity.NearCircle;
 import com.hwl.beta.db.entity.NearCircleComment;
 import com.hwl.beta.db.entity.NearCircleLike;
+import com.hwl.beta.emotion.EmotionDefaultPanelV2;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.BaseActivity;
-import com.hwl.beta.ui.common.KeyBoardAction;
+import com.hwl.beta.ui.common.ClipboardAction;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.convert.DBNearCircleAction;
 import com.hwl.beta.ui.dialog.LoadingDialog;
@@ -29,11 +30,11 @@ import com.hwl.beta.ui.imgselect.ActivityImageBrowse;
 import com.hwl.beta.ui.near.action.INearCircleDetailListener;
 import com.hwl.beta.ui.near.adp.NearCircleCommentAdapter;
 import com.hwl.beta.ui.common.NineImagesAdapter;
+import com.hwl.beta.ui.near.holder.UserLikeOperate;
 import com.hwl.beta.ui.near.logic.NearLogic;
 import com.hwl.beta.ui.near.standard.NearStandard;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
 import com.hwl.beta.ui.widget.CircleActionMorePop;
-import com.hwl.beta.utils.DisplayUtils;
 import com.hwl.beta.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -173,17 +174,19 @@ public class ActivityNearDetail extends BaseActivity {
         } else {
             binding.rvImages.setVisibility(View.GONE);
         }
-		
+
         binding.fblLikeContainer.removeAllViews();
         if (currentInfo.getLikes() != null && currentInfo.getLikes().size() > 0) {
             binding.fblLikeContainer.setVisibility(View.VISIBLE);
-            UserLikeOperate.setLikeInfos(itemBinding.fblLikeContainer, currentInfo.getLikes(),itemListener);
+            UserLikeOperate.setLikeInfos(binding.fblLikeContainer, currentInfo.getLikes(),
+                    itemListener);
         } else {
             binding.fblLikeContainer.setVisibility(View.GONE);
         }
-		
-        binding.rvComments.setAdapter(new NearCircleCommentAdapter(context, currentInfo.getComments(), itemListener));
-        binding.rvComments.setLayoutManager(new LinearLayoutManager(context));
+
+        binding.rvComments.setAdapter(new NearCircleCommentAdapter(activity,
+                currentInfo.getComments(), itemListener));
+        binding.rvComments.setLayoutManager(new LinearLayoutManager(activity));
         if (currentInfo.getComments() != null && currentInfo.getComments().size() > 0) {
             binding.rvComments.setVisibility(View.VISIBLE);
         } else {
@@ -291,8 +294,8 @@ public class ActivityNearDetail extends BaseActivity {
         }
 
         @Override
-        public boolean onCommentLongClick(View view, NearCircleComment comment) {
-		    PopupMenu popup = new PopupMenu(activity, view);
+        public boolean onCommentLongClick(View view, final NearCircleComment comment) {
+            PopupMenu popup = new PopupMenu(activity, view);
             popup.getMenuInflater().inflate(R.menu.popup_comment_menu, popup.getMenu());
             popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {

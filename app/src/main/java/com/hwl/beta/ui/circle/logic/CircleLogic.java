@@ -1,13 +1,18 @@
 package com.hwl.beta.ui.circle.logic;
 
+import android.text.TextUtils;
+
 import com.hwl.beta.db.DBConstant;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.Circle;
+import com.hwl.beta.db.entity.CircleComment;
 import com.hwl.beta.db.entity.CircleLike;
 import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.net.circle.CircleService;
 import com.hwl.beta.net.circle.NetCircleMatchInfo;
+import com.hwl.beta.net.circle.body.AddCircleCommentInfoResponse;
 import com.hwl.beta.net.circle.body.DeleteCircleInfoResponse;
+import com.hwl.beta.net.circle.body.DeleteCommentInfoResponse;
 import com.hwl.beta.net.circle.body.GetCircleDetailResponse;
 import com.hwl.beta.net.circle.body.GetCircleInfosResponse;
 import com.hwl.beta.net.circle.body.SetLikeInfoResponse;
@@ -112,6 +117,8 @@ public class CircleLogic implements CircleStandard {
                 if (localInfos.get(i).getCircleId() >= minCircleId) continue;
             }
 
+            if (TextUtils.isEmpty(localInfos.get(i).getUpdateTime())) continue;
+
             matchInfos.add(new NetCircleMatchInfo(localInfos.get(i).getCircleId(),
                     localInfos.get(i).getUpdateTime()));
             if (matchInfos.size() >= PAGE_COUNT) break;
@@ -140,7 +147,7 @@ public class CircleLogic implements CircleStandard {
         if (info == null || info.getCircleId() <= 0) {
             return Observable.error(new Throwable("Circle id con't be empty."));
         }
-        return CircleService.setLikeInfo(isLike ? 1 : 0, info.getCircleId())
+        return CircleService.setLikeInfo(isLike ? 1 : 0, info.getCircleId(), info.getUpdateTime())
                 .map(new Function<SetLikeInfoResponse, CircleLike>() {
                     @Override
                     public CircleLike apply(SetLikeInfoResponse response) throws Exception {
@@ -149,12 +156,12 @@ public class CircleLogic implements CircleStandard {
                         }
 
                         CircleLike likeInfo = new CircleLike();
+                        likeInfo.setCircleId(info.getCircleId());
+                        likeInfo.setLikeUserId(UserSP.getUserId());
+                        likeInfo.setLikeUserName(UserSP.getUserName());
+                        likeInfo.setLikeUserImage(UserSP.getUserHeadImage());
+                        likeInfo.setLastUpdateTime(response.getCircleLastUpdateTime());
                         if (isLike) {
-                            likeInfo.setCircleId(info.getCircleId());
-                            likeInfo.setLikeUserId(UserSP.getUserId());
-                            likeInfo.setLikeUserName(UserSP.getUserName());
-                            likeInfo.setLikeUserImage(UserSP.getUserHeadImage());
-                            likeInfo.setLikeTime(new Date());
                             DaoUtils.getCircleManagerInstance().saveLike(likeInfo);
                         } else {
                             DaoUtils.getCircleManagerInstance().deleteLike(info.getCircleId(),
@@ -230,7 +237,8 @@ public class CircleLogic implements CircleStandard {
                     @Override
                     public Circle apply(GetCircleDetailResponse response) throws Exception {
                         if (response != null && response.getCircleInfo() != null) {
-                            Circle info = DBCircleAction.convertToCircleInfo(response.getCircleInfo());
+                            Circle info =
+                                    DBCircleAction.convertToCircleInfo(response.getCircleInfo());
                             DaoUtils.getCircleManagerInstance().deleteAll(circleId);
                             DaoUtils.getCircleManagerInstance().save(info);
                             return info;
@@ -249,7 +257,8 @@ public class CircleLogic implements CircleStandard {
             return Observable.error(new Throwable("Circle id con't be empty."));
         }
 
-        return CircleService.addComment(info.getCircleId(), content, replyUserId, info.getUpdateTime())
+        return CircleService.addComment(info.getCircleId(), content, replyUserId,
+                info.getUpdateTime())
                 .map(new Function<AddCircleCommentInfoResponse, CircleComment>() {
                     @Override
                     public CircleComment apply(AddCircleCommentInfoResponse response) throws Exception {
@@ -257,10 +266,12 @@ public class CircleLogic implements CircleStandard {
                             throw new Exception("Post user comment info failed.");
 
                         if (!TextUtils.isEmpty(response.getCircleLastUpdateTime())) {
-                            DaoUtils.getCircleManagerInstance().setUpdateTime(info.getCircleId(), response.getCircleLastUpdateTime());
+                            DaoUtils.getCircleManagerInstance().setUpdateTime(info.getCircleId(),
+                                    response.getCircleLastUpdateTime());
                         }
 
-                        CircleComment commentInfo = DBCircleAction.convertToCircleCommentInfo(response.getCommentInfo());
+                        CircleComment commentInfo =
+                                DBCircleAction.convertToCircleCommentInfo(response.getCommentInfo());
                         commentInfo.setLastUpdateTime(response.getCircleLastUpdateTime());
                         DaoUtils.getCircleManagerInstance().saveComment(commentInfo);
                         return commentInfo;
@@ -288,7 +299,8 @@ public class CircleLogic implements CircleStandard {
                             DaoUtils.getCircleManagerInstance().setUpdateTime(comment.getCircleId(), response.getCircleLastUpdateTime());
                         }
 
-                        DaoUtils.getCircleManagerInstance().deleteComment(comment.getCircleId(), comment.getCommentUserId(), comment.getCommentId());
+                        DaoUtils.getCircleManagerInstance().deleteComment(comment.getCircleId(),
+                                comment.getCommentUserId(), comment.getCommentId());
                         return response.getCircleLastUpdateTime();
                     }
                 })

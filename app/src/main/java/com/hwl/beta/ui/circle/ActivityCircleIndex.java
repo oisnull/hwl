@@ -8,10 +8,11 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -23,19 +24,21 @@ import com.hwl.beta.db.entity.Circle;
 import com.hwl.beta.db.entity.CircleComment;
 import com.hwl.beta.db.entity.CircleImage;
 import com.hwl.beta.db.entity.CircleLike;
+import com.hwl.beta.emotion.EmotionDefaultPanelV2;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.circle.action.ICircleItemListener;
 import com.hwl.beta.ui.circle.adp.CircleIndexAdapter;
 import com.hwl.beta.ui.circle.logic.CircleLogic;
 import com.hwl.beta.ui.circle.standard.CircleStandard;
 import com.hwl.beta.ui.common.BaseActivity;
-import com.hwl.beta.ui.common.KeyBoardAction;
+import com.hwl.beta.ui.common.ClipboardAction;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.imgselect.ActivityImageBrowse;
 import com.hwl.beta.ui.imgselect.bean.ImageSelectType;
 import com.hwl.beta.ui.widget.CircleActionMorePop;
 import com.hwl.beta.utils.NetworkUtils;
+import com.hwl.beta.utils.StringUtils;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -209,7 +212,6 @@ public class ActivityCircleIndex extends BaseActivity {
 
         @Override
         public void onHeightChanged(int currentHeight) {
-            parentActivity.setBottomNavVisibility(true);
         }
 
         @Override
@@ -277,6 +279,11 @@ public class ActivityCircleIndex extends BaseActivity {
         public void onUserHeadClick(Circle info) {
             UITransfer.toUserIndexActivity(activity, info.getPublishUserId(),
                     info.getPublishUserName(), info.getPublishUserImage());
+        }
+
+        @Override
+        public void onContentClick(Circle info) {
+
         }
 
         @Override
@@ -350,11 +357,6 @@ public class ActivityCircleIndex extends BaseActivity {
         }
 
         @Override
-        public void onContentClick() {
-
-        }
-
-        @Override
         public void onMoreActionClick(final View view, int position, final Circle info) {
             if (info == null) return;
             if (mMorePopupWindow == null) {
@@ -370,7 +372,7 @@ public class ActivityCircleIndex extends BaseActivity {
                 @Override
                 public void onCommentClick(int position) {
                     setEmotionStatus(true, "输入评论内容");
-                    emotionPanelListener.setNearCircleInfo(position, info);
+                    emotionPanelListener.setCircleInfo(position, info);
                 }
 
                 @Override

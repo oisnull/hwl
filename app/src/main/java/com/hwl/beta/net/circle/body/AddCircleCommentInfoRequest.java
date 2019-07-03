@@ -4,16 +4,16 @@ public class AddCircleCommentInfoRequest {
     /// <summary>
     /// 评论文章的用户id
     /// </summary>
-    private long CommentUserId ;
+    private long CommentUserId;
     /// <summary>
     /// 回复评论的用户id
     /// </summary>
-    private long ReplyUserId ;
-    private long CircleId ;
-    private String Content ;
-	private String CircleUpdateTime;
+    private long ReplyUserId;
+    private long CircleId;
+    private String Content;
+    private String CircleUpdateTime;
 
-    public long getCircleUpdateTime() {
+    public String getCircleUpdateTime() {
         return CircleUpdateTime;
     }
 
