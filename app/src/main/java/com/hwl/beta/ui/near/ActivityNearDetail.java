@@ -51,6 +51,15 @@ public class ActivityNearDetail extends BaseActivity {
     INearCircleDetailListener itemListener;
     NearCircle currentInfo;
     EmotionPanelListener emotionPanelListener;
+	
+	//1.load info from local db
+	//2.if non exists in local, than load from services,
+	//	if exists in local, than bind info and set the status is loading for comment and like
+	//3.if services also non exists, show the status of deleting,
+	//	if exists in services, bind comment and like
+
+	//network status
+	//non exists status
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,36 +94,59 @@ public class ActivityNearDetail extends BaseActivity {
         this.loadDetails();
     }
 
-    private void loadDetails() {
-        binding.pbCircleLoading.setVisibility(View.VISIBLE);
-        binding.svCircleContainer.setVisibility(View.GONE);
+	//0 both are hidden
+	//1 show loading
+	//2 show content
+	private void showContentLoading(int status){
+		switch(status){
+			case 0:
+			binding.pbCircleLoading.setVisibility(View.GONE);
+			binding.svCircleContainer.setVisibility(View.GONE);
+			break;
+			case 1:
+			binding.pbCircleLoading.setVisibility(View.VISIBLE);
+			binding.svCircleContainer.setVisibility(View.GONE);
+			break;
+			case 2:
+			binding.pbCircleLoading.setVisibility(View.GONE);
+			binding.svCircleContainer.setVisibility(View.VISIBLE);
+			break;
+		}
+	}
 
+    private void loadDetails() {
         final long nearCircleId = getIntent().getLongExtra("nearcircleid", 0);
         nearStandard.loadLocalDetails(nearCircleId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<NearCircle>() {
                     @Override
                     public void accept(NearCircle info) throws Exception {
-                        if (info == null) {
+                        currentInfo = info;
+
+                        if (currentInfo == null) {
+							showContentLoading(1);
                             loadServerDetails(nearCircleId, null);
                         } else {
-                            currentInfo = info;
-                            bindData();
-                            binding.pbCircleLoading.setVisibility(View.GONE);
-                            binding.svCircleContainer.setVisibility(View.VISIBLE);
+                            bindInfo();
+                            loadServerDetails(nearCircleId, currentInfo.getUpdateTime());
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) {
-                        binding.pbCircleLoading.setVisibility(View.GONE);
-                        binding.svCircleContainer.setVisibility(View.GONE);
+                        loadServerDetails(nearCircleId, null);
                         Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
     private void loadServerDetails(long nearCircleId, String updateTime) {
+        if (!NetworkUtils.isConnected()) {
+			showContentLoading(2);
+			bindComments();
+            return;
+        }
+
         nearStandard.loadServerDetails(nearCircleId, updateTime)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<NearCircle>() {
@@ -122,24 +154,21 @@ public class ActivityNearDetail extends BaseActivity {
                     public void accept(NearCircle info) throws Exception {
                         if (info != null) {
                             currentInfo = info;
-                            bindData();
+                            bindComments();
                         }
-                        binding.pbCircleLoading.setVisibility(View.GONE);
-                        binding.svCircleContainer.setVisibility(View.VISIBLE);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) {
-                        binding.pbCircleLoading.setVisibility(View.GONE);
-                        binding.svCircleContainer.setVisibility(View.GONE);
+						showContentLoading(2);
                         Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    private void bindData() {
+	private void bindInfo(){
         if (currentInfo == null) return;
-
+	
         ImageViewBean.loadImage(binding.ivHeader, currentInfo.getPublishUserImage());
         binding.tvUsername.setText(currentInfo.getPublishUserName());
         binding.tvPosDesc.setText(currentInfo.getFromPosDesc());
@@ -174,12 +203,15 @@ public class ActivityNearDetail extends BaseActivity {
         } else {
             binding.rvImages.setVisibility(View.GONE);
         }
+	}
+
+    private void bindComments() {
+        if (currentInfo == null) return;
 
         binding.fblLikeContainer.removeAllViews();
         if (currentInfo.getLikes() != null && currentInfo.getLikes().size() > 0) {
             binding.fblLikeContainer.setVisibility(View.VISIBLE);
-            UserLikeOperate.setLikeInfos(binding.fblLikeContainer, currentInfo.getLikes(),
-                    itemListener);
+            UserLikeOperate.setLikeInfos(binding.fblLikeContainer, currentInfo.getLikes(), itemListener);
         } else {
             binding.fblLikeContainer.setVisibility(View.GONE);
         }
@@ -190,6 +222,79 @@ public class ActivityNearDetail extends BaseActivity {
         if (currentInfo.getComments() != null && currentInfo.getComments().size() > 0) {
             binding.rvComments.setVisibility(View.VISIBLE);
         } else {
+            binding.rlCommentContainer.setVisibility(View.GONE);
+        }
+    }
+
+	private void getComments(){
+		if(currentInfo==null) return;
+
+		long lastCommentId = currentInfo.getComments()!=null&&currentInfo.getComments().size()>0?currentInfo.getComments().get(currentInfo.getComments().size()-1):0;
+		nearStandard.getComments(currentInfo,lastCommentId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<NearCircleComment>>() {
+                    @Override
+                    public void accept(List<NearCircleComment> comments) throws Exception {
+                        setCommentInfos(comments);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) {
+                        Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+	}
+
+    public void setLikeInfo(NearCircleLike likeInfo) {
+        if (likeInfo == null) return;
+
+        if (!binding.rlLikeContainer.isShown())
+            binding.rlLikeContainer.setVisibility(View.VISIBLE);
+        if (!binding.llActionContainer.isShown())
+            binding.llActionContainer.setVisibility(View.VISIBLE);
+
+        UserLikeOperate.setLikeInfo(binding.fblLikeContainer, likeInfo, itemListener);
+    }
+
+    public void cancelLikeInfo(NearCircleLike likeInfo) {
+        if (likeInfo == null) return;
+
+        UserLikeOperate.cancelLikeInfo(binding.fblLikeContainer, likeInfo.getLikeUserId());
+
+        if (binding.fblLikeContainer.getChildCount() <= 0) {
+            binding.rlLikeContainer.setVisibility(View.GONE);
+        }
+    }
+
+	public void setCommentInfo(NearCircleComment comment) {
+        if (comment == null) return;
+
+        if (!binding.rlCommentContainer.isShown())
+            binding.rlCommentContainer.setVisibility(View.VISIBLE);
+        if (!binding.llActionContainer.isShown())
+            binding.llActionContainer.setVisibility(View.VISIBLE);
+
+        NearCircleCommentAdapter commentAdapter = (NearCircleCommentAdapter) binding.rvComments.getAdapter();
+        commentAdapter.addComment(comment);
+    }
+
+	public void setCommentInfos(List<NearCircleComment> comments) {
+        if (comments == null||comments.size()<=0) return;
+
+        if (!binding.rlCommentContainer.isShown())
+            binding.rlCommentContainer.setVisibility(View.VISIBLE);
+        if (!binding.llActionContainer.isShown())
+            binding.llActionContainer.setVisibility(View.VISIBLE);
+
+        NearCircleCommentAdapter commentAdapter = (NearCircleCommentAdapter) binding.rvComments.getAdapter();
+        commentAdapter.addComments(comments);
+    }
+
+    public void deleteCommentInfo(NearCircleComment comment) {
+        if (comment == null) return;
+        NearCircleCommentAdapter commentAdapter = (NearCircleCommentAdapter) binding.rvComments.getAdapter();
+        commentAdapter.deleteComment(comment);
+        if (commentAdapter.getItemCount() <= 0) {
             binding.rlCommentContainer.setVisibility(View.GONE);
         }
     }
@@ -238,9 +343,9 @@ public class ActivityNearDetail extends BaseActivity {
                     .subscribe(new Consumer<NearCircleComment>() {
                         @Override
                         public void accept(NearCircleComment info) throws Exception {
-                            setEmotionStatus(false);
                             LoadingDialog.hide();
-                            //nearCircleAdapter.addComment(position, info);
+                            setEmotionStatus(false);
+							setCommentInfo(info);
                         }
                     }, new Consumer<Throwable>() {
                         @Override
@@ -320,8 +425,8 @@ public class ActivityNearDetail extends BaseActivity {
                     .subscribe(new Consumer<String>() {
                         @Override
                         public void accept(String lastUpdateTime) {
-                            comment.setLastUpdateTime(lastUpdateTime);
-                            //nearCircleAdapter.deleteComment(pos, comment);
+                            //comment.setLastUpdateTime(lastUpdateTime);
+                            deleteCommentInfo(comment);
                         }
                     }, new Consumer<Throwable>() {
                         @Override
@@ -377,7 +482,7 @@ public class ActivityNearDetail extends BaseActivity {
                         @Override
                         public void accept(NearCircleLike info) {
                             isRunning = false;
-                            //nearCircleAdapter.setLike(position, info, isLike);
+                            setLikeInfo(info);
                         }
                     }, new Consumer<Throwable>() {
                         @Override
@@ -410,13 +515,14 @@ public class ActivityNearDetail extends BaseActivity {
                     .subscribe(new Consumer<Object>() {
                         @Override
                         public void accept(Object o) {
-//                            nearCircleAdapter.remove(position);
                             LoadingDialog.hide();
+							finish();
                         }
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) {
                             LoadingDialog.hide();
+                            Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
         }

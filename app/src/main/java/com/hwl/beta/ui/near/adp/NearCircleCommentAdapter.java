@@ -73,6 +73,14 @@ public class NearCircleCommentAdapter extends RecyclerView.Adapter<RecyclerView.
             notifyItemChanged(pos);
     }
 
+    public void addComments(List<NearCircleComment> infos) {
+        if (infos == null || infos.size() <= 0) return;
+
+        int pos = comments.size();
+        comments.addAll(infos);
+		notifyItemRangeChanged(pos,comments.size());
+    }
+
     public void deleteComment(NearCircleComment comment) {
         if (comment == null || comment.getCommentId() <= 0) return;
 

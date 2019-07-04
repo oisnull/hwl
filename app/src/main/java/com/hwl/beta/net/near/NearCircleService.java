@@ -59,16 +59,17 @@ public class NearCircleService {
     }
 
     public static Observable<GetNearCommentsResponse> getNearComments(long nearCircleId,
-                                                                      int lastCommentId) {
+                                                                      long lastCommentId,
+																	  int count) {
         GetNearCommentsRequest requestBody = new GetNearCommentsRequest();
-        requestBody.setCount(3);
+        requestBody.setUserId(UserSP.getUserId());
+        requestBody.setCount(count);
         requestBody.setLastCommentId(lastCommentId);
         requestBody.setNearCircleId(nearCircleId);
         return RetrofitUtils.createApi(INearCircleService.class)
                 .getNearComments(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<GetNearCommentsResponse>>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     public static Observable<GetNearCircleDetailResponse> getNearCircleDetail(long nearCircleId) {

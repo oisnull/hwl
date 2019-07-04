@@ -18,6 +18,8 @@ public interface NearStandard {
 
     Observable<NearCircleLike> setLike(NearCircle info, boolean isLike);
 
+    Observable<List<NearCircleComment>> getComments(NearCircle info, long lastCommentId);
+
     Observable<NearCircleComment> addComment(NearCircle info, String content, long replyUserId);
 
     Observable<String> deleteComment(NearCircle info,NearCircleComment comment);

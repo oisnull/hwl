@@ -165,6 +165,30 @@ public class NearLogic implements NearStandard {
     }
 
     @Override
+    public Observable<List<NearCircleComment>> getComments(NearCircle info, long lastCommentId){
+        if (info == null || info.getNearCircleId() <= 0) {
+            return Observable.error(new Throwable("Near circle id con't be empty."));
+        }
+
+        return NearCircleService.getNearComments(info.getNearCircleId(), lastCommentId,COMMENT_PAGE_COUNT)
+                .map(new Function<GetNearCommentsResponse, List<NearCircleComment>>() {
+                    @Override
+                    public List<NearCircleComment> apply(GetNearCommentsResponse response) throws Exception {
+                        if (response.getNearCircleCommentInfos() == null)
+							return new ArrayList<NearCircleComment>();
+
+						return DBNearCircleAction.convertToNearCircleCommentInfos(response.getNearCircleCommentInfos());
+                    }
+                })
+                .doOnNext(new Consumer<List<NearCircleComment>>() {
+                    @Override
+                    public void accept(List<NearCircleComment> comments) {
+                        DaoUtils.getNearCircleManagerInstance().saveNonExistentComments(comments);
+                    }
+                });
+	}
+
+    @Override
     public Observable<NearCircleComment> addComment(final NearCircle info,
                                                     final String content,
                                                     final long replyUserId) {
