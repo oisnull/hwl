@@ -14,6 +14,7 @@ import com.hwl.beta.net.near.body.DeleteNearCircleInfoResponse;
 import com.hwl.beta.net.near.body.DeleteNearCommentResponse;
 import com.hwl.beta.net.near.body.GetNearCircleDetailResponse;
 import com.hwl.beta.net.near.body.GetNearCircleInfosResponse;
+import com.hwl.beta.net.near.body.GetNearCommentsResponse;
 import com.hwl.beta.net.near.body.SetNearLikeInfoResponse;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.convert.DBNearCircleAction;
@@ -175,7 +176,7 @@ public class NearLogic implements NearStandard {
                     @Override
                     public List<NearCircleComment> apply(GetNearCommentsResponse response) throws Exception {
                         if (response.getNearCircleCommentInfos() == null)
-							return new ArrayList<NearCircleComment>();
+							return new ArrayList<>();
 
 						return DBNearCircleAction.convertToNearCircleCommentInfos(response.getNearCircleCommentInfos());
                     }

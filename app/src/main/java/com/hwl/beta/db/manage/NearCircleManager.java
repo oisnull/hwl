@@ -269,10 +269,10 @@ public class NearCircleManager extends BaseDao<NearCircle> {
         for (int i = 0; i < comments.size(); i++) {
 			NearCircleComment com = getComment(comments.get(i).getNearCircleId(), comments.get(i).getCommentUserId(), comments.get(i).getCommentId());
 			if(com==null){
-				noExistsComments.add(comments.get(i));
+                nonExistentComments.add(comments.get(i));
 			}
         }
-        daoSession.getNearCircleCommentDao().saveInTx(noExistsComments);
+        daoSession.getNearCircleCommentDao().saveInTx(nonExistentComments);
     }
 
     public NearCircleLike getLike(long nearCircleId, long userId) {

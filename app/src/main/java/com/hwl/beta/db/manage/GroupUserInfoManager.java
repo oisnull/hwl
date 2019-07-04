@@ -16,6 +16,7 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -78,23 +79,20 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
     public void addListAsync(List<GroupUserInfo> userInfos) {
         if (userInfos == null || userInfos.size() <= 0) return;
         Observable.fromIterable(userInfos)
-                .map(new Function<GroupUserInfo, GroupUserInfo>() {
+                .filter(new Predicate<GroupUserInfo>() {
                     @Override
-                    public GroupUserInfo apply(GroupUserInfo groupUserInfo) {
-                        if (get(groupUserInfo.getGroupGuid(), groupUserInfo.getUserId()) == null) {
-                            return groupUserInfo;
-                        }
-                        return new GroupUserInfo();
+                    public boolean test(GroupUserInfo groupUserInfo) {
+                        return get(groupUserInfo.getGroupGuid(), groupUserInfo.getUserId()) != null;
+                    }
+                })
+                .doOnNext(new Consumer<GroupUserInfo>() {
+                    @Override
+                    public void accept(GroupUserInfo groupUserInfo) {
+                        daoSession.getGroupUserInfoDao().insert(groupUserInfo);
                     }
                 })
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Consumer<GroupUserInfo>() {
-                    @Override
-                    public void accept(GroupUserInfo userInfo) throws Exception {
-                        if (userInfo != null && userInfo.getUserId() > 0)
-                            daoSession.getGroupUserInfoDao().insert(userInfo);
-                    }
-                });
+                .subscribe();
     }
 
     public List<GroupUserInfo> getUsers(String groupGuid) {
