@@ -25,6 +25,7 @@ import com.hwl.beta.db.entity.CircleComment;
 import com.hwl.beta.db.entity.CircleImage;
 import com.hwl.beta.db.entity.CircleLike;
 import com.hwl.beta.emotion.EmotionDefaultPanelV2;
+import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.circle.action.ICircleItemListener;
 import com.hwl.beta.ui.circle.adp.CircleIndexAdapter;
@@ -34,6 +35,8 @@ import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.ClipboardAction;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.dialog.LoadingDialog;
+import com.hwl.beta.ui.ebus.EventBusConstant;
+import com.hwl.beta.ui.ebus.EventMessageModel;
 import com.hwl.beta.ui.imgselect.ActivityImageBrowse;
 import com.hwl.beta.ui.imgselect.bean.ImageSelectType;
 import com.hwl.beta.ui.widget.CircleActionMorePop;
@@ -96,11 +99,15 @@ public class ActivityCircleIndex extends BaseActivity {
                 loadServerInfos(circleAdapter.getMinId());
             }
         });
-		
+
         emotionPanelListener = new EmotionPanelListener();
         binding.refreshLayout.setEnableLoadMore(false);
         binding.edpEmotion.setPanelVisibility(View.GONE);
         binding.edpEmotion.setPanelListener(emotionPanelListener);
+
+        if (MessageCountSP.getCircleMessageCount() > 0) {
+            circleAdapter.updateMsgcount();
+        }
 
         this.loadLocalInfos();
     }
@@ -156,27 +163,27 @@ public class ActivityCircleIndex extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == Activity.RESULT_OK && requestCode == 1) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == 1) {
 
-			LoadingDialog.show(activity, "正在上传...");
-			circleStandard.updateCircleBackImage(data.getStringExtra("localpath"))
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(new Consumer<String>() {
-					@Override
-					public void accept(String img) {
-						LoadingDialog.hide();
-						circleAdapter.notifyItemChanged(0);
-					}
-				}, new Consumer<Throwable>() {
-					@Override
-					public void accept(Throwable throwable) {
-						LoadingDialog.hide();
-						Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
-					}
-				});
+            LoadingDialog.show(activity, "正在上传...");
+            circleStandard.updateCircleBackImage(data.getStringExtra("localpath"))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<String>() {
+                        @Override
+                        public void accept(String img) {
+                            LoadingDialog.hide();
+                            circleAdapter.notifyItemChanged(0);
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) {
+                            LoadingDialog.hide();
+                            Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
-		}
+        }
     }
 
     @Override
@@ -187,9 +194,7 @@ public class ActivityCircleIndex extends BaseActivity {
     @Override
     protected void receiveEventMessage(EventMessageModel messageModel) {
         if (messageModel.getMessageType() == EventBusConstant.EB_TYPE_CIRCLE_MESSAGE_UPDATE) {
-            if (MessageCountSP.getCircleMessageCount() > 0) {
-                circleAdapter.updateMsgcount();
-            }
+            circleAdapter.updateMsgcount();
         }
     }
 
@@ -286,7 +291,8 @@ public class ActivityCircleIndex extends BaseActivity {
 
         @Override
         public void onMyUserHeadClick() {
-            UITransfer.toCircleUserIndexActivity(activity, UserSP.getUserId(), UserSP.getUserName(), UserSP.getUserHeadImage());
+            UITransfer.toCircleUserIndexActivity(activity, UserSP.getUserId(),
+                    UserSP.getUserName(), UserSP.getUserHeadImage());
         }
 
         @Override

@@ -73,11 +73,7 @@ public class ActivityNearMessages extends BaseActivity {
         messageAdapter = new NearMessageAdapter(activity, messages, new NearMessageItemListener());
         binding.rvMessageContainer.setAdapter(messageAdapter);
         binding.rvMessageContainer.setLayoutManager(new LinearLayoutManager(activity));
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
         MessageCountSP.setNearCircleMessageCount(0);
         EventBusUtil.sendNearMessageUpdateEvent();
     }

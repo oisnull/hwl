@@ -114,27 +114,6 @@ public class ActivityNewFriend extends BaseActivity {
 						UITransfer.toReloginDialog(activity);
                     }
                 });
-
-
-            // friendStandard.addFriend(friendRequest, new DefaultCallback<Boolean, String>() {
-                // @Override
-                // public void success(Boolean successMessage) {
-                    // LoadingDialog.hide();
-                    // Toast.makeText(activity, "添加好友成功", Toast.LENGTH_SHORT).show();
-                    // friendAdapter.removeInfo(friendRequest);
-                // }
-
-                // @Override
-                // public void error(String errorMessage) {
-                    // LoadingDialog.hide();
-                // }
-
-                // @Override
-                // public void relogin() {
-                    // LoadingDialog.hide();
-                    // UITransfer.toReloginDialog(activity);
-                // }
-            // });
         }
     }
 }

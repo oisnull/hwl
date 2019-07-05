@@ -109,11 +109,7 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             CircleMsgcountItemViewHolder viewHolder = (CircleMsgcountItemViewHolder) holder;
             int messageCount = MessageCountSP.getCircleMessageCount();
             viewHolder.setItemBinding(itemListener, messageCount);
-            if (messageCount > 0) {
-                viewHolder.itemView.setVisibility(View.VISIBLE);
-            } else {
-                viewHolder.itemView.setVisibility(View.GONE);
-            }
+            viewHolder.setMessageItemVisibility(messageCount > 0 ? View.VISIBLE : View.GONE);
         } else if (holder instanceof CircleIndexItemViewHolder) {
             Circle info = circles.get(position);
             CircleIndexItemViewHolder viewHolder = (CircleIndexItemViewHolder) holder;
@@ -167,14 +163,14 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-	public void updateMsgcount(){
+    public void updateMsgcount() {
         for (int i = 0; i < circles.size(); i++) {
             if (circles.get(i).getItemType() == DBConstant.CIRCLE_ITEM_MSGCOUNT) {
                 notifyItemChanged(i);
-				return;
+                return;
             }
         }
-	}
+    }
 
     public void updateHead(Friend info) {
         if (info == null) return;

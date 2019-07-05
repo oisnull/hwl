@@ -134,6 +134,8 @@ public class FragmentNear extends BaseFragment {
         emotionPanelListener = new EmotionPanelListener();
         binding.edpEmotion.setPanelVisibility(View.GONE);
         binding.edpEmotion.setPanelListener(emotionPanelListener);
+
+        showMessageCount();
     }
 
     public void setEmotionStatus(boolean isShow) {
@@ -205,13 +207,17 @@ public class FragmentNear extends BaseFragment {
     @Override
     protected void receiveEventMessage(EventMessageModel messageModel) {
         if (messageModel.getMessageType() == EventBusConstant.EB_TYPE_NEAR_CIRCLE_MESSAGE_UPDATE) {
-            int count = MessageCountSP.getNearCircleMessageCount();
-            if (count > 0) {
-                binding.llMessageTip.setVisibility(View.VISIBLE);
-                binding.tvMessageCount.setText(count + "");
-            } else {
-                binding.llMessageTip.setVisibility(View.GONE);
-            }
+            showMessageCount();
+        }
+    }
+
+    private void showMessageCount(){
+        int count = MessageCountSP.getNearCircleMessageCount();
+        if (count > 0) {
+            binding.llMessageTip.setVisibility(View.VISIBLE);
+            binding.tvMessageCount.setText(count + "");
+        } else {
+            binding.llMessageTip.setVisibility(View.GONE);
         }
     }
 

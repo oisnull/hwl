@@ -97,6 +97,12 @@ public class FriendAdapter extends BaseAdapter {
         return null;
     }
 
+    public Friend getCircleMessageItem() {
+        if (this.users != null && this.users.size() >= 3)
+            return this.users.get(0);
+        return null;
+    }
+
     public int getFriendCount() {
         return users.size() - 3;
     }

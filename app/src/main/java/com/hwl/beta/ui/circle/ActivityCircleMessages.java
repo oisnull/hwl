@@ -18,6 +18,7 @@ import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.circle.adp.CircleMessageAdapter;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.UITransfer;
+import com.hwl.beta.ui.ebus.EventBusUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -75,13 +76,9 @@ public class ActivityCircleMessages extends BaseActivity {
         messageAdapter = new CircleMessageAdapter(activity, messages, new MessageItemListener());
         binding.rvMessageContainer.setAdapter(messageAdapter);
         binding.rvMessageContainer.setLayoutManager(new LinearLayoutManager(activity));
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
         MessageCountSP.setCircleMessageCount(0);
-//        EventBus.getDefault().post(EventBusConstant.EB_TYPE_CIRCLE_MESSAGE_UPDATE);
+        EventBusUtil.sendCircleMessageUpdateEvent();
     }
 
     private class MessageItemListener implements CircleMessageAdapter.IMessageItemListener {

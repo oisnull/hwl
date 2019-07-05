@@ -24,6 +24,8 @@ import com.hwl.beta.net.user.body.SetUserCircleBackImageResponse;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.circle.standard.CircleStandard;
 import com.hwl.beta.ui.convert.DBCircleAction;
+import com.hwl.beta.ui.immsg.IMClientEntry;
+import com.hwl.beta.ui.immsg.IMDefaultSendOperateListener;
 import com.hwl.beta.utils.StringUtils;
 
 import java.io.File;
@@ -175,9 +177,9 @@ public class CircleLogic implements CircleStandard {
                     @Override
                     public void accept(CircleLike likeInfo) {
                         //send im message
-//                        IMClientEntry.sendCircleLikeMessage(info.getCircleId(), isLike,
-//                                info.getPublishUserId(),
-//                                new IMDefaultSendOperateListener("setLike"));
+                        IMClientEntry.sendCircleLikeMessage(info.getCircleId(), isLike,
+                                info.getPublishUserId(),
+                                new IMDefaultSendOperateListener("setLike"));
                     }
                 });
     }
@@ -281,12 +283,18 @@ public class CircleLogic implements CircleStandard {
                     @Override
                     public void accept(CircleComment comment) {
                         //send im message
+                        IMClientEntry.sendCircleCommentMessage(info.getCircleId(),
+                                comment.getCommentId(),
+                                comment.getContent(),
+                                comment.getCommentUserId(),
+                                comment.getReplyUserId(),
+                                new IMDefaultSendOperateListener("addComment"));
                     }
                 });
     }
 
     @Override
-    public Observable<String> deleteComment(Circle info, final CircleComment comment) {
+    public Observable<String> deleteComment(final Circle info, final CircleComment comment) {
         return CircleService.deleteCommentInfo(comment.getCommentId(), info.getUpdateTime())
                 .map(new Function<DeleteCommentInfoResponse, String>() {
                     @Override
@@ -308,7 +316,11 @@ public class CircleLogic implements CircleStandard {
                     @Override
                     public void accept(String lastUpdateTime) {
                         //send im message
-
+                        IMClientEntry.sendCircleCancelCommentMessage(info.getCircleId(),
+                                comment.getCommentId(),
+                                comment.getCommentUserId(),
+                                comment.getReplyUserId(),
+                                new IMDefaultSendOperateListener("deleteComment"));
                     }
                 });
     }
