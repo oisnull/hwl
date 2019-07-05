@@ -97,21 +97,6 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
-    public int getItemViewType(int position) {
-        switch (circles.get(position).getItemType()) {
-            case DBConstant.CIRCLE_ITEM_NULL:
-            default:
-                return 0;
-            case DBConstant.CIRCLE_ITEM_HEAD:
-                return 1;
-            case DBConstant.CIRCLE_ITEM_DATA:
-                return 2;
-            case DBConstant.CIRCLE_ITEM_MSGCOUNT:
-                return 3;
-        }
-    }
-
-    @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof CircleItemNullViewHolder) {
             CircleItemNullViewHolder viewHolder = (CircleItemNullViewHolder) holder;
@@ -167,19 +152,29 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    public void updateInfos(List<Circle> infos) {
-        if (infos == null || infos.size() <= 0) return;
-
-        if (getItemCount() <= 0) {
-            circles.addAll(infos);
-        } else {
-            removeEmptyInfo();
-            circles.removeAll(infos);
-            circles.addAll(infos);
+    @Override
+    public int getItemViewType(int position) {
+        switch (circles.get(position).getItemType()) {
+            case DBConstant.CIRCLE_ITEM_NULL:
+            default:
+                return 0;
+            case DBConstant.CIRCLE_ITEM_HEAD:
+                return 1;
+            case DBConstant.CIRCLE_ITEM_DATA:
+                return 2;
+            case DBConstant.CIRCLE_ITEM_MSGCOUNT:
+                return 3;
         }
-        sortInfos(circles);
-        notifyDataSetChanged();
     }
+
+	public void updateMsgcount(){
+        for (int i = 0; i < circles.size(); i++) {
+            if (circles.get(i).getItemType() == DBConstant.CIRCLE_ITEM_MSGCOUNT) {
+                notifyItemChanged(i);
+				return;
+            }
+        }
+	}
 
     public void updateHead(Friend info) {
         if (info == null) return;
@@ -196,6 +191,20 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         if (isChanged)
             notifyItemChanged(0);
+    }
+
+    public void updateInfos(List<Circle> infos) {
+        if (infos == null || infos.size() <= 0) return;
+
+        if (getItemCount() <= 0) {
+            circles.addAll(infos);
+        } else {
+            removeEmptyInfo();
+            circles.removeAll(infos);
+            circles.addAll(infos);
+        }
+        sortInfos(circles);
+        notifyDataSetChanged();
     }
 
     private int getCircleItemPosition() {

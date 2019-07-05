@@ -179,6 +179,20 @@ public class ActivityCircleIndex extends BaseActivity {
 		}
     }
 
+    @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
+
+    @Override
+    protected void receiveEventMessage(EventMessageModel messageModel) {
+        if (messageModel.getMessageType() == EventBusConstant.EB_TYPE_CIRCLE_MESSAGE_UPDATE) {
+            if (MessageCountSP.getCircleMessageCount() > 0) {
+                circleAdapter.updateMsgcount();
+            }
+        }
+    }
+
     public void setEmotionStatus(boolean isShow) {
         setEmotionStatus(isShow, null);
     }
