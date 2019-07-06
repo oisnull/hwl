@@ -74,7 +74,22 @@ public class ActivityCircleIndex extends BaseActivity {
                 .setImageRightClick(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        UITransfer.toCirclePublishActivity(activity);
+                        android.widget.PopupMenu popup = new android.widget.PopupMenu(activity, v);
+                        popup.getMenuInflater().inflate(R.menu.popup_circle_menu, popup.getMenu());
+                        popup.setOnMenuItemClickListener(new android.widget.PopupMenu.OnMenuItemClickListener() {
+                            public boolean onMenuItemClick(MenuItem item) {
+                                switch (item.getItemId()) {
+                                    case R.id.pop_circle_publish:
+                                        UITransfer.toCirclePublishActivity(activity);
+                                        break;
+                                    case R.id.pop_circle_messages:
+                                        UITransfer.toCircleMessagesActivity(activity);
+                                        break;
+                                }
+                                return true;
+                            }
+                        });
+                        popup.show();
                     }
                 })
                 .setImageLeftClick(new View.OnClickListener() {

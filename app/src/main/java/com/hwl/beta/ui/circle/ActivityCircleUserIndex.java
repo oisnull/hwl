@@ -1,9 +1,9 @@
 package com.hwl.beta.ui.circle;
 
+import android.app.Activity;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.Toast;
@@ -30,16 +30,16 @@ import io.reactivex.functions.Consumer;
 
 public class ActivityCircleUserIndex extends BaseActivity {
 
-    FragmentActivity activity;
+    Activity activity;
     CircleActivityUserIndexBinding binding;
-    CircleUserStandard circleStanad;
-    CircleUserIndexAdapter circleAdapter;
     CircleUserStandard circleStandard;
+    CircleUserIndexAdapter circleAdapter;
     Friend currentUser;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activity = this;
 
         long viewUserId = getIntent().getLongExtra("viewuserid", 0);
         if (viewUserId <= 0) {
@@ -47,10 +47,9 @@ public class ActivityCircleUserIndex extends BaseActivity {
             finish();
         }
 
-        activity = this;
-        circleStanad = new CircleUserLogic(viewUserId, getIntent().getStringExtra("viewusername")
+        circleStandard = new CircleUserLogic(viewUserId, getIntent().getStringExtra("viewusername")
                 , getIntent().getStringExtra("viewuserimage"));
-        currentUser = circleStanad.getLocalUserInfo();
+        currentUser = circleStandard.getLocalUserInfo();
         binding = DataBindingUtil.setContentView(activity, R.layout.circle_activity_user_index);
         initView();
     }

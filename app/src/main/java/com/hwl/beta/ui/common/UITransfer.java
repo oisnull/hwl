@@ -12,14 +12,13 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 
 import com.hwl.beta.db.DaoUtils;
-import com.hwl.beta.db.ext.NearCircleExt;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.TestActivity;
 import com.hwl.beta.ui.chat.ActivityChatGroup;
 import com.hwl.beta.ui.chat.ActivityChatGroupSetting;
 import com.hwl.beta.ui.chat.ActivityChatGroupSettingEdit;
-//import com.hwl.beta.ui.circle.ActivityCircleDetail;
+import com.hwl.beta.ui.circle.ActivityCircleDetail;
 import com.hwl.beta.ui.circle.ActivityCircleIndex;
 import com.hwl.beta.ui.circle.ActivityCirclePublish;
 import com.hwl.beta.ui.circle.ActivityCircleUserIndex;
@@ -278,15 +277,15 @@ public class UITransfer {
     }
 
     public static void toNearDetailActivity(Activity context, long nearCircleId) {
-       Intent intent = new Intent(context, ActivityNearDetail.class);
-       intent.putExtra("nearcircleid", nearCircleId);
-       context.startActivity(intent);
-   }
+        Intent intent = new Intent(context, ActivityNearDetail.class);
+        intent.putExtra("nearcircleid", nearCircleId);
+        context.startActivity(intent);
+    }
 
-   public static void toNearMessagesActivity(Activity context) {
-       Intent intent = new Intent(context, ActivityNearMessages.class);
-       context.startActivity(intent);
-   }
+    public static void toNearMessagesActivity(Activity context) {
+        Intent intent = new Intent(context, ActivityNearMessages.class);
+        context.startActivity(intent);
+    }
 
 //    public static void toNearCommentPublishActivity(Activity context, long nearCircleId, long
 //            publishUserId, String content) {
@@ -330,10 +329,10 @@ public class UITransfer {
 //        context.startActivity(intent);
 //    }
 
-    public static void toCircleUserIndexActivity(Activity context, 
-													long viewUserId, 
-													String viewUserName, 
-													String viewUserImage) {
+    public static void toCircleUserIndexActivity(Activity context,
+                                                 long viewUserId,
+                                                 String viewUserName,
+                                                 String viewUserImage) {
         Intent intent = new Intent(context, ActivityCircleUserIndex.class);
         intent.putExtra("viewuserid", viewUserId);
         intent.putExtra("viewusername", viewUserName);
@@ -341,16 +340,11 @@ public class UITransfer {
         context.startActivity(intent);
     }
 
-//    public static void toCircleDetailActivity(Activity context, long circleId, CircleExt info) {
-//        Intent intent = new Intent(context, ActivityCircleDetail.class);
-//        if (info != null && info.getInfo() != null) {
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable("circleext", info);
-//            intent.putExtras(bundle);
-//        }
-//        intent.putExtra("circleid", circleId);
-//        context.startActivity(intent);
-//    }
+    public static void toCircleDetailActivity(Activity context, long circleId) {
+        Intent intent = new Intent(context, ActivityCircleDetail.class);
+        intent.putExtra("circleid", circleId);
+        context.startActivity(intent);
+    }
 
     public static void toCircleMessagesActivity(Activity context) {
         Intent intent = new Intent(context, ActivityCircleMessages.class);

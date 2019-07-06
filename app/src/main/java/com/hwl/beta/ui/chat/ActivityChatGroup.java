@@ -228,7 +228,7 @@ public class ActivityChatGroup extends BaseActivity {
         @Override
         public boolean onChatItemLongClick(View view, final int position) {
             PopupMenu popup = new PopupMenu(activity, view);
-            popup.getMenuInflater().inflate(R.menu.popup_message_menu, popup.getMenu());
+            popup.getMenuInflater().inflate(R.menu.popup_chat_menu, popup.getMenu());
             popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     ChatGroupMessage message = messageAdapter.getChatGroupMessage(position);

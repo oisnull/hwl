@@ -24,6 +24,8 @@ public interface CircleStandard {
 
     Observable<Circle> loadServerDetails(long circleId,String updateTime);
 
+    Observable<List<CircleComment>> getComments(Circle info, long lastCommentId);
+
     Observable<CircleComment> addComment(Circle info, String content, long replyUserId);
 
     Observable<String> deleteComment(Circle info,CircleComment comment);

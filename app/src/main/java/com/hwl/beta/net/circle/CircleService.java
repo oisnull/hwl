@@ -12,6 +12,8 @@ import com.hwl.beta.net.circle.body.DeleteCircleInfoRequest;
 import com.hwl.beta.net.circle.body.DeleteCircleInfoResponse;
 import com.hwl.beta.net.circle.body.DeleteCommentInfoRequest;
 import com.hwl.beta.net.circle.body.DeleteCommentInfoResponse;
+import com.hwl.beta.net.circle.body.GetCircleCommentsRequest;
+import com.hwl.beta.net.circle.body.GetCircleCommentsResponse;
 import com.hwl.beta.net.circle.body.GetCircleDetailRequest;
 import com.hwl.beta.net.circle.body.GetCircleDetailResponse;
 import com.hwl.beta.net.circle.body.GetCircleInfosRequest;
@@ -76,7 +78,8 @@ public class CircleService {
                 .subscribeOn(Schedulers.io());
     }
 
-    public static Observable<SetLikeInfoResponse> setLikeInfo(int actionType, long CircleId, String lastUpdateTime) {
+    public static Observable<SetLikeInfoResponse> setLikeInfo(int actionType, long CircleId,
+                                                              String lastUpdateTime) {
         SetLikeInfoRequest requestBody = new SetLikeInfoRequest();
         requestBody.setLikeUserId(UserSP.getUserId());
         requestBody.setActionType(actionType);
@@ -94,8 +97,8 @@ public class CircleService {
 
     public static Observable<AddCircleCommentInfoResponse> addComment(long CircleId,
                                                                       String content,
-                                                                      long replyUserId, 
-																	  String lastUpdateTime) {
+                                                                      long replyUserId,
+                                                                      String lastUpdateTime) {
         AddCircleCommentInfoRequest requestBody = new AddCircleCommentInfoRequest();
         requestBody.setCommentUserId(UserSP.getUserId());
         requestBody.setCircleId(CircleId);
@@ -103,12 +106,27 @@ public class CircleService {
         requestBody.setReplyUserId(replyUserId);
         requestBody.setCircleUpdateTime(lastUpdateTime);
         return RetrofitUtils.createApi(ICircleService.class)
-                .AddCircleCommentInfo(new RequestBase(UserSP.getUserToken(), requestBody))
+                .addCircleCommentInfo(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<AddCircleCommentInfoResponse>>())
                 .subscribeOn(Schedulers.io());
     }
 
-    public static Observable<DeleteCommentInfoResponse> deleteCommentInfo(long commentId, String lastUpdateTime) {
+    public static Observable<GetCircleCommentsResponse> getCircleComments(long circleId,
+                                                                          long lastCommentId,
+                                                                          int count) {
+        GetCircleCommentsRequest requestBody = new GetCircleCommentsRequest();
+        requestBody.setUserId(UserSP.getUserId());
+        requestBody.setCircleId(circleId);
+        requestBody.setCount(count);
+        requestBody.setLastCommentId(lastCommentId);
+        return RetrofitUtils.createApi(ICircleService.class)
+                .getCircleComments(new RequestBase(UserSP.getUserToken(), requestBody))
+                .map(new NetDefaultFunction<ResponseBase<GetCircleCommentsResponse>>())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public static Observable<DeleteCommentInfoResponse> deleteCommentInfo(long commentId,
+                                                                          String lastUpdateTime) {
         DeleteCommentInfoRequest requestBody = new DeleteCommentInfoRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setCommentId(commentId);
@@ -167,8 +185,11 @@ public class CircleService {
         @POST("api/SetCircleLikeInfo")
         Observable<ResponseBase<SetLikeInfoResponse>> setCircleLikeInfo(@Body RequestBase<SetLikeInfoRequest> request);
 
+        @POST("api/GetCircleComments")
+        Observable<ResponseBase<GetCircleCommentsResponse>> getCircleComments(@Body RequestBase<GetCircleCommentsRequest> request);
+
         @POST("api/AddCircleCommentInfo")
-        Observable<ResponseBase<AddCircleCommentInfoResponse>> AddCircleCommentInfo(@Body RequestBase<AddCircleCommentInfoRequest> request);
+        Observable<ResponseBase<AddCircleCommentInfoResponse>> addCircleCommentInfo(@Body RequestBase<AddCircleCommentInfoRequest> request);
 
         @POST("api/GetUserCircleInfos")
         Observable<ResponseBase<GetUserCircleInfosResponse>> getUserCircleInfos(@Body RequestBase<GetUserCircleInfosRequest> request);
@@ -179,7 +200,7 @@ public class CircleService {
         @POST("api/DeleteCircleInfo")
         Observable<ResponseBase<DeleteCircleInfoResponse>> deleteCircleInfo(@Body RequestBase<DeleteCircleInfoRequest> request);
 
-        @POST("api/DeleteCommentInfo")
+        @POST("api/DeleteCircleCommentInfo ")
         Observable<ResponseBase<DeleteCommentInfoResponse>> deleteCommentInfo(@Body RequestBase<DeleteCommentInfoRequest> request);
     }
 }

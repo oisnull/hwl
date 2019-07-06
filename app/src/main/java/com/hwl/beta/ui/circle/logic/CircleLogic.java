@@ -13,6 +13,7 @@ import com.hwl.beta.net.circle.NetCircleMatchInfo;
 import com.hwl.beta.net.circle.body.AddCircleCommentInfoResponse;
 import com.hwl.beta.net.circle.body.DeleteCircleInfoResponse;
 import com.hwl.beta.net.circle.body.DeleteCommentInfoResponse;
+import com.hwl.beta.net.circle.body.GetCircleCommentsResponse;
 import com.hwl.beta.net.circle.body.GetCircleDetailResponse;
 import com.hwl.beta.net.circle.body.GetCircleInfosResponse;
 import com.hwl.beta.net.circle.body.SetLikeInfoResponse;
@@ -30,7 +31,6 @@ import com.hwl.beta.utils.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -42,7 +42,7 @@ import io.reactivex.schedulers.Schedulers;
 public class CircleLogic implements CircleStandard {
 
     final static int PAGE_COUNT = 15;
-    final static int COMMENT_PAGE_COUNT = 10;
+    final static int COMMENT_PAGE_COUNT = 15;
 
     @Override
     public Observable<List<Circle>> loadLocalInfos() {
@@ -157,6 +157,11 @@ public class CircleLogic implements CircleStandard {
                             throw new Exception("Set user like info failed.");
                         }
 
+                        if (!TextUtils.isEmpty(response.getCircleLastUpdateTime())) {
+                            DaoUtils.getCircleManagerInstance().setUpdateTime(info.getCircleId(),
+                                    response.getCircleLastUpdateTime());
+                        }
+
                         CircleLike likeInfo = new CircleLike();
                         likeInfo.setCircleId(info.getCircleId());
                         likeInfo.setLikeUserId(UserSP.getUserId());
@@ -176,6 +181,7 @@ public class CircleLogic implements CircleStandard {
                 .doOnNext(new Consumer<CircleLike>() {
                     @Override
                     public void accept(CircleLike likeInfo) {
+                        if (info.getPublishUserId() == likeInfo.getLikeUserId()) return;
                         //send im message
                         IMClientEntry.sendCircleLikeMessage(info.getCircleId(), isLike,
                                 info.getPublishUserId(),
@@ -252,6 +258,31 @@ public class CircleLogic implements CircleStandard {
     }
 
     @Override
+    public Observable<List<CircleComment>> getComments(Circle info, long lastCommentId) {
+        if (info == null || info.getCircleId() <= 0) {
+            return Observable.error(new Throwable("Circle id con't be empty."));
+        }
+
+        return CircleService.getCircleComments(info.getCircleId(), lastCommentId,
+                COMMENT_PAGE_COUNT)
+                .map(new Function<GetCircleCommentsResponse, List<CircleComment>>() {
+                    @Override
+                    public List<CircleComment> apply(GetCircleCommentsResponse response) {
+                        if (response.getCircleCommentInfos() == null)
+                            return new ArrayList<>();
+
+                        return DBCircleAction.convertToCircleCommentInfos(response.getCircleCommentInfos());
+                    }
+                })
+                .doOnNext(new Consumer<List<CircleComment>>() {
+                    @Override
+                    public void accept(List<CircleComment> comments) {
+                        DaoUtils.getCircleManagerInstance().saveNonExistentComments(comments);
+                    }
+                });
+    }
+
+    @Override
     public Observable<CircleComment> addComment(final Circle info,
                                                 final String content,
                                                 final long replyUserId) {
@@ -282,6 +313,8 @@ public class CircleLogic implements CircleStandard {
                 .doOnNext(new Consumer<CircleComment>() {
                     @Override
                     public void accept(CircleComment comment) {
+                        if (info.getPublishUserId() == comment.getCommentUserId() && comment.getReplyUserId() <= 0)
+                            return;
                         //send im message
                         IMClientEntry.sendCircleCommentMessage(info.getCircleId(),
                                 comment.getCommentId(),
@@ -315,6 +348,9 @@ public class CircleLogic implements CircleStandard {
                 .doOnNext(new Consumer<String>() {
                     @Override
                     public void accept(String lastUpdateTime) {
+                        if (info.getPublishUserId() == comment.getCommentUserId() && comment.getReplyUserId() <= 0)
+                            return;
+
                         //send im message
                         IMClientEntry.sendCircleCancelCommentMessage(info.getCircleId(),
                                 comment.getCommentId(),

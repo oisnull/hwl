@@ -217,6 +217,20 @@ public class CircleManager extends BaseDao<Circle> {
                 .list();
     }
 
+    public void saveNonExistentComments(List<CircleComment> comments) {
+        if (comments == null || comments.size() <= 0) return;
+
+        List<CircleComment> nonExistentComments = new ArrayList<>();
+        for (int i = 0; i < comments.size(); i++) {
+            CircleComment com = getComment(comments.get(i).getCircleId(),
+                    comments.get(i).getCommentUserId(), comments.get(i).getCommentId());
+            if (com == null) {
+                nonExistentComments.add(comments.get(i));
+            }
+        }
+        daoSession.getCircleCommentDao().saveInTx(nonExistentComments);
+    }
+
     public void saveComment(CircleComment comment) {
         if (comment != null) {
             daoSession.getCircleCommentDao().save(comment);

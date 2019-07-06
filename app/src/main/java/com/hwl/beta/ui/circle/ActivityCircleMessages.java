@@ -1,6 +1,5 @@
 package com.hwl.beta.ui.circle;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -19,8 +18,6 @@ import com.hwl.beta.ui.circle.adp.CircleMessageAdapter;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.ebus.EventBusUtil;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -56,7 +53,6 @@ public class ActivityCircleMessages extends BaseActivity {
                 .setTitleRightClick(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //Toast.makeText(activity, "清空消息功能稍后开放...", Toast.LENGTH_SHORT).show();
                         if (messages.size() <= 0) return;
                         new AlertDialog.Builder(activity)
                                 .setMessage("消息清空后不能恢复,确认清空?")
@@ -76,16 +72,20 @@ public class ActivityCircleMessages extends BaseActivity {
         messageAdapter = new CircleMessageAdapter(activity, messages, new MessageItemListener());
         binding.rvMessageContainer.setAdapter(messageAdapter);
         binding.rvMessageContainer.setLayoutManager(new LinearLayoutManager(activity));
+    }
 
-//        MessageCountSP.setCircleMessageCount(0);
-//        EventBusUtil.sendCircleMessageUpdateEvent();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MessageCountSP.setCircleMessageCount(0);
+        EventBusUtil.sendCircleMessageUpdateEvent();
     }
 
     private class MessageItemListener implements CircleMessageAdapter.IMessageItemListener {
 
         @Override
         public void onItemClick(View v, CircleMessage message, int position) {
-//            UITransfer.toCircleDetailActivity(activity, message.getCircleId(), null);
+            UITransfer.toCircleDetailActivity(activity, message.getCircleId());
         }
 
         @Override
@@ -99,7 +99,8 @@ public class ActivityCircleMessages extends BaseActivity {
                             if (DaoUtils.getCircleMessageManagerInstance().deleteMessage(message)) {
                                 messages.remove(position);
                                 messageAdapter.notifyItemRemoved(position);
-                                messageAdapter.notifyItemRangeChanged(position, messages.size() - position);
+                                messageAdapter.notifyItemRangeChanged(position,
+                                        messages.size() - position);
                             }
                         }
                     })

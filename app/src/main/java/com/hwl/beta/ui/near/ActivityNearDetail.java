@@ -76,11 +76,7 @@ public class ActivityNearDetail extends BaseActivity {
 
     private void initView() {
         binding.tbTitle.setTitle("附近动态详细")
-                .setImageRightClick(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                    }
-                })
+                .setImageRightHide()
                 .setImageLeftClick(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -531,7 +527,7 @@ public class ActivityNearDetail extends BaseActivity {
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            deleteCircle(currentInfo.getNearCircleId());
+                            deleteCircle();
                             dialog.dismiss();
                         }
                     })
@@ -539,9 +535,9 @@ public class ActivityNearDetail extends BaseActivity {
                     .show();
         }
 
-        private void deleteCircle(long nearCircleId) {
+        private void deleteCircle() {
             LoadingDialog.show(activity);
-            nearStandard.deleteInfo(nearCircleId)
+            nearStandard.deleteInfo(currentInfo.getNearCircleId())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<Object>() {
                         @Override
