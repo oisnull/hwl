@@ -114,8 +114,14 @@ public class ActivityMain extends BaseActivity {
                 UITransfer.toReloginDialog(this);
                 break;
             case EventBusConstant.EB_TYPE_FRIEND_REQUEST_UPDATE:
+            case EventBusConstant.EB_TYPE_CIRCLE_MESSAGE_UPDATE:
                 mainBean.setFriendMessageCount(MessageCountSP
-                        .getFriendRequestCount());
+                        .getFriendRequestCount() + MessageCountSP
+                        .getCircleMessageCount());
+                break;
+            case EventBusConstant.EB_TYPE_NEAR_CIRCLE_MESSAGE_UPDATE:
+                mainBean.setNearMessageCount(MessageCountSP
+                        .getNearCircleMessageCount());
                 break;
         }
     }

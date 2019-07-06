@@ -64,7 +64,8 @@ public class MainLogic implements MainStandard {
                 startLocation(emitter);
             }
         })
-                .concatMap(new Function<BaiduLocation.ResultModel, Observable<SetUserPosResponse>>() {
+                .concatMap(new Function<BaiduLocation.ResultModel,
+                        Observable<SetUserPosResponse>>() {
                     @Override
                     public Observable<SetUserPosResponse> apply(BaiduLocation.ResultModel result) {
                         if (UserPosSP.getLontitude() == result.lontitude && UserPosSP

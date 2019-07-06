@@ -121,7 +121,7 @@ public class ActivityNearDetail extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<NearCircle>() {
                     @Override
-                    public void accept(NearCircle info) throws Exception {
+                    public void accept(NearCircle info) {
                         currentInfo = info;
 
                         if (currentInfo == null) {
@@ -135,8 +135,10 @@ public class ActivityNearDetail extends BaseActivity {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) {
+                        showContentLoading(1);
                         loadServerDetails(nearCircleId, null);
-                        Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT)
+//                        .show();
                     }
                 });
     }
@@ -152,17 +154,21 @@ public class ActivityNearDetail extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<NearCircle>() {
                     @Override
-                    public void accept(NearCircle info) throws Exception {
-                        if (info != null) {
+                    public void accept(NearCircle info) {
+                        if (info != null && currentInfo == null) {
                             currentInfo = info;
-                            bindComments();
-                        }
+                            bindInfo();
+                        } else
+                            currentInfo = info;
+
+                        showContentLoading(2);
+                        bindComments();
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) {
                         showContentLoading(2);
-                        Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        bindComments();
                     }
                 });
     }
@@ -204,13 +210,19 @@ public class ActivityNearDetail extends BaseActivity {
         } else {
             binding.rvImages.setVisibility(View.GONE);
         }
+
+        binding.llActionContainer.setVisibility(View.GONE);
+        binding.llLikeLoading.setVisibility(View.VISIBLE);
     }
 
     private void bindComments() {
+        binding.llLikeLoading.setVisibility(View.GONE);
         if (currentInfo == null) return;
 
+        boolean isShowActionContainer = false;
         binding.fblLikeContainer.removeAllViews();
         if (currentInfo.getLikes() != null && currentInfo.getLikes().size() > 0) {
+            isShowActionContainer = true;
             binding.fblLikeContainer.setVisibility(View.VISIBLE);
             UserLikeOperate.setLikeInfos(binding.fblLikeContainer, currentInfo.getLikes(),
                     itemListener);
@@ -222,9 +234,16 @@ public class ActivityNearDetail extends BaseActivity {
                 currentInfo.getComments(), itemListener));
         binding.rvComments.setLayoutManager(new LinearLayoutManager(activity));
         if (currentInfo.getComments() != null && currentInfo.getComments().size() > 0) {
+            isShowActionContainer = true;
             binding.rvComments.setVisibility(View.VISIBLE);
         } else {
             binding.rlCommentContainer.setVisibility(View.GONE);
+        }
+
+        if (isShowActionContainer) {
+            binding.llActionContainer.setVisibility(View.VISIBLE);
+        } else {
+            binding.llActionContainer.setVisibility(View.GONE);
         }
     }
 
@@ -489,7 +508,12 @@ public class ActivityNearDetail extends BaseActivity {
                         @Override
                         public void accept(NearCircleLike info) {
                             isRunning = false;
-                            setLikeInfo(info);
+                            currentInfo.setIsLiked(isLike);
+                            currentInfo.setUpdateTime(info.getLastUpdateTime());
+                            if (isLike)
+                                setLikeInfo(info);
+                            else
+                                cancelLikeInfo(info);
                         }
                     }, new Consumer<Throwable>() {
                         @Override

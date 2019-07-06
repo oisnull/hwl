@@ -22,6 +22,7 @@ import com.hwl.beta.ui.immsg.IMClientEntry;
 import com.hwl.beta.ui.immsg.IMDefaultSendOperateListener;
 import com.hwl.beta.ui.near.standard.NearStandard;
 import com.hwl.beta.utils.DateUtils;
+import com.hwl.beta.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,13 +37,13 @@ import io.reactivex.schedulers.Schedulers;
 public class NearLogic implements NearStandard {
 
     final static int PAGE_COUNT = 15;
-    final static int COMMENT_PAGE_COUNT = 10;
+    final static int COMMENT_PAGE_COUNT = 15;
 
     @Override
     public Observable<List<NearCircle>> loadLocalInfos() {
         return Observable.fromCallable(new Callable<List<NearCircle>>() {
             @Override
-            public List<NearCircle> call() throws Exception {
+            public List<NearCircle> call() {
                 return DaoUtils.getNearCircleManagerInstance().getNearCirclesV2(PAGE_COUNT,
                         COMMENT_PAGE_COUNT);
             }
@@ -157,6 +158,7 @@ public class NearLogic implements NearStandard {
                 .doOnNext(new Consumer<NearCircleLike>() {
                     @Override
                     public void accept(NearCircleLike likeInfo) {
+                        if (info.getPublishUserId() == likeInfo.getLikeUserId()) return;
                         //send im message
                         IMClientEntry.sendNearCircleLikeMessage(info.getNearCircleId(), isLike,
                                 info.getPublishUserId(),
@@ -220,6 +222,8 @@ public class NearLogic implements NearStandard {
                 .doOnNext(new Consumer<NearCircleComment>() {
                     @Override
                     public void accept(NearCircleComment comment) {
+                        if (info.getPublishUserId() == comment.getCommentUserId() && comment.getReplyUserId() <= 0)
+                            return;
                         //send im message
                         IMClientEntry.sendNearCircleCommentMessage(info.getNearCircleId(),
                                 comment.getCommentId(), content,
@@ -245,12 +249,14 @@ public class NearLogic implements NearStandard {
                         }
 
                         DaoUtils.getNearCircleManagerInstance().deleteComment(comment.getNearCircleId(), comment.getCommentUserId(), comment.getCommentId());
-                        return response.getNearCircleLastUpdateTime();
+                        return StringUtils.nullStrToEmpty(response.getNearCircleLastUpdateTime());
                     }
                 })
                 .doOnNext(new Consumer<String>() {
                     @Override
                     public void accept(String lastUpdateTime) {
+                        if (info.getPublishUserId() == comment.getCommentUserId() && comment.getReplyUserId() <= 0)
+                            return;
                         //send im message
                         IMClientEntry.sendNearCircleCancelCommentMessage(info.getNearCircleId(),
                                 comment.getCommentId(),
@@ -269,7 +275,7 @@ public class NearLogic implements NearStandard {
 
         return Observable.fromCallable(new Callable<NearCircle>() {
             @Override
-            public NearCircle call() throws Exception {
+            public NearCircle call() {
                 return DaoUtils.getNearCircleManagerInstance().getNearCircle(nearCircleId,
                         COMMENT_PAGE_COUNT);
             }
@@ -285,7 +291,7 @@ public class NearLogic implements NearStandard {
         return NearCircleService.getNearCircleDetail(nearCircleId, updateTime)
                 .map(new Function<GetNearCircleDetailResponse, NearCircle>() {
                     @Override
-                    public NearCircle apply(GetNearCircleDetailResponse response) throws Exception {
+                    public NearCircle apply(GetNearCircleDetailResponse response) {
                         if (response != null && response.getNearCircleInfo() != null) {
                             NearCircle info =
                                     DBNearCircleAction.convertToNearCircleInfo(response.getNearCircleInfo());

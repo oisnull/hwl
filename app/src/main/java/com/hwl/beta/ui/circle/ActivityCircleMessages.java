@@ -77,8 +77,8 @@ public class ActivityCircleMessages extends BaseActivity {
         binding.rvMessageContainer.setAdapter(messageAdapter);
         binding.rvMessageContainer.setLayoutManager(new LinearLayoutManager(activity));
 
-        MessageCountSP.setCircleMessageCount(0);
-        EventBusUtil.sendCircleMessageUpdateEvent();
+//        MessageCountSP.setCircleMessageCount(0);
+//        EventBusUtil.sendCircleMessageUpdateEvent();
     }
 
     private class MessageItemListener implements CircleMessageAdapter.IMessageItemListener {
