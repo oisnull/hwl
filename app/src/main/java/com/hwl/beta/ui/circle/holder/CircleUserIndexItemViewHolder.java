@@ -1,59 +1,72 @@
 package com.hwl.beta.ui.circle.holder;
 
+import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
-import com.google.android.flexbox.FlexboxLayout;
 import com.hwl.beta.databinding.CircleUserIndexItemBinding;
-import com.hwl.beta.db.entity.CircleImage;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
-
-import java.util.List;
+import com.hwl.beta.db.entity.Circle;
+import com.hwl.beta.ui.circle.action.ICircleUserItemListener;
+import com.hwl.beta.ui.common.NineImagesAdapter;
+import com.hwl.beta.ui.convert.DBCircleAction;
 
 public class CircleUserIndexItemViewHolder extends RecyclerView.ViewHolder {
 
     private CircleUserIndexItemBinding itemBinding;
+    private Context context;
 
-    public CircleUserIndexItemViewHolder(CircleUserIndexItemBinding itemBinding) {
+    public CircleUserIndexItemViewHolder(Context context, CircleUserIndexItemBinding itemBinding) {
         super(itemBinding.getRoot());
         this.itemBinding = itemBinding;
+        this.context = context;
     }
 
     public void setItemBinding(String timeYear,
                                String timeMonth,
                                String timeDay,
-                               String content,
-                               List<CircleImage> images) {
-        this.itemBinding.setTimeYear(timeYear);
+                               final Circle info,
+                               final ICircleUserItemListener itemListener) {
         this.itemBinding.setTimeMonth(timeMonth);
         this.itemBinding.setTimeDay(timeDay);
-        this.itemBinding.setContent(content);
-        this.setImageViews(images);
-    }
 
-    private void setImageViews(final List<CircleImage> images) {
-        if (images == null || images.size() <= 0) {
-            this.itemBinding.fblImageContainer.setVisibility(View.GONE);
-            return;
-        }
-        this.itemBinding.fblImageContainer.setVisibility(View.VISIBLE);
-        for (int i = 0; i < this.itemBinding.fblImageContainer.getChildCount(); i++) {
-            if (i == 0 && images.size() == 1) {
-                this.itemBinding.fblImageContainer.getChildAt(i).setVisibility(View.VISIBLE);
-                ImageView iv = (ImageView) this.itemBinding.fblImageContainer.getChildAt(i);
-                ImageViewBean.loadImage(iv, images.get(i).getImageUrl());
-                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) this.itemBinding.fblImageContainer.getLayoutParams();
-                params.width = params.width / 2;
-                this.itemBinding.fblImageContainer.setLayoutParams(params);
-            } else if ((i + 1) <= images.size()) {
-                this.itemBinding.fblImageContainer.getChildAt(i).setVisibility(View.VISIBLE);
-                ImageView iv = (ImageView) this.itemBinding.fblImageContainer.getChildAt(i);
-                ImageViewBean.loadImage(iv, images.get(i).getImageUrl());
-            } else {
-                this.itemBinding.fblImageContainer.getChildAt(i).setVisibility(View.GONE);
+        this.itemBinding.llContentContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemListener.onItemViewClick(info);
             }
+        });
+
+        if (TextUtils.isEmpty(timeYear)) {
+            this.itemBinding.tvYear.setVisibility(View.GONE);
+        } else {
+            this.itemBinding.setTimeYear(timeYear);
+            this.itemBinding.tvYear.setVisibility(View.VISIBLE);
+        }
+
+        if (TextUtils.isEmpty(info.getContent())) {
+            this.itemBinding.tvContent.setVisibility(View.GONE);
+        } else {
+            this.itemBinding.setContent(info.getContent());
+            this.itemBinding.tvContent.setVisibility(View.VISIBLE);
+        }
+
+        if (info.getImages() != null && info.getImages().size() > 0) {
+            NineImagesAdapter imagesAdapter = new NineImagesAdapter(context,
+                    DBCircleAction.convertToNineImageModels(info.getImages()),
+                    new NineImagesAdapter.ImageItemListener() {
+                        @Override
+                        public void onImageClick(int position, String imageUrl) {
+                            itemListener.onItemViewClick(info);
+                        }
+                    }, 6);
+            this.itemBinding.rvImages.setVisibility(View.VISIBLE);
+            this.itemBinding.rvImages.setAdapter(imagesAdapter);
+            this.itemBinding.rvImages.setLayoutManager(new GridLayoutManager(context,
+                    imagesAdapter.getColumnCount()));
+        } else {
+            this.itemBinding.rvImages.setVisibility(View.GONE);
         }
     }
 

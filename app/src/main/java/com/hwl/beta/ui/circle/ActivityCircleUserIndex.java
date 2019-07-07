@@ -75,11 +75,6 @@ public class ActivityCircleUserIndex extends BaseActivity {
         binding.rvCircleContainer.setAdapter(circleAdapter);
         binding.rvCircleContainer.setLayoutManager(new LinearLayoutManager(activity));
 
-//      binding.refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-//          @Override
-//          public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-//          }
-//      });
         binding.refreshLayout.setEnableRefresh(false);
         //binding.refreshLayout.setEnableLoadMore(false);
         binding.refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
@@ -116,7 +111,6 @@ public class ActivityCircleUserIndex extends BaseActivity {
             return;
         }
 
-        final boolean isRefresh = infoId == 0;
         circleStandard.loadServerInfos(infoId, circleAdapter.getInfos())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<Circle>>() {
@@ -168,7 +162,7 @@ public class ActivityCircleUserIndex extends BaseActivity {
 
         @Override
         public void onItemViewClick(Circle info) {
-            //UITransfer.toCircleDetailActivity(activity, 0, info);
+            UITransfer.toCircleDetailActivity(activity, info.getCircleId());
         }
 
         @Override

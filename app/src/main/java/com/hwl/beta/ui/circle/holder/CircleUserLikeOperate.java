@@ -31,6 +31,10 @@ public class CircleUserLikeOperate {
                                     ICircleLikeItemListener itemListener) {
         if (likes == null || likes.size() <= 0) return;
 
+        if (!fblLikeContainer.isShown()) {
+            fblLikeContainer.setVisibility(View.VISIBLE);
+        }
+
         Context context = fblLikeContainer.getContext();
         FlexboxLayout.LayoutParams param = getDefaultLayoutParams(context);
         for (int i = 0; i < likes.size(); i++) {
@@ -44,6 +48,10 @@ public class CircleUserLikeOperate {
         if (like == null) return;
 
         if (isExists(fblLikeContainer, like.getLikeUserId())) return;
+
+        if (!fblLikeContainer.isShown()) {
+            fblLikeContainer.setVisibility(View.VISIBLE);
+        }
 
         Context context = fblLikeContainer.getContext();
         ImageView iv = createLikeView(context, like, itemListener);

@@ -17,7 +17,7 @@ import java.util.Date;
 
 public class CircleOperateMessageListen extends
         AbstractMessageListenExecutor<ImCircleOperateMessageResponse> {
-		
+
     private ImCircleOperateMessageResponse response;
     private ImCircleOperateMessageContent messageContent;
 
@@ -27,19 +27,19 @@ public class CircleOperateMessageListen extends
         super.executeCore(messageType, response);
         this.response = response;
         messageContent = response.getCircleOperateMessageContent();
-		
+
         switch (messageContent.getOperateType()) {
             case AddLike:
-				addLike();
+                addLike();
                 break;
             case CancelLike:
-				cancelLike();
+                cancelLike();
                 break;
             case PostComment:
-				addComment();
+                addComment();
                 break;
             case CancelComment:
-				cancelComment();
+                cancelComment();
                 break;
         }
     }
@@ -49,8 +49,8 @@ public class CircleOperateMessageListen extends
         return response.getCircleOperateMessageResponse();
     }
 
-	private void createMessage(int type){
-		CircleMessage model = new CircleMessage();
+    private void createMessage(int type) {
+        CircleMessage model = new CircleMessage();
         model.setCircleId(messageContent.getCircleId());
         model.setUserId(messageContent.getPostUser().getUserId());
         model.setUserName(messageContent.getPostUser().getUserName());
@@ -63,89 +63,95 @@ public class CircleOperateMessageListen extends
         model.setReplyUserId(messageContent.getReplyUser().getUserId());
         model.setReplyUserName(messageContent.getReplyUser().getUserName());
         model.setActionTime(new Date(response.getBuildTime()));
-		DaoUtils.getCircleMessageManagerInstance().save(model);
-	}
+        DaoUtils.getCircleMessageManagerInstance().save(model);
+    }
 
-	private void addComment(){
-		if(messageContent.getCircleId()<=0||
-		messageContent.getPostUser()==null||
-		messageContent.getPostUser().getUserId()<=0||
-		messageContent.getCommentId()<=0) 
-		return;
-	
-       CircleComment commentInfo = DaoUtils.getCircleManagerInstance().getComment(messageContent.getCircleId(),
-																						   messageContent.getPostUser().getUserId(),
-																						   messageContent.getCommentId());
-	   if(commentInfo!=null) return;
-		
-		commentInfo = new CircleComment(messageContent.getCommentId(),
-		 messageContent.getCircleId(), 
-		 messageContent.getPostUser().getUserId(),
-		 messageContent.getPostUser().getUserName(), 
-		 messageContent.getPostUser().getUserImage(), 
-		 messageContent.getReplyUser().getUserId(),
-		 messageContent.getReplyUser().getUserName(), 
-		 messageContent.getReplyUser().getUserImage(), 
-		 messageContent.getCommentCont(), 
-		 new Date(response.getBuildTime()));
+    private void addComment() {
+        if (messageContent.getCircleId() <= 0 ||
+                messageContent.getPostUser() == null ||
+                messageContent.getPostUser().getUserId() <= 0 ||
+                messageContent.getCommentId() <= 0)
+            return;
+
+        CircleComment commentInfo =
+				DaoUtils.getCircleManagerInstance().getComment(messageContent.getCircleId(),
+                messageContent.getPostUser().getUserId(),
+                messageContent.getCommentId());
+        if (commentInfo != null) return;
+
+        commentInfo = new CircleComment(messageContent.getCommentId(),
+                messageContent.getCircleId(),
+                messageContent.getPostUser().getUserId(),
+                messageContent.getPostUser().getUserName(),
+                messageContent.getPostUser().getUserImage(),
+                messageContent.getReplyUser().getUserId(),
+                messageContent.getReplyUser().getUserName(),
+                messageContent.getReplyUser().getUserImage(),
+                messageContent.getCommentCont(),
+                new Date(response.getBuildTime()));
         DaoUtils.getCircleManagerInstance().saveComment(commentInfo);
-		
-		createMessage(DBConstant.CIRCLE_TYPE_COMMENT);
 
-		//hint to ui
+        createMessage(DBConstant.CIRCLE_TYPE_COMMENT);
+
+        //hint to ui
         MessageCountSP.setCircleMessageCountIncrease();
         EventBusUtil.sendCircleMessageUpdateEvent();
-	}
+    }
 
-	private void cancelComment(){
-		if(messageContent.getCircleId()<=0||
-		messageContent.getPostUser()==null||
-		messageContent.getPostUser().getUserId()<=0||
-		messageContent.getCommentId()<=0) 
-		return;
-	
-		DaoUtils.getCircleManagerInstance().deleteComment(messageContent.getCircleId(), messageContent.getPostUser().getUserId(), messageContent.getCommentId());
-		
-		DaoUtils.getCircleMessageManagerInstance().updateStatus(messageContent.getCircleId(),DBConstant.CIRCLE_TYPE_COMMENT,messageContent.getPostUser().getUserId(), messageContent.getCommentId());
-		
+    private void cancelComment() {
+        if (messageContent.getCircleId() <= 0 ||
+                messageContent.getPostUser() == null ||
+                messageContent.getPostUser().getUserId() <= 0 ||
+                messageContent.getCommentId() <= 0)
+            return;
+
+        DaoUtils.getCircleManagerInstance().deleteComment(messageContent.getCircleId(),
+				messageContent.getPostUser().getUserId(), messageContent.getCommentId());
+
+        DaoUtils.getCircleMessageManagerInstance().updateStatus(messageContent.getCircleId(),
+				DBConstant.CIRCLE_TYPE_COMMENT, messageContent.getPostUser().getUserId(),
+				messageContent.getCommentId());
+
         MessageCountSP.setCircleMessageCountReduce();
-	}
+    }
 
-	private void addLike(){
-		if(messageContent.getCircleId()<=0||
-		messageContent.getPostUser()==null||
-		messageContent.getPostUser().getUserId()<=0) 
-		return;
+    private void addLike() {
+        if (messageContent.getCircleId() <= 0 ||
+                messageContent.getPostUser() == null ||
+                messageContent.getPostUser().getUserId() <= 0)
+            return;
 
-		//check local db exists
-       CircleLike likeInfo = DaoUtils.getCircleManagerInstance().getLike(messageContent.getCircleId(),messageContent.getPostUser().getUserId());
-	   if(likeInfo!=null) return;
-		
-	   likeInfo = new CircleLike();
-		likeInfo.setCircleId(messageContent.getCircleId());
-		likeInfo.setLikeUserId(messageContent.getPostUser().getUserId());
-		likeInfo.setLikeUserName(messageContent.getPostUser().getUserName());
-		likeInfo.setLikeUserImage(messageContent.getPostUser().getUserImage());
-		likeInfo.setLikeTime(new Date(response.getBuildTime()));
-		DaoUtils.getCircleManagerInstance().saveLike(likeInfo);
-		
-		createMessage(DBConstant.CIRCLE_TYPE_LIKE);
+        //check local db exists
+        CircleLike likeInfo =
+				DaoUtils.getCircleManagerInstance().getLike(messageContent.getCircleId(),
+						messageContent.getPostUser().getUserId());
+        if (likeInfo != null) return;
 
-		//hint to ui
+        likeInfo = new CircleLike();
+        likeInfo.setCircleId(messageContent.getCircleId());
+        likeInfo.setLikeUserId(messageContent.getPostUser().getUserId());
+        likeInfo.setLikeUserName(messageContent.getPostUser().getUserName());
+        likeInfo.setLikeUserImage(messageContent.getPostUser().getUserImage());
+        likeInfo.setLikeTime(new Date(response.getBuildTime()));
+        DaoUtils.getCircleManagerInstance().saveLike(likeInfo);
+
+        createMessage(DBConstant.CIRCLE_TYPE_LIKE);
+
+        //hint to ui
         MessageCountSP.setCircleMessageCountIncrease();
         EventBusUtil.sendCircleMessageUpdateEvent();
-	}
+    }
 
-	private void cancelLike(){
-		if(messageContent.getCircleId()<=0||
-		messageContent.getPostUser()==null||
-		messageContent.getPostUser().getUserId()<=0) 
-		return;
+    private void cancelLike() {
+        if (messageContent.getCircleId() <= 0 ||
+                messageContent.getPostUser() == null ||
+                messageContent.getPostUser().getUserId() <= 0)
+            return;
 
-       DaoUtils.getCircleManagerInstance().deleteLike(messageContent.getCircleId(),messageContent.getPostUser().getUserId());
-	   
-		DaoUtils.getCircleMessageManagerInstance().updateStatus(messageContent.getCircleId(),DBConstant.CIRCLE_TYPE_LIKE,messageContent.getPostUser().getUserId(), 0);
-		
+        DaoUtils.getCircleManagerInstance().deleteLike(messageContent.getCircleId(), messageContent.getPostUser().getUserId());
+
+        DaoUtils.getCircleMessageManagerInstance().updateStatus(messageContent.getCircleId(), DBConstant.CIRCLE_TYPE_LIKE, messageContent.getPostUser().getUserId(), 0);
+
         MessageCountSP.setCircleMessageCountReduce();
-	}
+    }
 }

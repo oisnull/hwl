@@ -154,10 +154,11 @@ public class CircleService {
                 .subscribeOn(Schedulers.io());
     }
 
-    public static Observable<GetCircleDetailResponse> getCircleDetail(long circleId) {
+    public static Observable<GetCircleDetailResponse> getCircleDetail(long circleId,String lastUpdateTime) {
         GetCircleDetailRequest requestBody = new GetCircleDetailRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setCircleId(circleId);
+        requestBody.setUpdateTime(lastUpdateTime);
         return RetrofitUtils.createApi(ICircleService.class)
                 .getCircleDetail(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<GetCircleDetailResponse>>())

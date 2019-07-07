@@ -219,11 +219,11 @@ public class ActivityNearDetail extends BaseActivity {
         binding.fblLikeContainer.removeAllViews();
         if (currentInfo.getLikes() != null && currentInfo.getLikes().size() > 0) {
             isShowActionContainer = true;
-            binding.fblLikeContainer.setVisibility(View.VISIBLE);
+            binding.rlLikeContainer.setVisibility(View.VISIBLE);
             UserLikeOperate.setLikeInfos(binding.fblLikeContainer, currentInfo.getLikes(),
                     itemListener);
         } else {
-            binding.fblLikeContainer.setVisibility(View.GONE);
+            binding.rlLikeContainer.setVisibility(View.GONE);
         }
 
         binding.rvComments.setAdapter(new NearCircleCommentAdapter(activity,

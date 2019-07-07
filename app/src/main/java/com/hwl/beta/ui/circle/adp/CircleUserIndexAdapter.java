@@ -3,12 +3,9 @@ package com.hwl.beta.ui.circle.adp;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.CircleUserHeadItemBinding;
@@ -16,8 +13,6 @@ import com.hwl.beta.databinding.CircleUserIndexItemBinding;
 import com.hwl.beta.databinding.CircleUserItemNullBinding;
 import com.hwl.beta.db.DBConstant;
 import com.hwl.beta.db.entity.Circle;
-import com.hwl.beta.db.entity.CircleComment;
-import com.hwl.beta.db.entity.CircleImage;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.ui.circle.action.ICircleUserItemListener;
 import com.hwl.beta.ui.circle.holder.CircleUserHeadItemViewHolder;
@@ -25,10 +20,10 @@ import com.hwl.beta.ui.circle.holder.CircleUserIndexItemViewHolder;
 import com.hwl.beta.ui.circle.holder.CircleUserItemNullViewHolder;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -49,7 +44,7 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         prevYear = Calendar.getInstance().get(Calendar.YEAR);
     }
 
-	public void addInfos(List<Circle> infos) {
+    public void addInfos(List<Circle> infos) {
         if (infos == null || infos.size() <= 0) return;
 
         this.circles.addAll(infos);
@@ -61,13 +56,23 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         if (getItemCount() <= 0) {
             circles.addAll(infos);
-            notifyDataSetChanged();
         } else {
             removeEmptyInfo();
-            //sortInfos(infos);
-            circles.addAll(getCircleItemPosition(), infos);
-            notifyDataSetChanged();
+            circles.removeAll(infos);
+            circles.addAll(infos);
         }
+        sortInfos(circles);
+        notifyDataSetChanged();
+    }
+
+    private void sortInfos(List<Circle> infos) {
+        if (infos == null || infos.size() <= 0) return;
+        Collections.sort(infos, new Comparator<Circle>() {
+            public int compare(Circle arg0, Circle arg1) {
+                if (arg0.getCircleId() == 0 || arg1.getCircleId() == 0) return 0;
+                return (int) (arg1.getCircleId() - arg0.getCircleId());
+            }
+        });
     }
 
     private void removeEmptyInfo() {
@@ -93,24 +98,24 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         return circles.size();
     }
 
-    public void updateHead(Friend info){
-        if(info==null) return;
-        if(circles.get(0).getItemType()!=DBConstant.CIRCLE_ITEM_HEAD) return;
-        boolean isChanged=false;
-        if(circles.get(0).getCircleBackImage()!=info.getCircleBackImage()){
+    public void updateHead(Friend info) {
+        if (info == null) return;
+        if (circles.get(0).getItemType() != DBConstant.CIRCLE_ITEM_HEAD) return;
+        boolean isChanged = false;
+        if (circles.get(0).getCircleBackImage() != info.getCircleBackImage()) {
             circles.get(0).setCircleBackImage(info.getCircleBackImage());
-            isChanged=true;
+            isChanged = true;
         }
-        if(circles.get(0).getLifeNotes()!=info.getLifeNotes()){
+        if (circles.get(0).getLifeNotes() != info.getLifeNotes()) {
             circles.get(0).setLifeNotes(info.getLifeNotes());
-            isChanged=true;
+            isChanged = true;
         }
 
-        if(isChanged)
+        if (isChanged)
             notifyItemChanged(0);
     }
 
-	public long getMinId() {
+    public long getMinId() {
         if (getItemCount() <= 0) {
             return 0;
         }
@@ -143,7 +148,9 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             case 1:
                 return new CircleUserHeadItemViewHolder((CircleUserHeadItemBinding) DataBindingUtil.inflate(inflater, R.layout.circle_user_head_item, parent, false));
             case 2:
-                return new CircleUserIndexItemViewHolder((CircleUserIndexItemBinding) DataBindingUtil.inflate(inflater, R.layout.circle_user_index_item, parent, false));
+                return new CircleUserIndexItemViewHolder(context,
+                        (CircleUserIndexItemBinding) DataBindingUtil.inflate(inflater,
+                                R.layout.circle_user_index_item, parent, false));
         }
     }
 
@@ -152,10 +159,13 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         final Circle info = circles.get(position);
         if (holder instanceof CircleUserItemNullViewHolder) {
             CircleUserItemNullViewHolder viewHolder = (CircleUserItemNullViewHolder) holder;
-            viewHolder.setItemBinding(itemListener, (Calendar.getInstance().get(Calendar.MONTH) + 1) + "月", Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "");
+            viewHolder.setItemBinding(itemListener,
+                    (Calendar.getInstance().get(Calendar.MONTH) + 1) + "月",
+                    Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "");
         } else if (holder instanceof CircleUserHeadItemViewHolder) {
             CircleUserHeadItemViewHolder viewHolder = (CircleUserHeadItemViewHolder) holder;
-            viewHolder.setItemBinding(itemListener, new ImageViewBean(info.getPublishUserImage(), info.getCircleBackImage()), info.getPublishUserName(), info.getLifeNotes());
+            viewHolder.setItemBinding(itemListener, new ImageViewBean(info.getPublishUserImage(),
+                    info.getCircleBackImage()), info.getPublishUserName(), info.getLifeNotes());
             prevShowDate = "";
             prevMonth = 0;
             prevDay = 0;
@@ -183,47 +193,13 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 prevDay = prev.get(Calendar.DAY_OF_MONTH);
 
                 if (position != 1 || timeMonth.equals("")) {
-                    RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) viewHolder.getItemBinding().llCircleContainer.getLayoutParams();
+                    RecyclerView.LayoutParams params =
+                            (RecyclerView.LayoutParams) viewHolder.getItemBinding().llCircleContainer.getLayoutParams();
                     params.topMargin = 1;
                     viewHolder.getItemBinding().llCircleContainer.setLayoutParams(params);
                 }
             }
-            viewHolder.setItemBinding(timeYear, timeMonth, timeDay, info.getContent(), info.getImages());
-            viewHolder.getItemBinding().getRoot().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    itemListener.onItemViewClick(info);
-                }
-            });
-        }
-    }
-
-    public void addComment(CircleComment comment) {
-        if (comment == null || comment.getCircleId() <= 0 || comment.getCommentUserId() <= 0)
-            return;
-
-        int position = -1;
-        List<CircleComment> comments = null;
-        for (int i = 0; i < circles.size(); i++) {
-            if (circles.get(i) != null && circles.get(i).getCircleId() == comment.getCircleId()) {
-                comments = circles.get(i).getComments();
-                if (comments == null) {
-                    comments = new ArrayList<>();
-                    circles.get(i).setComments(comments);
-                }
-                position = i;
-                break;
-            }
-        }
-
-        if (comments == null) {
-            return;
-        }
-        comments.add(comment);
-        if (position == -1) {
-            notifyItemChanged(0);
-        } else {
-            notifyItemChanged(position);
+            viewHolder.setItemBinding(timeYear, timeMonth, timeDay, info, itemListener);
         }
     }
 

@@ -228,7 +228,7 @@ public class CircleLogic implements CircleStandard {
 
         return Observable.fromCallable(new Callable<Circle>() {
             @Override
-            public Circle call() throws Exception {
+            public Circle call() {
                 return DaoUtils.getCircleManagerInstance().getCircle(circleId);
             }
         }).subscribeOn(Schedulers.io());
@@ -240,14 +240,14 @@ public class CircleLogic implements CircleStandard {
             return Observable.error(new Throwable("Circle id con't be empty."));
         }
 
-        return CircleService.getCircleDetail(circleId)
+        return CircleService.getCircleDetail(circleId, updateTime)
                 .map(new Function<GetCircleDetailResponse, Circle>() {
                     @Override
-                    public Circle apply(GetCircleDetailResponse response) throws Exception {
+                    public Circle apply(GetCircleDetailResponse response) {
                         if (response != null && response.getCircleInfo() != null) {
                             Circle info =
                                     DBCircleAction.convertToCircleInfo(response.getCircleInfo());
-                            DaoUtils.getCircleManagerInstance().deleteAll(circleId);
+                            DaoUtils.getCircleManagerInstance().deleteAll(info.getCircleId());
                             DaoUtils.getCircleManagerInstance().save(info);
                             return info;
                         }
@@ -319,7 +319,7 @@ public class CircleLogic implements CircleStandard {
                         IMClientEntry.sendCircleCommentMessage(info.getCircleId(),
                                 comment.getCommentId(),
                                 comment.getContent(),
-                                comment.getCommentUserId(),
+                                info.getPublishUserId(),
                                 comment.getReplyUserId(),
                                 new IMDefaultSendOperateListener("addComment"));
                     }
@@ -354,7 +354,7 @@ public class CircleLogic implements CircleStandard {
                         //send im message
                         IMClientEntry.sendCircleCancelCommentMessage(info.getCircleId(),
                                 comment.getCommentId(),
-                                comment.getCommentUserId(),
+                                info.getPublishUserId(),
                                 comment.getReplyUserId(),
                                 new IMDefaultSendOperateListener("deleteComment"));
                     }

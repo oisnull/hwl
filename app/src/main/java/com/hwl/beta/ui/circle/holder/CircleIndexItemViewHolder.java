@@ -47,7 +47,10 @@ public class CircleIndexItemViewHolder extends RecyclerView.ViewHolder {
         this.itemBinding.rvComments.setLayoutManager(new LinearLayoutManager(context));
         this.itemBinding.fblLikeContainer.removeAllViews();
 
-        if (info.getImages() != null && info.getImages().size() > 0) {
+
+        if (info.getImages() == null || info.getImages().size() <= 0) {
+            this.itemBinding.rvImages.setVisibility(View.GONE);
+        } else {
             NineImagesAdapter imagesAdapter = new NineImagesAdapter(context,
                     DBCircleAction.convertToNineImageModels(info.getImages()),
                     new NineImagesAdapter.ImageItemListener() {
@@ -60,8 +63,6 @@ public class CircleIndexItemViewHolder extends RecyclerView.ViewHolder {
             this.itemBinding.rvImages.setAdapter(imagesAdapter);
             this.itemBinding.rvImages.setLayoutManager(new GridLayoutManager(context,
                     imagesAdapter.getColumnCount()));
-        } else {
-            this.itemBinding.rvImages.setVisibility(View.GONE);
         }
 
         boolean isShowActionContainer = false;

@@ -1,27 +1,24 @@
 package com.hwl.beta.ui.circle.logic;
 
+import android.text.TextUtils;
+
 import com.hwl.beta.db.DBConstant;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.Circle;
-import com.hwl.beta.db.entity.CircleLike;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.net.circle.CircleService;
 import com.hwl.beta.net.circle.NetCircleMatchInfo;
 import com.hwl.beta.net.circle.body.DeleteCircleInfoResponse;
-import com.hwl.beta.net.circle.body.GetCircleInfosResponse;
 import com.hwl.beta.net.circle.body.GetUserCircleInfosResponse;
-import com.hwl.beta.net.circle.body.SetLikeInfoResponse;
 import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.GetUserDetailsResponse;
 import com.hwl.beta.sp.UserSP;
-import com.hwl.beta.ui.circle.standard.CircleStandard;
 import com.hwl.beta.ui.circle.standard.CircleUserStandard;
 import com.hwl.beta.ui.convert.DBCircleAction;
 import com.hwl.beta.ui.convert.DBFriendAction;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -33,7 +30,7 @@ import io.reactivex.schedulers.Schedulers;
 public class CircleUserLogic implements CircleUserStandard {
 
     final static int PAGE_COUNT = 15;
-    final static int COMMENT_PAGE_COUNT = 10;
+//    final static int COMMENT_PAGE_COUNT = 10;
     Friend currentUser;
 
     public CircleUserLogic(long viewUserId, String viewUserName, String viewUserImage) {
@@ -56,8 +53,7 @@ public class CircleUserLogic implements CircleUserStandard {
             @Override
             public List<Circle> call() {
                 List<Circle> circles =
-                        DaoUtils.getCircleManagerInstance().getUserCirclesV2(currentUser.getId(),
-                                COMMENT_PAGE_COUNT);
+                        DaoUtils.getCircleManagerInstance().getUserCircles(currentUser.getId());
                 if (circles == null)
                     circles = new ArrayList<>();
 
@@ -114,6 +110,8 @@ public class CircleUserLogic implements CircleUserStandard {
             } else {
                 if (localInfos.get(i).getCircleId() >= minCircleId) continue;
             }
+
+            if (TextUtils.isEmpty(localInfos.get(i).getUpdateTime())) continue;
 
             matchInfos.add(new NetCircleMatchInfo(localInfos.get(i).getCircleId(),
                     localInfos.get(i).getUpdateTime()));

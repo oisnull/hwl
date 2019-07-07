@@ -260,7 +260,7 @@ public class NearLogic implements NearStandard {
                         //send im message
                         IMClientEntry.sendNearCircleCancelCommentMessage(info.getNearCircleId(),
                                 comment.getCommentId(),
-                                comment.getCommentUserId(),
+                                info.getPublishUserId(),
                                 comment.getReplyUserId(),
                                 new IMDefaultSendOperateListener("deleteComment"));
                     }

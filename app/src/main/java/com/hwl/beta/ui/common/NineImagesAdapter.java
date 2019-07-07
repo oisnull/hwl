@@ -26,6 +26,11 @@ public class NineImagesAdapter extends RecyclerView.Adapter<NineImagesAdapter.Im
 
     public NineImagesAdapter(Context context, List<NineImageModel> images,
                              ImageItemListener imageItemListener) {
+        this(context, images, imageItemListener, 0);
+    }
+
+    public NineImagesAdapter(Context context, List<NineImageModel> images,
+                             ImageItemListener imageItemListener, int fixColumnCount) {
         this.context = context;
         this.itemListener = imageItemListener;
         this.images = images;
@@ -35,8 +40,10 @@ public class NineImagesAdapter extends RecyclerView.Adapter<NineImagesAdapter.Im
         } else {
             columnCount = images.size() > 3 ? 3 : images.size();
         }
-//        columnCount = 3;
-        imageWidth = ScreenUtils.getScreenWidth(context) / columnCount;
+        if (fixColumnCount <= 0)
+            imageWidth = ScreenUtils.getScreenWidth(context) / columnCount;
+        else
+            imageWidth = ScreenUtils.getScreenWidth(context) / fixColumnCount;
     }
 
     public int getColumnCount() {

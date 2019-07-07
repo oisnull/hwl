@@ -108,7 +108,7 @@ public class ActivityCircleDetail extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Circle>() {
                     @Override
-                    public void accept(Circle info) throws Exception {
+                    public void accept(Circle info) {
                         currentInfo = info;
                         if (currentInfo == null) {
                             showContentLoading(1);
@@ -206,11 +206,11 @@ public class ActivityCircleDetail extends BaseActivity {
         binding.fblLikeContainer.removeAllViews();
         if (currentInfo.getLikes() != null && currentInfo.getLikes().size() > 0) {
             isShowActionContainer = true;
-            binding.fblLikeContainer.setVisibility(View.VISIBLE);
+            binding.rlLikeContainer.setVisibility(View.VISIBLE);
             CircleUserLikeOperate.setLikeInfos(binding.fblLikeContainer, currentInfo.getLikes(),
                     itemListener);
         } else {
-            binding.fblLikeContainer.setVisibility(View.GONE);
+            binding.rlLikeContainer.setVisibility(View.GONE);
         }
 
         binding.rvComments.setAdapter(new CircleCommentAdapter(activity,
