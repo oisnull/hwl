@@ -211,7 +211,7 @@ public class FragmentNear extends BaseFragment {
         }
     }
 
-    private void showMessageCount(){
+    private void showMessageCount() {
         int count = MessageCountSP.getNearCircleMessageCount();
         if (count > 0) {
             binding.llMessageTip.setVisibility(View.VISIBLE);
@@ -321,6 +321,9 @@ public class FragmentNear extends BaseFragment {
         public boolean onCommentLongClick(View view, final NearCircleComment comment) {
             PopupMenu popup = new PopupMenu(activity, view);
             popup.getMenuInflater().inflate(R.menu.popup_comment_menu, popup.getMenu());
+            if (comment.getCommentUserId() != UserSP.getUserId()) {
+                popup.getMenu().removeItem(R.id.pop_comment_delete);
+            }
             popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     switch (item.getItemId()) {

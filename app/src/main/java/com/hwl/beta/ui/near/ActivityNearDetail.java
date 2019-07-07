@@ -424,6 +424,9 @@ public class ActivityNearDetail extends BaseActivity {
         public boolean onCommentLongClick(View view, final NearCircleComment comment) {
             PopupMenu popup = new PopupMenu(activity, view);
             popup.getMenuInflater().inflate(R.menu.popup_comment_menu, popup.getMenu());
+            if (comment.getCommentUserId() != UserSP.getUserId()) {
+                popup.getMenu().removeItem(R.id.pop_comment_delete);
+            }
             popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     switch (item.getItemId()) {
