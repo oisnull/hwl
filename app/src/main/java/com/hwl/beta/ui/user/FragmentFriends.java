@@ -121,7 +121,7 @@ public class FragmentFriends extends BaseFragment {
                         break;
                     default:
                         Friend friend = friendAdapter.getItem(position);
-                        UITransfer.toUserIndexActivity(activity, friend.getId(), friend.getName(),
+                        UITransfer.toUserIndexV2Activity(activity, friend.getId(), friend.getName(),
                                 friend.getHeadImage());
                         break;
                 }
