@@ -9,18 +9,13 @@ import android.view.View;
 import com.hwl.beta.databinding.NearItemBinding;
 import com.hwl.beta.db.entity.NearCircle;
 import com.hwl.beta.db.entity.NearCircleComment;
-import com.hwl.beta.db.entity.NearCircleImage;
 import com.hwl.beta.db.entity.NearCircleLike;
 import com.hwl.beta.ui.convert.DBNearCircleAction;
-import com.hwl.beta.ui.near.action.INearCircleCommentItemListener;
 import com.hwl.beta.ui.near.action.INearCircleItemListener;
 import com.hwl.beta.ui.near.action.INearCircleLikeItemListener;
 import com.hwl.beta.ui.near.adp.NearCircleCommentAdapter;
 import com.hwl.beta.ui.common.NineImagesAdapter;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Administrator on 2018/2/16.

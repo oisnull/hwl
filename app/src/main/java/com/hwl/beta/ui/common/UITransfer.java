@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
@@ -43,12 +42,8 @@ import com.hwl.beta.ui.near.ActivityNearPublish;
 import com.hwl.beta.ui.user.ActivityNewFriend;
 import com.hwl.beta.ui.user.ActivityUserEdit;
 import com.hwl.beta.ui.user.ActivityUserEditItem;
-//import com.hwl.beta.ui.user.ActivityUserPasswordReset;
-//import com.hwl.beta.ui.user.ActivityUserPrivacySetting;
-import com.hwl.beta.ui.user.ActivityUserIndex;
 import com.hwl.beta.ui.user.ActivityUserIndexV2;
 import com.hwl.beta.ui.user.ActivityUserSearch;
-//import com.hwl.beta.ui.user.ActivityUserSetting;
 import com.hwl.beta.ui.video.ActivityVideoPlay;
 import com.hwl.beta.ui.video.ActivityVideoSelect;
 import com.hwl.beta.ui.entry.ActivityWelcome;
@@ -142,7 +137,7 @@ public class UITransfer {
 
     public static void toUserIndexActivity(Activity context, long userId, String userName, String
             userImage) {
-        Intent intent = new Intent(context, ActivityUserIndex.class);
+        Intent intent = new Intent(context, ActivityUserIndexV2.class);
         intent.putExtra("userid", userId);
         intent.putExtra("username", userName);
         intent.putExtra("userimage", userImage);
@@ -151,11 +146,7 @@ public class UITransfer {
 
     public static void toUserIndexV2Activity(Activity context, long userId, String userName, String
             userImage) {
-        Intent intent = new Intent(context, ActivityUserIndexV2.class);
-        intent.putExtra("userid", userId);
-        intent.putExtra("username", userName);
-        intent.putExtra("userimage", userImage);
-        context.startActivity(intent);
+        toUserIndexActivity(context, userId, userName, userImage);
     }
 
     public static void toUserSearchActivity(Activity context) {

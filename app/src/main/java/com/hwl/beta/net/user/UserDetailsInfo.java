@@ -1,7 +1,5 @@
 package com.hwl.beta.net.user;
 
-import java.util.List;
-
 public class UserDetailsInfo {
     private int Id;
     private String Symbol;
@@ -86,13 +84,13 @@ public class UserDetailsInfo {
         IsFriend = friend;
     }
 
-    public String getFirstSpell() {
-        return FirstSpell;
-    }
-
-    public void setFirstSpell(String firstSpell) {
-        FirstSpell = firstSpell;
-    }
+//    public String getFirstSpell() {
+//        return FirstSpell;
+//    }
+//
+//    public void setFirstSpell(String firstSpell) {
+//        FirstSpell = firstSpell;
+//    }
 
     public String getUpdateTime() {
         return UpdateTime;

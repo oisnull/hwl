@@ -23,7 +23,7 @@ public class UserIndexBean {
         return this.misFriend;
     }
 
-    public void SetFriend(boolean isFriend) {
+    public void setFriend(boolean isFriend) {
         this.misFriend = isFriend;
     }
 
@@ -31,7 +31,7 @@ public class UserIndexBean {
         return this.misMe;
     }
 
-    public void SetMe(boolean isMe) {
+    public void setMe(boolean isMe) {
         this.misMe = isMe;
     }
 

@@ -5,7 +5,6 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.hwl.beta.HWLApp;
-import com.hwl.beta.utils.StringUtils;
 
 public class BaiduLocationV2 {
     public final static int NOT_START = 0;
@@ -16,48 +15,48 @@ public class BaiduLocationV2 {
     private LocationClient client = null;
     private LocationClientOption mOption, DIYoption;
     private int currentStatus = NOT_START;
-	private String errorMessage;
+    private String errorMessage;
 
     public BaiduLocationV2(final IHWLLoactionListener locationListener) {
         client = new LocationClient(HWLApp.getContext());
         client.setLocOption(getDefaultLocationClientOption());
         client.registerLocationListener(new BDAbstractLocationListener() {
 
-			private bool isSuccess(BDLocation location){
-				return location != null && 
-				location.getLatitude() > 0 && 
-				location.getLongitude() > 0 &&
-				(location.getLocType() == BDLocation.TypeGpsLocation || 
-				location.getLocType() == BDLocation.TypeNetWorkLocation ||
-				location.getLocType() == BDLocation.TypeOffLineLocation);
-			}
+            private boolean isSuccess(BDLocation location) {
+                return location != null &&
+                        location.getLatitude() > 0 &&
+                        location.getLongitude() > 0 &&
+                        (location.getLocType() == BDLocation.TypeGpsLocation ||
+                                location.getLocType() == BDLocation.TypeNetWorkLocation ||
+                                location.getLocType() == BDLocation.TypeOffLineLocation);
+            }
 
-			@Override
-			public void onReceiveLocation(BDLocation location) {
-				if (isSuccess(location)) {
-					LocationModel model = new LocationModel();
-					model.radius = location.getRadius();
-					model.latitude = (float) location.getLatitude();
-					model.lontitude = (float) location.getLongitude();
-					model.country = location.getCountry();
-					model.province = location.getProvince();
-					model.city = location.getCity();
-					model.district = location.getDistrict();
-					model.street = location.getStreet();
-					model.addr = location.getAddrStr();
-					model.describe = location.getLocationDescribe();
-					currentStatus = COMPLETE_SUCCESS;
-					errorMessage = null;
-					locationListener.onSuccess(model);
-				} else {					
-					currentStatus = COMPLETE_FAILD;
-					errorMessage = location.getLocTypeDescription();
-					locationListener.onFailure(errorMessage);
-				}
+            @Override
+            public void onReceiveLocation(BDLocation location) {
+                if (isSuccess(location)) {
+                    LocationModel model = new LocationModel();
+                    model.radius = location.getRadius();
+                    model.latitude = (float) location.getLatitude();
+                    model.longitude = (float) location.getLongitude();
+                    model.country = location.getCountry();
+                    model.province = location.getProvince();
+                    model.city = location.getCity();
+                    model.district = location.getDistrict();
+                    model.street = location.getStreet();
+                    model.addr = location.getAddrStr();
+                    model.describe = location.getLocationDescribe();
+                    currentStatus = COMPLETE_SUCCESS;
+                    errorMessage = null;
+                    locationListener.onSuccess(model);
+                } else {
+                    currentStatus = COMPLETE_FAILD;
+                    errorMessage = location.getLocTypeDescription();
+                    locationListener.onFailure(errorMessage);
+                }
 
-				stop();
-			}
-		});
+                stop();
+            }
+        });
     }
 
     /***
@@ -96,10 +95,11 @@ public class BaiduLocationV2 {
             mOption.SetIgnoreCacheException(false);//可选，默认false，设置是否收集CRASH信息，默认收集
             mOption.setOpenGps(true);//可选，默认false，设置是否开启Gps定位
             mOption.setIsNeedAltitude(false);//可选，默认false，设置定位时是否需要海拔信息，默认不需要，除基础定位版本都可用
-			//设置打开自动回调位置模式，该开关打开后，期间只要定位SDK检测到位置变化就会主动回调给开发者，该模式下开发者无需再关心定位间隔是多少，定位SDK本身发现位置变化就会及时回调给开发者
-			//mOption.setOpenAutoNotifyMode();
-			//设置打开自动回调位置模式，该开关打开后，期间只要定位SDK检测到位置变化就会主动回调给开发者
-			//mOption.setOpenAutoNotifyMode(3000,1, LocationClientOption.LOC_SENSITIVITY_HIGHT); 
+            //设置打开自动回调位置模式，该开关打开后，期间只要定位SDK检测到位置变化就会主动回调给开发者，该模式下开发者无需再关心定位间隔是多少，定位SDK
+            // 本身发现位置变化就会及时回调给开发者
+            //mOption.setOpenAutoNotifyMode();
+            //设置打开自动回调位置模式，该开关打开后，期间只要定位SDK检测到位置变化就会主动回调给开发者
+            //mOption.setOpenAutoNotifyMode(3000,1, LocationClientOption.LOC_SENSITIVITY_HIGHT);
 
         }
         return mOption;
@@ -112,9 +112,9 @@ public class BaiduLocationV2 {
         return DIYoption;
     }
 
-	public String getErrorMessage(){
-		return this.errorMessage;
-	}
+    public String getErrorMessage() {
+        return this.errorMessage;
+    }
 
     public int getcurrentStatus() {
         return this.currentStatus;

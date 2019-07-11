@@ -1,9 +1,11 @@
 package com.hwl.beta.location;
 
+import com.hwl.beta.utils.StringUtils;
+
 public class LocationModel {
     public float radius;
     public float latitude;
-    public float lontitude;
+    public float longitude;
     public String country;
     public String province;
     public String city;

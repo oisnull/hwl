@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,8 @@ import android.view.WindowManager;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.hwl.beta.location.IHWLLoactionListener;
+import com.hwl.beta.location.LocationModel;
 import com.hwl.beta.net.NetExceptionCode;
 import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.NetworkBroadcastReceiver;
@@ -37,6 +40,7 @@ import com.hwl.beta.ui.user.FragmentFriends;
 import com.hwl.beta.ui.entry.action.IMainListener;
 import com.hwl.beta.ui.entry.logic.MainLogic;
 import com.hwl.beta.ui.entry.standard.MainStandard;
+import com.hwl.beta.utils.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +56,7 @@ public class ActivityMain extends BaseActivity {
     MainBean mainBean;
     MainListener mainListener;
     NetworkBroadcastReceiver networkBroadcastReceiver;
-	BaiduLocationV2 location;
+    BaiduLocationV2 location;
     long exitTime = 0;
 
     @Override
@@ -88,9 +92,9 @@ public class ActivityMain extends BaseActivity {
                         showPopMenu(v);
                     }
                 });
-		
-		location = new BaiduLocationV2(new HWLLocationListener());
-		location.start();
+
+        location = new BaiduLocationV2(new HWLLocationListener());
+        location.start();
         networkBroadcastReceiver = new NetworkBroadcastReceiver();
         registerReceiver(networkBroadcastReceiver, new IntentFilter(NetworkBroadcastReceiver
                 .ACTION_TAG));
@@ -125,10 +129,10 @@ public class ActivityMain extends BaseActivity {
                         .getNearCircleMessageCount());
                 break;
             case EventBusConstant.EB_TYPE_NETWORK_CONNECT_UPDATE:
-				location.start();
+                location.start();
                 break;
             case EventBusConstant.EB_TYPE_NETWORK_BREAK_UPDATE:
-				location.stop();
+                location.stop();
                 break;
         }
     }
@@ -169,7 +173,7 @@ public class ActivityMain extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-		location.stop();
+        location.stop();
         unregisterReceiver(networkBroadcastReceiver);
         SQLiteStudioService.instance().stop();
     }
@@ -336,52 +340,53 @@ public class ActivityMain extends BaseActivity {
         }
     }
 
-	private class HWLLocationListener implements IHWLLoactionListener{
+    private class HWLLocationListener implements IHWLLoactionListener {
 
-		private double getMoveDistance(LocationModel model){
-			LatLng curr = new LatLng(model.latitude,model.lontitude);
-			LatLng old = new LatLng(UserPosSP.getLatitude(),UserPosSP.getLontitude())
-			return DistanceUtil.getDistance(old,curr);
-		}
-		
-		@Override
-		public void onSuccess(LocationModel model) {
-			binding.tbTitle.setTitle(UserPosSP.getNearDesc());
-			
-			if (UserPosSP.getLontitude() == model.lontitude && 
-				UserPosSP.getLatitude() == model.latitude) {
-				return;
-			}
+        private double getMoveDistance(LocationModel model) {
+//            LatLng curr = new LatLng(model.latitude, model.longitude);
+//            LatLng old = new LatLng(UserPosSP.getLatitude(), UserPosSP.getLontitude());
+//            return DistanceUtil.getDistance(old, curr);
+            return 0;
+        }
 
-			if (!NetworkUtils.isConnected()) {
-				return;
-			}
+        @Override
+        public void onSuccess(LocationModel model) {
+            binding.tbTitle.setTitle(UserPosSP.getNearDesc());
 
-			Log.d("HWLLocationListener","当前移动的距离为："+getMoveDistance(model));
+            if (UserPosSP.getLontitude() == model.longitude &&
+                    UserPosSP.getLatitude() == model.latitude) {
+                return;
+            }
 
-			mainStandard.setLocation(model)
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(new Consumer<String>() {
-					@Override
-					public void accept(String desc) {
-						binding.tbTitle.setTitle(desc);
-					}
-				}, new Consumer<Throwable>() {
-					@Override
-					public void accept(Throwable throwable) {
-						if (NetExceptionCode.isTokenInvalid(throwable))
-							UITransfer.toReloginDialog(activity);
+            if (!NetworkUtils.isConnected()) {
+                return;
+            }
 
-						Toast.makeText(activity, throwable.getMessage(),Toast.LENGTH_SHORT).show();
-					}
-				});
-		}
+            Log.d("HWLLocationListener", "当前移动的距离为：" + getMoveDistance(model));
 
-		@Override
-		public void onFailure(String message) {
-			binding.tbTitle.setTitle("未知");
-			showLocationDialog("定位失败", message);
-		}
-		
-	}
+            mainStandard.setLocation(model)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<String>() {
+                        @Override
+                        public void accept(String desc) {
+                            binding.tbTitle.setTitle(desc);
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) {
+                            if (NetExceptionCode.isTokenInvalid(throwable))
+                                UITransfer.toReloginDialog(activity);
+
+                            Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+
+        @Override
+        public void onFailure(String message) {
+            binding.tbTitle.setTitle("未知");
+            showLocationDialog("定位失败", message);
+        }
+
+    }
 }

@@ -8,7 +8,6 @@ import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.dao.NearCircleMessageDao;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.db.entity.NearCircleMessage;
-import com.hwl.beta.utils.StringUtils;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 

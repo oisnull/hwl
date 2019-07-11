@@ -1,9 +1,6 @@
 package com.hwl.beta.db.entity;
 
 import android.databinding.BaseObservable;
-import android.databinding.Bindable;
-
-import com.hwl.beta.BR;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;

@@ -47,7 +47,7 @@
                         android:text="备注名称"
                         android:textColor="@color/color_424242" />
 
-                  <ImageView
+                    <ImageView
                         android:id="@+id/iv_remark"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
@@ -63,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                  <TextView
+                    <TextView
                         android:id="@+id/tv_username_desc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                         android:text="username"
                         android:textColor="@color/color_b2b2b2" />
 
-                  <ImageView
+                    <ImageView
                         android:id="@+id/iv_remark2"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
@@ -111,20 +111,20 @@
                         android:textColor="@color/color_b2b2b2" />
                 </LinearLayout>
 
-              <LinearLayout
+                <LinearLayout
                     android:id="@+id/ll_user_action"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="bottom"
                     android:orientation="horizontal">
 
-                  <ImageView
+                    <ImageView
                         android:id="@+id/iv_user_add"
                         android:layout_width="38dp"
                         android:layout_height="38dp"
                         android:src="@drawable/ic_user_add" />
 
-                  <ImageView
+                    <ImageView
                         android:id="@+id/iv_user_message"
                         android:layout_width="35dp"
                         android:layout_height="35dp"

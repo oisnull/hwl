@@ -164,5 +164,10 @@ public class ActivityCircleUserIndex extends BaseActivity {
         public void onItemViewClick(Circle info) {
             UITransfer.toCircleDetailActivity(activity, info.getCircleId());
         }
+
+        @Override
+        public void onBackImageClick() {
+
+        }
     }
 }

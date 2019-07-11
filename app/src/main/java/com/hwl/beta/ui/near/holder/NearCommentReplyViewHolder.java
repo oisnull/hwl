@@ -1,7 +1,6 @@
 package com.hwl.beta.ui.near.holder;
 
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
 import com.hwl.beta.databinding.NearCommentReplyItemBinding;
 import com.hwl.beta.db.entity.NearCircleComment;
