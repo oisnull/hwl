@@ -7,6 +7,7 @@ import io.reactivex.Observable;
 public interface MainStandard {
     MainBean getMainBean();
 
-    int getLocationStatus();
-    Observable<String> getLocation();
+    Observable<String> setLocation(LocationModel model);
+
+    //Observable<String> getLocation();
 }

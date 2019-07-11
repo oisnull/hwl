@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.GroupInfo;
-import com.hwl.beta.location.BaiduLocation;
 import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.SetUserPosRequest;
@@ -28,23 +27,6 @@ import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainLogic implements MainStandard {
-    private BaiduLocation locationService;
-
-    private void startLocation(final ObservableEmitter emitter) {
-        locationService = new BaiduLocation(new BaiduLocation.OnLocationListener() {
-            @Override
-            public void onSuccess(BaiduLocation.ResultModel result) {
-                emitter.onNext(result);
-            }
-
-            @Override
-            public void onFailed(BaiduLocation.ResultInfo info) {
-                emitter.onError(new Throwable(info.message));
-            }
-        });
-        locationService.start();
-    }
-
     @Override
     public MainBean getMainBean() {
         return new MainBean(MessageCountSP.getChatMessageCount(), MessageCountSP
@@ -53,74 +35,127 @@ public class MainLogic implements MainStandard {
     }
 
     @Override
-    public int getLocationStatus() {
-        return locationService.getCurrentLocationStatus();
-    }
+    public Observable<String> setLocation(LocationModel result){
+		if(result==null){
+            return Observable.error(new Throwable("Location data con't be empty."));
+		}
 
-    @Override
-    public Observable<String> getLocation() {
-        return Observable.create(new ObservableOnSubscribe() {
-            public void subscribe(ObservableEmitter emitter) {
-                startLocation(emitter);
-            }
-        })
-                .concatMap(new Function<BaiduLocation.ResultModel,
-                        Observable<SetUserPosResponse>>() {
+        SetUserPosRequest request = new SetUserPosRequest();
+        request.setUserId(UserSP.getUserId());
+        request.setLastGroupGuid(UserPosSP.getGroupGuid());
+        request.setLatitude(result.latitude + "");
+        request.setLongitude(result.lontitude + "");
+        request.setCountry(result.country);
+        request.setProvince(result.province);
+        request.setCity(result.city);
+        request.setDistrict(result.district);
+        request.setStreet(result.street);
+        request.setDetails(result.addr);
+
+		return UserService.setUserPos(request)
+                .doOnNext(new Consumer<SetUserPosResponse>() {
                     @Override
-                    public Observable<SetUserPosResponse> apply(BaiduLocation.ResultModel result) {
-                        if (UserPosSP.getLontitude() == result.lontitude && UserPosSP
-                                .getLatitude() == result.latitude) {
-                            return Observable.just(new SetUserPosResponse());
+                    public void accept(SetUserPosResponse res) {
+                        if (res.getStatus() != NetConstant.RESULT_SUCCESS) {
+                            throw new Exception("Set user position failed.");
                         }
-                        UserPosSP.setUserPos(
-                                result.latitude,
-                                result.lontitude,
-                                result.country,
-                                result.province,
-                                result.city,
-                                result.district,
-                                result.street,
-                                result.describe);
 
-                        SetUserPosRequest request = new SetUserPosRequest();
-                        request.setUserId(UserSP.getUserId());
-                        request.setLastGroupGuid(UserPosSP.getGroupGuid());
-                        request.setLatitude(result.latitude + "");
-                        request.setLongitude(result.lontitude + "");
-                        request.setCountry(result.country);
-                        request.setProvince(result.province);
-                        request.setCity(result.city);
-                        request.setDistrict(result.district);
-                        request.setStreet(result.street);
-                        request.setDetails(result.addr);
+						if(res.getGroupUserInfos() == null || res.getGroupUserInfos().size() <= 0)
+							return;
 
-                        return UserService.setUserPos(request);
+						GroupInfo groupInfo = DBGroupAction.convertToNearGroupInfo(
+								res.getUserGroupGuid(),
+								res.getGroupUserInfos().size(),
+								DBGroupAction.convertToGroupUserImages(res.getGroupUserInfos()));
+						DaoUtils.getGroupInfoManagerInstance().add(groupInfo);
+						DaoUtils.getGroupUserInfoManagerInstance()
+								.addListAsync(DBGroupAction.convertToGroupUserInfos(res.getGroupUserInfos()));
+						DaoUtils.getFriendManagerInstance().addListAsync(DBFriendAction
+								.convertGroupUserToFriendInfos(res.getGroupUserInfos()));
                     }
-                })
+                });
                 .map(new Function<SetUserPosResponse, String>() {
                     @Override
                     public String apply(SetUserPosResponse res) {
-                        if (res.getStatus() == NetConstant.RESULT_SUCCESS) {
-                            UserPosSP.setUserPos(res.getUserPosId(), res.getUserGroupGuid());
-                            addLocalGroupInfo(res);
-                        }
+
+						UserPosSP.setUserPos(result.latitude,
+											result.lontitude,
+											result.country,
+											result.province,
+											result.city,
+											result.district,
+											result.street,
+											result.describe);
+
                         return UserPosSP.getNearDesc();
                     }
-                })
-                .subscribeOn(Schedulers.io());
-    }
+                });
+	}
 
-    private void addLocalGroupInfo(SetUserPosResponse res) {
-        if (res.getGroupUserInfos() != null && res.getGroupUserInfos().size() > 0) {
-            GroupInfo groupInfo = DBGroupAction.convertToNearGroupInfo(
-                    res.getUserGroupGuid(),
-                    res.getGroupUserInfos().size(),
-                    DBGroupAction.convertToGroupUserImages(res.getGroupUserInfos()));
-            DaoUtils.getGroupInfoManagerInstance().add(groupInfo);
-            DaoUtils.getGroupUserInfoManagerInstance()
-                    .addListAsync(DBGroupAction.convertToGroupUserInfos(res.getGroupUserInfos()));
-            DaoUtils.getFriendManagerInstance().addListAsync(DBFriendAction
-                    .convertGroupUserToFriendInfos(res.getGroupUserInfos()));
-        }
-    }
+   //@Override
+   //public Observable<String> getLocation() {
+   //    return Observable.create(new ObservableOnSubscribe() {
+   //        public void subscribe(ObservableEmitter emitter) {
+   //            startLocation(emitter);
+   //        }
+   //    })
+   //            .concatMap(new Function<BaiduLocation.ResultModel,
+   //                    Observable<SetUserPosResponse>>() {
+   //                @Override
+   //                public Observable<SetUserPosResponse> apply(BaiduLocation.ResultModel result) {
+   //                    if (UserPosSP.getLontitude() == result.lontitude && UserPosSP
+   //                            .getLatitude() == result.latitude) {
+   //                        return Observable.just(new SetUserPosResponse());
+   //                    }
+   //                    UserPosSP.setUserPos(
+   //                            result.latitude,
+   //                            result.lontitude,
+   //                            result.country,
+   //                            result.province,
+   //                            result.city,
+   //                            result.district,
+   //                            result.street,
+   //                            result.describe);
+   //
+   //                    SetUserPosRequest request = new SetUserPosRequest();
+   //                    request.setUserId(UserSP.getUserId());
+   //                    request.setLastGroupGuid(UserPosSP.getGroupGuid());
+   //                    request.setLatitude(result.latitude + "");
+   //                    request.setLongitude(result.lontitude + "");
+   //                    request.setCountry(result.country);
+   //                    request.setProvince(result.province);
+   //                    request.setCity(result.city);
+   //                    request.setDistrict(result.district);
+   //                    request.setStreet(result.street);
+   //                    request.setDetails(result.addr);
+   //
+   //                    return UserService.setUserPos(request);
+   //                }
+   //            })
+   //            .map(new Function<SetUserPosResponse, String>() {
+   //                @Override
+   //                public String apply(SetUserPosResponse res) {
+   //                    if (res.getStatus() == NetConstant.RESULT_SUCCESS) {
+   //                        UserPosSP.setUserPos(res.getUserPosId(), res.getUserGroupGuid());
+   //                        addLocalGroupInfo(res);
+   //                    }
+   //                    return UserPosSP.getNearDesc();
+   //                }
+   //            })
+   //            .subscribeOn(Schedulers.io());
+   //}
+   //
+   //private void addLocalGroupInfo(SetUserPosResponse res) {
+   //    if (res.getGroupUserInfos() != null && res.getGroupUserInfos().size() > 0) {
+   //        GroupInfo groupInfo = DBGroupAction.convertToNearGroupInfo(
+   //                res.getUserGroupGuid(),
+   //                res.getGroupUserInfos().size(),
+   //                DBGroupAction.convertToGroupUserImages(res.getGroupUserInfos()));
+   //        DaoUtils.getGroupInfoManagerInstance().add(groupInfo);
+   //        DaoUtils.getGroupUserInfoManagerInstance()
+   //                .addListAsync(DBGroupAction.convertToGroupUserInfos(res.getGroupUserInfos()));
+   //        DaoUtils.getFriendManagerInstance().addListAsync(DBFriendAction
+   //                .convertGroupUserToFriendInfos(res.getGroupUserInfos()));
+   //    }
+   //}
 }

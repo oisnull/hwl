@@ -21,7 +21,9 @@ public class GroupInfoManager extends BaseDao<GroupInfo> {
     public void add(GroupInfo groupInfo) {
         if (groupInfo == null || StringUtils.isBlank(groupInfo.getGroupGuid()))
             return;
-        daoSession.getGroupInfoDao().insertOrReplace(groupInfo);
+
+		if(get(groupInfo.getGroupGuid())==null)
+			daoSession.getGroupInfoDao().insert(groupInfo);
     }
 
     public void addList(List<GroupInfo> groupInfos) {

@@ -20,7 +20,7 @@ import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.NetworkBroadcastReceiver;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.EntryActivityMainBinding;
-import com.hwl.beta.location.BaiduLocation;
+import com.hwl.beta.location.BaiduLocationV2;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.ui.TabFragmentPagerAdapter;
 import com.hwl.beta.ui.dialog.DialogUtils;
@@ -52,7 +52,8 @@ public class ActivityMain extends BaseActivity {
     MainBean mainBean;
     MainListener mainListener;
     NetworkBroadcastReceiver networkBroadcastReceiver;
-    private long exitTime = 0;
+	BaiduLocationV2 location;
+    long exitTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,14 +88,14 @@ public class ActivityMain extends BaseActivity {
                         showPopMenu(v);
                     }
                 });
-
-        initLocation();
-
-        SQLiteStudioService.instance().start(activity);
-
+		
+		location = new BaiduLocationV2(new HWLLocationListener());
+		location.start();
         networkBroadcastReceiver = new NetworkBroadcastReceiver();
         registerReceiver(networkBroadcastReceiver, new IntentFilter(NetworkBroadcastReceiver
                 .ACTION_TAG));
+
+        SQLiteStudioService.instance().start(activity);
     }
 
     @Override
@@ -123,26 +124,13 @@ public class ActivityMain extends BaseActivity {
                 mainBean.setNearMessageCount(MessageCountSP
                         .getNearCircleMessageCount());
                 break;
+            case EventBusConstant.EB_TYPE_NETWORK_CONNECT_UPDATE:
+				location.start();
+                break;
+            case EventBusConstant.EB_TYPE_NETWORK_BREAK_UPDATE:
+				location.stop();
+                break;
         }
-    }
-
-    private void initLocation() {
-        mainStandard.getLocation()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(String desc) {
-                        binding.tbTitle.setTitle(desc);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) {
-                        if (NetExceptionCode.isTokenInvalid(throwable))
-                            UITransfer.toReloginDialog(activity);
-                        binding.tbTitle.setTitle("未知");
-                        showLocationDialog("定位失败", throwable.getMessage());
-                    }
-                });
     }
 
     public void showLocationDialog(String title, String content) {
@@ -150,23 +138,22 @@ public class ActivityMain extends BaseActivity {
             @Override
             public void onClick(View v) {
                 binding.tbTitle.setTitle("位置重新获取中...");
-                initLocation();
+                location.start();
                 DialogUtils.closeLocationDialog();
             }
         });
     }
 
     public void showLocationStatus() {
-        int status = mainStandard.getLocationStatus();
-        switch (status) {
-            case BaiduLocation.NOT_START:
-            case BaiduLocation.POSITIONING:
+        switch (location.getcurrentStatus()) {
+            case BaiduLocationV2.NOT_START:
+            case BaiduLocationV2.POSITIONING:
                 showLocationDialog("当前位置", "正在获取当前位置信息...");
                 break;
-            case BaiduLocation.COMPLETE_FAILD:
-                showLocationDialog("定位失败", "获取当前位置失败,请检测是否已经连网！");
+            case BaiduLocationV2.COMPLETE_FAILD:
+                showLocationDialog("定位失败", location.getErrorMessage());
                 break;
-            case BaiduLocation.COMPLETE_SUCCESS:
+            case BaiduLocationV2.COMPLETE_SUCCESS:
                 showLocationDialog("当前位置", UserPosSP.getPosDesc());
                 break;
         }
@@ -182,6 +169,7 @@ public class ActivityMain extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+		location.stop();
         unregisterReceiver(networkBroadcastReceiver);
         SQLiteStudioService.instance().stop();
     }
@@ -347,4 +335,53 @@ public class ActivityMain extends BaseActivity {
             }
         }
     }
+
+	private class HWLLocationListener implements IHWLLoactionListener{
+
+		private double getMoveDistance(LocationModel model){
+			LatLng curr = new LatLng(model.latitude,model.lontitude);
+			LatLng old = new LatLng(UserPosSP.getLatitude(),UserPosSP.getLontitude())
+			return DistanceUtil.getDistance(old,curr);
+		}
+		
+		@Override
+		public void onSuccess(LocationModel model) {
+			binding.tbTitle.setTitle(UserPosSP.getNearDesc());
+			
+			if (UserPosSP.getLontitude() == model.lontitude && 
+				UserPosSP.getLatitude() == model.latitude) {
+				return;
+			}
+
+			if (!NetworkUtils.isConnected()) {
+				return;
+			}
+
+			Log.d("HWLLocationListener","当前移动的距离为："+getMoveDistance(model));
+
+			mainStandard.setLocation(model)
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe(new Consumer<String>() {
+					@Override
+					public void accept(String desc) {
+						binding.tbTitle.setTitle(desc);
+					}
+				}, new Consumer<Throwable>() {
+					@Override
+					public void accept(Throwable throwable) {
+						if (NetExceptionCode.isTokenInvalid(throwable))
+							UITransfer.toReloginDialog(activity);
+
+						Toast.makeText(activity, throwable.getMessage(),Toast.LENGTH_SHORT).show();
+					}
+				});
+		}
+
+		@Override
+		public void onFailure(String message) {
+			binding.tbTitle.setTitle("未知");
+			showLocationDialog("定位失败", message);
+		}
+		
+	}
 }
