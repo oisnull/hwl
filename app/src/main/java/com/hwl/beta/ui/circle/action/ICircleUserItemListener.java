@@ -7,5 +7,5 @@ public interface ICircleUserItemListener {
 
     void onItemViewClick(Circle info);
 
-    void onBackImageClick();
+    //void onBackImageClick();
 }

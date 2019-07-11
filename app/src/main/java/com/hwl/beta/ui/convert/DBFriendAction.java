@@ -81,8 +81,8 @@ public class DBFriendAction {
         friend.setSex(userDetailsInfo.getSex());
         friend.setRemark(userDetailsInfo.getNameRemark());
         friend.setHeadImage(userDetailsInfo.getHeadImage());
-        friend.setCountry(userDetailsInfo.getCountry());
-        friend.setProvince(userDetailsInfo.getProvince());
+        //friend.setCountry(userDetailsInfo.getCountry());
+        //friend.setProvince(userDetailsInfo.getProvince());
         friend.setUpdateTime(userDetailsInfo.getUpdateTime());
         friend.setCircleBackImage(userDetailsInfo.getCircleBackImage());
         friend.setLifeNotes(userDetailsInfo.getLifeNotes());

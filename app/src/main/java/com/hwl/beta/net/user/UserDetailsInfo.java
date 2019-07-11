@@ -9,31 +9,10 @@ public class UserDetailsInfo {
     private int Sex;
     private String NameRemark;
     private String HeadImage;
-    private String Country;
-    private String Province;
     private String CircleBackImage;
     private String LifeNotes;
     private boolean IsFriend;
-    private String FirstSpell;
     private String UpdateTime;
-    private List<String> CircleImages;
-    private List<String> CircleTexts;
-
-    public List<String> getCircleImages() {
-        return CircleImages;
-    }
-
-    public void setCircleImages(List<String> circleImages) {
-        CircleImages = circleImages;
-    }
-
-    public List<String> getCircleTexts() {
-        return CircleTexts;
-    }
-
-    public void setCircleTexts(List<String> circleTexts) {
-        CircleTexts = circleTexts;
-    }
 
     public int getId() {
         return Id;
@@ -81,22 +60,6 @@ public class UserDetailsInfo {
 
     public void setHeadImage(String headImage) {
         HeadImage = headImage;
-    }
-
-    public String getCountry() {
-        return Country;
-    }
-
-    public void setCountry(String country) {
-        Country = country;
-    }
-
-    public String getProvince() {
-        return Province;
-    }
-
-    public void setProvince(String province) {
-        Province = province;
     }
 
     public String getCircleBackImage() {
