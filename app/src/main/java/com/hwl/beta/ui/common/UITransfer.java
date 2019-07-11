@@ -46,6 +46,7 @@ import com.hwl.beta.ui.user.ActivityUserEditItem;
 //import com.hwl.beta.ui.user.ActivityUserPasswordReset;
 //import com.hwl.beta.ui.user.ActivityUserPrivacySetting;
 import com.hwl.beta.ui.user.ActivityUserIndex;
+import com.hwl.beta.ui.user.ActivityUserIndexV2;
 import com.hwl.beta.ui.user.ActivityUserSearch;
 //import com.hwl.beta.ui.user.ActivityUserSetting;
 import com.hwl.beta.ui.video.ActivityVideoPlay;
@@ -142,6 +143,15 @@ public class UITransfer {
     public static void toUserIndexActivity(Activity context, long userId, String userName, String
             userImage) {
         Intent intent = new Intent(context, ActivityUserIndex.class);
+        intent.putExtra("userid", userId);
+        intent.putExtra("username", userName);
+        intent.putExtra("userimage", userImage);
+        context.startActivity(intent);
+    }
+
+    public static void toUserIndexV2Activity(Activity context, long userId, String userName, String
+            userImage) {
+        Intent intent = new Intent(context, ActivityUserIndexV2.class);
         intent.putExtra("userid", userId);
         intent.putExtra("username", userName);
         intent.putExtra("userimage", userImage);
