@@ -158,7 +158,7 @@ public class ActivityChatUser extends BaseActivity {
     }
 
     @Override
-    protected void receiveStickyEventMessage(EventMessageModel messageModel) {
+    protected void receiveEventMessage(EventMessageModel messageModel) {
         switch (messageModel.getMessageType()) {
             case EventBusConstant.EB_TYPE_CHAT_USER_MESSAGE_UPDATE:
                 messageAdapter.updateMessage((ChatUserMessage) messageModel.getMessageModel());

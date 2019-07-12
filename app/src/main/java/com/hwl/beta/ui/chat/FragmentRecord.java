@@ -174,7 +174,7 @@ public class FragmentRecord extends BaseFragment {
     }
 
     @Override
-    protected void receiveStickyEventMessage(EventMessageModel messageModel) {
+    protected void receiveEventMessage(EventMessageModel messageModel) {
         switch (messageModel.getMessageType()) {
             case EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_UPDATE_SORT:
                 recordAdapter.updateRecord((ChatRecordMessage) messageModel

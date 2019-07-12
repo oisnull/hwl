@@ -162,7 +162,7 @@ public class ActivityChatGroup extends BaseActivity {
     }
 
     @Override
-    protected void receiveStickyEventMessage(EventMessageModel messageModel) {
+    protected void receiveEventMessage(EventMessageModel messageModel) {
         switch (messageModel.getMessageType()) {
             case EventBusConstant.EB_TYPE_CHAT_GROUP_MESSAGE_UPDATE:
                 messageAdapter.updateMessage((ChatGroupMessage) messageModel.getMessageModel());

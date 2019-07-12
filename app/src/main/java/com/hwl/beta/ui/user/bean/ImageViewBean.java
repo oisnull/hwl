@@ -39,9 +39,10 @@ public class ImageViewBean {
     public static void loadImage(ImageView view, String imageUrl) {
         if (StringUtils.isBlank(imageUrl))
             return;
-        Glide.with(HWLApp.getContext()).load(imageUrl)
+        Glide.with(view.getContext()).load(imageUrl)
                 .placeholder(R.drawable.empty_photo)
                 .error(R.drawable.empty_photo)
+				//.priority(Priority.HIGH)
                 .dontAnimate()
                 .into(view);
     }
@@ -53,6 +54,7 @@ public class ImageViewBean {
         Glide.with(view.getContext()).load(imageCircleUrl)
                 .placeholder(R.drawable.empty_photo)
                 .error(R.drawable.empty_photo)
+				//.priority(Priority.HIGH)
                 .dontAnimate()
                 .into(view);
     }
