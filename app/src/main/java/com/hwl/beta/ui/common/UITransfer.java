@@ -28,6 +28,8 @@ import com.hwl.beta.ui.chat.ActivityChatUserSetting;
 import com.hwl.beta.ui.circle.ActivityCircleMessages;
 import com.hwl.beta.ui.dialog.ReloginDialogFragment;
 //import com.hwl.beta.ui.entry.ActivityQRCode;
+import com.hwl.beta.ui.emoji.ActivityEmojiSetting;
+import com.hwl.beta.ui.emoji.ActivityEmojiStore;
 import com.hwl.beta.ui.entry.ActivityGetpwd;
 import com.hwl.beta.ui.entry.ActivityLogin;
 import com.hwl.beta.ui.entry.ActivityMain;

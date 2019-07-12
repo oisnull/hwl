@@ -1,6 +1,13 @@
 package com.hwl.beta.ui.emoji;
 
 import android.app.Activity;
+import android.databinding.DataBindingUtil;
+import android.os.Bundle;
+import android.view.View;
+
+import com.hwl.beta.R;
+import com.hwl.beta.databinding.EmojiActivitySettingBinding;
+import com.hwl.beta.ui.common.BaseActivity;
 
 public class ActivityEmojiSetting extends BaseActivity {
 
@@ -29,6 +36,6 @@ public class ActivityEmojiSetting extends BaseActivity {
                     }
                 });
 
-       
+
     }
 }
