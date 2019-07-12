@@ -288,22 +288,6 @@ public class UITransfer {
         context.startActivity(intent);
     }
 
-//    public static void toNearCommentPublishActivity(Activity context, long nearCircleId, long
-//            publishUserId, String content) {
-//        toNearCommentPublishActivity(context, nearCircleId, publishUserId, 0, null, content);
-//    }
-//
-//    public static void toNearCommentPublishActivity(Activity context, long nearCircleId, long
-//            publishUserId, long replyUserId, String replyUserName, String content) {
-//        Intent intent = new Intent(context, ActivityCommentPublish.class);
-//        intent.putExtra("nearcircleid", nearCircleId);
-//        intent.putExtra("publishuserid", publishUserId);
-//        intent.putExtra("replyuserid", replyUserId);
-//        intent.putExtra("replyusername", replyUserName);
-//        intent.putExtra("content", content);
-//        context.startActivity(intent);
-//    }
-
     public static void toCircleIndexActivity(Activity context) {
         Intent intent = new Intent(context, ActivityCircleIndex.class);
         context.startActivity(intent);
@@ -313,22 +297,6 @@ public class UITransfer {
         Intent intent = new Intent(context, ActivityCirclePublish.class);
         context.startActivity(intent);
     }
-
-//    public static void toCircleCommentPublishActivity(Activity context, long circleId, long
-//            publishUserId, String content) {
-//        toCircleCommentPublishActivity(context, circleId, publishUserId, 0, null, content);
-//    }
-//
-//    public static void toCircleCommentPublishActivity(Activity context, long circleId, long
-//            publishUserId, long replyUserId, String replyUserName, String content) {
-//        Intent intent = new Intent(context, ActivityCircleCommentPublish.class);
-//        intent.putExtra("circleid", circleId);
-//        intent.putExtra("publishuserid", publishUserId);
-//        intent.putExtra("replyuserid", replyUserId);
-//        intent.putExtra("replyusername", replyUserName);
-//        intent.putExtra("content", content);
-//        context.startActivity(intent);
-//    }
 
     public static void toCircleUserIndexActivity(Activity context,
                                                  long viewUserId,

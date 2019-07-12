@@ -36,6 +36,11 @@ public class UserValidateListen extends AbstractMessageListenExecutor<ImUserVali
         if (this.failedCallback != null)
             this.failedCallback.accept(message);
     }
+	
+    @Override
+    public void sessionidInvalid() {
+		EventBusUtil.sendTokenInvalidEvent();
+    }
 
     @Override
     public ImUserValidateResponse getResponse(ImMessageResponse response) {

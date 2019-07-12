@@ -113,7 +113,7 @@ public class ActivityMain extends BaseActivity {
     }
 
     @Override
-    protected void receiveStickyEventMessage(EventMessageModel messageModel) {
+    protected void receiveEventMessage(EventMessageModel messageModel) {
         switch (messageModel.getMessageType()) {
             case EventBusConstant.EB_TYPE_TOKEN_INVALID_RELOGIN:
                 UITransfer.toReloginDialog(this);
