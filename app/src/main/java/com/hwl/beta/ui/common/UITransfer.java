@@ -405,4 +405,14 @@ public class UITransfer {
             context.startActivity(Intent.createChooser(intent, "请选择浏览器"));
         }
     }
+
+    public static void toEmojiStoreActivity(Activity context) {
+        Intent intent = new Intent(context, ActivityEmojiStore.class);
+        context.startActivity(intent);
+    }
+
+    public static void toEmojiSettingActivity(Activity context) {
+        Intent intent = new Intent(context, ActivityEmojiSetting.class);
+        context.startActivity(intent);
+    }
 }
