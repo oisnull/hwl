@@ -42,12 +42,13 @@ public class FriendsLogic implements FriendsStandard {
         if (friends == null) {
             friends = new ArrayList<>();
         }
+
         Friend func1 = new Friend();
         func1.setId(-1);
         func1.setName("圈子");
         func1.setFirstLetter("*");
         func1.setImageRes(R.drawable.circle);
-        func1.setMessageCount("0");
+        func1.setMessageCount(MessageCountSP.getCircleMessageCountDesc());
         friends.add(0, func1);
 
         Friend func2 = new Friend();

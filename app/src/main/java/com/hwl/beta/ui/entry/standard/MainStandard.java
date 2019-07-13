@@ -1,5 +1,6 @@
 package com.hwl.beta.ui.entry.standard;
 
+import com.hwl.beta.location.LocationModel;
 import com.hwl.beta.ui.entry.bean.MainBean;
 
 import io.reactivex.Observable;
@@ -7,6 +8,7 @@ import io.reactivex.Observable;
 public interface MainStandard {
     MainBean getMainBean();
 
-    int getLocationStatus();
-    Observable<String> getLocation();
+    Observable<String> setLocation(LocationModel model);
+
+    //Observable<String> getLocation();
 }

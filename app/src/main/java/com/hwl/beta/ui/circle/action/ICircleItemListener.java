@@ -13,9 +13,9 @@ import java.util.List;
  * Created by Administrator on 2018/4/14.
  */
 
-public interface ICircleItemListener {
+public interface ICircleItemListener extends ICircleLikeItemListener,ICircleCommentItemListener {
 
-    void onItemViewClick(View view);
+    //void onItemViewClick(View view);
 
     void onCircleBackImageClick();
 
@@ -23,15 +23,7 @@ public interface ICircleItemListener {
 
     void onUserHeadClick(Circle info);
 
-    void onLikeUserHeadClick(CircleLike likeInfo);
-
-    void onCommentUserClick(CircleComment comment);
-
-    void onReplyUserClick(CircleComment comment);
-
-    void onCommentContentClick(CircleComment comment);
-
-    void onContentClick();
+    void onContentClick(Circle info);
 
     void onMoreActionClick(View view, int position, Circle info);
 

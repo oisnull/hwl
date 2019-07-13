@@ -18,6 +18,7 @@ import java.util.List;
  */
 
 public class DBGroupAction {
+	public static final int GROUP_IMAGE_COUNT = 9;
 
     public static List<GroupInfo> convertToGroupInfos(List<NetGroupInfo> groupInfos) {
         if (groupInfos == null || groupInfos.size() <= 0) return null;
@@ -138,8 +139,10 @@ public class DBGroupAction {
         if (userInfos == null || userInfos.size() <= 0) return null;
         List<String> groupUserImages = new ArrayList<>();
         for (int i = 0; i < userInfos.size(); i++) {
-            groupUserImages.add(userInfos.get(i).getUserHeadImage());
-            if (i >= 8) break;
+            if (i < GROUP_IMAGE_COUNT)
+				groupUserImages.add(userInfos.get(i).getUserHeadImage());
+			else
+				break;
         }
         return groupUserImages;
     }

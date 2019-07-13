@@ -5,6 +5,7 @@ import com.hwl.beta.utils.DateUtils;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.OrderBy;
+import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -27,12 +28,22 @@ public class NearCircleComment implements Serializable {
     private String content;
     @OrderBy("commentTime desc")
     private Date commentTime;
+    @Transient
+    private String lastUpdateTime;
+
+    public void setLastUpdateTime(String lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
+    }
+
+    public String getLastUpdateTime() {
+        return lastUpdateTime;
+    }
 
     @Generated(hash = 1875012971)
     public NearCircleComment(long commentId, long nearCircleId, long commentUserId,
-            String commentUserName, String commentUserImage, long replyUserId,
-            String replyUserName, String replyUserImage, String content,
-            Date commentTime) {
+                             String commentUserName, String commentUserImage, long replyUserId,
+                             String replyUserName, String replyUserImage, String content,
+                             Date commentTime) {
         this.commentId = commentId;
         this.nearCircleId = nearCircleId;
         this.commentUserId = commentUserId;
@@ -139,8 +150,7 @@ public class NearCircleComment implements Serializable {
     public boolean equals(Object obj) {
         if (obj instanceof NearCircleComment) {
             NearCircleComment comment = (NearCircleComment) obj;
-            return this.getNearCircleId() == comment.getNearCircleId()
-                    && this.getCommentId() == comment.getCommentId();
+            return this.getCommentId() == comment.getCommentId();
         }
         return super.equals(obj);
     }

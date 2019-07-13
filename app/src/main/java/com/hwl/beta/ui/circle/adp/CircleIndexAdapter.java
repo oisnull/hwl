@@ -50,6 +50,28 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return this.circles;
     }
 
+    public Circle getInfo(long circleId) {
+        if (circleId <= 0) return null;
+
+        for (int i = 0; i < circles.size(); i++) {
+            if (circles.get(i).getCircleId() == circleId) {
+                return circles.get(i);
+            }
+        }
+        return null;
+    }
+
+    public int getInfoPosition(long circleId) {
+        if (circleId <= 0) return -1;
+
+        for (int i = 0; i < circles.size(); i++) {
+            if (circles.get(i).getCircleId() == circleId) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public long getMinId() {
         if (getItemCount() <= 0) {
             return 0;
@@ -75,6 +97,58 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof CircleItemNullViewHolder) {
+            CircleItemNullViewHolder viewHolder = (CircleItemNullViewHolder) holder;
+            viewHolder.setItemBinding(true, itemListener);
+        } else if (holder instanceof CircleHeadItemViewHolder) {
+            CircleHeadItemViewHolder viewHolder = (CircleHeadItemViewHolder) holder;
+            viewHolder.setItemBinding(itemListener, UserSP.getUserName(),
+                    new ImageViewBean(UserSP.getUserHeadImage(), UserSP.getUserCirclebackimage()));
+        } else if (holder instanceof CircleMsgcountItemViewHolder) {
+            CircleMsgcountItemViewHolder viewHolder = (CircleMsgcountItemViewHolder) holder;
+            int messageCount = MessageCountSP.getCircleMessageCount();
+            viewHolder.setItemBinding(itemListener, messageCount);
+            viewHolder.setMessageItemVisibility(messageCount > 0 ? View.VISIBLE : View.GONE);
+        } else if (holder instanceof CircleIndexItemViewHolder) {
+            Circle info = circles.get(position);
+            CircleIndexItemViewHolder viewHolder = (CircleIndexItemViewHolder) holder;
+            viewHolder.setItemBinding(itemListener, position, info);
+
+            if (info.getPublishUserId() == myUserId) {
+                viewHolder.getItemBinding().ivDelete.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.getItemBinding().ivDelete.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position,
+                                 List<Object> payloads) {
+        if (payloads != null && payloads.size() > 0) {
+            InfoPayload payload = (InfoPayload) payloads.get(0);
+            CircleIndexItemViewHolder viewHolder = (CircleIndexItemViewHolder) holder;
+            switch (payload.operateType) {
+                case InfoPayload.ADD_LIKE:
+                    viewHolder.setLikeInfo(payload.like, itemListener);
+                    break;
+                case InfoPayload.CANCEL_LIKE:
+                    viewHolder.cancelLikeInfo(payload.like);
+                    break;
+                case InfoPayload.ADD_COMMENT:
+                    viewHolder.setCommentInfo(payload.comment);
+                    break;
+                case InfoPayload.CANCEL_COMMENT:
+                    viewHolder.deleteCommentInfo(payload.comment);
+                    break;
+            }
+        } else {
+            super.onBindViewHolder(holder, position, null);
+        }
+    }
+
+    @Override
     public int getItemViewType(int position) {
         switch (circles.get(position).getItemType()) {
             case DBConstant.CIRCLE_ITEM_NULL:
@@ -89,50 +163,12 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Circle info = circles.get(position);
-        if (holder instanceof CircleItemNullViewHolder) {
-            CircleItemNullViewHolder viewHolder = (CircleItemNullViewHolder) holder;
-            viewHolder.setItemBinding(itemListener);
-        } else if (holder instanceof CircleHeadItemViewHolder) {
-            CircleHeadItemViewHolder viewHolder = (CircleHeadItemViewHolder) holder;
-            viewHolder.setItemBinding(itemListener, UserSP.getUserName(),
-                    new ImageViewBean(UserSP.getUserHeadImage(), UserSP.getUserCirclebackimage()));
-        } else if (holder instanceof CircleMsgcountItemViewHolder) {
-            CircleMsgcountItemViewHolder viewHolder = (CircleMsgcountItemViewHolder) holder;
-            int messageCount = MessageCountSP.getCircleMessageCount();
-            viewHolder.setItemBinding(itemListener, messageCount);
-            if (messageCount > 0) {
-                viewHolder.itemView.setVisibility(View.VISIBLE);
-            } else {
-                viewHolder.itemView.setVisibility(View.GONE);
+    public void updateMsgcount() {
+        for (int i = 0; i < circles.size(); i++) {
+            if (circles.get(i).getItemType() == DBConstant.CIRCLE_ITEM_MSGCOUNT) {
+                notifyItemChanged(i);
+                return;
             }
-        } else if (holder instanceof CircleIndexItemViewHolder) {
-            CircleIndexItemViewHolder viewHolder = (CircleIndexItemViewHolder) holder;
-            viewHolder.setItemBinding(itemListener, position,
-                    new ImageViewBean(info.getPublishUserImage()), info, info.getImages(),
-                    info.getLikes(), info.getComments());
-
-            if (info.getPublishUserId() == myUserId) {
-                viewHolder.getItemBinding().ivDelete.setVisibility(View.VISIBLE);
-            } else {
-                viewHolder.getItemBinding().ivDelete.setVisibility(View.GONE);
-            }
-        }
-    }
-
-    public void updateInfos(List<Circle> infos) {
-        if (infos == null || infos.size() <= 0) return;
-
-        if (getItemCount() <= 0) {
-            circles.addAll(infos);
-            notifyDataSetChanged();
-        } else {
-            removeEmptyInfo();
-            sortInfos(infos);
-            circles.addAll(getCircleItemPosition(), infos);
-            notifyDataSetChanged();
         }
     }
 
@@ -153,6 +189,20 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             notifyItemChanged(0);
     }
 
+    public void updateInfos(List<Circle> infos) {
+        if (infos == null || infos.size() <= 0) return;
+
+        if (getItemCount() <= 0) {
+            circles.addAll(infos);
+        } else {
+            removeEmptyInfo();
+            circles.removeAll(infos);
+            circles.addAll(infos);
+        }
+        sortInfos(circles);
+        notifyDataSetChanged();
+    }
+
     private int getCircleItemPosition() {
         for (int i = 0; i < circles.size(); i++) {
             if (circles.get(i).getCircleId() > 0)
@@ -165,6 +215,7 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         if (infos == null || infos.size() <= 0) return;
         Collections.sort(infos, new Comparator<Circle>() {
             public int compare(Circle arg0, Circle arg1) {
+                if (arg0.getCircleId() == 0 || arg1.getCircleId() == 0) return 0;
                 return (int) (arg1.getCircleId() - arg0.getCircleId());
             }
         });
@@ -185,49 +236,44 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         notifyDataSetChanged();
     }
 
-    public void addComment(CircleComment comment) {
+    public void addComment(int position, CircleComment comment) {
         if (comment == null || comment.getCircleId() <= 0 || comment.getCommentUserId() <= 0)
             return;
 
-        int position = -1;
-        List<CircleComment> comments = null;
-        for (int i = 0; i < circles.size(); i++) {
-            if (circles.get(i) != null && circles.get(i).getCircleId() == comment.getCircleId()) {
-                comments = circles.get(i).getComments();
-                if (comments == null) {
-                    comments = new ArrayList<>();
-                    circles.get(i).setComments(comments);
-                }
-                position = i;
-                break;
-            }
-        }
+        Circle info = circles.get(position);
+        if (info == null) return;
 
-        if (comments == null) return;
-        comments.add(comment);
-        notifyItemChanged(position);
+        info.getComments().add(comment);
+        info.setUpdateTime(comment.getLastUpdateTime());
+        notifyItemChanged(position, new InfoPayload(InfoPayload.ADD_COMMENT, comment));
     }
 
-    public void removeComment(CircleComment comment) {
-        if (comment == null || comment.getCircleId() <= 0 || comment.getCommentUserId() <= 0) {
+    public void deleteComment(int position, CircleComment comment) {
+        if (comment == null || comment.getCircleId() <= 0)
             return;
-        }
 
-        for (int i = 0; i < circles.size(); i++) {
-            if (circles.get(i) != null && circles.get(i).getCircleId() == comment.getCircleId()) {
-                Circle info = circles.get(i);
-                if (info.getComments() != null && info.getComments().size() > 0) {
-                    int len = info.getComments().size();
-                    for (int j = 0; j < len; j++) {
-                        if (info.getComments().get(j) != null && info.getComments().get(j).getCommentUserId() == myUserId) {
-                            info.getComments().remove(j);
-                            notifyItemChanged(i);
-                            break;
-                        }
-                    }
-                }
-            }
+        Circle info = circles.get(position);
+        if (info == null) return;
 
+        info.getComments().remove(comment);
+        info.setUpdateTime(comment.getLastUpdateTime());
+        notifyItemChanged(position, new InfoPayload(InfoPayload.CANCEL_COMMENT, comment));
+    }
+
+    public void setLike(int position, CircleLike likeInfo, boolean isLike) {
+        Circle info = circles.get(position);
+        if (info == null) return;
+
+        if (isLike) {
+            info.setIsLiked(true);
+            info.setUpdateTime(likeInfo.getLastUpdateTime());
+            info.getLikes().add(likeInfo);
+            notifyItemChanged(position, new InfoPayload(InfoPayload.ADD_LIKE, likeInfo));
+        } else {
+            info.setIsLiked(false);
+            info.setUpdateTime(likeInfo.getLastUpdateTime());
+            info.getLikes().remove(likeInfo);
+            notifyItemChanged(position, new InfoPayload(InfoPayload.CANCEL_LIKE, likeInfo));
         }
     }
 
@@ -237,80 +283,29 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         notifyItemRangeChanged(position, circles.size() - 1);
     }
 
-    public void addLike(int position, CircleLike likeInfo) {
-        Circle info = circles.get(position);
-        if (info.getLikes() == null) {
-            info.setLikes(new ArrayList<CircleLike>());
-        }
-
-        if (likeInfo == null) {
-            //取消点赞
-            info.setIsLiked(false);
-            for (int i = 0; i < info.getLikes().size(); i++) {
-                if (info.getLikes().get(i) != null && info.getLikes().get(i).getLikeUserId() == myUserId) {
-                    info.getLikes().remove(i);
-                    notifyItemChanged(position);
-                    break;
-                }
-            }
-        } else {
-            //点赞
-            info.setIsLiked(true);
-            info.getLikes().add(info.getLikes().size(), likeInfo);
-            notifyItemChanged(position);
-        }
-    }
-
-    public void addLike(CircleLike likeInfo) {
-        if (likeInfo == null || likeInfo.getCircleId() <= 0 || likeInfo.getLikeUserId() <= 0)
-            return;
-
-        int position = -1;
-        List<CircleLike> likes = null;
-        for (int i = 0; i < circles.size(); i++) {
-            if (circles.get(i) != null && circles.get(i).getCircleId() == likeInfo.getCircleId()) {
-                likes = circles.get(i).getLikes();
-                if (likes == null) {
-                    likes = new ArrayList<>();
-                    circles.get(i).setLikes(likes);
-                }
-                position = i;
-                break;
-            }
-        }
-
-        if (likes == null) return;
-        likes.add(likeInfo);
-        if (position == -1) {
-            notifyItemChanged(0);
-        } else {
-            notifyItemChanged(position);
-        }
-    }
-
-    public void removeLike(CircleLike likeInfo) {
-        if (likeInfo == null || likeInfo.getCircleId() <= 0 || likeInfo.getLikeUserId() <= 0)
-            return;
-        for (int i = 0; i < circles.size(); i++) {
-            if (circles.get(i) != null && circles.get(i).getCircleId() == likeInfo.getCircleId()) {
-                Circle info = circles.get(i);
-                if (info.getLikes() != null && info.getLikes().size() > 0) {
-                    int len = info.getLikes().size();
-                    for (int j = 0; j < len; j++) {
-                        if (info.getLikes().get(j) != null && info.getLikes().get(j).getLikeUserId() == myUserId) {
-                            info.getLikes().remove(j);
-                            notifyItemChanged(i);
-                            break;
-                        }
-                    }
-                }
-            }
-
-        }
-    }
-
     @Override
     public int getItemCount() {
         return circles.size();
+    }
+
+    private class InfoPayload {
+        public static final int ADD_LIKE = 1;
+        public static final int CANCEL_LIKE = 2;
+        public static final int ADD_COMMENT = 3;
+        public static final int CANCEL_COMMENT = 4;
+
+        public int operateType;
+        public CircleLike like;
+        public CircleComment comment;
+
+        public InfoPayload(int operateType, CircleLike like) {
+            this.operateType = operateType;
+            this.like = like;
+        }
+
+        public InfoPayload(int operateType, CircleComment comment) {
+            this.operateType = operateType;
+            this.comment = comment;
+        }
     }
 }

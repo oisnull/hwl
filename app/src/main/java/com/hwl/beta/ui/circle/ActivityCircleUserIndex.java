@@ -1,9 +1,9 @@
 package com.hwl.beta.ui.circle;
 
+import android.app.Activity;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.Toast;
@@ -19,6 +19,7 @@ import com.hwl.beta.ui.circle.logic.CircleUserLogic;
 import com.hwl.beta.ui.circle.standard.CircleUserStandard;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.UITransfer;
+import com.hwl.beta.ui.widget.TitleBar;
 import com.hwl.beta.utils.NetworkUtils;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -30,16 +31,16 @@ import io.reactivex.functions.Consumer;
 
 public class ActivityCircleUserIndex extends BaseActivity {
 
-    FragmentActivity activity;
+    Activity activity;
     CircleActivityUserIndexBinding binding;
-    CircleUserStandard circleStanad;
-    CircleUserIndexAdapter circleAdapter;
     CircleUserStandard circleStandard;
+    CircleUserIndexAdapter circleAdapter;
     Friend currentUser;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activity = this;
 
         long viewUserId = getIntent().getLongExtra("viewuserid", 0);
         if (viewUserId <= 0) {
@@ -47,10 +48,9 @@ public class ActivityCircleUserIndex extends BaseActivity {
             finish();
         }
 
-        activity = this;
-        circleStanad = new CircleUserLogic(viewUserId, getIntent().getStringExtra("viewusername")
+        circleStandard = new CircleUserLogic(viewUserId, getIntent().getStringExtra("viewusername")
                 , getIntent().getStringExtra("viewuserimage"));
-        currentUser = circleStanad.getLocalUserInfo();
+        currentUser = circleStandard.getLocalUserInfo();
         binding = DataBindingUtil.setContentView(activity, R.layout.circle_activity_user_index);
         initView();
     }
@@ -58,31 +58,29 @@ public class ActivityCircleUserIndex extends BaseActivity {
     private void initView() {
         binding.tbTitle
                 .setTitle(currentUser.getId() == UserSP.getUserId() ? "我的动态" : "TA的动态")
-                .setImageRightResource(R.drawable.ic_sms)
-                .setImageRightClick(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //UITransfer.toCirclePublishActivity(activity);
-                        //Toast.makeText(activity, "查看消息列表", Toast.LENGTH_SHORT).show();
-                        //UITransfer.toCircleMessagesActivity(activity);
-                    }
-                })
+                .setImageRightHide()
                 .setImageLeftClick(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         onBackPressed();
                     }
                 });
+        if (currentUser.getId() == UserSP.getUserId()) {
+            binding.tbTitle.setImageRightShow()
+                    .setImageRightResource(R.drawable.ic_sms)
+                    .setImageRightClick(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            UITransfer.toCircleMessagesActivity(activity);
+                        }
+                    });
+        }
 
-        circleAdapter = new CircleUserIndexAdapter(activity, new CircleUserItemListener());
+        circleAdapter = new CircleUserIndexAdapter(activity, currentUser.getId(),
+                new CircleUserItemListener());
         binding.rvCircleContainer.setAdapter(circleAdapter);
         binding.rvCircleContainer.setLayoutManager(new LinearLayoutManager(activity));
 
-//      binding.refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-//          @Override
-//          public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-//          }
-//      });
         binding.refreshLayout.setEnableRefresh(false);
         //binding.refreshLayout.setEnableLoadMore(false);
         binding.refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
@@ -119,7 +117,6 @@ public class ActivityCircleUserIndex extends BaseActivity {
             return;
         }
 
-        final boolean isRefresh = infoId == 0;
         circleStandard.loadServerInfos(infoId, circleAdapter.getInfos())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<Circle>>() {
@@ -141,6 +138,8 @@ public class ActivityCircleUserIndex extends BaseActivity {
         if (circleAdapter.getItemCount() <= 0) {
             circleAdapter.setEmptyInfo();
             binding.refreshLayout.setEnableLoadMore(false);
+        } else {
+            binding.refreshLayout.setEnableLoadMore(true);
         }
         binding.refreshLayout.finishLoadMore();
     }
@@ -171,7 +170,7 @@ public class ActivityCircleUserIndex extends BaseActivity {
 
         @Override
         public void onItemViewClick(Circle info) {
-            //UITransfer.toCircleDetailActivity(activity, 0, info);
+            UITransfer.toCircleDetailActivity(activity, info.getCircleId());
         }
 
         @Override

@@ -1,13 +1,19 @@
 package com.hwl.beta.ui.circle.logic;
 
+import android.text.TextUtils;
+
 import com.hwl.beta.db.DBConstant;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.Circle;
+import com.hwl.beta.db.entity.CircleComment;
 import com.hwl.beta.db.entity.CircleLike;
 import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.net.circle.CircleService;
 import com.hwl.beta.net.circle.NetCircleMatchInfo;
+import com.hwl.beta.net.circle.body.AddCircleCommentInfoResponse;
 import com.hwl.beta.net.circle.body.DeleteCircleInfoResponse;
+import com.hwl.beta.net.circle.body.DeleteCommentInfoResponse;
+import com.hwl.beta.net.circle.body.GetCircleCommentsResponse;
 import com.hwl.beta.net.circle.body.GetCircleDetailResponse;
 import com.hwl.beta.net.circle.body.GetCircleInfosResponse;
 import com.hwl.beta.net.circle.body.SetLikeInfoResponse;
@@ -19,11 +25,12 @@ import com.hwl.beta.net.user.body.SetUserCircleBackImageResponse;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.circle.standard.CircleStandard;
 import com.hwl.beta.ui.convert.DBCircleAction;
+import com.hwl.beta.ui.immsg.IMClientEntry;
+import com.hwl.beta.ui.immsg.IMDefaultSendOperateListener;
 import com.hwl.beta.utils.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -35,7 +42,7 @@ import io.reactivex.schedulers.Schedulers;
 public class CircleLogic implements CircleStandard {
 
     final static int PAGE_COUNT = 15;
-    final static int COMMENT_PAGE_COUNT = 10;
+    final static int COMMENT_PAGE_COUNT = 15;
 
     @Override
     public Observable<List<Circle>> loadLocalInfos() {
@@ -112,6 +119,8 @@ public class CircleLogic implements CircleStandard {
                 if (localInfos.get(i).getCircleId() >= minCircleId) continue;
             }
 
+            if (TextUtils.isEmpty(localInfos.get(i).getUpdateTime())) continue;
+
             matchInfos.add(new NetCircleMatchInfo(localInfos.get(i).getCircleId(),
                     localInfos.get(i).getUpdateTime()));
             if (matchInfos.size() >= PAGE_COUNT) break;
@@ -140,7 +149,7 @@ public class CircleLogic implements CircleStandard {
         if (info == null || info.getCircleId() <= 0) {
             return Observable.error(new Throwable("Circle id con't be empty."));
         }
-        return CircleService.setLikeInfo(isLike ? 1 : 0, info.getCircleId())
+        return CircleService.setLikeInfo(isLike ? 1 : 0, info.getCircleId(), info.getUpdateTime())
                 .map(new Function<SetLikeInfoResponse, CircleLike>() {
                     @Override
                     public CircleLike apply(SetLikeInfoResponse response) throws Exception {
@@ -148,13 +157,18 @@ public class CircleLogic implements CircleStandard {
                             throw new Exception("Set user like info failed.");
                         }
 
+                        if (!TextUtils.isEmpty(response.getCircleLastUpdateTime())) {
+                            DaoUtils.getCircleManagerInstance().setUpdateTime(info.getCircleId(),
+                                    response.getCircleLastUpdateTime());
+                        }
+
                         CircleLike likeInfo = new CircleLike();
+                        likeInfo.setCircleId(info.getCircleId());
+                        likeInfo.setLikeUserId(UserSP.getUserId());
+                        likeInfo.setLikeUserName(UserSP.getUserName());
+                        likeInfo.setLikeUserImage(UserSP.getUserHeadImage());
+                        likeInfo.setLastUpdateTime(response.getCircleLastUpdateTime());
                         if (isLike) {
-                            likeInfo.setCircleId(info.getCircleId());
-                            likeInfo.setLikeUserId(UserSP.getUserId());
-                            likeInfo.setLikeUserName(UserSP.getUserName());
-                            likeInfo.setLikeUserImage(UserSP.getUserHeadImage());
-                            likeInfo.setLikeTime(new Date());
                             DaoUtils.getCircleManagerInstance().saveLike(likeInfo);
                         } else {
                             DaoUtils.getCircleManagerInstance().deleteLike(info.getCircleId(),
@@ -167,10 +181,11 @@ public class CircleLogic implements CircleStandard {
                 .doOnNext(new Consumer<CircleLike>() {
                     @Override
                     public void accept(CircleLike likeInfo) {
+                        if (info.getPublishUserId() == likeInfo.getLikeUserId()) return;
                         //send im message
-//                        IMClientEntry.sendCircleLikeMessage(info.getCircleId(), isLike,
-//                                info.getPublishUserId(),
-//                                new IMDefaultSendOperateListener("setLike"));
+                        IMClientEntry.sendCircleLikeMessage(info.getCircleId(), isLike,
+                                info.getPublishUserId(),
+                                new IMDefaultSendOperateListener("setLike"));
                     }
                 });
     }
@@ -213,8 +228,9 @@ public class CircleLogic implements CircleStandard {
 
         return Observable.fromCallable(new Callable<Circle>() {
             @Override
-            public Circle call() throws Exception {
-                return DaoUtils.getCircleManagerInstance().getCircle(circleId);
+            public Circle call() {
+                return DaoUtils.getCircleManagerInstance().getCircleDetails(circleId,
+                        COMMENT_PAGE_COUNT);
             }
         }).subscribeOn(Schedulers.io());
     }
@@ -225,18 +241,123 @@ public class CircleLogic implements CircleStandard {
             return Observable.error(new Throwable("Circle id con't be empty."));
         }
 
-        return CircleService.getCircleDetail(circleId)
+        return CircleService.getCircleDetail(circleId, updateTime)
                 .map(new Function<GetCircleDetailResponse, Circle>() {
                     @Override
-                    public Circle apply(GetCircleDetailResponse response) throws Exception {
+                    public Circle apply(GetCircleDetailResponse response) {
                         if (response != null && response.getCircleInfo() != null) {
-                            Circle info = DBCircleAction.convertToCircleInfo(response.getCircleInfo());
-                            DaoUtils.getCircleManagerInstance().deleteAll(circleId);
+                            Circle info =
+                                    DBCircleAction.convertToCircleInfo(response.getCircleInfo());
+                            DaoUtils.getCircleManagerInstance().deleteAll(info.getCircleId());
                             DaoUtils.getCircleManagerInstance().save(info);
                             return info;
                         }
 
                         return null;
+                    }
+                });
+    }
+
+    @Override
+    public Observable<List<CircleComment>> getComments(Circle info, long lastCommentId) {
+        if (info == null || info.getCircleId() <= 0) {
+            return Observable.error(new Throwable("Circle id con't be empty."));
+        }
+
+        return CircleService.getCircleComments(info.getCircleId(), lastCommentId,
+                COMMENT_PAGE_COUNT)
+                .map(new Function<GetCircleCommentsResponse, List<CircleComment>>() {
+                    @Override
+                    public List<CircleComment> apply(GetCircleCommentsResponse response) {
+                        if (response.getCircleCommentInfos() == null)
+                            return new ArrayList<>();
+
+                        return DBCircleAction.convertToCircleCommentInfos(response.getCircleCommentInfos());
+                    }
+                })
+                .doOnNext(new Consumer<List<CircleComment>>() {
+                    @Override
+                    public void accept(List<CircleComment> comments) {
+                        DaoUtils.getCircleManagerInstance().saveNonExistentComments(comments);
+                    }
+                });
+    }
+
+    @Override
+    public Observable<CircleComment> addComment(final Circle info,
+                                                final String content,
+                                                final long replyUserId) {
+        if (info == null || info.getCircleId() <= 0) {
+            return Observable.error(new Throwable("Circle id con't be empty."));
+        }
+
+        return CircleService.addComment(info.getCircleId(), content, replyUserId,
+                info.getUpdateTime())
+                .map(new Function<AddCircleCommentInfoResponse, CircleComment>() {
+                    @Override
+                    public CircleComment apply(AddCircleCommentInfoResponse response) throws Exception {
+                        if (response.getCommentInfo() == null || response.getCommentInfo().getCommentId() <= 0)
+                            throw new Exception("Post user comment info failed.");
+
+                        if (!TextUtils.isEmpty(response.getCircleLastUpdateTime())) {
+                            DaoUtils.getCircleManagerInstance().setUpdateTime(info.getCircleId(),
+                                    response.getCircleLastUpdateTime());
+                        }
+
+                        CircleComment commentInfo =
+                                DBCircleAction.convertToCircleCommentInfo(response.getCommentInfo());
+                        commentInfo.setLastUpdateTime(response.getCircleLastUpdateTime());
+                        DaoUtils.getCircleManagerInstance().saveComment(commentInfo);
+                        return commentInfo;
+                    }
+                })
+                .doOnNext(new Consumer<CircleComment>() {
+                    @Override
+                    public void accept(CircleComment comment) {
+                        if (info.getPublishUserId() == comment.getCommentUserId() && comment.getReplyUserId() <= 0)
+                            return;
+                        //send im message
+                        IMClientEntry.sendCircleCommentMessage(info.getCircleId(),
+                                comment.getCommentId(),
+                                comment.getContent(),
+                                info.getPublishUserId(),
+                                comment.getReplyUserId(),
+                                new IMDefaultSendOperateListener("addComment"));
+                    }
+                });
+    }
+
+    @Override
+    public Observable<String> deleteComment(final Circle info, final CircleComment comment) {
+        return CircleService.deleteCommentInfo(comment.getCommentId(), info.getUpdateTime())
+                .map(new Function<DeleteCommentInfoResponse, String>() {
+                    @Override
+                    public String apply(DeleteCommentInfoResponse response) throws Exception {
+                        if (response.getStatus() != NetConstant.RESULT_SUCCESS) {
+                            throw new Exception("Delete circle info failed.");
+                        }
+
+                        if (!TextUtils.isEmpty(response.getCircleLastUpdateTime())) {
+                            DaoUtils.getCircleManagerInstance().setUpdateTime(comment.getCircleId(), response.getCircleLastUpdateTime());
+                        }
+
+                        DaoUtils.getCircleManagerInstance().deleteComment(comment.getCircleId(),
+                                comment.getCommentUserId(), comment.getCommentId());
+                        return response.getCircleLastUpdateTime();
+                    }
+                })
+                .doOnNext(new Consumer<String>() {
+                    @Override
+                    public void accept(String lastUpdateTime) {
+                        if (info.getPublishUserId() == comment.getCommentUserId() && comment.getReplyUserId() <= 0)
+                            return;
+
+                        //send im message
+                        IMClientEntry.sendCircleCancelCommentMessage(info.getCircleId(),
+                                comment.getCommentId(),
+                                info.getPublishUserId(),
+                                comment.getReplyUserId(),
+                                new IMDefaultSendOperateListener("deleteComment"));
                     }
                 });
     }

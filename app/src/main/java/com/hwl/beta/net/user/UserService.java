@@ -250,8 +250,7 @@ public class UserService {
         GetUserDetailsRequest requestBody = new GetUserDetailsRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setGetUserId(viewUserId);
-        return RetrofitUtils.createApi
-                (IUserService.class)
+        return RetrofitUtils.createApi(IUserService.class)
                 .getUserDetails(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<GetUserDetailsResponse>>())
                 .subscribeOn(Schedulers.io());

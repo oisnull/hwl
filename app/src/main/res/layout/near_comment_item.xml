@@ -22,7 +22,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="1dp"
         android:background="@color/white"
-        android:onClick="@{view->action.onContentClick(comment)}"
         android:padding="@dimen/dp_10">
 
         <ImageView
@@ -61,6 +60,9 @@
             android:layout_below="@+id/tv_name"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/iv_header"
+            android:background="@drawable/item_selector"
+            android:onClick="@{view->action.onCommentContentClick(comment)}"
+            android:onLongClick="@{view->action.onCommentLongClick(view,comment)}"
             android:text="@{comment.content}"
             android:textColor="@color/color_424242"
             android:textSize="@dimen/dp_13" />

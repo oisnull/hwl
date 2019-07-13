@@ -8,10 +8,11 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -23,19 +24,24 @@ import com.hwl.beta.db.entity.Circle;
 import com.hwl.beta.db.entity.CircleComment;
 import com.hwl.beta.db.entity.CircleImage;
 import com.hwl.beta.db.entity.CircleLike;
+import com.hwl.beta.emotion.EmotionDefaultPanelV2;
+import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.circle.action.ICircleItemListener;
 import com.hwl.beta.ui.circle.adp.CircleIndexAdapter;
 import com.hwl.beta.ui.circle.logic.CircleLogic;
 import com.hwl.beta.ui.circle.standard.CircleStandard;
 import com.hwl.beta.ui.common.BaseActivity;
-import com.hwl.beta.ui.common.KeyBoardAction;
+import com.hwl.beta.ui.common.ClipboardAction;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.dialog.LoadingDialog;
+import com.hwl.beta.ui.ebus.EventBusConstant;
+import com.hwl.beta.ui.ebus.EventMessageModel;
 import com.hwl.beta.ui.imgselect.ActivityImageBrowse;
 import com.hwl.beta.ui.imgselect.bean.ImageSelectType;
 import com.hwl.beta.ui.widget.CircleActionMorePop;
 import com.hwl.beta.utils.NetworkUtils;
+import com.hwl.beta.utils.StringUtils;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -48,10 +54,11 @@ import io.reactivex.functions.Consumer;
 
 public class ActivityCircleIndex extends BaseActivity {
 
-    FragmentActivity activity;
+    Activity activity;
     CircleActivityIndexBinding binding;
     CircleStandard circleStandard;
     CircleIndexAdapter circleAdapter;
+    EmotionPanelListener emotionPanelListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,54 +69,27 @@ public class ActivityCircleIndex extends BaseActivity {
         initView();
     }
 
-    // @Subscribe(threadMode = ThreadMode.MAIN)
-    // public void refreshInfo(Integer ebType) {
-    // if (ebType == EventBusConstant.EB_TYPE_CIRCLE_INFO_UPDATE) {
-    // binding.refreshLayout.autoRefresh();
-    // } else if (ebType == EventBusConstant.EB_TYPE_CIRCLE_MESSAGE_UPDATE) {
-    // circleAdapter.notifyItemChanged(1);
-    // }
-    // }
-
-    // @Subscribe(threadMode = ThreadMode.MAIN)
-    // public void addComment(EventActionCircleComment action) {
-    // if (action.getActionType() == EventBusConstant.EB_TYPE_ACTINO_ADD) {
-    // circleAdapter.addComment(action.getComment());
-    // } else if (action.getActionType() == EventBusConstant.EB_TYPE_ACTINO_REMOVE) {
-    // circleAdapter.removeComment(action.getComment());
-    // }
-    // }
-
-    // @Subscribe(threadMode = ThreadMode.MAIN)
-    // public void addLike(EventActionCircleLike action) {
-    // if (action.getActionType() == EventBusConstant.EB_TYPE_ACTINO_ADD) {
-    // circleAdapter.addLike(action.getLike());
-    // } else if (action.getActionType() == EventBusConstant.EB_TYPE_ACTINO_REMOVE) {
-    // circleAdapter.removeLike(action.getLike());
-    // }
-    // }
-
-    // @Subscribe(threadMode = ThreadMode.MAIN)
-    // public void updateRemark(EventUpdateFriendRemark remark) {
-    // if (remark == null || remark.getFriendId() <= 0)
-    // return;
-
-    // DaoUtils.getCircleManagerInstance().updateCircleFriendList(circles, remark.getFriendId(),
-    // new Function() {
-    // @Override
-    // public Object apply(Object o) throws Exception {
-    // circleAdapter.notifyItemChanged((Integer) o);
-    // return o;
-    // }
-    // });
-    // }
-
     private void initView() {
         binding.tbTitle.setTitle("我的圈子")
                 .setImageRightClick(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        UITransfer.toCirclePublishActivity(activity);
+                        android.widget.PopupMenu popup = new android.widget.PopupMenu(activity, v);
+                        popup.getMenuInflater().inflate(R.menu.popup_circle_menu, popup.getMenu());
+                        popup.setOnMenuItemClickListener(new android.widget.PopupMenu.OnMenuItemClickListener() {
+                            public boolean onMenuItemClick(MenuItem item) {
+                                switch (item.getItemId()) {
+                                    case R.id.pop_circle_publish:
+                                        UITransfer.toCirclePublishActivity(activity);
+                                        break;
+                                    case R.id.pop_circle_messages:
+                                        UITransfer.toCircleMessagesActivity(activity);
+                                        break;
+                                }
+                                return true;
+                            }
+                        });
+                        popup.show();
                     }
                 })
                 .setImageLeftClick(new View.OnClickListener() {
@@ -135,7 +115,15 @@ public class ActivityCircleIndex extends BaseActivity {
             }
         });
 
+        emotionPanelListener = new EmotionPanelListener();
         binding.refreshLayout.setEnableLoadMore(false);
+        binding.edpEmotion.setPanelVisibility(View.GONE);
+        binding.edpEmotion.setPanelListener(emotionPanelListener);
+
+        if (MessageCountSP.getCircleMessageCount() > 0) {
+            circleAdapter.updateMsgcount();
+        }
+
         this.loadLocalInfos();
     }
 
@@ -190,38 +178,114 @@ public class ActivityCircleIndex extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == Activity.RESULT_OK && requestCode == 1) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == 1) {
 
-			LoadingDialog.show(activity, "正在上传...");
-			circleStandard.updateCircleBackImage(data.getStringExtra("localpath"))
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(new Consumer<String>() {
-					@Override
-					public void accept(String img) {
-						LoadingDialog.hide();
-						circleAdapter.notifyItemChanged(0);
-					}
-				}, new Consumer<Throwable>() {
-					@Override
-					public void accept(Throwable throwable) {
-						LoadingDialog.hide();
-						Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
-					}
-				});
+            LoadingDialog.show(activity, "正在上传...");
+            circleStandard.updateCircleBackImage(data.getStringExtra("localpath"))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<String>() {
+                        @Override
+                        public void accept(String img) {
+                            LoadingDialog.hide();
+                            circleAdapter.notifyItemChanged(0);
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) {
+                            LoadingDialog.hide();
+                            Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
-		}
+        }
+    }
+
+    @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
+
+    @Override
+    protected void receiveEventMessage(EventMessageModel messageModel) {
+        if (messageModel.getMessageType() == EventBusConstant.EB_TYPE_CIRCLE_MESSAGE_UPDATE) {
+            circleAdapter.updateMsgcount();
+        }
+    }
+
+    public void setEmotionStatus(boolean isShow) {
+        setEmotionStatus(isShow, null);
+    }
+
+    public void setEmotionStatus(boolean isShow, String hintText) {
+        if (isShow) {
+            binding.edpEmotion.toggleKeyboardView();
+            binding.edpEmotion.setHintMessage(hintText);
+            binding.edpEmotion.setPanelVisibility(View.VISIBLE);
+        } else {
+            binding.edpEmotion.reset();
+            binding.edpEmotion.setPanelVisibility(View.GONE);
+        }
+    }
+
+    private class EmotionPanelListener implements EmotionDefaultPanelV2.IPanelListener {
+        private int position;
+        private Circle info;
+        private long replyUserId;
+
+        public void setCircleInfo(int position, Circle info) {
+            this.position = position;
+            this.info = info;
+            this.replyUserId = 0;
+        }
+
+        public void setCircleInfo(int position, Circle info, long replyUserId) {
+            setCircleInfo(position, info);
+            this.replyUserId = replyUserId;
+        }
+
+        @Override
+        public void onHeightChanged(int currentHeight) {
+        }
+
+        @Override
+        public void cancelClick() {
+            setEmotionStatus(false);
+        }
+
+        @Override
+        public boolean sentClick(String content) {
+            if (StringUtils.isBlank(content)) {
+                Toast.makeText(activity, "发送的内容不能为空", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            LoadingDialog.show(activity, "正在发送,请稍后...");
+            circleStandard.addComment(info, content, replyUserId)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<CircleComment>() {
+                        @Override
+                        public void accept(CircleComment info) throws Exception {
+                            setEmotionStatus(false);
+                            LoadingDialog.hide();
+                            circleAdapter.addComment(position, info);
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) {
+                            LoadingDialog.hide();
+                            Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+            return true;
+        }
     }
 
     private class CircleItemListener implements ICircleItemListener {
 
         private CircleActionMorePop mMorePopupWindow;
-        boolean isRunning = false;
-
-        @Override
-        public void onItemViewClick(View view) {
-            KeyBoardAction.hideSoftInput(view);
-        }
+        private boolean isRunning = false;
 
         @Override
         public void onCircleBackImageClick() {
@@ -242,13 +306,19 @@ public class ActivityCircleIndex extends BaseActivity {
 
         @Override
         public void onMyUserHeadClick() {
-            UITransfer.toCircleUserIndexActivity(activity, UserSP.getUserId(), UserSP.getUserName(), UserSP.getUserHeadImage());
+            UITransfer.toCircleUserIndexActivity(activity, UserSP.getUserId(),
+                    UserSP.getUserName(), UserSP.getUserHeadImage());
         }
 
         @Override
         public void onUserHeadClick(Circle info) {
             UITransfer.toUserIndexActivity(activity, info.getPublishUserId(),
                     info.getPublishUserName(), info.getPublishUserImage());
+        }
+
+        @Override
+        public void onContentClick(Circle info) {
+
         }
 
         @Override
@@ -271,21 +341,57 @@ public class ActivityCircleIndex extends BaseActivity {
 
         @Override
         public void onCommentContentClick(CircleComment comment) {
-//            CircleExt currnetInfo = this.getCircleInfo(comment.getCircleId());
-//            if (currnetInfo == null) return;
-//            if (comment.getCommentUserId() == myUserId) {
-//                UITransfer.toCircleCommentPublishActivity(activity, comment.getCircleId(),
-//                currnetInfo.getInfo().getPublishUserId(), currnetInfo.getCircleMessageContent());
-//            } else {
-//                UITransfer.toCircleCommentPublishActivity(activity, comment.getCircleId(),
-//                currnetInfo.getInfo().getPublishUserId(), comment.getCommentUserId(), comment
-//                .getCommentUserName(), currnetInfo.getCircleMessageContent());
-//            }
+            if (StringUtils.isNotBlank(comment.getCommentUserName()) && !UserSP.getUserShowName().equals(comment.getCommentUserName())) {
+                setEmotionStatus(true, "回复 " + comment.getCommentUserName() + " :");
+            } else {
+                setEmotionStatus(true, "输入评论内容");
+            }
+            Circle currentInfo = circleAdapter.getInfo(comment.getCircleId());
+            if (currentInfo == null) return;
+            emotionPanelListener.setCircleInfo(circleAdapter.getInfoPosition(comment.getCircleId()), currentInfo, comment.getCommentUserId());
         }
 
         @Override
-        public void onContentClick() {
+        public boolean onCommentLongClick(View view, final CircleComment comment) {
+            PopupMenu popup = new PopupMenu(activity, view);
+            popup.getMenuInflater().inflate(R.menu.popup_comment_menu, popup.getMenu());
+            if (comment.getCommentUserId() != UserSP.getUserId()) {
+                popup.getMenu().removeItem(R.id.pop_comment_delete);
+            }
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.pop_comment_copy:
+                            ClipboardAction.copy(activity, comment.getContent());
+                            break;
+                        case R.id.pop_comment_delete:
+                            deleteComment(comment);
+                            break;
+                    }
+                    return true;
+                }
+            });
+            popup.show();
+            return false;
+        }
 
+        private void deleteComment(final CircleComment comment) {
+            Circle info = circleAdapter.getInfo(comment.getCircleId());
+            circleStandard.deleteComment(info, comment)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<String>() {
+                        @Override
+                        public void accept(String lastUpdateTime) {
+                            comment.setLastUpdateTime(lastUpdateTime);
+                            int pos = circleAdapter.getInfoPosition(comment.getCircleId());
+                            circleAdapter.deleteComment(pos, comment);
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) {
+                            Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
         }
 
         @Override
@@ -303,9 +409,8 @@ public class ActivityCircleIndex extends BaseActivity {
             mMorePopupWindow.setActionMoreListener(new CircleActionMorePop.IActionMoreListener() {
                 @Override
                 public void onCommentClick(int position) {
-//                    UITransfer.toCircleCommentPublishActivity(activity, info.getCircleId(),
-//                    info.getPublishUserId(), info
-//                    .getCircleMessageContent());
+                    setEmotionStatus(true, "输入评论内容");
+                    emotionPanelListener.setCircleInfo(position, info);
                 }
 
                 @Override
@@ -327,10 +432,7 @@ public class ActivityCircleIndex extends BaseActivity {
                         @Override
                         public void accept(CircleLike info) {
                             isRunning = false;
-                            if (isLike)
-                                circleAdapter.addLike(position, info);
-                            else
-                                circleAdapter.addLike(position, null);
+                            circleAdapter.setLike(position, info, isLike);
                         }
                     }, new Consumer<Throwable>() {
                         @Override
@@ -361,9 +463,9 @@ public class ActivityCircleIndex extends BaseActivity {
                     .show();
         }
 
-        private void deleteCircle(final int position, long nearCircleId) {
+        private void deleteCircle(final int position, long circleId) {
             LoadingDialog.show(activity);
-            circleStandard.deleteInfo(nearCircleId)
+            circleStandard.deleteInfo(circleId)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<Object>() {
                         @Override

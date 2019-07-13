@@ -9,6 +9,7 @@ import org.greenrobot.greendao.annotation.OrderBy;
 import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -53,6 +54,9 @@ public class NearCircle implements Serializable {
     }
 
     public List<NearCircleComment> getComments() {
+		if(this.comments==null){
+			this.comments=new ArrayList<>();
+		}
         return this.comments;
     }
 
@@ -61,6 +65,9 @@ public class NearCircle implements Serializable {
     }
 
     public List<NearCircleLike> getLikes() {
+		if(this.likes==null){
+			this.likes=new ArrayList<>();
+		}
         return this.likes;
     }
 

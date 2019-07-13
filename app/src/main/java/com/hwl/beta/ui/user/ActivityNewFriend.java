@@ -11,10 +11,8 @@ import android.widget.Toast;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.UserActivityNewFriendBinding;
-import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.db.entity.FriendRequest;
 import com.hwl.beta.ui.common.BaseActivity;
-import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.common.rxext.RXDefaultObserverEmpty;
 import com.hwl.beta.ui.dialog.LoadingDialog;
@@ -116,27 +114,6 @@ public class ActivityNewFriend extends BaseActivity {
 						UITransfer.toReloginDialog(activity);
                     }
                 });
-
-
-            // friendStandard.addFriend(friendRequest, new DefaultCallback<Boolean, String>() {
-                // @Override
-                // public void success(Boolean successMessage) {
-                    // LoadingDialog.hide();
-                    // Toast.makeText(activity, "添加好友成功", Toast.LENGTH_SHORT).show();
-                    // friendAdapter.removeInfo(friendRequest);
-                // }
-
-                // @Override
-                // public void error(String errorMessage) {
-                    // LoadingDialog.hide();
-                // }
-
-                // @Override
-                // public void relogin() {
-                    // LoadingDialog.hide();
-                    // UITransfer.toReloginDialog(activity);
-                // }
-            // });
         }
     }
 }

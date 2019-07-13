@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <include layout="@layout/view_split_horizontal" />
+    <include android:id="@+id/sp_line" layout="@layout/view_split_horizontal" />
 
     <LinearLayout
         android:id="@+id/ll_emotion_panel"

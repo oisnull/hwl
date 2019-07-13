@@ -103,7 +103,8 @@ public class FragmentCenter extends BaseFragment {
 
         @Override
         public void onCircleClick() {
-            UITransfer.toCircleUserIndexActivity(activity, UserSP.getUserId(), UserSP.getUserName(), UserSP.getUserHeadImage());
+            UITransfer.toCircleUserIndexActivity(activity, UserSP.getUserId(),
+                    UserSP.getUserName(), UserSP.getUserHeadImage());
         }
 
         @Override
@@ -112,8 +113,8 @@ public class FragmentCenter extends BaseFragment {
         }
 
         @Override
-        public void onMessageClick() {
-            Toast.makeText(activity, AppUtils.getAppVersionName(), Toast.LENGTH_LONG).show();
+        public void onCircleMessageClick() {
+            UITransfer.toCircleMessagesActivity(activity);
         }
 
         @Override

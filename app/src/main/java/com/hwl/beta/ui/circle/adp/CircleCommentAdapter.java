@@ -61,11 +61,31 @@ public class CircleCommentAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-//    public void addComment(CircleComment comment) {
-//        if (comment == null) return;
-//        comments.add(comment);
-//        notifyItemChanged(comments.size() - 1);
-//    }
+    public void addComment(CircleComment comment) {
+        if (comment == null || comment.getCommentId() <= 0) return;
+
+        int pos = comments.indexOf(comment);
+        if (pos == -1) {
+            comments.add(comment);
+            notifyItemChanged(comments.size() - 1);
+        } else
+            notifyItemChanged(pos);
+    }
+
+    public void addComments(List<CircleComment> infos) {
+        if (infos == null || infos.size() <= 0) return;
+
+        int pos = comments.size();
+        comments.addAll(infos);
+        notifyItemRangeChanged(pos,comments.size());
+    }
+
+    public void deleteComment(CircleComment comment) {
+        if (comment == null || comment.getCommentId() <= 0) return;
+
+        comments.remove(comment);
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getItemCount() {

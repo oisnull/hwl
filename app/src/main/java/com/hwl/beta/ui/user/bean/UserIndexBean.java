@@ -9,23 +9,31 @@ import java.util.List;
  */
 
 public class UserIndexBean {
-
-    public static final int IDCARD_FRIEND = 1;
-    public static final int IDCARD_MINE = 2;
-    public static final int IDCARD_OTHER = 3;
-
-    private int idcard;
     private long userId;
     private String userName;
     private String userImage;
     private String symbol;
     private String remark;
-    private String registerAddress;
-    private String userCircleBackImage;
     private String userLifeNotes;
-    private List<String> circleImages;
-    private List<String> circleTexts;
     private String updateTime;
+	private boolean misMe;
+	private boolean misFriend;
+
+    public boolean isFriend() {
+        return this.misFriend;
+    }
+
+    public void setFriend(boolean isFriend) {
+        this.misFriend = isFriend;
+    }
+
+    public boolean isMe() {
+        return this.misMe;
+    }
+
+    public void setMe(boolean isMe) {
+        this.misMe = isMe;
+    }
 
     public String getUpdateTime() {
         return this.updateTime;
@@ -33,40 +41,6 @@ public class UserIndexBean {
 
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public List<String> getCircleImages() {
-        return circleImages;
-    }
-
-    public void setCircleImages(List<String> circleImages) {
-        this.circleImages = circleImages;
-    }
-
-    public List<String> getCircleTexts() {
-        return circleTexts;
-    }
-
-    public void setCircleTexts(List<String> circleTexts) {
-        this.circleTexts = circleTexts;
-    }
-
-    public boolean isFriend;
-
-    public int getIdcard() {
-        return idcard;
-    }
-
-    public void setIdcard(int idcard) {
-        this.idcard = idcard;
-    }
-
-    public String getUserCircleBackImage() {
-        return userCircleBackImage;
-    }
-
-    public void setUserCircleBackImage(String userCircleBackImage) {
-        this.userCircleBackImage = userCircleBackImage;
     }
 
     public String getUserLifeNotes() {
@@ -124,14 +98,6 @@ public class UserIndexBean {
 
     public void setRemark(String remark) {
         this.remark = remark;
-    }
-
-    public String getRegisterAddress() {
-        return registerAddress;
-    }
-
-    public void setRegisterAddress(String registerAddress) {
-        this.registerAddress = registerAddress;
     }
 
     public String getShowName() {

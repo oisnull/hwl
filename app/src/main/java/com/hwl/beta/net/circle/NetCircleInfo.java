@@ -7,7 +7,6 @@ import java.util.List;
 
 public class NetCircleInfo {
     private long CircleId;
-    private long UserId;
     private int ContentType;
     private String CircleContent;
     private Date PublishTime;
@@ -29,7 +28,7 @@ public class NetCircleInfo {
 
     private List<NetImageInfo> Images;
 
-    private int PublishUserId;
+    private long PublishUserId;
     private String PublishUserName;
     private String PublishUserImage;
 
@@ -67,14 +66,6 @@ public class NetCircleInfo {
 
     public void setCircleId(long circleId) {
         CircleId = circleId;
-    }
-
-    public long getUserId() {
-        return UserId;
-    }
-
-    public void setUserId(long userId) {
-        UserId = userId;
     }
 
     public int getContentType() {
@@ -181,11 +172,11 @@ public class NetCircleInfo {
         LikeCount = likeCount;
     }
 
-    public int getPublishUserId() {
+    public long getPublishUserId() {
         return PublishUserId;
     }
 
-    public void setPublishUserId(int publishUserId) {
+    public void setPublishUserId(long publishUserId) {
         PublishUserId = publishUserId;
     }
 

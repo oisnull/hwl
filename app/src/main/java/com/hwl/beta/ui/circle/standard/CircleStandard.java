@@ -1,6 +1,7 @@
 package com.hwl.beta.ui.circle.standard;
 
 import com.hwl.beta.db.entity.Circle;
+import com.hwl.beta.db.entity.CircleComment;
 import com.hwl.beta.db.entity.CircleLike;
 
 import java.util.List;
@@ -22,4 +23,10 @@ public interface CircleStandard {
     Observable<Circle> loadLocalDetails(long circleId);
 
     Observable<Circle> loadServerDetails(long circleId,String updateTime);
+
+    Observable<List<CircleComment>> getComments(Circle info, long lastCommentId);
+
+    Observable<CircleComment> addComment(Circle info, String content, long replyUserId);
+
+    Observable<String> deleteComment(Circle info,CircleComment comment);
 }

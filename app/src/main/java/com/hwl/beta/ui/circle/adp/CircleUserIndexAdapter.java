@@ -3,32 +3,29 @@ package com.hwl.beta.ui.circle.adp;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.hwl.beta.R;
+import com.hwl.beta.databinding.CircleItemNullBinding;
 import com.hwl.beta.databinding.CircleUserHeadItemBinding;
 import com.hwl.beta.databinding.CircleUserIndexItemBinding;
-import com.hwl.beta.databinding.CircleUserItemNullBinding;
+import com.hwl.beta.databinding.CircleUserItemDefaultBinding;
 import com.hwl.beta.db.DBConstant;
 import com.hwl.beta.db.entity.Circle;
-import com.hwl.beta.db.entity.CircleComment;
-import com.hwl.beta.db.entity.CircleImage;
 import com.hwl.beta.db.entity.Friend;
+import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.circle.action.ICircleUserItemListener;
+import com.hwl.beta.ui.circle.holder.CircleItemNullViewHolder;
 import com.hwl.beta.ui.circle.holder.CircleUserHeadItemViewHolder;
 import com.hwl.beta.ui.circle.holder.CircleUserIndexItemViewHolder;
-import com.hwl.beta.ui.circle.holder.CircleUserItemNullViewHolder;
+import com.hwl.beta.ui.circle.holder.CircleUserItemDefaultViewHolder;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -36,20 +33,25 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private List<Circle> circles;
     private ICircleUserItemListener itemListener;
     private LayoutInflater inflater;
-    private int prevYear;
-    private int prevMonth;
-    private int prevDay;
-    private String prevShowDate;
+    private long currentUserId;
+    private int currentYear;
 
-    public CircleUserIndexAdapter(Context context, ICircleUserItemListener itemListener) {
+    public CircleUserIndexAdapter(Context context,
+                                  ICircleUserItemListener itemListener) {
+        this(context, 0, itemListener);
+    }
+
+    public CircleUserIndexAdapter(Context context, long currentUserId,
+                                  ICircleUserItemListener itemListener) {
         this.context = context;
+        this.currentUserId = currentUserId;
         this.circles = new ArrayList<>();
         this.itemListener = itemListener;
         inflater = LayoutInflater.from(context);
-        prevYear = Calendar.getInstance().get(Calendar.YEAR);
+        currentYear = Calendar.getInstance().get(Calendar.YEAR);
     }
 
-	public void addInfos(List<Circle> infos) {
+    public void addInfos(List<Circle> infos) {
         if (infos == null || infos.size() <= 0) return;
 
         this.circles.addAll(infos);
@@ -61,13 +63,26 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         if (getItemCount() <= 0) {
             circles.addAll(infos);
-            notifyDataSetChanged();
         } else {
             removeEmptyInfo();
-            //sortInfos(infos);
-            circles.addAll(getCircleItemPosition(), infos);
-            notifyDataSetChanged();
+            circles.removeAll(infos);
+            circles.addAll(infos);
         }
+        sortInfos(circles);
+        for (int i = 0; i < circles.size(); i++) {
+            android.util.Log.d("CircleUserIndex", circles.get(i).getCircleId() + "");
+        }
+        notifyDataSetChanged();
+    }
+
+    private void sortInfos(List<Circle> infos) {
+        if (infos == null || infos.size() <= 0) return;
+        Collections.sort(infos, new Comparator<Circle>() {
+            public int compare(Circle arg0, Circle arg1) {
+                if (arg0.getCircleId() == 0 || arg1.getCircleId() == 0) return 0;
+                return (int) (arg1.getCircleId() - arg0.getCircleId());
+            }
+        });
     }
 
     private void removeEmptyInfo() {
@@ -93,24 +108,24 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         return circles.size();
     }
 
-    public void updateHead(Friend info){
-        if(info==null) return;
-        if(circles.get(0).getItemType()!=DBConstant.CIRCLE_ITEM_HEAD) return;
-        boolean isChanged=false;
-        if(circles.get(0).getCircleBackImage()!=info.getCircleBackImage()){
+    public void updateHead(Friend info) {
+        if (info == null) return;
+        if (circles.get(0).getItemType() != DBConstant.CIRCLE_ITEM_HEAD) return;
+        boolean isChanged = false;
+        if (circles.get(0).getCircleBackImage() != info.getCircleBackImage()) {
             circles.get(0).setCircleBackImage(info.getCircleBackImage());
-            isChanged=true;
+            isChanged = true;
         }
-        if(circles.get(0).getLifeNotes()!=info.getLifeNotes()){
+        if (circles.get(0).getLifeNotes() != info.getLifeNotes()) {
             circles.get(0).setLifeNotes(info.getLifeNotes());
-            isChanged=true;
+            isChanged = true;
         }
 
-        if(isChanged)
+        if (isChanged)
             notifyItemChanged(0);
     }
 
-	public long getMinId() {
+    public long getMinId() {
         if (getItemCount() <= 0) {
             return 0;
         }
@@ -124,13 +139,15 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public int getItemViewType(int position) {
         switch (circles.get(position).getItemType()) {
-            case DBConstant.CIRCLE_ITEM_NULL:
+            case DBConstant.CIRCLE_ITEM_DEFAULT:
             default:
                 return 0;
             case DBConstant.CIRCLE_ITEM_HEAD:
                 return 1;
             case DBConstant.CIRCLE_ITEM_DATA:
                 return 2;
+            case DBConstant.CIRCLE_ITEM_NULL:
+                return 3;
         }
     }
 
@@ -139,92 +156,65 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         switch (viewType) {
             case 0:
             default:
-                return new CircleUserItemNullViewHolder((CircleUserItemNullBinding) DataBindingUtil.inflate(inflater, R.layout.circle_user_item_null, parent, false));
+                return new CircleUserItemDefaultViewHolder((CircleUserItemDefaultBinding) DataBindingUtil.inflate(inflater, R.layout.circle_user_item_default, parent, false));
             case 1:
                 return new CircleUserHeadItemViewHolder((CircleUserHeadItemBinding) DataBindingUtil.inflate(inflater, R.layout.circle_user_head_item, parent, false));
             case 2:
-                return new CircleUserIndexItemViewHolder((CircleUserIndexItemBinding) DataBindingUtil.inflate(inflater, R.layout.circle_user_index_item, parent, false));
+                return new CircleUserIndexItemViewHolder(context,
+                        (CircleUserIndexItemBinding) DataBindingUtil.inflate(inflater,
+                                R.layout.circle_user_index_item, parent, false));
+            case 3:
+                return new CircleItemNullViewHolder((CircleItemNullBinding) DataBindingUtil.inflate(inflater, R.layout.circle_item_null, parent, false));
         }
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final Circle info = circles.get(position);
-        if (holder instanceof CircleUserItemNullViewHolder) {
-            CircleUserItemNullViewHolder viewHolder = (CircleUserItemNullViewHolder) holder;
-            viewHolder.setItemBinding(itemListener, (Calendar.getInstance().get(Calendar.MONTH) + 1) + "月", Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "");
+        if (holder instanceof CircleUserItemDefaultViewHolder) {
+            CircleUserItemDefaultViewHolder viewHolder = (CircleUserItemDefaultViewHolder) holder;
+            viewHolder.setItemBinding(itemListener,
+                    (Calendar.getInstance().get(Calendar.MONTH) + 1) + "月",
+                    Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "");
         } else if (holder instanceof CircleUserHeadItemViewHolder) {
             CircleUserHeadItemViewHolder viewHolder = (CircleUserHeadItemViewHolder) holder;
-            viewHolder.setItemBinding(itemListener, new ImageViewBean(info.getPublishUserImage(), info.getCircleBackImage()), info.getPublishUserName(), info.getLifeNotes());
-            prevShowDate = "";
-            prevMonth = 0;
-            prevDay = 0;
+            viewHolder.setItemBinding(itemListener, new ImageViewBean(info.getPublishUserImage(),
+                    info.getCircleBackImage()), info.getPublishUserName(), info.getLifeNotes());
         } else if (holder instanceof CircleUserIndexItemViewHolder) {
             CircleUserIndexItemViewHolder viewHolder = (CircleUserIndexItemViewHolder) holder;
-            String timeYear = "";
-            String timeMonth = "";
-            String timeDay = "";
-            if (info.getPublishTime() != null && !info.getShowDate().equals(prevShowDate)) {
+            if (info.getShortPublishDate().equals(getPrevShortDate(position))) {
+                viewHolder.setItemBinding(null, null, null, info, itemListener);
+            } else {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(info.getPublishTime());
-                if (calendar.get(Calendar.YEAR) != prevYear) {
-                    timeYear = calendar.get(Calendar.YEAR) + "年";
-                }
-                if ((calendar.get(Calendar.MONTH) + 1) != prevMonth || calendar.get(Calendar.DAY_OF_MONTH) != prevDay) {
-                    timeMonth = (calendar.get(Calendar.MONTH) + 1) + "月";
-                    timeDay = calendar.get(Calendar.DAY_OF_MONTH) + "";
-                }
-
-                prevShowDate = info.getShowDate();
-                Calendar prev = Calendar.getInstance();
-                prev.setTime(info.getPublishTime());
-                prevYear = prev.get(Calendar.YEAR);
-                prevMonth = prev.get(Calendar.MONTH) + 1;
-                prevDay = prev.get(Calendar.DAY_OF_MONTH);
-
-                if (position != 1 || timeMonth.equals("")) {
-                    RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) viewHolder.getItemBinding().llCircleContainer.getLayoutParams();
-                    params.topMargin = 1;
-                    viewHolder.getItemBinding().llCircleContainer.setLayoutParams(params);
-                }
+                viewHolder.setItemBinding(getPrevYearStr(position, calendar),
+                        (calendar.get(Calendar.MONTH) + 1) + "月",
+                        calendar.get(Calendar.DAY_OF_MONTH) + "", info, itemListener);
             }
-            viewHolder.setItemBinding(timeYear, timeMonth, timeDay, info.getContent(), info.getImages());
-            viewHolder.getItemBinding().getRoot().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    itemListener.onItemViewClick(info);
-                }
-            });
+        } else if (holder instanceof CircleItemNullViewHolder) {
+            CircleItemNullViewHolder viewHolder = (CircleItemNullViewHolder) holder;
+            viewHolder.setItemBinding(currentUserId == UserSP.getUserId());
         }
     }
 
-    public void addComment(CircleComment comment) {
-        if (comment == null || comment.getCircleId() <= 0 || comment.getCommentUserId() <= 0)
-            return;
+    private String getPrevShortDate(int position) {
+        if (position <= 0) return null;
+        Circle info = circles.get(position - 1);
+        if (info == null) return null;
+        return info.getShortPublishDate();
+    }
 
-        int position = -1;
-        List<CircleComment> comments = null;
-        for (int i = 0; i < circles.size(); i++) {
-            if (circles.get(i) != null && circles.get(i).getCircleId() == comment.getCircleId()) {
-                comments = circles.get(i).getComments();
-                if (comments == null) {
-                    comments = new ArrayList<>();
-                    circles.get(i).setComments(comments);
-                }
-                position = i;
-                break;
-            }
-        }
+    private String getPrevYearStr(int position, Calendar currCalendar) {
+        if (currentYear == currCalendar.get(Calendar.YEAR)) return null;
 
-        if (comments == null) {
-            return;
-        }
-        comments.add(comment);
-        if (position == -1) {
-            notifyItemChanged(0);
-        } else {
-            notifyItemChanged(position);
-        }
+        if (position <= 0) return null;
+        Circle info = circles.get(position - 1);
+        if (info == null) return null;
+        Calendar prevCalendar = Calendar.getInstance();
+        prevCalendar.setTime(info.getPublishTime());
+        if (currCalendar.get(Calendar.YEAR) == prevCalendar.get(Calendar.YEAR))
+            return null;
+        return currCalendar.get(Calendar.YEAR) + "年";
     }
 
     @Override

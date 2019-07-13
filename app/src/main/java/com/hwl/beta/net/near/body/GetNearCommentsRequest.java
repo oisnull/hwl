@@ -1,9 +1,18 @@
 package com.hwl.beta.net.near.body;
 
 public class GetNearCommentsRequest {
+    private long UserId;
     private long NearCircleId;
     private int Count;
-    private int LastCommentId;
+    private long LastCommentId;
+
+    public long getUserId() {
+        return UserId;
+    }
+
+    public void setUserId(long userId) {
+        UserId = userId;
+    }
 
     public long getNearCircleId() {
         return NearCircleId;
@@ -21,11 +30,11 @@ public class GetNearCommentsRequest {
         Count = count;
     }
 
-    public int getLastCommentId() {
+    public long getLastCommentId() {
         return LastCommentId;
     }
 
-    public void setLastCommentId(int lastCommentId) {
+    public void setLastCommentId(long lastCommentId) {
         LastCommentId = lastCommentId;
     }
 }

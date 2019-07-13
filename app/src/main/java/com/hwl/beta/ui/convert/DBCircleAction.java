@@ -66,7 +66,7 @@ public class DBCircleAction {
         return model;
     }
 
-    public static List<CircleImage> convertToCircleImageInfos(long circleId, int publishUserId,
+    public static List<CircleImage> convertToCircleImageInfos(long circleId, long publishUserId,
                                                               List<NetImageInfo> images) {
         if (circleId <= 0 || images == null || images.size() <= 0) return null;
         List<CircleImage> circleImages = new ArrayList<>(images.size());

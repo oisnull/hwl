@@ -154,7 +154,7 @@ public class IMClientEntry {
                     @Override
                     public void accept(String msg) {
                         operateListener.listenFailed(msg);
-                        operateListener.sessionInvalid();
+                        //operateListener.sessionInvalid();
                         stopHeartbeat();
                     }
                 });
@@ -209,7 +209,7 @@ public class IMClientEntry {
                             @Override
                             public void accept(String msg) {
                                 operateListener.listenFailed(msg);
-                                operateListener.sessionInvalid();
+                                //operateListener.sessionInvalid();
                             }
                         });
                 messageOperate.send(request, response);

@@ -251,15 +251,28 @@ public class NearCircleManager extends BaseDao<NearCircle> {
     }
 
     public void saveComment(NearCircleComment comment) {
-        if (comment != null && comment.getNearCircleId() > 0 && comment.getCommentId() > 0) {
-            daoSession.getNearCircleCommentDao().save(comment);
-        }
+        if (comment == null) return;
+        daoSession.getNearCircleCommentDao().save(comment);
     }
 
     public void saveComments(List<NearCircleComment> comments) {
-        if (comments != null && comments.size() > 0) {
-            daoSession.getNearCircleCommentDao().saveInTx(comments);
+        if (comments == null || comments.size() <= 0) return;
+
+        daoSession.getNearCircleCommentDao().saveInTx(comments);
+    }
+
+    public void saveNonExistentComments(List<NearCircleComment> comments) {
+        if (comments == null || comments.size() <= 0) return;
+
+        List<NearCircleComment> nonExistentComments = new ArrayList<>();
+        for (int i = 0; i < comments.size(); i++) {
+            NearCircleComment com = getComment(comments.get(i).getNearCircleId(),
+                    comments.get(i).getCommentUserId(), comments.get(i).getCommentId());
+            if (com == null) {
+                nonExistentComments.add(comments.get(i));
+            }
         }
+        daoSession.getNearCircleCommentDao().saveInTx(nonExistentComments);
     }
 
     public NearCircleLike getLike(long nearCircleId, long userId) {

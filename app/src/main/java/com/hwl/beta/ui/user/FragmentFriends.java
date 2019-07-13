@@ -66,8 +66,11 @@ public class FragmentFriends extends BaseFragment {
         switch (messageModel.getMessageType()) {
             case EventBusConstant.EB_TYPE_FRIEND_REQUEST_UPDATE:
                 Friend item = friendAdapter.getFirendRequestItem();
-                if (item == null) return;
                 item.setMessageCount(MessageCountSP.getFriendRequestCountDesc());
+                break;
+            case EventBusConstant.EB_TYPE_CIRCLE_MESSAGE_UPDATE:
+                Friend item2 = friendAdapter.getCircleMessageItem();
+                item2.setMessageCount(MessageCountSP.getCircleMessageCountDesc());
                 break;
             case EventBusConstant.EB_TYPE_FRIEND_ADD:
                 friendAdapter.addFriend((Friend) messageModel.getMessageModel());
@@ -118,7 +121,7 @@ public class FragmentFriends extends BaseFragment {
                         break;
                     default:
                         Friend friend = friendAdapter.getItem(position);
-                        UITransfer.toUserIndexActivity(activity, friend.getId(), friend.getName(),
+                        UITransfer.toUserIndexV2Activity(activity, friend.getId(), friend.getName(),
                                 friend.getHeadImage());
                         break;
                 }
@@ -139,26 +142,26 @@ public class FragmentFriends extends BaseFragment {
     }
 
     private void loadServerFriendInfo() {
-		friendsStandard.loadServerFriends(friendAdapter.getFriends())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new RXDefaultObserver<List<Friend>>(false) {
-                @Override
-                protected void onSuccess(List<Friend> friends) {
-                    binding.pbLoading.setVisibility(View.GONE);
-                    friendAdapter.addFriends(friends);
-                }
+        friendsStandard.loadServerFriends(friendAdapter.getFriends())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RXDefaultObserver<List<Friend>>(false) {
+                    @Override
+                    protected void onSuccess(List<Friend> friends) {
+                        binding.pbLoading.setVisibility(View.GONE);
+                        friendAdapter.addFriends(friends);
+                    }
 
-                @Override
-                protected void onError(String message) {
-                    super.onError(message);
-                    binding.pbLoading.setVisibility(View.GONE);
-                }
+                    @Override
+                    protected void onError(String message) {
+                        super.onError(message);
+                        binding.pbLoading.setVisibility(View.GONE);
+                    }
 
-				@Override
-                public void onRelogin() {
-                    binding.pbLoading.setVisibility(View.GONE);
-                    UITransfer.toReloginDialog(activity);
-                }
-            });
+                    @Override
+                    public void onRelogin() {
+                        binding.pbLoading.setVisibility(View.GONE);
+                        UITransfer.toReloginDialog(activity);
+                    }
+                });
     }
 }

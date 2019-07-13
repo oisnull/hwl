@@ -10,6 +10,15 @@ public class SetLikeInfoRequest {
     /// </summary>
     private long LikeUserId;
     private long CircleId;
+	private String CircleUpdateTime;
+
+    public String getCircleUpdateTime() {
+        return CircleUpdateTime;
+    }
+
+    public void setCircleUpdateTime(String circleUpdateTime) {
+        CircleUpdateTime = circleUpdateTime;
+    }
 
     public int getActionType() {
         return ActionType;

@@ -70,6 +70,11 @@ public class EmotionFullPanel extends AutoHeightLayout implements View.OnClickLi
         ivEmotionExtends = view.findViewById(R.id.iv_emotion_extends);
         btnSend = view.findViewById(R.id.btn_send);
         eflEmotionFunction = view.findViewById(R.id.efl_emotion_function);
+        View spLine = view.findViewById(R.id.sp_line);
+        spLine.setFocusable(true);
+        spLine.requestFocus();
+        spLine.setFocusableInTouchMode(true);
+        spLine.requestFocusFromTouch();
 
         ivVoice.setOnClickListener(this);
         ivKeyboard.setOnClickListener(this);

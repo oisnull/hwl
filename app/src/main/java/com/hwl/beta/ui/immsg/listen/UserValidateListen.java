@@ -1,5 +1,6 @@
 package com.hwl.beta.ui.immsg.listen;
 
+import com.hwl.beta.ui.ebus.EventBusUtil;
 import com.hwl.im.common.DefaultConsumer;
 import com.hwl.im.imaction.AbstractMessageListenExecutor;
 import com.hwl.imcore.improto.ImMessageResponse;
@@ -14,7 +15,8 @@ public class UserValidateListen extends AbstractMessageListenExecutor<ImUserVali
         this.succCallback = succCallback;
     }
 
-    public UserValidateListen(DefaultConsumer<String> succCallback, DefaultConsumer<String> failedCallback) {
+    public UserValidateListen(DefaultConsumer<String> succCallback,
+                              DefaultConsumer<String> failedCallback) {
         this.succCallback = succCallback;
         this.failedCallback = failedCallback;
     }
@@ -35,6 +37,11 @@ public class UserValidateListen extends AbstractMessageListenExecutor<ImUserVali
     public void failed(int responseCode, String message) {
         if (this.failedCallback != null)
             this.failedCallback.accept(message);
+    }
+
+    @Override
+    public void sessionidInvalid() {
+        EventBusUtil.sendTokenInvalidEvent();
     }
 
     @Override

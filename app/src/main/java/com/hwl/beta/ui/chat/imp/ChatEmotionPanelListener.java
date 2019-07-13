@@ -60,11 +60,13 @@ public class ChatEmotionPanelListener implements IEmotionPanelListener {
 
     @Override
     public void onAddClick() {
-        Toast.makeText(context, "添加表情功能稍后开放...", Toast.LENGTH_SHORT).show();
+        UITransfer.toEmojiStoreActivity(context);
+        //Toast.makeText(context, "添加表情功能稍后开放...", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onSettingClick() {
-        Toast.makeText(context, "表情设置功能稍后开放...", Toast.LENGTH_SHORT).show();
+        UITransfer.toEmojiSettingActivity(context);
+        //Toast.makeText(context, "表情设置功能稍后开放...", Toast.LENGTH_SHORT).show();
     }
 }

@@ -2,6 +2,7 @@ package com.hwl.beta.ui.near.adp;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +19,6 @@ import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.near.action.INearCircleItemListener;
 import com.hwl.beta.ui.near.holder.NearCircleNullViewHolder;
 import com.hwl.beta.ui.near.holder.NearCircleViewHolder;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,14 +64,7 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             viewHolder.setItemBinding(itemListener);
         } else if (holder instanceof NearCircleViewHolder) {
             NearCircleViewHolder viewHolder = (NearCircleViewHolder) holder;
-            viewHolder.setItemBinding(itemListener,
-                    position,
-                    info,
-                    info.getImages(),
-                    info.getLikes(),
-                    info.getComments(),
-                    new ImageViewBean(info.getPublishUserImage())
-            );
+            viewHolder.setItemBinding(itemListener, position, info);
 
             if (info.getPublishUserId() == myUserId) {
                 viewHolder.getItemBinding().ivDelete.setVisibility(View.VISIBLE);
@@ -81,8 +74,55 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position,
+                                 @NonNull List<Object> payloads) {
+        if (payloads != null && payloads.size() > 0) {
+            InfoPayload payload = (InfoPayload) payloads.get(0);
+            NearCircleViewHolder viewHolder = (NearCircleViewHolder) holder;
+            switch (payload.operateType) {
+                case InfoPayload.ADD_LIKE:
+                    viewHolder.setLikeInfo(payload.like, itemListener);
+                    break;
+                case InfoPayload.CANCEL_LIKE:
+                    viewHolder.cancelLikeInfo(payload.like);
+                    break;
+                case InfoPayload.ADD_COMMENT:
+                    viewHolder.setCommentInfo(payload.comment);
+                    break;
+                case InfoPayload.CANCEL_COMMENT:
+                    viewHolder.deleteCommentInfo(payload.comment);
+                    break;
+            }
+        } else {
+            super.onBindViewHolder(holder, position, null);
+        }
+    }
+
     public List<NearCircle> getInfos() {
         return this.nearCircles;
+    }
+
+    public NearCircle getInfo(long nearCircleId) {
+		if(nearCircleId<=0) return null;
+        
+        for (int i = 0; i < nearCircles.size(); i++){
+			if(nearCircles.get(i).getNearCircleId()==nearCircleId){
+				return nearCircles.get(i); 
+			}
+		}
+		return null;
+    }
+
+    public int getInfoPosition(long nearCircleId) {
+		if(nearCircleId<=0) return -1;
+        
+        for (int i = 0; i < nearCircles.size(); i++){
+			if(nearCircles.get(i).getNearCircleId()==nearCircleId){
+				return i; 
+			}
+		}
+		return -1;
     }
 
     public void updateInfos(List<NearCircle> infos) {
@@ -144,48 +184,45 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return nearCircles.get(getItemCount() - 1).getNearCircleId();
     }
 
-    public void addComment(NearCircleComment comment) {
+    public void addComment(int position, NearCircleComment comment) {
         if (comment == null || comment.getNearCircleId() <= 0 || comment.getCommentUserId() <= 0)
             return;
 
-        int position = -1;
-        List<NearCircleComment> comments = null;
-        for (int i = 0; i < nearCircles.size(); i++) {
-            if (nearCircles.get(i).getNearCircleId() == comment.getNearCircleId()) {
-                comments = nearCircles.get(i).getComments();
-                if (comments == null) {
-                    comments = new ArrayList<>();
-                    nearCircles.get(i).setComments(comments);
-                }
-                position = i;
-                break;
-            }
-        }
+        NearCircle info = nearCircles.get(position);
+        if (info == null) return;
 
-        comments.add(comment);
-        if (position == -1) {
-            notifyItemChanged(0);
-        } else {
-            notifyItemChanged(position);
-        }
+        info.getComments().add(comment);
+        info.setUpdateTime(comment.getLastUpdateTime());
+        notifyItemChanged(position, new InfoPayload(InfoPayload.ADD_COMMENT, comment));
     }
 
-    public void setLike(int position, NearCircleLike likeInfo,boolean isLike) {
+    public void deleteComment(int position, NearCircleComment comment) {
+        if (comment == null || comment.getNearCircleId() <= 0)
+            return;
+
         NearCircle info = nearCircles.get(position);
-        if (info.getLikes() == null) {
-            info.setLikes(new ArrayList<NearCircleLike>());
-        }
+        if (info == null) return;
+
+        info.getComments().remove(comment);
+        info.setUpdateTime(comment.getLastUpdateTime());
+        notifyItemChanged(position, new InfoPayload(InfoPayload.CANCEL_COMMENT, comment));
+    }
+
+    public void setLike(int position, NearCircleLike likeInfo, boolean isLike) {
+        NearCircle info = nearCircles.get(position);
+        if (info == null) return;
 
         if (isLike) {
-            //点赞
             info.setIsLiked(true);
-            info.getLikes().add(info.getLikes().size(), likeInfo);
+            info.setUpdateTime(likeInfo.getLastUpdateTime());
+            info.getLikes().add(likeInfo);
+            notifyItemChanged(position, new InfoPayload(InfoPayload.ADD_LIKE, likeInfo));
         } else {
-            //取消点赞
             info.setIsLiked(false);
-			info.getLikes().remove(likeInfo);
+            info.setUpdateTime(likeInfo.getLastUpdateTime());
+            info.getLikes().remove(likeInfo);
+            notifyItemChanged(position, new InfoPayload(InfoPayload.CANCEL_LIKE, likeInfo));
         }
-        notifyItemChanged(position);
     }
 
     public void remove(int position) {
@@ -204,5 +241,26 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (nearCircles.get(position).getContentType() == NetConstant.CIRCLE_CONTENT_NULL)
             return 0;
         return 1;
+    }
+
+    private class InfoPayload {
+        public static final int ADD_LIKE = 1;
+        public static final int CANCEL_LIKE = 2;
+        public static final int ADD_COMMENT = 3;
+        public static final int CANCEL_COMMENT = 4;
+
+        public int operateType;
+        public NearCircleLike like;
+        public NearCircleComment comment;
+
+        public InfoPayload(int operateType, NearCircleLike like) {
+            this.operateType = operateType;
+            this.like = like;
+        }
+
+        public InfoPayload(int operateType, NearCircleComment comment) {
+            this.operateType = operateType;
+            this.comment = comment;
+        }
     }
 }

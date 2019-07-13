@@ -26,7 +26,8 @@ public class NearCircleCommentAdapter extends RecyclerView.Adapter<RecyclerView.
     LayoutInflater inflater;
     INearCircleCommentItemListener itemListener;
 
-    public NearCircleCommentAdapter(Context context, List<NearCircleComment> comments, INearCircleCommentItemListener itemListener) {
+    public NearCircleCommentAdapter(Context context, List<NearCircleComment> comments,
+                                    INearCircleCommentItemListener itemListener) {
         this.context = context;
         this.comments = comments;
         this.itemListener = itemListener;
@@ -61,11 +62,31 @@ public class NearCircleCommentAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
-//    public void addComment(NearCircleComment comment) {
-//        if (comment == null) return;
-//        comments.add(comment);
-//        notifyItemChanged(comments.size() - 1);
-//    }
+    public void addComment(NearCircleComment comment) {
+        if (comment == null || comment.getCommentId() <= 0) return;
+
+        int pos = comments.indexOf(comment);
+        if (pos == -1) {
+            comments.add(comment);
+            notifyItemChanged(comments.size() - 1);
+        } else
+            notifyItemChanged(pos);
+    }
+
+    public void addComments(List<NearCircleComment> infos) {
+        if (infos == null || infos.size() <= 0) return;
+
+        int pos = comments.size();
+        comments.addAll(infos);
+		notifyItemRangeChanged(pos,comments.size());
+    }
+
+    public void deleteComment(NearCircleComment comment) {
+        if (comment == null || comment.getCommentId() <= 0) return;
+
+        comments.remove(comment);
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getItemCount() {

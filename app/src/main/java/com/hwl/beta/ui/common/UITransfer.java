@@ -6,24 +6,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 
 import com.hwl.beta.db.DaoUtils;
-import com.hwl.beta.db.ext.NearCircleExt;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.TestActivity;
 import com.hwl.beta.ui.chat.ActivityChatGroup;
 import com.hwl.beta.ui.chat.ActivityChatGroupSetting;
 import com.hwl.beta.ui.chat.ActivityChatGroupSettingEdit;
-//import com.hwl.beta.ui.chat.ActivityChatUser;
-//import com.hwl.beta.ui.circle.ActivityCircleCommentPublish;
-//import com.hwl.beta.ui.circle.ActivityCircleDetail;
+import com.hwl.beta.ui.circle.ActivityCircleDetail;
 import com.hwl.beta.ui.circle.ActivityCircleIndex;
-//import com.hwl.beta.ui.circle.ActivityCircleMessages;
 import com.hwl.beta.ui.circle.ActivityCirclePublish;
 import com.hwl.beta.ui.circle.ActivityCircleUserIndex;
 import com.hwl.beta.ui.TestActivityIm;
@@ -32,32 +27,25 @@ import com.hwl.beta.ui.chat.ActivityChatUser;
 import com.hwl.beta.ui.chat.ActivityChatUserSetting;
 import com.hwl.beta.ui.circle.ActivityCircleMessages;
 import com.hwl.beta.ui.dialog.ReloginDialogFragment;
-//import com.hwl.beta.ui.entry.ActivityGetpwd;
-//import com.hwl.beta.ui.entry.ActivityMain;
 //import com.hwl.beta.ui.entry.ActivityQRCode;
+import com.hwl.beta.ui.emoji.ActivityEmojiSetting;
+import com.hwl.beta.ui.emoji.ActivityEmojiStore;
 import com.hwl.beta.ui.entry.ActivityGetpwd;
 import com.hwl.beta.ui.entry.ActivityLogin;
 import com.hwl.beta.ui.entry.ActivityMain;
 import com.hwl.beta.ui.entry.ActivityRegister;
-//import com.hwl.beta.ui.entry.ActivityWelcome;
 import com.hwl.beta.ui.group.ActivityGroup;
 import com.hwl.beta.ui.group.ActivityGroupAdd;
 import com.hwl.beta.ui.imgselect.ActivityImageBrowse;
 import com.hwl.beta.ui.imgselect.ActivityImageSelect;
-//import com.hwl.beta.ui.near.ActivityCommentPublish;
 import com.hwl.beta.ui.near.ActivityNearDetail;
 import com.hwl.beta.ui.near.ActivityNearMessages;
 import com.hwl.beta.ui.near.ActivityNearPublish;
 import com.hwl.beta.ui.user.ActivityNewFriend;
 import com.hwl.beta.ui.user.ActivityUserEdit;
 import com.hwl.beta.ui.user.ActivityUserEditItem;
-//import com.hwl.beta.ui.user.ActivityUserIndex;
-//import com.hwl.beta.ui.user.ActivityUserMessageSetting;
-//import com.hwl.beta.ui.user.ActivityUserPasswordReset;
-//import com.hwl.beta.ui.user.ActivityUserPrivacySetting;
-import com.hwl.beta.ui.user.ActivityUserIndex;
+import com.hwl.beta.ui.user.ActivityUserIndexV2;
 import com.hwl.beta.ui.user.ActivityUserSearch;
-//import com.hwl.beta.ui.user.ActivityUserSetting;
 import com.hwl.beta.ui.video.ActivityVideoPlay;
 import com.hwl.beta.ui.video.ActivityVideoSelect;
 import com.hwl.beta.ui.entry.ActivityWelcome;
@@ -151,11 +139,16 @@ public class UITransfer {
 
     public static void toUserIndexActivity(Activity context, long userId, String userName, String
             userImage) {
-        Intent intent = new Intent(context, ActivityUserIndex.class);
+        Intent intent = new Intent(context, ActivityUserIndexV2.class);
         intent.putExtra("userid", userId);
         intent.putExtra("username", userName);
         intent.putExtra("userimage", userImage);
         context.startActivity(intent);
+    }
+
+    public static void toUserIndexV2Activity(Activity context, long userId, String userName, String
+            userImage) {
+        toUserIndexActivity(context, userId, userName, userImage);
     }
 
     public static void toUserSearchActivity(Activity context) {
@@ -287,31 +280,15 @@ public class UITransfer {
     }
 
     public static void toNearDetailActivity(Activity context, long nearCircleId) {
-       Intent intent = new Intent(context, ActivityNearDetail.class);
-       intent.putExtra("nearcircleid", nearCircleId);
-       context.startActivity(intent);
-   }
+        Intent intent = new Intent(context, ActivityNearDetail.class);
+        intent.putExtra("nearcircleid", nearCircleId);
+        context.startActivity(intent);
+    }
 
-   public static void toNearMessagesActivity(Activity context) {
-       Intent intent = new Intent(context, ActivityNearMessages.class);
-       context.startActivity(intent);
-   }
-
-//    public static void toNearCommentPublishActivity(Activity context, long nearCircleId, long
-//            publishUserId, String content) {
-//        toNearCommentPublishActivity(context, nearCircleId, publishUserId, 0, null, content);
-//    }
-//
-//    public static void toNearCommentPublishActivity(Activity context, long nearCircleId, long
-//            publishUserId, long replyUserId, String replyUserName, String content) {
-//        Intent intent = new Intent(context, ActivityCommentPublish.class);
-//        intent.putExtra("nearcircleid", nearCircleId);
-//        intent.putExtra("publishuserid", publishUserId);
-//        intent.putExtra("replyuserid", replyUserId);
-//        intent.putExtra("replyusername", replyUserName);
-//        intent.putExtra("content", content);
-//        context.startActivity(intent);
-//    }
+    public static void toNearMessagesActivity(Activity context) {
+        Intent intent = new Intent(context, ActivityNearMessages.class);
+        context.startActivity(intent);
+    }
 
     public static void toCircleIndexActivity(Activity context) {
         Intent intent = new Intent(context, ActivityCircleIndex.class);
@@ -323,26 +300,10 @@ public class UITransfer {
         context.startActivity(intent);
     }
 
-//    public static void toCircleCommentPublishActivity(Activity context, long circleId, long
-//            publishUserId, String content) {
-//        toCircleCommentPublishActivity(context, circleId, publishUserId, 0, null, content);
-//    }
-//
-//    public static void toCircleCommentPublishActivity(Activity context, long circleId, long
-//            publishUserId, long replyUserId, String replyUserName, String content) {
-//        Intent intent = new Intent(context, ActivityCircleCommentPublish.class);
-//        intent.putExtra("circleid", circleId);
-//        intent.putExtra("publishuserid", publishUserId);
-//        intent.putExtra("replyuserid", replyUserId);
-//        intent.putExtra("replyusername", replyUserName);
-//        intent.putExtra("content", content);
-//        context.startActivity(intent);
-//    }
-
-    public static void toCircleUserIndexActivity(Activity context, 
-													long viewUserId, 
-													String viewUserName, 
-													String viewUserImage) {
+    public static void toCircleUserIndexActivity(Activity context,
+                                                 long viewUserId,
+                                                 String viewUserName,
+                                                 String viewUserImage) {
         Intent intent = new Intent(context, ActivityCircleUserIndex.class);
         intent.putExtra("viewuserid", viewUserId);
         intent.putExtra("viewusername", viewUserName);
@@ -350,16 +311,11 @@ public class UITransfer {
         context.startActivity(intent);
     }
 
-//    public static void toCircleDetailActivity(Activity context, long circleId, CircleExt info) {
-//        Intent intent = new Intent(context, ActivityCircleDetail.class);
-//        if (info != null && info.getInfo() != null) {
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable("circleext", info);
-//            intent.putExtras(bundle);
-//        }
-//        intent.putExtra("circleid", circleId);
-//        context.startActivity(intent);
-//    }
+    public static void toCircleDetailActivity(Activity context, long circleId) {
+        Intent intent = new Intent(context, ActivityCircleDetail.class);
+        intent.putExtra("circleid", circleId);
+        context.startActivity(intent);
+    }
 
     public static void toCircleMessagesActivity(Activity context) {
         Intent intent = new Intent(context, ActivityCircleMessages.class);
@@ -450,5 +406,15 @@ public class UITransfer {
 //            L.d("componentName = " + componentName.getClassName());
             context.startActivity(Intent.createChooser(intent, "请选择浏览器"));
         }
+    }
+
+    public static void toEmojiStoreActivity(Activity context) {
+        Intent intent = new Intent(context, ActivityEmojiStore.class);
+        context.startActivity(intent);
+    }
+
+    public static void toEmojiSettingActivity(Activity context) {
+        Intent intent = new Intent(context, ActivityEmojiSetting.class);
+        context.startActivity(intent);
     }
 }

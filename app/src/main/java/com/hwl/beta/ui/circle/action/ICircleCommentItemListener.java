@@ -1,5 +1,7 @@
 package com.hwl.beta.ui.circle.action;
 
+import android.view.View;
+
 import com.hwl.beta.db.entity.CircleComment;
 
 /**
@@ -11,5 +13,7 @@ public interface ICircleCommentItemListener {
 
     void onReplyUserClick(CircleComment comment);
 
-    void onContentClick(CircleComment comment);
+    void onCommentContentClick(CircleComment comment);
+
+    boolean onCommentLongClick(View view, CircleComment comment);
 }

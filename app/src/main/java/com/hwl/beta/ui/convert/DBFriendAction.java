@@ -70,10 +70,6 @@ public class DBFriendAction {
     }
 
     public static Friend convertToFriendInfo(UserDetailsInfo userDetailsInfo) {
-        return convertToFriendInfo(userDetailsInfo, false);
-    }
-
-    public static Friend convertToFriendInfo(UserDetailsInfo userDetailsInfo, boolean isFriend) {
         Friend friend = new Friend();
         friend.setId(userDetailsInfo.getId());
         friend.setSymbol(userDetailsInfo.getSymbol());
@@ -81,12 +77,12 @@ public class DBFriendAction {
         friend.setSex(userDetailsInfo.getSex());
         friend.setRemark(userDetailsInfo.getNameRemark());
         friend.setHeadImage(userDetailsInfo.getHeadImage());
-        friend.setCountry(userDetailsInfo.getCountry());
-        friend.setProvince(userDetailsInfo.getProvince());
+        //friend.setCountry(userDetailsInfo.getCountry());
+        //friend.setProvince(userDetailsInfo.getProvince());
         friend.setUpdateTime(userDetailsInfo.getUpdateTime());
         friend.setCircleBackImage(userDetailsInfo.getCircleBackImage());
         friend.setLifeNotes(userDetailsInfo.getLifeNotes());
-        friend.setIsFriend(isFriend);
+        friend.setIsFriend(userDetailsInfo.isFriend());
         return friend;
     }
 

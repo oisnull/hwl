@@ -69,10 +69,10 @@ public class IMDefaultSendOperateListener<T> {
             failed1();
     }
 
-    public final void sessionInvalid() {
-        log.info(getSendDesc() + " : session invalid");
-        EventBusUtil.sendTokenInvalidEvent();
-    }
+    //public final void sessionInvalid() {
+    //    log.info(getSendDesc() + " : session invalid");
+    //    EventBusUtil.sendTokenInvalidEvent();
+    //}
 
     public final void listenSuccess(final T t) {
         log.info(getSendDesc() + " listen success");

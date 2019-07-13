@@ -18,7 +18,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@drawable/item_selector"
         android:orientation="vertical">
 
         <TextView
@@ -36,8 +36,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/rl_group_letter"
             android:gravity="center_vertical"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp">
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
 
             <ImageView
                 android:id="@+id/iv_header"

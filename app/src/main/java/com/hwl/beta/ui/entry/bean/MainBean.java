@@ -16,11 +16,12 @@ public class MainBean extends BaseObservable {
     private int circleMessageCount;
     private int meMessageCount;
 
-    public MainBean(int chatMessageCount, int nearMessageCount, int friendMessageCount, int circleMessageCount, int meMessageCount) {
+    public MainBean(int chatMessageCount, int nearMessageCount, int friendMessageCount,
+                    int circleMessageCount, int meMessageCount) {
         this.chatMessageCount = chatMessageCount;
         this.nearMessageCount = nearMessageCount;
-        this.friendMessageCount = friendMessageCount;
-        this.circleMessageCount = circleMessageCount;
+        this.friendMessageCount = friendMessageCount + circleMessageCount;
+//        this.circleMessageCount = circleMessageCount;
         this.meMessageCount = meMessageCount;
     }
 

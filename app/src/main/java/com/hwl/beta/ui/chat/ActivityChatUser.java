@@ -158,7 +158,7 @@ public class ActivityChatUser extends BaseActivity {
     }
 
     @Override
-    protected void receiveStickyEventMessage(EventMessageModel messageModel) {
+    protected void receiveEventMessage(EventMessageModel messageModel) {
         switch (messageModel.getMessageType()) {
             case EventBusConstant.EB_TYPE_CHAT_USER_MESSAGE_UPDATE:
                 messageAdapter.updateMessage((ChatUserMessage) messageModel.getMessageModel());
@@ -213,7 +213,7 @@ public class ActivityChatUser extends BaseActivity {
         @Override
         public boolean onChatItemLongClick(View view, final int position) {
             final PopupMenu popup = new PopupMenu(activity, view);
-            popup.getMenuInflater().inflate(R.menu.popup_message_menu, popup.getMenu());
+            popup.getMenuInflater().inflate(R.menu.popup_chat_menu, popup.getMenu());
             popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     ChatUserMessage message = messageAdapter.getChatUserMessage(position);
