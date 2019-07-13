@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.EmojiActivityStoreBinding;
@@ -37,6 +39,13 @@ public class ActivityEmojiStore extends BaseActivity {
                     }
                 });
 
+        binding.wvEmojiList.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+        });
         binding.wvEmojiList.loadUrl("http://www.baidu.com");
     }
 }
