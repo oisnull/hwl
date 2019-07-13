@@ -19,7 +19,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@drawable/item_selector"
         android:onClick="@{view->action.onItemNullViewClick()}"
         android:padding="10dp">
 

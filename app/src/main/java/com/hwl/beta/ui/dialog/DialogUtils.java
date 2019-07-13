@@ -39,8 +39,7 @@ public class DialogUtils {
     }
 
     public static void showLocationDialog(FragmentActivity fragmentActivity, String title, String
-            content, View.OnClickListener
-                                                  clickListener) {
+            content, View.OnClickListener clickListener) {
         if (locationDialogFragment == null) {
             locationDialogFragment = new LocationDialogFragment();
         }

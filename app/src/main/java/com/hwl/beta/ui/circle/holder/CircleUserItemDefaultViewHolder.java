@@ -2,14 +2,14 @@ package com.hwl.beta.ui.circle.holder;
 
 import android.support.v7.widget.RecyclerView;
 
-import com.hwl.beta.databinding.CircleUserItemNullBinding;
+import com.hwl.beta.databinding.CircleUserItemDefaultBinding;
 import com.hwl.beta.ui.circle.action.ICircleUserItemListener;
 
-public class CircleUserItemNullViewHolder extends RecyclerView.ViewHolder {
+public class CircleUserItemDefaultViewHolder extends RecyclerView.ViewHolder {
 
-    private CircleUserItemNullBinding itemBinding;
+    private CircleUserItemDefaultBinding itemBinding;
 
-    public CircleUserItemNullViewHolder(CircleUserItemNullBinding itemBinding) {
+    public CircleUserItemDefaultViewHolder(CircleUserItemDefaultBinding itemBinding) {
         super(itemBinding.getRoot());
         this.itemBinding = itemBinding;
     }
@@ -22,7 +22,7 @@ public class CircleUserItemNullViewHolder extends RecyclerView.ViewHolder {
         this.itemBinding.setTimeDay(timeDay);
     }
 
-    public CircleUserItemNullBinding getItemBinding() {
+    public CircleUserItemDefaultBinding getItemBinding() {
         return this.itemBinding;
     }
 }

@@ -2,7 +2,6 @@ package com.hwl.beta.ui.user;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
@@ -20,6 +19,9 @@ import com.hwl.beta.ui.common.KeyBoardAction;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.dialog.DialogUtils;
 import com.hwl.beta.ui.dialog.LoadingDialog;
+import com.hwl.beta.ui.ebus.EventBusConstant;
+import com.hwl.beta.ui.ebus.EventMessageModel;
+import com.hwl.beta.ui.ebus.bean.EventUpdateFriendRemark;
 import com.hwl.beta.ui.immsg.IMClientEntry;
 import com.hwl.beta.ui.immsg.IMDefaultSendOperateListener;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
@@ -110,7 +112,7 @@ public class ActivityUserIndexV2 extends BaseActivity {
             }
         };
 
-        binding.tbTitle.setTitle("User Details")
+        binding.tbTitle.setTitle("用户详情")
                 .setImageRightResource(R.drawable.v_more)
                 .setImageLeftClick(new View.OnClickListener() {
                     @Override
@@ -138,6 +140,14 @@ public class ActivityUserIndexV2 extends BaseActivity {
             public void onClick(View v) {
                 UITransfer.toUserEditItemActivity(activity, UserEditItemBean.ACTIONTYPE_REMARK,
                         currentUser.getRemark(), currentUser.getUserId());
+            }
+        });
+
+        binding.tvCircleMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UITransfer.toCircleUserIndexActivity(activity, currentUser.getUserId(),
+                        currentUser.getUserName(), currentUser.getUserImage());
             }
         });
 
@@ -194,10 +204,11 @@ public class ActivityUserIndexV2 extends BaseActivity {
             }
         });
 
-        this.setDisplay();
         this.bindInfo(true);
         this.loadServerUserInfo();
-        this.loadCircleInfos();
+
+        if (currentUser.isMe() || currentUser.isFriend())
+            this.loadCircleInfos();
     }
 
     private void bindInfo(boolean isReloadHeader) {
@@ -207,8 +218,10 @@ public class ActivityUserIndexV2 extends BaseActivity {
         if (StringUtils.isNotBlank(currentUser.getRemark())) {
             binding.tvRemark.setText(currentUser.getRemark());
             binding.llRemark.setVisibility(View.VISIBLE);
+            binding.ivRemark2.setVisibility(View.GONE);
         } else {
             binding.llRemark.setVisibility(View.GONE);
+            binding.ivRemark2.setVisibility(View.VISIBLE);
         }
 
         if (StringUtils.isNotBlank(currentUser.getUserName())) {
@@ -226,18 +239,25 @@ public class ActivityUserIndexV2 extends BaseActivity {
         }
 
         binding.tvNotes.setText(currentUser.getUserLifeNotes());
+        this.setDisplay();
     }
 
     private void setDisplay() {
         if (currentUser.isMe()) {
             binding.llRemark.setVisibility(View.GONE);
-            binding.tvUsernameDesc.setVisibility(View.GONE);
+            binding.ivRemark2.setVisibility(View.GONE);
+            binding.llUsername.setVisibility(View.VISIBLE);
+            binding.llSymbol.setVisibility(View.VISIBLE);
+//            binding.tvUsernameDesc.setVisibility(View.GONE);
             binding.llUserAction.setVisibility(View.GONE);
         } else if (currentUser.isFriend()) {
             binding.llUserAction.setVisibility(View.VISIBLE);
             binding.ivUserAdd.setVisibility(View.GONE);
         } else {
-
+            binding.llUsername.setVisibility(View.VISIBLE);
+            binding.llRemark.setVisibility(View.GONE);
+            binding.ivRemark.setVisibility(View.GONE);
+            binding.ivRemark2.setVisibility(View.GONE);
         }
     }
 
@@ -299,6 +319,8 @@ public class ActivityUserIndexV2 extends BaseActivity {
                     @Override
                     public void accept(List<Circle> infos) {
                         circleAdapter.addInfos(infos);
+                        if (circleAdapter.getItemCount() > 0)
+                            binding.tvCircleTitle.setVisibility(View.VISIBLE);
                         loadServerCircleInfos(infos);
                     }
                 }, new Consumer<Throwable>() {
@@ -322,6 +344,8 @@ public class ActivityUserIndexV2 extends BaseActivity {
                     @Override
                     public void accept(List<Circle> infos) {
                         circleAdapter.updateInfos(infos);
+                        if (circleAdapter.getItemCount() > 0)
+                            binding.tvCircleTitle.setVisibility(View.VISIBLE);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -330,5 +354,22 @@ public class ActivityUserIndexV2 extends BaseActivity {
                         // .show();
                     }
                 });
+    }
+
+    @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
+
+    @Override
+    protected void receiveEventMessage(EventMessageModel messageModel) {
+        if (messageModel.getMessageType() == EventBusConstant.EB_TYPE_FRIEND_UPDATE_REMARK) {
+            EventUpdateFriendRemark friendRemark = (EventUpdateFriendRemark) messageModel
+                    .getMessageModel();
+            if (friendRemark.getFriendId() == currentUser.getUserId()) {
+                currentUser.setRemark(friendRemark.getFriendRemark());
+                bindInfo(false);
+            }
+        }
     }
 }

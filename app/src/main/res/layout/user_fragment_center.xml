@@ -27,8 +27,8 @@
             android:id="@+id/rl_user_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:background="@color/white"
             android:onClick="@{(view)->action.onInfoClick()}">
 
@@ -37,8 +37,8 @@
                 android:layout_width="75dp"
                 android:layout_height="75dp"
                 android:onClick="@{(view)->action.onHeadImageClick()}"
-                android:paddingBottom="10dp"
                 android:paddingTop="10dp"
+                android:paddingBottom="10dp"
                 android:src="@drawable/empty_photo"
                 app:imageUrl="@{image.imageUrl}" />
 
@@ -90,8 +90,8 @@
             android:background="@color/white"
             android:onClick="@{(view)->action.onCircleClick()}"
             android:orientation="horizontal"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp">
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
 
             <ImageView
                 android:layout_width="30dp"
@@ -108,29 +108,30 @@
 
         </LinearLayout>
 
-        <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="@color/white"-->
-        <!--android:onClick="@{(view)->action.onMessageClick()}"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:paddingBottom="10dp"-->
-        <!--android:paddingTop="10dp">-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:background="@color/white"
+            android:onClick="@{(view)->action.onCircleMessageClick()}"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
 
-        <!--<ImageView-->
-        <!--android:layout_width="30dp"-->
-        <!--android:layout_height="30dp"-->
-        <!--android:layout_marginLeft="10dp"-->
-        <!--android:layout_marginRight="10dp"-->
-        <!--android:background="@drawable/ic_message" />-->
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/ic_circle_message" />
 
-        <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center_vertical"-->
-        <!--android:text="我的消息" />-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="朋友圈消息" />
 
-        <!--</LinearLayout>-->
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ll_check_version"
@@ -139,8 +140,8 @@
             android:background="@color/white"
             android:onClick="@{(view)->action.onCheckUpdateClick()}"
             android:orientation="horizontal"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp">
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
 
             <ImageView
                 android:layout_width="30dp"
@@ -165,8 +166,8 @@
             android:background="@color/white"
             android:onClick="@{(view)->action.onSettingClick()}"
             android:orientation="horizontal"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp">
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
 
             <ImageView
                 android:layout_width="30dp"
@@ -188,8 +189,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40px"
-            android:layout_marginRight="40px"
             android:layout_marginTop="20dp"
+            android:layout_marginRight="40px"
             android:background="@color/main"
             android:gravity="center"
             android:onClick="@{(view)->action.onLogoutClick()}"

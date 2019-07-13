@@ -127,4 +127,9 @@ public class TitleBar extends RelativeLayout {
         imgRight.setVisibility(View.GONE);
         return this;
     }
+
+    public TitleBar setImageRightShow() {
+        imgRight.setVisibility(View.VISIBLE);
+        return this;
+    }
 }

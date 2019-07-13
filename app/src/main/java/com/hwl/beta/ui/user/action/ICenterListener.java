@@ -14,7 +14,7 @@ public interface ICenterListener {
 
     void onSettingClick();
 
-    void onMessageClick();
+    void onCircleMessageClick();
 
     void onCheckUpdateClick();
 

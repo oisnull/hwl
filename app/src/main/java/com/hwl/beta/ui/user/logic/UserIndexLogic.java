@@ -114,7 +114,8 @@ public class UserIndexLogic implements UserIndexStandard {
             @Override
             public List<Circle> call() {
                 List<Circle> circles =
-                        DaoUtils.getCircleManagerInstance().getUserCircles(userId);
+                        DaoUtils.getCircleManagerInstance().getUserCircles(userId,
+                                CIRCLE_PAGE_COUNT);
                 if (circles == null)
                     circles = new ArrayList<>();
 

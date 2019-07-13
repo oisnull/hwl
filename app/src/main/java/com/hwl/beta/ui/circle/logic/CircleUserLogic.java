@@ -30,7 +30,7 @@ import io.reactivex.schedulers.Schedulers;
 public class CircleUserLogic implements CircleUserStandard {
 
     final static int PAGE_COUNT = 15;
-//    final static int COMMENT_PAGE_COUNT = 10;
+    //    final static int COMMENT_PAGE_COUNT = 10;
     Friend currentUser;
 
     public CircleUserLogic(long viewUserId, String viewUserName, String viewUserImage) {
@@ -64,7 +64,10 @@ public class CircleUserLogic implements CircleUserStandard {
                     @Override
                     public void accept(List<Circle> circles) throws Exception {
                         if (circles.size() <= 0) {
-                            circles.add(new Circle(DBConstant.CIRCLE_ITEM_NULL));
+                            if (currentUser.getId() == UserSP.getUserId())
+                                circles.add(new Circle(DBConstant.CIRCLE_ITEM_DEFAULT));
+                            else
+                                circles.add(new Circle(DBConstant.CIRCLE_ITEM_NULL));
                         }
                         circles.add(0, new Circle(DBConstant.CIRCLE_ITEM_HEAD,
                                 currentUser.getId(),

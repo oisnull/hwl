@@ -27,6 +27,20 @@ public class CircleManager extends BaseDao<Circle> {
         return daoSession.getCircleDao().load(circleId);
     }
 
+    public Circle getCircleDetails(long circleId, int commentPageCount) {
+        if (circleId <= 0) return null;
+        Circle info = daoSession.getCircleDao().load(circleId);
+        if (info == null) return null;
+
+        if (commentPageCount <= 0) return info;
+
+        info.setImages(getImages(circleId));
+        info.setComments(getComments(circleId, commentPageCount));
+        info.setLikes(getLikes(circleId));
+
+        return info;
+    }
+
     public boolean isExists(long circleId) {
         if (circleId <= 0) return false;
         if (daoSession.getCircleDao().load(circleId) != null)
@@ -427,9 +441,14 @@ public class CircleManager extends BaseDao<Circle> {
 //    }
 
     public List<Circle> getUserCircles(long userId) {
+        return getUserCircles(userId, 0);
+    }
+
+    public List<Circle> getUserCircles(long userId, int count) {
         List<Circle> infos = daoSession.getCircleDao().queryBuilder()
                 .where(CircleDao.Properties.PublishUserId.eq(userId))
                 .orderDesc(CircleDao.Properties.CircleId)
+                .limit(count > 0 ? count : 999999)
                 .list();
         if (infos == null || infos.size() <= 0) return null;
 

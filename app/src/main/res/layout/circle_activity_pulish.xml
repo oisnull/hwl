@@ -72,11 +72,6 @@
                 </LinearLayout>
             </ScrollView>
 
-            <!--<com.hwl.beta.emotion.EmotionDefaultPanel
-                android:id="@+id/ecp_emotion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />-->
         </LinearLayout>
     </com.hwl.beta.emotion.EmotionDefaultPanel>
 </layout>

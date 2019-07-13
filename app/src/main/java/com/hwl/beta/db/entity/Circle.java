@@ -108,9 +108,9 @@ public class Circle implements Serializable {
         return null;
     }
 
-    public String getShowDate() {
+    public String getShortPublishDate() {
         if (this.publishTime != null)
-            return DateUtils.dateToStrTime(this.publishTime);
+            return DateUtils.dateToStrShort(this.publishTime);
         return null;
     }
 

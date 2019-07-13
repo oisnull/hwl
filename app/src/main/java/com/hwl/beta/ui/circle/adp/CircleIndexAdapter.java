@@ -100,7 +100,7 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof CircleItemNullViewHolder) {
             CircleItemNullViewHolder viewHolder = (CircleItemNullViewHolder) holder;
-            viewHolder.setItemBinding(itemListener);
+            viewHolder.setItemBinding(true, itemListener);
         } else if (holder instanceof CircleHeadItemViewHolder) {
             CircleHeadItemViewHolder viewHolder = (CircleHeadItemViewHolder) holder;
             viewHolder.setItemBinding(itemListener, UserSP.getUserName(),

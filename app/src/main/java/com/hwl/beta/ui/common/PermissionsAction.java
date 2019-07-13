@@ -38,11 +38,36 @@ public class PermissionsAction {
                 .request(Manifest.permission.RECORD_AUDIO)
                 .subscribe(new Consumer<Boolean>() {
                     @Override
-                    public void accept(Boolean aBoolean) throws Exception {
+                    public void accept(Boolean aBoolean) {
                         isHas = aBoolean;
                     }
                 });
 
         return isHas;
+    }
+
+    public static boolean checkLocation(Activity activity) {
+        isHas = false;
+        RxPermissions rxPermissions = new RxPermissions(activity);
+        rxPermissions
+                .request(Manifest.permission.ACCESS_COARSE_LOCATION)
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) {
+                        isHas = aBoolean;
+                    }
+                });
+
+        return isHas;
+//        int checkPermission = ContextCompat.checkSelfPermission(MainActivity.this, Manifest
+//        .permission.ACCESS_COARSE_LOCATION);
+//        if (checkPermission != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest
+//            .permission.ACCESS_COARSE_LOCATION}, 1);
+//            Log.d("TTTT", "弹出提示");
+//            return;
+//        } else {
+//            mLocationClient.start();
+//        }
     }
 }

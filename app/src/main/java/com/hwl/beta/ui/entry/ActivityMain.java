@@ -26,6 +26,7 @@ import com.hwl.beta.databinding.EntryActivityMainBinding;
 import com.hwl.beta.location.BaiduLocationV2;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.ui.TabFragmentPagerAdapter;
+import com.hwl.beta.ui.common.PermissionsAction;
 import com.hwl.beta.ui.dialog.DialogUtils;
 import com.hwl.beta.ui.ebus.EventBusConstant;
 import com.hwl.beta.ui.ebus.EventMessageModel;
@@ -94,7 +95,10 @@ public class ActivityMain extends BaseActivity {
                 });
 
         location = new BaiduLocationV2(new HWLLocationListener());
-        location.start();
+        if (PermissionsAction.checkLocation(activity)) {
+            location.start();
+        }
+
         networkBroadcastReceiver = new NetworkBroadcastReceiver();
         registerReceiver(networkBroadcastReceiver, new IntentFilter(NetworkBroadcastReceiver
                 .ACTION_TAG));
@@ -141,15 +145,20 @@ public class ActivityMain extends BaseActivity {
         DialogUtils.showLocationDialog(activity, title, content, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                binding.tbTitle.setTitle("位置重新获取中...");
-                location.start();
+                if (!PermissionsAction.checkLocation(activity))
+                    return;
+                if (location.isEnd()) {
+                    location.start();
+                    if (location.getCurrentStatus() == BaiduLocationV2.POSITIONING)
+                        binding.tbTitle.setTitle("位置重新获取中...");
+                }
                 DialogUtils.closeLocationDialog();
             }
         });
     }
 
     public void showLocationStatus() {
-        switch (location.getcurrentStatus()) {
+        switch (location.getCurrentStatus()) {
             case BaiduLocationV2.NOT_START:
             case BaiduLocationV2.POSITIONING:
                 showLocationDialog("当前位置", "正在获取当前位置信息...");

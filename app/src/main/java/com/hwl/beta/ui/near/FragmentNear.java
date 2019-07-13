@@ -152,7 +152,7 @@ public class FragmentNear extends BaseFragment {
                 public void run() {
                     parentActivity.setBottomNavVisibility(false);
                 }
-            }, 300);
+            }, 200);
         } else {
             binding.edpEmotion.reset();
             binding.edpEmotion.setPanelVisibility(View.GONE);
@@ -161,7 +161,7 @@ public class FragmentNear extends BaseFragment {
                 public void run() {
                     parentActivity.setBottomNavVisibility(true);
                 }
-            }, 300);
+            }, 200);
         }
     }
 

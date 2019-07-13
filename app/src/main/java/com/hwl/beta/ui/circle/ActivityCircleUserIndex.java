@@ -19,6 +19,7 @@ import com.hwl.beta.ui.circle.logic.CircleUserLogic;
 import com.hwl.beta.ui.circle.standard.CircleUserStandard;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.UITransfer;
+import com.hwl.beta.ui.widget.TitleBar;
 import com.hwl.beta.utils.NetworkUtils;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -57,21 +58,26 @@ public class ActivityCircleUserIndex extends BaseActivity {
     private void initView() {
         binding.tbTitle
                 .setTitle(currentUser.getId() == UserSP.getUserId() ? "我的动态" : "TA的动态")
-                .setImageRightResource(R.drawable.ic_sms)
-                .setImageRightClick(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        UITransfer.toCircleMessagesActivity(activity);
-                    }
-                })
+                .setImageRightHide()
                 .setImageLeftClick(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         onBackPressed();
                     }
                 });
+        if (currentUser.getId() == UserSP.getUserId()) {
+            binding.tbTitle.setImageRightShow()
+                    .setImageRightResource(R.drawable.ic_sms)
+                    .setImageRightClick(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            UITransfer.toCircleMessagesActivity(activity);
+                        }
+                    });
+        }
 
-        circleAdapter = new CircleUserIndexAdapter(activity, new CircleUserItemListener());
+        circleAdapter = new CircleUserIndexAdapter(activity, currentUser.getId(),
+                new CircleUserItemListener());
         binding.rvCircleContainer.setAdapter(circleAdapter);
         binding.rvCircleContainer.setLayoutManager(new LinearLayoutManager(activity));
 
@@ -132,6 +138,8 @@ public class ActivityCircleUserIndex extends BaseActivity {
         if (circleAdapter.getItemCount() <= 0) {
             circleAdapter.setEmptyInfo();
             binding.refreshLayout.setEnableLoadMore(false);
+        } else {
+            binding.refreshLayout.setEnableLoadMore(true);
         }
         binding.refreshLayout.finishLoadMore();
     }

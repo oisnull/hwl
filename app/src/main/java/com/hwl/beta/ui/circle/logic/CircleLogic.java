@@ -229,7 +229,8 @@ public class CircleLogic implements CircleStandard {
         return Observable.fromCallable(new Callable<Circle>() {
             @Override
             public Circle call() {
-                return DaoUtils.getCircleManagerInstance().getCircle(circleId);
+                return DaoUtils.getCircleManagerInstance().getCircleDetails(circleId,
+                        COMMENT_PAGE_COUNT);
             }
         }).subscribeOn(Schedulers.io());
     }

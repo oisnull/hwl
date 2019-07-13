@@ -49,9 +49,26 @@ public class BaiduLocationV2 {
                     errorMessage = null;
                     locationListener.onSuccess(model);
                 } else {
-                    currentStatus = COMPLETE_FAILD;
-                    errorMessage = location.getLocTypeDescription();
-                    locationListener.onFailure(errorMessage);
+
+                    //模拟器的时候使用
+                    LocationModel model = new LocationModel();
+                    model.radius = 40.0f;
+                    model.latitude = (float) 31.07344;
+                    model.longitude = (float) 121.507054;
+                    model.country = "中国";
+                    model.province = "上海市";
+                    model.city = "上海市";
+                    model.district = "闵行区";
+                    model.street = "浦晓南路(ERROR)";
+                    model.addr = "Location failed,here is a fix value";
+                    model.describe = "在世博家园十三街坊附近";
+                    currentStatus = COMPLETE_SUCCESS;
+                    errorMessage = null;
+                    locationListener.onSuccess(model);
+
+//                    currentStatus = COMPLETE_FAILD;
+//                    errorMessage = location.getLocTypeDescription();
+//                    locationListener.onFailure(errorMessage);
                 }
 
                 stop();
@@ -116,8 +133,12 @@ public class BaiduLocationV2 {
         return this.errorMessage;
     }
 
-    public int getcurrentStatus() {
+    public int getCurrentStatus() {
         return this.currentStatus;
+    }
+
+    public boolean isEnd() {
+        return this.currentStatus == COMPLETE_SUCCESS || this.currentStatus == COMPLETE_FAILD;
     }
 
     public void start() {
