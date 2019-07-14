@@ -34,7 +34,7 @@ public class TestActivityLocation extends BaseActivity {
             @Override
             public void onSuccess(LocationModel result) {
                 //判断本地存储的位置是否与当前定位的位置是否一样，如果一样则不做任何操作
-                if (UserPosSP.getLontitude() == result.longitude && UserPosSP.getLatitude() ==
+                if (UserPosSP.getLongitude() == result.longitude && UserPosSP.getLatitude() ==
                         result.latitude) {
                     tvStatus.setText("与本地存储的位置数据一样：" + UserPosSP.getNearDesc());
                     return;

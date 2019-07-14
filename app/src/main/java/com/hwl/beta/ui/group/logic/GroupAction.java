@@ -64,7 +64,8 @@ public class GroupAction {
                                     response.getGroupInfo().getGroupUserCount(),
                                     response.getGroupInfo().getGroupUserImages(),
                                     response.getGroupInfo().getBuildDate(),
-                                    false
+                                    false,
+                                    response.getGroupInfo().getGroupUsers() != null && response.getGroupInfo().getGroupUsers().size() > 0
                             );
                             List<GroupUserInfo> userInfos = DBGroupAction.convertToGroupUserInfos
                                     (response.getGroupInfo().getGroupUsers());

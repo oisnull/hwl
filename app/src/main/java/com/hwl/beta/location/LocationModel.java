@@ -1,11 +1,9 @@
 package com.hwl.beta.location;
 
-import com.hwl.beta.utils.StringUtils;
-
 public class LocationModel {
     public float radius;
-    public float latitude;
-    public float longitude;
+    public double latitude;
+    public double longitude;
     public String country;
     public String province;
     public String city;
@@ -13,16 +11,6 @@ public class LocationModel {
     public String street;
     public String addr;
     public String describe;
-
-    public String getNearDesc() {
-        if (!StringUtils.isBlank(this.street)) {
-            return street + "附近";
-        }
-        if (!StringUtils.isBlank(describe)) {
-            return describe + "附近";
-        }
-        return "我的附近";
-    }
 
     @Override
     public String toString() {

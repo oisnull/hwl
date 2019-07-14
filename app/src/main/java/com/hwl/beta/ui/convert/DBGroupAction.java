@@ -5,6 +5,7 @@ import com.hwl.beta.db.entity.GroupInfo;
 import com.hwl.beta.db.entity.GroupUserInfo;
 import com.hwl.beta.net.group.NetGroupInfo;
 import com.hwl.beta.net.user.NetGroupUserInfo;
+import com.hwl.beta.net.user.NetSecretUserInfo;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.utils.StringUtils;
@@ -18,7 +19,7 @@ import java.util.List;
  */
 
 public class DBGroupAction {
-	public static final int GROUP_IMAGE_COUNT = 9;
+    public static final int GROUP_IMAGE_COUNT = 9;
 
     public static List<GroupInfo> convertToGroupInfos(List<NetGroupInfo> groupInfos) {
         if (groupInfos == null || groupInfos.size() <= 0) return null;
@@ -34,9 +35,9 @@ public class DBGroupAction {
             groupInfo.setUpdateTime(groupInfos.get(i).getUpdateDate());
             groupInfo.setGroupUserCount(groupInfos.get(i).getGroupUserCount());
             groupInfo.setMyUserName(UserSP.getUserShowName());
-            groupInfo.setUserImages(new ArrayList<String>());
+            groupInfo.setGroupImages(new ArrayList<String>());
             for (int j = 0; j < groupInfos.get(i).getGroupUsers().size(); j++) {
-                groupInfo.getUserImages().add(groupInfos.get(i).getGroupUsers().get(j)
+                groupInfo.getGroupImages().add(groupInfos.get(i).getGroupUsers().get(j)
                         .getUserHeadImage());
                 if (j >= 8) break;
             }
@@ -45,15 +46,30 @@ public class DBGroupAction {
         return groups;
     }
 
-    public static GroupInfo convertToNearGroupInfo(String groupGuid, int groupUserCount,
-                                                   List<String> groupUserImages) {
-        return convertToGroupInfo(groupGuid, UserPosSP.getNearDesc(), null, 0, groupUserCount,
-                groupUserImages, new Date(), true);
+    public static GroupInfo convertToNearGroupInfo(String groupGuid,
+                                                   int groupUserCount,
+                                                   List<String> groupUserImages,
+                                                   boolean isLoadUsers) {
+        return convertToGroupInfo(groupGuid,
+                UserPosSP.getNearDesc(),
+                null,
+                0,
+                groupUserCount,
+                groupUserImages,
+                new Date(),
+                true,
+                isLoadUsers);
     }
 
-    public static GroupInfo convertToGroupInfo(String groupGuid, String groupName, String
-            groupNote, long buildUserId, int groupUserCount, List<String> groupUserImages, Date
-                                                       buildTime, boolean isSystem) {
+    public static GroupInfo convertToGroupInfo(String groupGuid,
+                                               String groupName,
+                                               String groupNote,
+                                               long buildUserId,
+                                               int groupUserCount,
+                                               List<String> groupUserImages,
+                                               Date buildTime,
+                                               boolean isSystem,
+                                               boolean isLoadUsers) {
         GroupInfo groupInfo = new GroupInfo();
         groupInfo.setGroupGuid(groupGuid);
         groupInfo.setGroupName(groupName);
@@ -61,9 +77,10 @@ public class DBGroupAction {
         groupInfo.setBuildUserId(buildUserId);
         groupInfo.setBuildTime(buildTime);
         groupInfo.setGroupUserCount(groupUserCount);
-        groupInfo.setUserImages(groupUserImages);
+        groupInfo.setGroupImages(groupUserImages);
         groupInfo.setMyUserName(UserSP.getUserShowName());
         groupInfo.setIsSystem(isSystem);
+        groupInfo.setIsLoadUser(isLoadUsers);
         return groupInfo;
     }
 
@@ -71,8 +88,11 @@ public class DBGroupAction {
         if (userInfos == null || userInfos.size() <= 0) return null;
         List<GroupUserInfo> groupUserInfos = new ArrayList<>(userInfos.size());
         for (int i = 0; i < userInfos.size(); i++) {
-            groupUserInfos.add(convertToGroupUserInfo(userInfos.get(i).getGroupGuid(), userInfos
-                    .get(i).getUserId()));
+            GroupUserInfo user = convertToGroupUserInfo(userInfos.get(i).getGroupGuid(), userInfos
+                    .get(i).getUserId());
+            user.setUserName(userInfos.get(i).getUserName());
+            user.setUserImage(userInfos.get(i).getUserHeadImage());
+            groupUserInfos.add(user);
         }
         return groupUserInfos;
     }
@@ -80,8 +100,6 @@ public class DBGroupAction {
     public static GroupUserInfo convertToGroupUserInfo(String groupGuid, long userId) {
         GroupUserInfo userInfo = new GroupUserInfo();
         userInfo.setGroupGuid(groupGuid);
-//        userInfo.setUserName(groupUserInfo.getUserName());
-//        userInfo.setUserHeadImage(groupUserInfo.getUserHeadImage());
         userInfo.setUserId(userId);
         userInfo.setAddTime(new Date());
         return userInfo;
@@ -116,34 +134,49 @@ public class DBGroupAction {
         return groupUserInfos;
     }
 
-//    public static List<GroupUserInfo> convertToGroupUserInfos2(String groupGuid,
-// List<MQGroupUserInfo> userInfos) {
-//        if (StringUtils.isBlank(groupGuid)) return null;
-//        if (userInfos == null || userInfos.size() <= 0) return null;
-//
-//        List<GroupUserInfo> groupUserInfos = new ArrayList<>(userInfos.size());
-//        for (int i = 0; i < userInfos.size(); i++) {
-//            GroupUserInfo userInfo = new GroupUserInfo();
-//            userInfo.setUserId(userInfos.get(i).getUserId());
-//            userInfo.setUserName(userInfos.get(i).getUserName());
-//            userInfo.setUserHeadImage(userInfos.get(i).getUserImage());
-//            userInfo.setGroupGuid(groupGuid);
-//            userInfo.setAddTime(new Date());
-//            groupUserInfos.add(userInfo);
-//        }
-//
-//        return groupUserInfos;
-//    }
-
-    public static List<String> convertToGroupUserImages(List<NetGroupUserInfo> userInfos) {
+    public static List<String> getGroupUserImagesV2(List<NetGroupUserInfo> userInfos) {
         if (userInfos == null || userInfos.size() <= 0) return null;
         List<String> groupUserImages = new ArrayList<>();
         for (int i = 0; i < userInfos.size(); i++) {
             if (i < GROUP_IMAGE_COUNT)
-				groupUserImages.add(userInfos.get(i).getUserHeadImage());
-			else
-				break;
+                groupUserImages.add(userInfos.get(i).getUserHeadImage());
+            else
+                break;
         }
         return groupUserImages;
+    }
+
+    public static List<String> getGroupUserImagesV3(List<GroupUserInfo> userInfos) {
+        if (userInfos == null || userInfos.size() <= 0) return null;
+        List<String> groupUserImages = new ArrayList<>();
+        for (int i = 0; i < userInfos.size(); i++) {
+            if (i < GROUP_IMAGE_COUNT)
+                groupUserImages.add(userInfos.get(i).getUserImage());
+            else
+                break;
+        }
+        return groupUserImages;
+    }
+
+    public static List<String> getGroupUserImages(List<NetSecretUserInfo> userInfos) {
+        if (userInfos == null || userInfos.size() <= 0) return null;
+        List<String> groupUserImages = new ArrayList<>();
+        for (int i = 0; i < userInfos.size(); i++) {
+            if (i < GROUP_IMAGE_COUNT)
+                groupUserImages.add(userInfos.get(i).getUserImage());
+            else
+                break;
+        }
+        return groupUserImages;
+    }
+
+    public static List<GroupUserInfo> convertToGroupUserInfos2(String groupGuid,
+                                                               List<NetSecretUserInfo> userInfos) {
+        if (userInfos == null || userInfos.size() <= 0) return null;
+        List<GroupUserInfo> groupUserInfos = new ArrayList<>(userInfos.size());
+        for (int i = 0; i < userInfos.size(); i++) {
+            groupUserInfos.add(convertToGroupUserInfo(groupGuid, userInfos.get(i).getUserId()));
+        }
+        return groupUserInfos;
     }
 }

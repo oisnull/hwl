@@ -100,7 +100,7 @@ public class GroupOperateMessageListen extends
         groupInfo.setGroupGuid(messageContent.getGroupGuid());
         groupInfo.setGroupName(messageContent.getGroupName());
         groupInfo.setMyUserName(UserSP.getUserShowName());
-        groupInfo.setUserImages(this.getUserImages());
+        groupInfo.setGroupImages(this.getUserImages());
         groupInfo.setBuildTime(new Date(response.getBuildTime()));
         groupInfo.setIsSystem(false);
         groupInfo.setGroupUserCount(messageContent.getGroupUsersCount());
@@ -173,7 +173,7 @@ public class GroupOperateMessageListen extends
         record.setRecordType(IMConstant.CHAT_RECORD_TYPE_GROUP);
         record.setGroupGuid(groupInfo.getGroupGuid());
         record.setGroupName(groupInfo.getGroupName());
-        record.setGroupUserImages(groupInfo.getUserImages());
+        record.setGroupUserImages(groupInfo.getGroupImages());
         record.setFromUserId(message.getFromUserId());
         record.setFromUserName(message.getFromUserName());
         record.setFromUserHeadImage(message.getFromUserHeadImage());

@@ -1,5 +1,7 @@
 package com.hwl.beta.ui.chat.logic;
 
+import android.text.TextUtils;
+
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.ChatRecordMessage;
 import com.hwl.beta.db.entity.GroupInfo;
@@ -13,13 +15,18 @@ import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.ui.chat.standard.ChatGroupSettingStandard;
 import com.hwl.beta.ui.common.DefaultCallback;
 import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
+import com.hwl.beta.ui.convert.DBFriendAction;
+import com.hwl.beta.ui.convert.DBGroupAction;
 import com.hwl.beta.ui.ebus.EventBusUtil;
 import com.hwl.beta.ui.immsg.IMClientEntry;
 import com.hwl.beta.ui.immsg.IMDefaultSendOperateListener;
 
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 
 public class ChatGroupSettingLogic implements ChatGroupSettingStandard {
 
@@ -34,30 +41,47 @@ public class ChatGroupSettingLogic implements ChatGroupSettingStandard {
 
         if (isDismiss || groupGuid.equals(UserPosSP.getGroupGuid())) return users;
         GroupUserInfo groupUserInfo = new GroupUserInfo();
-        groupUserInfo.setId((long) -1);
+        groupUserInfo.setId(-1L);
         users.add(users.size(), groupUserInfo);
 
         return users;
     }
 
     @Override
-    public void loadGroupUserFromServer(String groupGuid, DefaultCallback<Boolean, String>
-            callback) {
+    public Observable<List<GroupUserInfo>> loadGroupUsersFromServer(final String groupGuid) {
+        if (TextUtils.isEmpty(groupGuid))
+            return Observable.error(new Throwable("Group guid con't be empty."));
 
-        GroupService.groupUsers(groupGuid)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new RXDefaultObserver<GroupUsersResponse>() {
+        return GroupService.groupUsers(groupGuid)
+                .filter(new Predicate<GroupUsersResponse>() {
                     @Override
-                    protected void onSuccess(GroupUsersResponse response) {
-                        if (response.getGroupUserInfos() != null) {
-                            //removeUserItem();
-//                            List<GroupUserInfo> userInfos = DBGroupAction
-// .convertToGroupUserInfos(response.getGroupUserInfos());
-//                            DaoUtils.getGroupUserInfoManagerInstance().addListAsync(userInfos);
-//                            users.addAll(userInfos);
-//                            addUserItem();
-//                            userAdapter.notifyDataSetChanged();
-                        }
+                    public boolean test(GroupUsersResponse response) {
+                        return response.getGroupUserInfos() != null && response.getGroupUserInfos().size() > 0;
+                    }
+                })
+                .map(new Function<GroupUsersResponse, List<GroupUserInfo>>() {
+                    @Override
+                    public List<GroupUserInfo> apply(GroupUsersResponse response) {
+                        final List<GroupUserInfo> users = DBGroupAction
+                                .convertToGroupUserInfos(response.getGroupUserInfos());
+                        DaoUtils.getGroupUserInfoManagerInstance().addList(users);
+                        DaoUtils.getFriendManagerInstance().addListAsync(DBFriendAction
+                                .convertGroupUserToFriendInfos(response.getGroupUserInfos()));
+                        return users;
+                    }
+                })
+                .doOnNext(new Consumer<List<GroupUserInfo>>() {
+                    @Override
+                    public void accept(final List<GroupUserInfo> users) throws Exception {
+                        DaoUtils.getGroupInfoManagerInstance().setGroupInfo(groupGuid,
+                                new Consumer<GroupInfo>() {
+                                    @Override
+                                    public void accept(GroupInfo groupInfo) {
+                                        groupInfo.setGroupUserCount(users.size());
+                                        groupInfo.setIsLoadUser(users.size() > 0);
+                                        groupInfo.setGroupImages(DBGroupAction.getGroupUserImagesV3(users));
+                                    }
+                                });
                     }
                 });
     }

@@ -16,7 +16,7 @@ public class UserPosSP {
     private static final String USERPOSID = "userposid";
     private static final String GROUPGUID = "groupguid";
     private static final String LATITUDE = "latitude";
-    private static final String LONTITUDE = "lontitude";
+    private static final String LONGITUDE = "longitude";
     private static final String COUNTRY = "country";
     private static final String PROVINCE = "province";
     private static final String CITY = "city";
@@ -30,15 +30,15 @@ public class UserPosSP {
     }
 
     public static boolean isExistsPosInfo() {
-        if (getLatitude() < 0 || getLontitude() < 0) {
+        if (getLatitude() < 0 || getLongitude() < 0) {
             return false;
         }
         return true;
     }
 
-    public static void setUserPos(float latitude, float lontitude, String country, String
+    public static void setUserPos(float latitude, float longitude, String country, String
             province, String city, String district, String street, String addr) {
-        setUserPos(0, "", latitude, lontitude, country, province, city, district, street, addr);
+        setUserPos(0, "", latitude, longitude, country, province, city, district, street, addr);
     }
 
     public static void setUserPos(int userPosId, String groupGuid) {
@@ -48,15 +48,22 @@ public class UserPosSP {
         editor.commit();
     }
 
-    public static void setUserPos(int userPosId, String groupGuid, float latitude, float
-            lontitude, String country, String province, String city, String district, String
-            street, String addr) {
+    public static void setUserPos(int userPosId,
+                                  String groupGuid,
+                                  double latitude,
+                                  double longitude,
+                                  String country,
+                                  String province,
+                                  String city,
+                                  String district,
+                                  String street,
+                                  String addr) {
         final SharedPreferences.Editor editor = getSP().edit();
         editor.putInt(USERPOSID, userPosId);
         editor.putString(GROUPGUID, groupGuid);
 
-        editor.putFloat(LATITUDE, latitude);
-        editor.putFloat(LONTITUDE, lontitude);
+        editor.putFloat(LATITUDE, (float) latitude);
+        editor.putFloat(LONGITUDE, (float) longitude);
 
         editor.putString(COUNTRY, country);
         editor.putString(PROVINCE, province);
@@ -92,8 +99,8 @@ public class UserPosSP {
         return getSP().getFloat(LATITUDE, -1);
     }
 
-    public static float getLontitude() {
-        return getSP().getFloat(LONTITUDE, -1);
+    public static float getLongitude() {
+        return getSP().getFloat(LONGITUDE, -1);
     }
 
     public static String getPosDesc() {

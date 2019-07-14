@@ -26,7 +26,6 @@ import com.hwl.beta.sp.UserSP;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -37,10 +36,10 @@ import retrofit2.http.POST;
 
 public class NearCircleService {
 
-    public static Observable<GetNearCircleInfosResponse> getNearCircleInfos(long minNearCircleId,
-                                                                            int pageCount) {
-        return getNearCircleInfos(minNearCircleId, pageCount);
-    }
+//    public static Observable<GetNearCircleInfosResponse> getNearCircleInfos(long minNearCircleId,
+//                                                                            int pageCount) {
+//        return getNearCircleInfos(minNearCircleId, pageCount);
+//    }
 
     public static Observable<GetNearCircleInfosResponse> getNearCircleInfos(long minNearCircleId,
                                                                             int pageCount,
@@ -48,7 +47,7 @@ public class NearCircleService {
         GetNearCircleInfosRequest requestBody = new GetNearCircleInfosRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setLat(UserPosSP.getLatitude());
-        requestBody.setLon(UserPosSP.getLontitude());
+        requestBody.setLon(UserPosSP.getLongitude());
         requestBody.setMinNearCircleId(minNearCircleId);
         requestBody.setNearCircleMatchInfos(nearCircleMatchInfos);
         requestBody.setCount(pageCount <= 0 ? 15 : pageCount);
@@ -98,7 +97,7 @@ public class NearCircleService {
         AddNearCircleInfoRequest requestBody = new AddNearCircleInfoRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setLat(UserPosSP.getLatitude());
-        requestBody.setLon(UserPosSP.getLontitude());
+        requestBody.setLon(UserPosSP.getLongitude());
         requestBody.setContent(content);
         requestBody.setPosId(UserPosSP.getUserPosId());
         requestBody.setPosDesc(UserPosSP.getPublishDesc());

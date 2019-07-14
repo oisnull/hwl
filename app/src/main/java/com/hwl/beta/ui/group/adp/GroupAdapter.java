@@ -53,7 +53,7 @@ public class GroupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 public void onClick(View v) {
                     UITransfer.toChatGroupActivity(v.getContext(), groupInfo.getGroupGuid());
                 }
-            }, groupInfo.getUserImages(), groupInfo.getGroupName());
+            }, groupInfo.getGroupImages(), groupInfo.getGroupName());
         }
     }
 

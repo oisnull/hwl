@@ -64,7 +64,7 @@ public class CircleService {
         AddCircleInfoRequest requestBody = new AddCircleInfoRequest();
         requestBody.setUserId(UserSP.getUserId());
         requestBody.setLat(UserPosSP.getLatitude());
-        requestBody.setLon(UserPosSP.getLontitude());
+        requestBody.setLon(UserPosSP.getLongitude());
         requestBody.setContent(content);
         requestBody.setPosId(UserPosSP.getUserPosId());
         requestBody.setPosDesc(UserPosSP.getPublishDesc());

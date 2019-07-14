@@ -52,7 +52,7 @@ public class ChatSettingMessageListen extends
         record.setRecordType(IMConstant.CHAT_RECORD_TYPE_GROUP);
         record.setGroupGuid(groupInfo.getGroupGuid());
         record.setGroupName(groupInfo.getGroupName());
-        record.setGroupUserImages(groupInfo.getUserImages());
+        record.setGroupUserImages(groupInfo.getGroupImages());
         record.setFromUserId(message.getFromUserId());
         record.setFromUserName(message.getFromUserName());
         record.setFromUserHeadImage(message.getFromUserHeadImage());

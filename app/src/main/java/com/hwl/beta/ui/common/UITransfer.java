@@ -105,7 +105,7 @@ public class UITransfer {
     public static void toLogout(Activity context) {
         String userAccount = UserSP.getAccount();
         UserSP.clearUserInfo();
-        UserPosSP.clearPosInfo();
+//        UserPosSP.clearPosInfo();
         DaoUtils.closeDB();
         toWelcomeActivity(context);
         UserSP.setAccount(userAccount);

@@ -29,8 +29,9 @@ public class ChatGroupLogic implements ChatGroupStandard {
         GroupInfo groupInfo = DaoUtils.getGroupInfoManagerInstance().get(groupGuid);
         if (groupInfo == null && UserPosSP.getGroupGuid().equals(groupGuid)) {
             groupInfo = new GroupInfo();
-            groupInfo.setGroupName(UserPosSP.getNearDesc());
             groupInfo.setGroupGuid(groupGuid);
+            groupInfo.setGroupName(UserPosSP.getNearDesc());
+            groupInfo.setIsSystem(true);
             DaoUtils.getGroupInfoManagerInstance().add(groupInfo);
         }
         return groupInfo;

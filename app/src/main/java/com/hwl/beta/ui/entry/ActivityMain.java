@@ -362,7 +362,7 @@ public class ActivityMain extends BaseActivity {
         public void onSuccess(LocationModel model) {
             binding.tbTitle.setTitle(UserPosSP.getNearDesc());
 
-            if (UserPosSP.getLontitude() == model.longitude &&
+            if (UserPosSP.getLongitude() == model.longitude &&
                     UserPosSP.getLatitude() == model.latitude) {
                 return;
             }

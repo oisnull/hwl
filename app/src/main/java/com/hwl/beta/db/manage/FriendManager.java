@@ -133,7 +133,7 @@ public class FriendManager extends BaseDao<Friend> {
                         return !isExistsUser(friend.getId());
                     }
                 })
-				.doOnNext(new Consumer<Friend>() {
+                .doOnNext(new Consumer<Friend>() {
                     @Override
                     public void accept(Friend friend) {
                         save(friend);
