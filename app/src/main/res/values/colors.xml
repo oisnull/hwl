@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="main">#03bdbd</color>
+    <color name="ic_launcher_background">#03bdbd</color>
     <color name="main_background">#ededed</color>
     <color name="main_image_background">#f5f5f5</color>
     <color name="user_circle_background">#323232</color>

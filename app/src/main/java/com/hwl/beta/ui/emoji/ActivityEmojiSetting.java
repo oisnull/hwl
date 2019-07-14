@@ -24,11 +24,7 @@ public class ActivityEmojiSetting extends BaseActivity {
 
     private void initView() {
         binding.tbTitle.setTitle("表情设置")
-                .setImageRightClick(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                    }
-                })
+                .setImageRightHide()
                 .setImageLeftClick(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

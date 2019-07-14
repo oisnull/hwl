@@ -7,9 +7,11 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.hwl.beta.AppConfig;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.EmojiActivityStoreBinding;
 import com.hwl.beta.ui.common.BaseActivity;
+import com.hwl.beta.ui.common.UITransfer;
 
 public class ActivityEmojiStore extends BaseActivity {
 
@@ -27,9 +29,11 @@ public class ActivityEmojiStore extends BaseActivity {
 
     private void initView() {
         binding.tbTitle.setTitle("表情商店")
+                .setImageRightResource(R.drawable.ic_setting)
                 .setImageRightClick(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        UITransfer.toEmojiSettingActivity(activity);
                     }
                 })
                 .setImageLeftClick(new View.OnClickListener() {
@@ -46,6 +50,6 @@ public class ActivityEmojiStore extends BaseActivity {
                 return true;
             }
         });
-        binding.wvEmojiList.loadUrl("http://www.baidu.com");
+        binding.wvEmojiList.loadUrl(AppConfig.EMOTION_ENTRANCE_URL);
     }
 }
