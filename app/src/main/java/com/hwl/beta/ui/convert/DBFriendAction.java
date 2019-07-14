@@ -46,7 +46,7 @@ public class DBFriendAction {
         friend.setSymbol(netFriendInfo.getSymbol());
         friend.setName(netFriendInfo.getName());
         friend.setSex(netFriendInfo.getSex());
-//        friend.setRemark(netFriendInfo.getNameRemark());
+        friend.setRemark(netFriendInfo.getNameRemark());
         friend.setHeadImage(netFriendInfo.getHeadImage());
         friend.setCountry(netFriendInfo.getCountry());
         friend.setProvince(netFriendInfo.getProvince());

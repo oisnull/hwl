@@ -10,7 +10,7 @@ public class BaiduLocationV2 {
     public final static int NOT_START = 0;
     public final static int POSITIONING = 1;
     public final static int COMPLETE_SUCCESS = 2;
-    public final static int COMPLETE_FAILD = 3;
+    public final static int COMPLETE_FAILURE = 3;
 
     private LocationClient client = null;
     private LocationClientOption mOption, DIYoption;
@@ -60,13 +60,13 @@ public class BaiduLocationV2 {
                     model.city = "上海市";
                     model.district = "闵行区";
                     model.street = "浦晓南路(ERROR)";
-                    model.addr = "Location failed,here is a fix value";
+                    model.addr = "中国上海市闵行区联航路1960号";
                     model.describe = "在世博家园十三街坊附近";
                     currentStatus = COMPLETE_SUCCESS;
                     errorMessage = null;
                     locationListener.onSuccess(model);
 
-//                    currentStatus = COMPLETE_FAILD;
+//                    currentStatus = COMPLETE_FAILURE;
 //                    errorMessage = location.getLocTypeDescription();
 //                    locationListener.onFailure(errorMessage);
                 }
@@ -138,7 +138,7 @@ public class BaiduLocationV2 {
     }
 
     public boolean isEnd() {
-        return this.currentStatus == COMPLETE_SUCCESS || this.currentStatus == COMPLETE_FAILD;
+        return this.currentStatus == COMPLETE_SUCCESS || this.currentStatus == COMPLETE_FAILURE;
     }
 
     public void start() {

@@ -15,7 +15,6 @@ import com.hwl.beta.net.group.GroupService;
 import com.hwl.beta.net.group.body.SetGroupNameResponse;
 import com.hwl.beta.net.group.body.SetGroupNoteResponse;
 import com.hwl.beta.sp.UserPosSP;
-import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
 import com.hwl.beta.ui.dialog.LoadingDialog;
@@ -107,10 +106,10 @@ public class ActivityChatGroupSettingEdit extends BaseActivity {
         }
         content = binding.etContent.getText() + "";
         DaoUtils.getGroupInfoManagerInstance().setGroupMyName(groupGuid, content);
-        DaoUtils.getGroupUserInfoManagerInstance().setUserName(groupGuid, UserSP.getUserId(),
-                content);
+//        DaoUtils.getGroupUserInfoManagerInstance().setUserName(groupGuid, UserSP.getUserId(),
+//                content);
         IMClientEntry.sendChatGroupUserRemarkSettingMessage(groupGuid, content, new
-                IMDefaultSendOperateListener("EditGroupNoteMessage") {
+                IMDefaultSendOperateListener("EditGroupUserNameMessage") {
 
                     @Override
                     public void success1() {

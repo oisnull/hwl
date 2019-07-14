@@ -163,7 +163,7 @@ public class ActivityMain extends BaseActivity {
             case BaiduLocationV2.POSITIONING:
                 showLocationDialog("当前位置", "正在获取当前位置信息...");
                 break;
-            case BaiduLocationV2.COMPLETE_FAILD:
+            case BaiduLocationV2.COMPLETE_FAILURE:
                 showLocationDialog("定位失败", location.getErrorMessage());
                 break;
             case BaiduLocationV2.COMPLETE_SUCCESS:

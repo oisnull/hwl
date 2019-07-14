@@ -2,6 +2,7 @@ package com.hwl.beta.db.manage;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.text.TextUtils;
 
 import com.hwl.beta.db.BaseDao;
 import com.hwl.beta.db.DaoUtils;
@@ -54,13 +55,18 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
         return ids;
     }
 
-    public GroupUserInfo get(String groupGuid, long userId) {
-        return daoSession.getGroupUserInfoDao().queryBuilder()
-                .where(GroupUserInfoDao.Properties.GroupGuid.eq(groupGuid))
-                .where(GroupUserInfoDao.Properties.UserId.eq(userId)).unique();
-    }
+//    public GroupUserInfo get(String groupGuid, long userId) {
+//        if (TextUtils.isEmpty(groupGuid) || userId <= 0) return null;
+//
+//        return daoSession.getGroupUserInfoDao().queryBuilder()
+//                .where(GroupUserInfoDao.Properties.GroupGuid.eq(groupGuid))
+//                .where(GroupUserInfoDao.Properties.UserId.eq(userId))
+//                .unique();
+//    }
 
     public GroupUserInfo getUserInfo(String groupGuid, long userId) {
+        if (TextUtils.isEmpty(groupGuid) || userId <= 0) return null;
+
         return daoSession.getGroupUserInfoDao().queryBuilder()
                 .where(GroupUserInfoDao.Properties.UserId.eq(userId))
                 .where(GroupUserInfoDao.Properties.GroupGuid.eq(groupGuid))
@@ -68,7 +74,7 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
     }
 
     public long add(GroupUserInfo userInfo) {
-        GroupUserInfo user = get(userInfo.getGroupGuid(), userInfo.getUserId());
+        GroupUserInfo user = getUserInfo(userInfo.getGroupGuid(), userInfo.getUserId());
         if (user != null) {
             return 0;
         }
@@ -81,7 +87,8 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
                 .filter(new Predicate<GroupUserInfo>() {
                     @Override
                     public boolean test(GroupUserInfo groupUserInfo) {
-                        return get(groupUserInfo.getGroupGuid(), groupUserInfo.getUserId()) != null;
+                        return getUserInfo(groupUserInfo.getGroupGuid(),
+                                groupUserInfo.getUserId()) != null;
                     }
                 })
                 .doOnNext(new Consumer<GroupUserInfo>() {
@@ -120,14 +127,14 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
         return groupUserInfos;
     }
 
-    public GroupUserInfo setUserName(String groupGuid, long userId, String userName) {
-        GroupUserInfo userInfo = get(groupGuid, userId);
-        if (userInfo != null) {
-//            userInfo.setUserName(userName);
-            daoSession.getGroupUserInfoDao().update(userInfo);
-        }
-        return userInfo;
-    }
+//    public GroupUserInfo setUserName(String groupGuid, long userId, String userName) {
+//        GroupUserInfo userInfo = getUserInfo(groupGuid, userId);
+//        if (userInfo != null) {
+////            userInfo.setUserName(userName);
+//            daoSession.getGroupUserInfoDao().update(userInfo);
+//        }
+//        return userInfo;
+//    }
 
     public void deleteGroupUserInfo(String groupGuid) {
         String sql = "delete from " + GroupUserInfoDao.TABLENAME +
