@@ -21,8 +21,8 @@ public abstract class AbstractMessageListenExecutor<TResponse> implements Messag
             ImMessageResponseHead responseHead = response.getResponseHead();
             if (responseHead.getCode() == ImMessageResponseCode.Success_VALUE) {
                 success(messageResponse);
-            } else if (responseHead.getCode() == ImMessageResponseCode.SessionidInvalid_VALUE) {
-                sessionidInvalid();
+            } else if (responseHead.getCode() == ImMessageResponseCode.SessionInvalid_VALUE) {
+                sessionInvalid();
             } else {
                 failed(responseHead.getCode(), responseHead.getMessage());
             }
@@ -41,7 +41,7 @@ public abstract class AbstractMessageListenExecutor<TResponse> implements Messag
             return;
     }
 
-    public void sessionidInvalid() {
+    public void sessionInvalid() {
 
     }
 

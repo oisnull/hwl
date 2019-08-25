@@ -58,7 +58,7 @@ public abstract class AbstractMessageReceivExecutor<TRequest> implements Message
             this.executeCore(msgResponse);
         } catch (RequestSessionInvalidException e) {
 //            log.error("Server executor : {}", e.getMessage());
-            responseHead.setCode(ImMessageResponseCode.SessionidInvalid_VALUE).setMessage(e.getMessage());
+            responseHead.setCode(ImMessageResponseCode.SessionInvalid_VALUE).setMessage(e.getMessage());
         } catch (Exception e) {
 //            log.error("Server executor : {}", e.getMessage());
             responseHead.setCode(ImMessageResponseCode.Failed_VALUE).setMessage(e.getMessage());
