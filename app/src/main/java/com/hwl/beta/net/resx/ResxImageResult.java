@@ -1,10 +1,10 @@
 package com.hwl.beta.net.resx;
 
-public class ResxImageResult extends ResxResult{
+public class ResxImageResult extends ResxResult {
     private int ImageWidth;
     private int ImageHeight;
     private String ImagePreviewUrl;
-	
+
     public int getImageWidth() {
         return ImageWidth;
     }

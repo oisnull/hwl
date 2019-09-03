@@ -3,23 +3,23 @@ package com.hwl.beta.net.resx;
 import com.hwl.beta.net.NetDefaultFunction;
 import com.hwl.beta.net.ResponseBase;
 import com.hwl.beta.net.RetrofitUtils;
-import com.hwl.beta.net.resx.body.UpResxResponse;
+import com.hwl.beta.net.resx.body.AudioUploadResponse;
+import com.hwl.beta.net.resx.body.ImageUploadResponse;
+import com.hwl.beta.net.resx.body.ResxUploadRequest;
+import com.hwl.beta.net.resx.body.VideoUploadResponse;
 import com.hwl.beta.sp.UserSP;
-import com.hwl.beta.utils.StringUtils;
 
 import java.io.File;
 
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import retrofit2.http.Body;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
-import retrofit2.http.Query;
 
 /**
  * Created by Administrator on 2019/9/3.
@@ -27,17 +27,27 @@ import retrofit2.http.Query;
 
 public class ResxService {
 
-    public static Observable<UpResxResponse> imageUpload(byte[] bitmap, int resxType) {
-		return imageUpload(null,bitmap,resxType);
+    public static Observable<ImageUploadResponse> imageUpload(byte[] bitmap, int resxType) {
+        return imageUpload(null, bitmap, resxType);
     }
 
-    public static Observable<UpResxResponse> imageUpload(File file, int resxType) {
-		return imageUpload(file,null,resxType);
+    public static Observable<ImageUploadResponse> imageUpload(File file, int resxType) {
+        return imageUpload(file, null, resxType);
     }
 
-    private static Observable<ImageUploadResponse> imageUpload(File file, byte[] bitmap, int resxType) {
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"),file==null?bitmap: file);
-        MultipartBody.Part fileContent = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+    private static Observable<ImageUploadResponse> imageUpload(File file, byte[] bitmap,
+                                                               int resxType) {
+        RequestBody requestFile = null;
+        String fileName = null;
+        if (file != null) {
+            requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+            fileName = file.getName();
+        } else {
+            requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), bitmap);
+            fileName = "user-head.png";
+        }
+        MultipartBody.Part fileContent = MultipartBody.Part.createFormData("image", fileName,
+                requestFile);
 
         ResxUploadRequest requestBody = new ResxUploadRequest();
         requestBody.setUserId(UserSP.getUserId());
@@ -45,16 +55,17 @@ public class ResxService {
         requestBody.setResxType(resxType);
         requestBody.setFiles(fileContent);
 
-        return RetrofitUtils.createApi(IResxService.class)
+        return RetrofitUtils.createResxApi(IResxService.class)
                 .imageUpload(requestBody)
-                .map(new NetDefaultFunction<ResponseBase<ImageUploadResponse>>())
+                .map(new NetDefaultFunction<ImageUploadResponse>())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public static Observable<AudioUploadResponse> audioUpload(File file, int resxType) {
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part fileContent = MultipartBody.Part.createFormData("audio", file.getName(), requestFile);
+        MultipartBody.Part fileContent = MultipartBody.Part.createFormData("audio",
+                file.getName(), requestFile);
 
         ResxUploadRequest requestBody = new ResxUploadRequest();
         requestBody.setUserId(UserSP.getUserId());
@@ -62,16 +73,17 @@ public class ResxService {
         requestBody.setResxType(resxType);
         requestBody.setFiles(fileContent);
 
-        return RetrofitUtils.createApi(IResxService.class)
+        return RetrofitUtils.createResxApi(IResxService.class)
                 .audioUpload(requestBody)
-                .map(new NetDefaultFunction<ResponseBase<AudioUploadResponse>>())
+                .map(new NetDefaultFunction<AudioUploadResponse>())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public static Observable<VideoUploadResponse> videoUpload(File file, int resxType) {
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part fileContent = MultipartBody.Part.createFormData("video", file.getName(), requestFile);
+        MultipartBody.Part fileContent = MultipartBody.Part.createFormData("video",
+                file.getName(), requestFile);
 
         ResxUploadRequest requestBody = new ResxUploadRequest();
         requestBody.setUserId(UserSP.getUserId());
@@ -79,9 +91,9 @@ public class ResxService {
         requestBody.setResxType(resxType);
         requestBody.setFiles(fileContent);
 
-        return RetrofitUtils.createApi(IResxService.class)
+        return RetrofitUtils.createResxApi(IResxService.class)
                 .videoUpload(requestBody)
-                .map(new NetDefaultFunction<ResponseBase<VideoUploadResponse>>())
+                .map(new NetDefaultFunction<VideoUploadResponse>())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -94,7 +106,7 @@ public class ResxService {
         @Multipart
         @POST("resx/AudioUpload")
         Observable<ResponseBase<AudioUploadResponse>> audioUpload(@Part ResxUploadRequest request);
-		
+
         @Multipart
         @POST("resx/VideoUpload")
         Observable<ResponseBase<VideoUploadResponse>> videoUpload(@Part ResxUploadRequest request);
