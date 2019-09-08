@@ -13,8 +13,10 @@ import com.hwl.beta.R;
 import com.hwl.beta.databinding.UserActivityInfoEditBinding;
 import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.net.ResponseBase;
+import com.hwl.beta.net.resx.ResxService;
 import com.hwl.beta.net.resx.ResxType;
 import com.hwl.beta.net.resx.UploadService;
+import com.hwl.beta.net.resx.body.ImageUploadResponse;
 import com.hwl.beta.net.resx.body.UpResxResponse;
 import com.hwl.beta.net.user.NetUserInfo;
 import com.hwl.beta.net.user.UserService;
@@ -119,14 +121,14 @@ public class ActivityUserEdit extends BaseActivity {
                 return;
             }
             LoadingDialog.show(activity, "正在上传...");
-            UploadService.upImage(new File(localPath), ResxType.USERHEADIMAGE)
-                    .flatMap(new Function<UpResxResponse, Observable<SetUserInfoResponse>>() {
+            ResxService.imageUpload(new File(localPath), ResxType.USERHEADIMAGE)
+                    .flatMap(new Function<ImageUploadResponse, Observable<SetUserInfoResponse>>() {
                         @Override
-                        public Observable<SetUserInfoResponse> apply(UpResxResponse response) throws Exception {
-                            if (response.isSuccess()) {
-                                return UserService.setUserHeadImage(response.getOriginalUrl());
+                        public Observable<SetUserInfoResponse> apply(ImageUploadResponse response) throws Exception {
+                            if (response.getResxImageResult().getSuccess()) {
+                                return UserService.setUserHeadImage(response.getResxImageResult().getResxAccessUrl());
                             } else
-                                throw new Exception("头像上传失败");
+                                throw new Exception(response.getResxImageResult().getMessage());
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())

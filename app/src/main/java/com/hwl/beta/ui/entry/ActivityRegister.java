@@ -30,6 +30,7 @@ public class ActivityRegister extends BaseActivity {
     FragmentActivity activity;
     EntryActivityRegisterBinding binding;
     RegisterStandard registerStandard;
+    RegisterBean registerBean;
 
     TimeCount timeCount = null;
     static final int CODETIMESECONDS = 60 * 2;
@@ -40,8 +41,9 @@ public class ActivityRegister extends BaseActivity {
 //        setContentView(R.layout.entry_activity_register);
         activity = this;
         registerStandard = new RegisterLogic();
+        registerBean = registerStandard.getRegisterBean();
         binding = DataBindingUtil.setContentView(this, R.layout.entry_activity_register);
-        binding.setRegisterBean(registerStandard.getRegisterBean());
+        binding.setRegisterBean(registerBean);
         binding.setAction(new RegisterListener());
 
         initView();
@@ -113,7 +115,6 @@ public class ActivityRegister extends BaseActivity {
 
     private class RegisterListener implements IRegisterListener {
         boolean isRunning = false;
-        RegisterBean registerBean = registerStandard.getRegisterBean();
 
         @Override
         public void onRegisterClick() {

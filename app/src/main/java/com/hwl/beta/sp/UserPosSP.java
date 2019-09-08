@@ -133,8 +133,26 @@ public class UserPosSP {
     }
 
     public static void clearPosInfo() {
-        final SharedPreferences.Editor editor = getSP().edit();
-        editor.clear();
+        clearPosInfo(false);
+    }
+
+    public static void clearPosInfo(boolean keepGroup) {
+        SharedPreferences.Editor editor = getSP().edit();
+        if (keepGroup) {
+            editor.putInt(USERPOSID, 0);
+//            editor.putString(GROUPGUID, groupGuid);
+            editor.putFloat(LATITUDE, 0);
+            editor.putFloat(LONGITUDE, 0);
+
+            editor.putString(COUNTRY, null);
+            editor.putString(PROVINCE, null);
+            editor.putString(CITY, null);
+            editor.putString(DISTRICT, null);
+            editor.putString(STREET, null);
+            editor.putString(ADDR, null);
+        } else {
+            editor.clear();
+        }
         editor.commit();
     }
 }

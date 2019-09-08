@@ -3,6 +3,7 @@ package com.hwl.beta.db.manage;
 import android.content.Context;
 
 import com.hwl.beta.db.BaseDao;
+import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.dao.GroupInfoDao;
 import com.hwl.beta.db.entity.GroupInfo;
 import com.hwl.beta.utils.StringUtils;
@@ -50,9 +51,18 @@ public class GroupInfoManager extends BaseDao<GroupInfo> {
     public GroupInfo get(String groupGuid) {
         if (StringUtils.isBlank(groupGuid)) return null;
 
-        return daoSession.getGroupInfoDao().queryBuilder()
+        GroupInfo ginfo = daoSession.getGroupInfoDao().queryBuilder()
                 .where(GroupInfoDao.Properties.GroupGuid.eq(groupGuid))
                 .unique();
+        if (ginfo == null) return ginfo;
+
+        if (ginfo.getGroupImages() == null || ginfo.getGroupImages().size() <= 0) {
+            List<String> imgs = DaoUtils.getGroupUserInfoManagerInstance().getUserImages(groupGuid);
+            ginfo.setGroupImages(imgs);
+            daoSession.getGroupInfoDao().insertOrReplace(ginfo);
+        }
+
+        return ginfo;
     }
 
     public void setLoadUserStatus(String groupGuid, boolean isLoaded) {

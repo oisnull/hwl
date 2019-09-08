@@ -40,6 +40,20 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
         return ids;
     }
 
+    public List<String> getUserImages(String groupGuid) {
+        List<Long> userIds = getUserIdList(groupGuid);
+        if (userIds == null || userIds.size() <= 0) return null;
+
+        List<Friend> friends = DaoUtils.getFriendManagerInstance().getList(userIds);
+        if (friends == null || friends.size() <= 0) return null;
+
+        List<String> imgs = new ArrayList<>(friends.size());
+        for (int i = 0; i < friends.size(); i++) {
+            imgs.add(friends.get(i).getHeadImage());
+        }
+        return imgs;
+    }
+
     public GroupUserInfo getUserInfo(String groupGuid, long userId) {
         if (TextUtils.isEmpty(groupGuid) || userId <= 0) return null;
 

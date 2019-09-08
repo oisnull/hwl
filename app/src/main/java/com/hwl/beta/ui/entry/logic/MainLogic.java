@@ -23,6 +23,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
 public class MainLogic implements MainStandard {
+
     @Override
     public MainBean getMainBean() {
         return new MainBean(MessageCountSP.getChatMessageCount(), MessageCountSP
