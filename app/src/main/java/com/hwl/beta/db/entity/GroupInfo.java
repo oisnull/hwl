@@ -44,10 +44,10 @@ public class GroupInfo extends BaseObservable {
 
     @Generated(hash = 731591539)
     public GroupInfo(Long id, String groupGuid, String groupName,
-            int groupUserCount, long buildUserId, List<String> groupImages,
-            String groupNote, Date buildTime, String updateTime, boolean isSystem,
-            String myUserName, String groupBackImage, boolean isShield,
-            boolean isDismiss, boolean isLoadUser) {
+                     int groupUserCount, long buildUserId, List<String> groupImages,
+                     String groupNote, Date buildTime, String updateTime, boolean isSystem,
+                     String myUserName, String groupBackImage, boolean isShield,
+                     boolean isDismiss, boolean isLoadUser) {
         this.id = id;
         this.groupGuid = groupGuid;
         this.groupName = groupName;
@@ -71,7 +71,7 @@ public class GroupInfo extends BaseObservable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof GroupInfo) {
+        if (obj != null && obj instanceof GroupInfo) {
             GroupInfo g = (GroupInfo) obj;
             return this.getGroupGuid().equals(g.getGroupGuid());
         }
