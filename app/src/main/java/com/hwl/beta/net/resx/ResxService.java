@@ -1,11 +1,10 @@
-﻿package com.hwl.beta.net.resx;
+package com.hwl.beta.net.resx;
 
 import com.hwl.beta.net.NetDefaultFunction;
 import com.hwl.beta.net.ResponseBase;
 import com.hwl.beta.net.RetrofitUtils;
 import com.hwl.beta.net.resx.body.AudioUploadResponse;
 import com.hwl.beta.net.resx.body.ImageUploadResponse;
-import com.hwl.beta.net.resx.body.ResxUploadRequest;
 import com.hwl.beta.net.resx.body.VideoUploadResponse;
 import com.hwl.beta.sp.UserSP;
 
@@ -18,9 +17,7 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
-import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import retrofit2.http.Part;
 
 /**
  * Created by Administrator on 2019/9/3.
@@ -44,8 +41,8 @@ public class ResxService {
         return new MultipartBody.Builder().setType(MultipartBody.FORM)
 		.addFormDataPart("Files", fileName, requestFile)
 		.addFormDataPart("Token", UserSP.getUserToken())
-		.addFormDataPart("UserId", userId.toString())
-		.addFormDataPart("ResxType", resxType.toString())
+		.addFormDataPart("UserId", String.valueOf(userId))
+		.addFormDataPart("ResxType", String.valueOf(resxType))
 		.build();
 	}
 
