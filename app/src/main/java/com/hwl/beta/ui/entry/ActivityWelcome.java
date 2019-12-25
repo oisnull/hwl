@@ -7,7 +7,6 @@ import android.widget.TextView;
 import com.hwl.beta.R;
 import com.hwl.beta.net.user.NetUserInfo;
 import com.hwl.beta.sp.UserSP;
-import com.hwl.beta.ui.common.PermissionsAction;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.immsg.IMClientEntry;
 
@@ -30,8 +29,6 @@ public class ActivityWelcome extends FragmentActivity {
         tvCountdown = findViewById(R.id.tv_countdown);
         tvCountdown.setText(tmrCount + " s");
 
-
-        PermissionsAction.checkLocation(this);
         load();
     }
 
