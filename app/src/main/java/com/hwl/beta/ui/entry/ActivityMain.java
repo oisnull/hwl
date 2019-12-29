@@ -3,8 +3,10 @@ package com.hwl.beta.ui.entry;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -27,6 +29,7 @@ import com.hwl.beta.location.BaiduLocationV2;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.ui.TabFragmentPagerAdapter;
 import com.hwl.beta.ui.common.PermissionsAction;
+import com.hwl.beta.ui.common.PermissionsOperator;
 import com.hwl.beta.ui.dialog.DialogUtils;
 import com.hwl.beta.ui.ebus.EventBusConstant;
 import com.hwl.beta.ui.ebus.EventMessageModel;
@@ -59,6 +62,7 @@ public class ActivityMain extends BaseActivity {
     NetworkBroadcastReceiver networkBroadcastReceiver;
     BaiduLocationV2 location;
     long exitTime = 0;
+    boolean permissionRuning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,15 +99,51 @@ public class ActivityMain extends BaseActivity {
                 });
 
         location = new BaiduLocationV2(new HWLLocationListener());
-        if (PermissionsAction.checkLocation(activity)) {
-            location.start();
-        }
+        locationStart();
 
         networkBroadcastReceiver = new NetworkBroadcastReceiver();
         registerReceiver(networkBroadcastReceiver, new IntentFilter(NetworkBroadcastReceiver
                 .ACTION_TAG));
 
         SQLiteStudioService.instance().start(activity);
+    }
+
+    private void locationStart() {
+        if (permissionRuning)
+            return;
+        permissionRuning = true;
+
+        UserPosSP.clearPosInfo();
+        DialogUtils.closeLocationDialog();
+        if (PermissionsOperator.requestLocation(activity)) {
+            binding.tbTitle.setTitle("位置获取中...");
+            DialogUtils.showLocationLoadingDialog(activity);
+            location.start();
+        }
+    }
+
+    private void locationStop() {
+        DialogUtils.closeLocationLoadingDialog();
+        location.stop();
+        permissionRuning = false;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        boolean grant =
+                grantResults != null && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
+        switch (requestCode) {
+            case PermissionsOperator.REQUEST_PERMISSION_LOCATION:
+                permissionRuning = false;
+                if (grant) {
+                    locationStart();
+                } else {
+                    showLocationDialog("定位失败", "没有获取到定位的权限.");
+                }
+                break;
+        }
+
     }
 
     @Override
@@ -133,22 +173,21 @@ public class ActivityMain extends BaseActivity {
                         .getNearCircleMessageCount());
                 break;
             case EventBusConstant.EB_TYPE_NETWORK_CONNECT_UPDATE:
-                location.start();
+                locationStart();
                 break;
             case EventBusConstant.EB_TYPE_NETWORK_BREAK_UPDATE:
-                location.stop();
+                locationStop();
                 break;
         }
     }
 
     public void showLocationDialog(String title, String content) {
+        DialogUtils.closeLocationLoadingDialog();
         DialogUtils.showLocationDialog(activity, title, content, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!PermissionsAction.checkLocation(activity))
-                    return;
                 if (location.isEnd()) {
-                    location.start();
+                    locationStart();
                     if (location.getCurrentStatus() == BaiduLocationV2.POSITIONING)
                         binding.tbTitle.setTitle("位置重新获取中...");
                 }
@@ -182,7 +221,7 @@ public class ActivityMain extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        location.stop();
+        locationStop();
         unregisterReceiver(networkBroadcastReceiver);
         SQLiteStudioService.instance().stop();
     }
@@ -197,7 +236,11 @@ public class ActivityMain extends BaseActivity {
                         UITransfer.toUserSearchActivity(activity);
                         break;
                     case R.id.pop_near_group:
-                        UITransfer.toChatGroupActivity(activity, UserPosSP.getGroupGuid());
+                        if (UserPosSP.isExistPosInfo()) {
+                            UITransfer.toChatGroupActivity(activity, UserPosSP.getGroupGuid());
+                        } else {
+                            showLocationStatus();
+                        }
                         break;
                     case R.id.pop_near_message:
                         UITransfer.toNearMessagesActivity(activity);
@@ -367,11 +410,12 @@ public class ActivityMain extends BaseActivity {
 //                return;
 //            }
 
-            if (!NetworkUtils.isConnected()) {
-                return;
-            }
+//            if (!NetworkUtils.isConnected()) {
+//                locationStop();
+//                return;
+//            }
 
-            Log.d("HWLLocationListener", "当前移动的距离为：" + getMoveDistance(model));
+//            Log.d("HWLLocationListener", "当前移动的距离为：" + getMoveDistance(model));
 
             mainStandard.setLocation(model)
                     .observeOn(AndroidSchedulers.mainThread())
@@ -379,14 +423,16 @@ public class ActivityMain extends BaseActivity {
                         @Override
                         public void accept(String desc) {
                             binding.tbTitle.setTitle(desc);
+                            locationStop();
                         }
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) {
+                            locationStop();
                             if (NetExceptionCode.isTokenInvalid(throwable))
                                 UITransfer.toReloginDialog(activity);
 
-                            Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
         }

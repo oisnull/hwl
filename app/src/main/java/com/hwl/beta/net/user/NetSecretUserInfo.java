@@ -5,15 +5,15 @@ package com.hwl.beta.net.user;
  */
 
 public class NetSecretUserInfo {
-    private int UserId;
+    private long UserId;
     private String UserName;
     private String UserImage;
 
-    public int getUserId() {
+    public long getUserId() {
         return UserId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         UserId = userId;
     }
 

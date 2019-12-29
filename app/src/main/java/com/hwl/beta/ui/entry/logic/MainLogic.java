@@ -5,6 +5,7 @@ import com.hwl.beta.db.entity.GroupInfo;
 import com.hwl.beta.db.entity.GroupUserInfo;
 import com.hwl.beta.location.LocationModel;
 import com.hwl.beta.net.NetConstant;
+import com.hwl.beta.net.user.NetSecretUserInfo;
 import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.SetUserPosRequest;
 import com.hwl.beta.net.user.body.SetUserPosResponse;
@@ -16,6 +17,7 @@ import com.hwl.beta.ui.convert.DBGroupAction;
 import com.hwl.beta.ui.entry.bean.MainBean;
 import com.hwl.beta.ui.entry.standard.MainStandard;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -57,8 +59,16 @@ public class MainLogic implements MainStandard {
                             throw new Exception("Set user position failed.");
                         }
 
-                        if (res.getGroupUserInfos() == null || res.getGroupUserInfos().size() <= 0)
-                            return;
+                        if (res.getGroupUserInfos() == null || res.getGroupUserInfos().size() <= 0) {
+                            //add current user info
+                            List<NetSecretUserInfo> userInfos = new ArrayList<>(1);
+                            NetSecretUserInfo userInfo = new NetSecretUserInfo();
+                            userInfo.setUserId(UserSP.getUserId());
+                            userInfo.setUserName(UserSP.getUserName());
+                            userInfo.setUserImage(UserSP.getUserHeadImage());
+                            userInfos.add(userInfo);
+                            res.setGroupUserInfos(userInfos);
+                        }
 
                         GroupInfo groupInfo = DBGroupAction.convertToNearGroupInfo(
                                 res.getUserGroupGuid(),

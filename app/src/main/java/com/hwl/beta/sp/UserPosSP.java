@@ -23,13 +23,13 @@ public class UserPosSP {
     private static final String DISTRICT = "district";
     private static final String STREET = "street";
     private static final String ADDR = "addr";
-    private static final String LASTNEARCIRCLEID = "lastNearCircleId";
+//    private static final String LASTNEARCIRCLEID = "lastNearCircleId";
 
     private static SharedPreferences getSP() {
         return HWLApp.getContext().getSharedPreferences(USERPOSPREFERENCE, Context.MODE_PRIVATE);
     }
 
-    public static boolean isExistsPosInfo() {
+    public static boolean isExistPosInfo() {
         if (getLatitude() < 0 || getLongitude() < 0) {
             return false;
         }
@@ -74,18 +74,18 @@ public class UserPosSP {
         editor.commit();
     }
 
-    public static void setLastNearCircleId(long lastNearCircleId) {
-        if (getLastNearCircleId() >= lastNearCircleId) {
-            return;
-        }
-        final SharedPreferences.Editor editor = getSP().edit();
-        editor.putLong(LASTNEARCIRCLEID, lastNearCircleId);
-        editor.commit();
-    }
+//    public static void setLastNearCircleId(long lastNearCircleId) {
+//        if (getLastNearCircleId() >= lastNearCircleId) {
+//            return;
+//        }
+//        final SharedPreferences.Editor editor = getSP().edit();
+//        editor.putLong(LASTNEARCIRCLEID, lastNearCircleId);
+//        editor.commit();
+//    }
 
-    public static long getLastNearCircleId() {
-        return getSP().getLong(LASTNEARCIRCLEID, 0);
-    }
+//    public static long getLastNearCircleId() {
+//        return getSP().getLong(LASTNEARCIRCLEID, 0);
+//    }
 
     public static int getUserPosId() {
         return getSP().getInt(USERPOSID, 0);

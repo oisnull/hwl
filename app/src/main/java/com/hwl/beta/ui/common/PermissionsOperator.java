@@ -2,10 +2,9 @@ package com.hwl.beta.ui.common;
 
 import android.Manifest;
 import android.app.Activity;
-
-import com.tbruyelle.rxpermissions2.RxPermissions;
-
-import io.reactivex.functions.Consumer;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 
 public class PermissionsOperator {
 	//ex:https://www.cnblogs.com/Dorr/p/8979825.html
