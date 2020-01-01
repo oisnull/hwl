@@ -53,33 +53,30 @@ public class UpVideoChunk {
     private Observable<VideoModel> upload(final File file) {
         final byte[] mBlock = this.getUploadBlock(file);
         return UploadService.upVideo(mBlock, file.getName(), chunkIndex, chunkCount, tempFileUrl)
-                .concatMap(new Function<ResponseBase<UpResxResponse>,
+                .concatMap(new Function<UpResxResponse,
                         ObservableSource<VideoModel>>() {
                     @Override
-                    public ObservableSource<VideoModel> apply(ResponseBase<UpResxResponse>
-                                                                      response) throws
+                    public ObservableSource<VideoModel> apply(UpResxResponse response) throws
                             Exception {
-                        if (response != null && response.getResponseBody() != null && response
-                                .getResponseBody().isSuccess()) {
-                            UpResxResponse res = response.getResponseBody();
+                        if (response != null && response.isSuccess()) {
                             if (chunkIndex >= chunkCount) {//last chunk data
                                 initParams();
                                 if (processListener != null)
                                     processListener.chunkEnd(chunkCount, chunkIndex, mBlock
-                                                    .length, res.getOriginalUrl(), res
+                                                    .length, response.getOriginalUrl(), response
                                                     .getPreviewUrl(),
-                                            res.getOriginalSize());
+                                            response.getOriginalSize());
                                 VideoModel model = new VideoModel();
                                 model.isSuccess = true;
-                                model.originalUrl = res.getOriginalUrl();
-                                model.previewUrl = res.getPreviewUrl();
-                                model.originalSize = (int) res.getOriginalSize();
+                                model.originalUrl = response.getOriginalUrl();
+                                model.previewUrl = response.getPreviewUrl();
+                                model.originalSize = (int) response.getOriginalSize();
                                 return Observable.just(model);
                             } else {
-                                tempFileUrl = res.getOriginalUrl();
+                                tempFileUrl = response.getOriginalUrl();
                                 if (processListener != null)
                                     processListener.chunkProcess(chunkCount, chunkIndex, mBlock
-                                            .length, res.getPreviewUrl());
+                                            .length, response.getPreviewUrl());
                                 chunkIndex++;
                                 return upload(file);
                             }

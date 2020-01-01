@@ -1,10 +1,71 @@
 package com.hwl.beta.net.resx.body;
 
+import com.hwl.beta.utils.StringUtils;
+
 /**
  * Created by Administrator on 2018/1/24.
  */
 public class UpResxResponse {
     private boolean Success;
+    private String Message;
+    private String ResxAccessUrl;
+
+    //image
+    private int ImageWidth;
+    private int ImageHeight;
+    private String ImagePreviewUrl;
+
+    //video
+    private double Duration;
+
+    public String getMessage() {
+        return Message;
+    }
+
+    public void setMessage(String message) {
+        Message = message;
+    }
+
+    public String getResxAccessUrl() {
+        return ResxAccessUrl;
+    }
+
+    public void setResxAccessUrl(String resxAccessUrl) {
+        ResxAccessUrl = resxAccessUrl;
+    }
+
+    public int getImageWidth() {
+        return ImageWidth;
+    }
+
+    public void setImageWidth(int imageWidth) {
+        ImageWidth = imageWidth;
+    }
+
+    public int getImageHeight() {
+        return ImageHeight;
+    }
+
+    public void setImageHeight(int imageHeight) {
+        ImageHeight = imageHeight;
+    }
+
+    public String getImagePreviewUrl() {
+        return ImagePreviewUrl;
+    }
+
+    public void setImagePreviewUrl(String imagePreviewUrl) {
+        ImagePreviewUrl = imagePreviewUrl;
+    }
+
+    public double getDuration() {
+        return Duration;
+    }
+
+    public void setDuration(double duration) {
+        Duration = duration;
+    }
+
     private String OriginalUrl;
     private long OriginalSize;
     private String PreviewUrl;

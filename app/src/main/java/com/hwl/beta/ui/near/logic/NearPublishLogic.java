@@ -16,6 +16,7 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
@@ -63,6 +64,12 @@ public class NearPublishLogic implements NearPublishStandard {
                         return UploadService.upImage(file, ResxType.NEARCIRCLEPOST);
                     }
                 })
+                .doOnNext(new Consumer<UpResxResponse>() {
+                    @Override
+                    public void accept(UpResxResponse upResxResponse) throws Exception {
+                        String aa=upResxResponse.getResxAccessUrl();
+                    }
+                })
                 .buffer(imagePaths.size())
                 .map(new Function<List<UpResxResponse>, List<NetImageInfo>>() {
                     @Override
@@ -73,11 +80,7 @@ public class NearPublishLogic implements NearPublishStandard {
                                 NetImageInfo imageInfo = new NetImageInfo();
                                 imageInfo.setHeight(res.getHeight());
                                 imageInfo.setWidth(res.getWidth());
-                                if (StringUtils.isBlank(res.getPreviewUrl())) {
-                                    imageInfo.setUrl(res.getOriginalUrl());
-                                } else {
-                                    imageInfo.setUrl(res.getPreviewUrl());
-                                }
+                                imageInfo.setUrl(res.getResxAccessUrl());
                                 imgInfos.add(imageInfo);
                             }
                         }

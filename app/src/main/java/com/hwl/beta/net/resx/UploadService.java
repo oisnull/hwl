@@ -8,6 +8,8 @@ import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.utils.StringUtils;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
@@ -16,10 +18,7 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
-import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import retrofit2.http.Part;
-import retrofit2.http.Query;
 
 /**
  * Created by Administrator on 2018/1/24.
@@ -29,34 +28,49 @@ public class UploadService {
 
     public final static int CHUNKED_LENGTH = 700 * 1024;
 
-    public static Observable<UpResxResponse> upImage(File file, int resxType) {
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("image", file.getName(),
-                requestFile);
-        return RetrofitUtils.createResxApi(IUploadService.class)
-                .upImage(body, UserSP.getUserToken(), resxType)
-                .map(new NetDefaultFunction<UpResxResponse>())
-                .subscribeOn(Schedulers.io());
+    private static MultipartBody.Builder getDefaultParam(int resxType) {
+        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        builder.addPart(Headers.of("Content-Disposition", "form-data; name=\"ResxType\""),
+                RequestBody.create(null, String.valueOf(resxType)));
+        builder.addPart(Headers.of("Content-Disposition", "form-data; name=\"Token\""),
+                RequestBody.create(null, UserSP.getUserToken()));
+        builder.addPart(Headers.of("Content-Disposition", "form-data; name=\"UserId\""),
+                RequestBody.create(null, UserSP.getUserId() + ""));
+        return builder;
     }
 
-    public static Observable<UpResxResponse> upImage(byte[] bitmap, int resxType) {
+    public static Observable<UpResxResponse> upImage(File file, int resxType) {
+        MultipartBody.Builder builder = getDefaultParam(resxType);
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"),
-                bitmap);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("image", "userhead.png",
-                requestFile);
-        return RetrofitUtils.createResxApi(IUploadService.class)
-                .upImage(body, UserSP.getUserToken(), resxType)
-                .map(new NetDefaultFunction<UpResxResponse>())
-                .subscribeOn(Schedulers.io());
-//                .observeOn(AndroidSchedulers.mainThread());
+                file);
+        builder.addFormDataPart("Files", file.getName(), requestFile);
+        return RetrofitUtils.createResxApi(IUploadService.class).upImage(builder.build())
+                .map(new NetDefaultFunction<UpResxResponse>());
     }
+
+//    public static Observable<UpResxResponse> upImage(byte[] bitmap, int resxType) {
+//        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"),
+//                bitmap);
+//        MultipartBody.Part body = MultipartBody.Part.createFormData("image", "userhead.png",
+//                requestFile);
+//        return RetrofitUtils.createResxApi(IUploadService.class)
+//                .upImage(body, UserSP.getUserToken(), resxType)
+//                .map(new NetDefaultFunction<UpResxResponse>())
+//                .subscribeOn(Schedulers.io());
+////                .observeOn(AndroidSchedulers.mainThread());
+//    }
 
     public static Observable<UpResxResponse> upVoice(File file) {
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("audio", file.getName(),
-                requestFile);
+        MultipartBody.Builder builder = getDefaultParam(0);
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"),
+                file);
+        builder.addFormDataPart("Files", file.getName(), requestFile);
+//        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"),
+//        file);
+//        MultipartBody.Part body = MultipartBody.Part.createFormData("audio", file.getName(),
+//                requestFile);
         return RetrofitUtils.createResxApi(IUploadService.class)
-                .upVoice(body, UserSP.getUserToken())
+                .upVoice(builder.build())
                 .map(new NetDefaultFunction<UpResxResponse>())
                 .subscribeOn(Schedulers.io());
         // .observeOn(AndroidSchedulers.mainThread());
@@ -66,9 +80,9 @@ public class UploadService {
     //chunkCount 分块总数量
     //tempFileUrl为服务端生成后返回的临时文件地址
     //tempFileUrl第一次上传为空，后面需要将服务端返回的地址传进来
-    public static Observable<ResponseBase<UpResxResponse>> upVideo(byte[] byteContent,
-                                                                   String fileName,
-                                                                   int chunkIndex, int chunkCount
+    public static Observable<UpResxResponse> upVideo(byte[] byteContent,
+                                                     String fileName,
+                                                     int chunkIndex, int chunkCount
             , String tempFileUrl) {
         if (StringUtils.isBlank(fileName)) {
             fileName = "video.mp4";
@@ -84,23 +98,18 @@ public class UploadService {
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"),
                 byteContent);
         builder.addFormDataPart("video", fileName, requestFile);
-        return RetrofitUtils.createResxApi(IUploadService.class).upVideo(builder.build(),
-                UserSP.getUserToken());
+        return RetrofitUtils.createResxApi(IUploadService.class).upVideo(builder.build())
+                .map(new NetDefaultFunction<UpResxResponse>());
     }
 
     public interface IUploadService {
-        @Multipart
-        @POST("resx/image")
-        Observable<ResponseBase<UpResxResponse>> upImage(@Part MultipartBody.Part file, @Query
-                ("token") String token, @Query("resxtype") int resxType);
+        @POST("resx/ImageUpload")
+        Observable<ResponseBase<UpResxResponse>> upImage(@Body MultipartBody file);
 
-        @Multipart
-        @POST("resx/audio")
-        Observable<ResponseBase<UpResxResponse>> upVoice(@Part MultipartBody.Part file, @Query(
-                "token") String token);
+        @POST("resx/AudioUpload")
+        Observable<ResponseBase<UpResxResponse>> upVoice(@Body MultipartBody file);
 
-        @POST("resx/video")
-        Observable<ResponseBase<UpResxResponse>> upVideo(@Body MultipartBody file,
-                                                         @Query("token") String token);
+        @POST("resx/VideoUpload")
+        Observable<ResponseBase<UpResxResponse>> upVideo(@Body MultipartBody file);
     }
 }

@@ -53,8 +53,8 @@ public class BaiduLocationV2 {
                     //模拟器的时候使用
                     LocationModel model = new LocationModel();
                     model.radius = 40.0f;
-                    model.latitude = (float) 121.503349304199;
-                    model.longitude = (float) 31.0745754241943;
+                    model.longitude = (float) 121.503349304199;
+                    model.latitude = (float) 31.0745754241943;
                     model.country = "中国";
                     model.province = "上海市";
                     model.city = "上海市";
