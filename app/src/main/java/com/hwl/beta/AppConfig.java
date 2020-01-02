@@ -19,7 +19,7 @@ public class AppConfig {
 //    public final static String IM_HOST = "192.168.2.210";
 //    public final static int IM_PORT = 8081;
 
-    public final static String EMOTION_ENTRANCE_URL = "http://115.229.252.205:8082/emotion/index";
+    public final static String EMOTION_ENTRANCE_URL = "http://111.229.252.205:8082/emotion/index";
 
     //im release env
     //net api

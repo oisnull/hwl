@@ -57,28 +57,24 @@ public class NearPublishLogic implements NearPublishStandard {
                         return file;
                     }
                 })
-                .flatMap(new Function<File, ObservableSource<UpResxResponse>>() {
+                .flatMap(new Function<File, ObservableSource<ImageUploadResponse>>() {
                     @Override
-                    public ObservableSource<UpResxResponse> apply(File file) throws Exception {
-                        return UploadService.upImage(file, ResxType.NEARCIRCLEPOST);
+                    public ObservableSource<ImageUploadResponse> apply(File file) throws Exception {
+                        //return UploadService.upImage(file, ResxType.NEARCIRCLEPOST);
+						return ResxService.imageUpload(file, ResxType.NEARCIRCLEPOST);
                     }
                 })
                 .buffer(imagePaths.size())
-                .map(new Function<List<UpResxResponse>, List<NetImageInfo>>() {
+                .map(new Function<List<ImageUploadResponse>, List<NetImageInfo>>() {
                     @Override
-                    public List<NetImageInfo> apply(List<UpResxResponse> responses) throws Exception {
+                    public List<NetImageInfo> apply(List<ImageUploadResponse> responses) throws Exception {
                         List<NetImageInfo> imgInfos = new ArrayList<>();
-                        for (UpResxResponse res : responses) {
-                            if (res.isSuccess()) {
+                        for (ImageUploadResponse res : responses) {
+                            if (res.getResxImageResult().getSuccess()) {
                                 NetImageInfo imageInfo = new NetImageInfo();
-                                imageInfo.setHeight(res.getHeight());
-                                imageInfo.setWidth(res.getWidth());
-                                if (StringUtils.isBlank(res.getPreviewUrl())) {
-                                imageInfo.setUrl(res.getResxAccessUrl());
-                                    imageInfo.setUrl(res.getOriginalUrl());
-                                } else {
-                                    imageInfo.setUrl(res.getPreviewUrl());
-                                }
+                                imageInfo.setHeight(res.getResxImageResult().getImageHeight());
+                                imageInfo.setWidth(res.getResxImageResult().getImageWidth());
+                                imageInfo.setUrl(res.getResxImageResult().getImagePreviewUrl());
                                 imgInfos.add(imageInfo);
                             }
                         }
