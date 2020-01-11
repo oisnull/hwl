@@ -3,9 +3,9 @@ package com.hwl.beta.ui.near.logic;
 import com.hwl.beta.net.near.NearCircleService;
 import com.hwl.beta.net.near.NetImageInfo;
 import com.hwl.beta.net.near.body.AddNearCircleInfoResponse;
+import com.hwl.beta.net.resx.ResxService;
 import com.hwl.beta.net.resx.ResxType;
-import com.hwl.beta.net.resx.UploadService;
-import com.hwl.beta.net.resx.body.UpResxResponse;
+import com.hwl.beta.net.resx.body.ImageUploadResponse;
 import com.hwl.beta.ui.imgcompress.CompressChatImage;
 import com.hwl.beta.ui.near.standard.NearPublishStandard;
 import com.hwl.beta.utils.StringUtils;
@@ -74,7 +74,7 @@ public class NearPublishLogic implements NearPublishStandard {
                                 NetImageInfo imageInfo = new NetImageInfo();
                                 imageInfo.setHeight(res.getResxImageResult().getImageHeight());
                                 imageInfo.setWidth(res.getResxImageResult().getImageWidth());
-                                imageInfo.setUrl(res.getResxImageResult().getImagePreviewUrl());
+                                imageInfo.setUrl(res.getResxImageResult().getResxAccessUrl());
                                 imgInfos.add(imageInfo);
                             }
                         }

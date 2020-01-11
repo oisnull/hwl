@@ -3,9 +3,9 @@ package com.hwl.beta.ui.circle.logic;
 import com.hwl.beta.net.circle.CircleService;
 import com.hwl.beta.net.circle.body.AddCircleInfoResponse;
 import com.hwl.beta.net.near.NetImageInfo;
+import com.hwl.beta.net.resx.ResxService;
 import com.hwl.beta.net.resx.ResxType;
-import com.hwl.beta.net.resx.UploadService;
-import com.hwl.beta.net.resx.body.UpResxResponse;
+import com.hwl.beta.net.resx.body.ImageUploadResponse;
 import com.hwl.beta.ui.circle.standard.CirclePublishStandard;
 import com.hwl.beta.ui.imgcompress.CompressChatImage;
 import com.hwl.beta.utils.StringUtils;
@@ -57,27 +57,24 @@ public class CirclePublishLogic implements CirclePublishStandard {
                         return file;
                     }
                 })
-                .flatMap(new Function<File, ObservableSource<UpResxResponse>>() {
+                .flatMap(new Function<File, ObservableSource<ImageUploadResponse>>() {
                     @Override
-                    public ObservableSource<UpResxResponse> apply(File file) throws Exception {
-                        return UploadService.upImage(file, ResxType.FRIENDCIRCLEPOST);
+                    public ObservableSource<ImageUploadResponse> apply(File file) throws Exception {
+//                        return UploadService.upImage(file, ResxType.FRIENDCIRCLEPOST);
+                        return ResxService.imageUpload(file, ResxType.FRIENDCIRCLEPOST);
                     }
                 })
                 .buffer(imagePaths.size())
-                .map(new Function<List<UpResxResponse>, List<NetImageInfo>>() {
+                .map(new Function<List<ImageUploadResponse>, List<NetImageInfo>>() {
                     @Override
-                    public List<NetImageInfo> apply(List<UpResxResponse> responses) throws Exception {
+                    public List<NetImageInfo> apply(List<ImageUploadResponse> responses) throws Exception {
                         List<NetImageInfo> imgInfos = new ArrayList<>();
-                        for (UpResxResponse res : responses) {
-                            if (res.isSuccess()) {
+                        for (ImageUploadResponse res : responses) {
+                            if (res.getResxImageResult().getSuccess()) {
                                 NetImageInfo imageInfo = new NetImageInfo();
-                                imageInfo.setHeight(res.getHeight());
-                                imageInfo.setWidth(res.getWidth());
-                                if (StringUtils.isBlank(res.getPreviewUrl())) {
-                                    imageInfo.setUrl(res.getOriginalUrl());
-                                } else {
-                                    imageInfo.setUrl(res.getPreviewUrl());
-                                }
+                                imageInfo.setHeight(res.getResxImageResult().getImageHeight());
+                                imageInfo.setWidth(res.getResxImageResult().getImageWidth());
+                                imageInfo.setUrl(res.getResxImageResult().getResxAccessUrl());
                                 imgInfos.add(imageInfo);
                             }
                         }

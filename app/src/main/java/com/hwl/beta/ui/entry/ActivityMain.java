@@ -28,14 +28,12 @@ import com.hwl.beta.databinding.EntryActivityMainBinding;
 import com.hwl.beta.location.BaiduLocationV2;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.ui.TabFragmentPagerAdapter;
-import com.hwl.beta.ui.common.PermissionsAction;
 import com.hwl.beta.ui.common.PermissionsOperator;
 import com.hwl.beta.ui.dialog.DialogUtils;
 import com.hwl.beta.ui.ebus.EventBusConstant;
 import com.hwl.beta.ui.ebus.EventMessageModel;
 import com.hwl.beta.ui.chat.FragmentRecord;
 import com.hwl.beta.ui.common.BaseActivity;
-import com.hwl.beta.ui.common.ShareTransfer;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.entry.bean.MainBean;
 import com.hwl.beta.ui.near.FragmentNear;
@@ -44,7 +42,6 @@ import com.hwl.beta.ui.user.FragmentFriends;
 import com.hwl.beta.ui.entry.action.IMainListener;
 import com.hwl.beta.ui.entry.logic.MainLogic;
 import com.hwl.beta.ui.entry.standard.MainStandard;
-import com.hwl.beta.utils.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -249,23 +246,24 @@ public class ActivityMain extends BaseActivity {
                         UITransfer.toNearPublishActivity(activity);
                         break;
                     case R.id.pop_share_app:
-                        new AlertDialog.Builder(activity)
-                                .setMessage("如果别人就在你的旁边，你可以通过二维码来分享给TA...")
-                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                        UITransfer.toQRCodeActivity(activity);
+//                        new AlertDialog.Builder(activity)
+//                                .setMessage("如果别人就在你的旁边，你可以通过二维码来分享给TA...")
+//                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
 //                                        UITransfer.toQRCodeActivity(activity);
-                                        dialog.dismiss();
-                                    }
-                                })
-                                .setNegativeButton("用其它方式", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        ShareTransfer.shareApp();
-                                    }
-                                })
-                                .show();
-
+//                                        dialog.dismiss();
+//                                    }
+//                                })
+//                                .setNegativeButton("用其它方式", new DialogInterface.OnClickListener
+//                                () {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        ShareTransfer.shareApp();
+//                                    }
+//                                })
+//                                .show();
                         break;
                     case R.id.pop_open_test:
                         UITransfer.toTestActivity(activity);

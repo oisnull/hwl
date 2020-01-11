@@ -27,12 +27,12 @@ import com.hwl.beta.ui.chat.ActivityChatUser;
 import com.hwl.beta.ui.chat.ActivityChatUserSetting;
 import com.hwl.beta.ui.circle.ActivityCircleMessages;
 import com.hwl.beta.ui.dialog.ReloginDialogFragment;
-//import com.hwl.beta.ui.entry.ActivityQRCode;
 import com.hwl.beta.ui.emoji.ActivityEmojiSetting;
 import com.hwl.beta.ui.emoji.ActivityEmojiStore;
 import com.hwl.beta.ui.entry.ActivityGetpwd;
 import com.hwl.beta.ui.entry.ActivityLogin;
 import com.hwl.beta.ui.entry.ActivityMain;
+import com.hwl.beta.ui.entry.ActivityQRCode;
 import com.hwl.beta.ui.entry.ActivityRegister;
 import com.hwl.beta.ui.group.ActivityGroup;
 import com.hwl.beta.ui.group.ActivityGroupAdd;
@@ -77,10 +77,10 @@ public class UITransfer {
         context.startActivity(intent);
     }
 
-//    public static void toQRCodeActivity(Activity context) {
-//        Intent intent = new Intent(context, ActivityQRCode.class);
-//        context.startActivity(intent);
-//    }
+    public static void toQRCodeActivity(Activity context) {
+        Intent intent = new Intent(context, ActivityQRCode.class);
+        context.startActivity(intent);
+    }
 
     public static void toLoginActivity(Activity context) {
         Intent intent = new Intent(context, ActivityLogin.class);
