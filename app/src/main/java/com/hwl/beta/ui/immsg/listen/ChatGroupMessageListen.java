@@ -62,7 +62,7 @@ public class ChatGroupMessageListen extends
         record.setRecordType(IMConstant.CHAT_RECORD_TYPE_GROUP);
         record.setGroupGuid(message.getGroupGuid());
         record.setGroupName(groupInfo.getGroupName());
-        record.setGroupUserImages(groupInfo.getUserImages());
+        record.setGroupUserImages(groupInfo.getGroupImages());
         //        record.setRecordImage(model.getGroupImage());
         record.setFromUserId(message.getFromUserId());
         record.setFromUserName(fromUser.getShowName());
@@ -132,7 +132,7 @@ public class ChatGroupMessageListen extends
             List<String> userImages = new ArrayList<>(1);
             userImages.add(messageContent.getFromUserImage());
             userImages.add(UserSP.getUserHeadImage());
-            groupInfo.setUserImages(userImages);
+            groupInfo.setGroupImages(userImages);
         }
         return groupInfo;
     }

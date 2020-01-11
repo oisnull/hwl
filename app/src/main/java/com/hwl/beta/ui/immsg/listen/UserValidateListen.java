@@ -26,7 +26,7 @@ public class UserValidateListen extends AbstractMessageListenExecutor<ImUserVali
         super.success(response);
         if (response.getIsSuccess()) {
             if (this.succCallback != null)
-                this.succCallback.accept(response.getSessionid());
+                this.succCallback.accept(response.getSession());
         } else {
             if (this.failedCallback != null)
                 this.failedCallback.accept(response.getMessage());
@@ -40,7 +40,7 @@ public class UserValidateListen extends AbstractMessageListenExecutor<ImUserVali
     }
 
     @Override
-    public void sessionidInvalid() {
+    public void sessionInvalid() {
         EventBusUtil.sendTokenInvalidEvent();
     }
 

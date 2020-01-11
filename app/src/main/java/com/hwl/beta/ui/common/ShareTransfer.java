@@ -7,8 +7,8 @@ import cn.sharesdk.onekeyshare.OnekeyShare;
 
 public class ShareTransfer {
 
-    public static final String APP_DOWNLOAD_URL = "http://115.29.179.171:8016/home/shareapp";
-    public static final String APP_LOGO_URL = "http://115.29.179.171:8015/content/default.png";
+    public static final String APP_DOWNLOAD_URL = "http://111.229.252.205:8082/home/shareapp";
+    public static final String APP_LOGO_URL = "http://111.229.252.205:8082/images/logo.png";
 
     public static void shareApp() {
 

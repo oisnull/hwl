@@ -4,6 +4,7 @@ import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.db.entity.FriendRequest;
 import com.hwl.beta.net.user.NetGroupUserInfo;
+import com.hwl.beta.net.user.NetSecretUserInfo;
 import com.hwl.beta.net.user.NetUserFriendInfo;
 import com.hwl.beta.net.user.NetUserInfo;
 import com.hwl.beta.net.user.UserDetailsInfo;
@@ -57,14 +58,24 @@ public class DBFriendAction {
         return friend;
     }
 
-    public static List<Friend> convertGroupUserToFriendInfos(List<NetGroupUserInfo>
-                                                                     netGroupUserInfos) {
+    public static List<Friend> convertGroupUserToFriendInfos(List<NetGroupUserInfo> netGroupUserInfos) {
         if (netGroupUserInfos == null) return null;
         List<Friend> friends = new ArrayList<>(netGroupUserInfos.size());
         for (int i = 0; i < netGroupUserInfos.size(); i++) {
             friends.add(convertToFriendInfo(netGroupUserInfos.get(i).getUserId(),
                     netGroupUserInfos.get(i).getUserName(), netGroupUserInfos.get(i)
                             .getUserHeadImage()));
+        }
+        return friends;
+    }
+
+    public static List<Friend> convertSecretUserToFriendInfos(List<NetSecretUserInfo> users) {
+        if (users == null) return null;
+        List<Friend> friends = new ArrayList<>(users.size());
+        for (int i = 0; i < users.size(); i++) {
+            friends.add(convertToFriendInfo(users.get(i).getUserId(),
+                    users.get(i).getUserName(),
+                    users.get(i).getUserImage()));
         }
         return friends;
     }

@@ -53,15 +53,15 @@ public class BaiduLocationV2 {
                     //模拟器的时候使用
                     LocationModel model = new LocationModel();
                     model.radius = 40.0f;
-                    model.latitude = (float) 31.07344;
-                    model.longitude = (float) 121.507054;
+                    model.longitude = (float) 121.503349304199;
+                    model.latitude = (float) 31.0745754241943;
                     model.country = "中国";
                     model.province = "上海市";
                     model.city = "上海市";
                     model.district = "闵行区";
-                    model.street = "浦晓南路(ERROR)";
-                    model.addr = "中国上海市闵行区联航路1960号";
-                    model.describe = "在世博家园十三街坊附近";
+                    model.street = "浦驰路(ERROR)";
+                    model.addr = "中国上海市闵行区浦驰路188弄1-109";
+                    model.describe = "在世博家园十一街坊附近";
                     currentStatus = COMPLETE_SUCCESS;
                     errorMessage = null;
                     locationListener.onSuccess(model);
@@ -138,7 +138,7 @@ public class BaiduLocationV2 {
     }
 
     public boolean isEnd() {
-        return this.currentStatus == COMPLETE_SUCCESS || this.currentStatus == COMPLETE_FAILURE;
+        return this.currentStatus == COMPLETE_SUCCESS || this.currentStatus == COMPLETE_FAILURE || this.currentStatus == NOT_START;
     }
 
     public void start() {

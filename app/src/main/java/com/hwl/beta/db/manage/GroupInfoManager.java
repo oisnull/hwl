@@ -3,11 +3,14 @@ package com.hwl.beta.db.manage;
 import android.content.Context;
 
 import com.hwl.beta.db.BaseDao;
+import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.dao.GroupInfoDao;
 import com.hwl.beta.db.entity.GroupInfo;
 import com.hwl.beta.utils.StringUtils;
 
 import java.util.List;
+
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Administrator on 2018/2/10.
@@ -22,19 +25,17 @@ public class GroupInfoManager extends BaseDao<GroupInfo> {
         if (groupInfo == null || StringUtils.isBlank(groupInfo.getGroupGuid()))
             return;
 
-		if(get(groupInfo.getGroupGuid())==null)
-			daoSession.getGroupInfoDao().insert(groupInfo);
+        if (groupInfo.getId() != null && groupInfo.getId() > 0) {
+            daoSession.getGroupInfoDao().insertOrReplace(groupInfo);
+        } else if (get(groupInfo.getGroupGuid()) == null)
+            daoSession.getGroupInfoDao().insert(groupInfo);
     }
 
     public void addList(List<GroupInfo> groupInfos) {
         if (groupInfos == null || groupInfos.size() <= 0) return;
         for (int i = 0; i < groupInfos.size(); i++) {
-            try {
-                this.add(groupInfos.get(i));
-            } catch (Exception e) {
-            }
+            this.add(groupInfos.get(i));
         }
-//        daoSession.getGroupInfoDao().insertInTx(groupInfos);
     }
 
     public List<String> getGroupUserImages(String groupGuid) {
@@ -42,7 +43,7 @@ public class GroupInfoManager extends BaseDao<GroupInfo> {
                 .where(GroupInfoDao.Properties.GroupGuid.eq(groupGuid))
                 .unique();
         if (groupInfo != null) {
-            return groupInfo.getUserImages();
+            return groupInfo.getGroupImages();
         }
         return null;
     }
@@ -50,8 +51,28 @@ public class GroupInfoManager extends BaseDao<GroupInfo> {
     public GroupInfo get(String groupGuid) {
         if (StringUtils.isBlank(groupGuid)) return null;
 
-        return daoSession.getGroupInfoDao().queryBuilder().where(GroupInfoDao.Properties
-                .GroupGuid.eq(groupGuid)).unique();
+        GroupInfo ginfo = daoSession.getGroupInfoDao().queryBuilder()
+                .where(GroupInfoDao.Properties.GroupGuid.eq(groupGuid))
+                .unique();
+        if (ginfo == null) return ginfo;
+
+        if (ginfo.getGroupImages() == null || ginfo.getGroupImages().size() <= 0) {
+            List<String> imgs = DaoUtils.getGroupUserInfoManagerInstance().getUserImages(groupGuid);
+            ginfo.setGroupImages(imgs);
+            daoSession.getGroupInfoDao().insertOrReplace(ginfo);
+        }
+
+        return ginfo;
+    }
+
+    public void setLoadUserStatus(String groupGuid, boolean isLoaded) {
+        if (StringUtils.isBlank(groupGuid)) return;
+
+        String updateSql = String.format("update %s set %s='%s' where %s='%s'",
+                GroupInfoDao.TABLENAME
+                , GroupInfoDao.Properties.IsLoadUser.columnName, isLoaded ? 1 : 0,
+                GroupInfoDao.Properties.GroupGuid.columnName, groupGuid);
+        daoSession.getDatabase().execSQL(updateSql);
     }
 
     public boolean getGroupSettingIsShield(String groupGuid) {
@@ -61,7 +82,7 @@ public class GroupInfoManager extends BaseDao<GroupInfo> {
         return setting.getIsShield();
     }
 
-    public boolean updateUserCount(String groupGuid, int count) {
+    public boolean setUserCount(String groupGuid, int count) {
         if (StringUtils.isBlank(groupGuid)) return false;
 
         GroupInfo group = get(groupGuid);
@@ -104,6 +125,27 @@ public class GroupInfoManager extends BaseDao<GroupInfo> {
         add(groupInfo);
         return groupInfo;
     }
+
+    public GroupInfo setGroupImages(String groupGuid, List<String> images) {
+        GroupInfo groupInfo = get(groupGuid);
+        groupInfo.setGroupImages(images);
+        add(groupInfo);
+        return groupInfo;
+    }
+
+    public void setGroupInfo(String groupGuid, Consumer<GroupInfo> setCall) {
+        if (setCall == null) return;
+        GroupInfo groupInfo = get(groupGuid);
+        if (groupInfo != null) {
+            try {
+                setCall.accept(groupInfo);
+                add(groupInfo);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     public void deleteGroupInfo(GroupInfo groupInfo) {
         if (groupInfo == null) return;

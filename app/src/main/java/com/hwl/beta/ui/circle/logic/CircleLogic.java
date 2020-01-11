@@ -17,9 +17,9 @@ import com.hwl.beta.net.circle.body.GetCircleCommentsResponse;
 import com.hwl.beta.net.circle.body.GetCircleDetailResponse;
 import com.hwl.beta.net.circle.body.GetCircleInfosResponse;
 import com.hwl.beta.net.circle.body.SetLikeInfoResponse;
+import com.hwl.beta.net.resx.ResxService;
 import com.hwl.beta.net.resx.ResxType;
-import com.hwl.beta.net.resx.UploadService;
-import com.hwl.beta.net.resx.body.UpResxResponse;
+import com.hwl.beta.net.resx.body.ImageUploadResponse;
 import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.SetUserCircleBackImageResponse;
 import com.hwl.beta.sp.UserSP;
@@ -196,15 +196,17 @@ public class CircleLogic implements CircleStandard {
             return Observable.error(new Throwable("Up load data can't be emtpy."));
         }
 
-        return UploadService.upImage(new File(localPath), ResxType.CIRCLEBACK)
-                .flatMap(new Function<UpResxResponse, Observable<SetUserCircleBackImageResponse>>() {
+        return ResxService.imageUpload(new File(localPath), ResxType.NEARCIRCLEPOST)
+                .flatMap(new Function<ImageUploadResponse,
+                        Observable<SetUserCircleBackImageResponse>>() {
                     @Override
-                    public Observable<SetUserCircleBackImageResponse> apply(UpResxResponse res) throws Exception {
-                        if (!res.isSuccess()) {
+                    public Observable<SetUserCircleBackImageResponse> apply(ImageUploadResponse res)
+                            throws Exception {
+                        if (!res.getResxImageResult().getSuccess()) {
                             throw new Exception("Up load image failed.");
                         }
 
-                        return UserService.setUserCircleBackImage(res.getOriginalUrl());
+                        return UserService.setUserCircleBackImage(res.getResxImageResult().getResxAccessUrl());
                     }
                 })
                 .map(new Function<SetUserCircleBackImageResponse, String>() {

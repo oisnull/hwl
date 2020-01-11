@@ -10,6 +10,7 @@ import com.hwl.beta.ui.immsg.listen.ChatSettingMessageListen;
 import com.hwl.beta.ui.immsg.listen.CircleOperateMessageListen;
 import com.hwl.beta.ui.immsg.listen.GroupOperateMessageListen;
 import com.hwl.beta.ui.immsg.listen.NearCircleOperateMessageListen;
+import com.hwl.beta.ui.immsg.listen.SystemMessageListen;
 import com.hwl.beta.ui.immsg.listen.TestConnectionMessageListen;
 import com.hwl.beta.ui.immsg.listen.UserValidateListen;
 import com.hwl.beta.ui.immsg.send.AddFriendMessageSend;
@@ -79,6 +80,8 @@ public class IMClientEntry {
                 NearCircleOperateMessageListen());
         messageOperate.registerListenExecutor(ImMessageType.CircleOperate, new
                 CircleOperateMessageListen());
+        messageOperate.registerListenExecutor(ImMessageType.SystemMessage,
+                new SystemMessageListen());
     }
 
     public static void connectServer() {
@@ -177,7 +180,7 @@ public class IMClientEntry {
 
     private static void startHeartbeat(String sessionId) {
         log.info("Client listen : start send heart package, sessionid : " + sessionId);
-        MessageRequestHeadOperate.setSessionid(sessionId);
+        MessageRequestHeadOperate.setSession(sessionId);
         IMClientHeartbeatTimer.getInstance().run(new TimerTask() {
             @Override
             public void run() {

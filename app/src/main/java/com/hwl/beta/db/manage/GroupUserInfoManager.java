@@ -28,21 +28,6 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
         super(context);
     }
 
-    public List<String> getTopUserImages(String groupGuid) {
-        int count = 10;
-//        String sql = "select " + GroupUserInfoDao.Properties.UserHeadImage.columnName + " from
-// " + GroupUserInfoDao.TABLENAME
-//                + " where " + GroupUserInfoDao.Properties.GroupGuid.columnName + " = '" +
-// groupGuid + "'"
-//                + " limit " + count;
-//        Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
-        List<String> images = new ArrayList<>(count);
-//        while (cursor.moveToNext()) {
-//            images.add(cursor.getString(0));
-//        }
-        return images;
-    }
-
     public List<Long> getUserIdList(String groupGuid) {
         String sql = "select " + GroupUserInfoDao.Properties.UserId.columnName + " from " +
                 GroupUserInfoDao.TABLENAME + " where "
@@ -55,14 +40,19 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
         return ids;
     }
 
-//    public GroupUserInfo get(String groupGuid, long userId) {
-//        if (TextUtils.isEmpty(groupGuid) || userId <= 0) return null;
-//
-//        return daoSession.getGroupUserInfoDao().queryBuilder()
-//                .where(GroupUserInfoDao.Properties.GroupGuid.eq(groupGuid))
-//                .where(GroupUserInfoDao.Properties.UserId.eq(userId))
-//                .unique();
-//    }
+    public List<String> getUserImages(String groupGuid) {
+        List<Long> userIds = getUserIdList(groupGuid);
+        if (userIds == null || userIds.size() <= 0) return null;
+
+        List<Friend> friends = DaoUtils.getFriendManagerInstance().getList(userIds);
+        if (friends == null || friends.size() <= 0) return null;
+
+        List<String> imgs = new ArrayList<>(friends.size());
+        for (int i = 0; i < friends.size(); i++) {
+            imgs.add(friends.get(i).getHeadImage());
+        }
+        return imgs;
+    }
 
     public GroupUserInfo getUserInfo(String groupGuid, long userId) {
         if (TextUtils.isEmpty(groupGuid) || userId <= 0) return null;
@@ -79,6 +69,16 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
             return 0;
         }
         return daoSession.getGroupUserInfoDao().insert(userInfo);
+    }
+
+    public void addList(List<GroupUserInfo> users) {
+        if (users == null || users.size() <= 0) return;
+
+        for (int i = 0; i < users.size(); i++) {
+            if (getUserInfo(users.get(i).getGroupGuid(), users.get(i).getUserId()) == null) {
+                daoSession.getGroupUserInfoDao().insert(users.get(i));
+            }
+        }
     }
 
     public void addListAsync(List<GroupUserInfo> userInfos) {
@@ -126,15 +126,6 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
 
         return groupUserInfos;
     }
-
-//    public GroupUserInfo setUserName(String groupGuid, long userId, String userName) {
-//        GroupUserInfo userInfo = getUserInfo(groupGuid, userId);
-//        if (userInfo != null) {
-////            userInfo.setUserName(userName);
-//            daoSession.getGroupUserInfoDao().update(userInfo);
-//        }
-//        return userInfo;
-//    }
 
     public void deleteGroupUserInfo(String groupGuid) {
         String sql = "delete from " + GroupUserInfoDao.TABLENAME +

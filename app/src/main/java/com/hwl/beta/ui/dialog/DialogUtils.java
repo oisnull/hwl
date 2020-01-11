@@ -8,15 +8,13 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.hwl.beta.R;
-import com.hwl.beta.sp.UserSP;
-import com.hwl.beta.ui.user.bean.UserIndexBean;
 
 public class DialogUtils {
     private static AddFriendDialogFragment addFriendDialogFragment;
     private static LocationDialogFragment locationDialogFragment;
+    private static LocationLoadingDialogFragment locationLoadingDialogFragment;
     private static Dialog userActionDialog;
 
     public static void showAddFriendDialog(FragmentActivity fragmentActivity, String title,
@@ -54,6 +52,23 @@ public class DialogUtils {
         if (locationDialogFragment != null) {
             locationDialogFragment.dismiss();
             locationDialogFragment = null;
+        }
+    }
+
+    public static void showLocationLoadingDialog(FragmentActivity fragmentActivity) {
+        if (locationLoadingDialogFragment == null) {
+            locationLoadingDialogFragment = new LocationLoadingDialogFragment();
+        }
+        if (locationLoadingDialogFragment.isAdded())
+            return;
+        locationLoadingDialogFragment.show(fragmentActivity.getSupportFragmentManager(),
+                "LocationLoadingDialogFragment");
+    }
+
+    public static void closeLocationLoadingDialog() {
+        if (locationLoadingDialogFragment != null) {
+            locationLoadingDialogFragment.dismiss();
+            locationLoadingDialogFragment = null;
         }
     }
 

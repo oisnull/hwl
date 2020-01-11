@@ -34,6 +34,16 @@ public class ChatGroupUserAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public int getUserCount() {
+        int count = 0;
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getUserId() > 0) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     @Override
     public int getCount() {
         return users.size();
@@ -62,7 +72,7 @@ public class ChatGroupUserAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        if (user.getId() == -1) {
+        if (user.getId() != null && user.getId() == -1) {
             viewHolder.ivHeader.setBackgroundResource(R.drawable.layout_border);
             viewHolder.ivHeader.setImageResource(R.drawable.ic_add);
             viewHolder.tvName.setText("");

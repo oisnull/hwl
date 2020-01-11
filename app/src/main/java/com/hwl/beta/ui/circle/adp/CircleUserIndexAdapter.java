@@ -209,7 +209,7 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         if (position <= 0) return null;
         Circle info = circles.get(position - 1);
-        if (info == null) return null;
+        if (info == null || info.getPublishTime() == null) return null;
         Calendar prevCalendar = Calendar.getInstance();
         prevCalendar.setTime(info.getPublishTime());
         if (currCalendar.get(Calendar.YEAR) == prevCalendar.get(Calendar.YEAR))

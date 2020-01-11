@@ -65,7 +65,6 @@ public class GroupService {
                 .groupUsers(new RequestBase(UserSP.getUserToken(), requestBody))
                 .map(new NetDefaultFunction<ResponseBase<GroupUsersResponse>>())
                 .subscribeOn(Schedulers.io());
-//                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public static Observable<AddGroupResponse> addGroup(String groupName,

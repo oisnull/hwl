@@ -26,11 +26,10 @@ public class GroupInfo extends BaseObservable {
     @Unique
     private String groupGuid;
     private String groupName;
-    private String groupImage;
     private int groupUserCount;
     private long buildUserId;
     @Convert(columnType = String.class, converter = ListStringConverter.class)
-    private List<String> userImages;
+    private List<String> groupImages;
     private String groupNote;
     @OrderBy("buildTime desc")
     private Date buildTime;
@@ -41,23 +40,20 @@ public class GroupInfo extends BaseObservable {
     private String groupBackImage;
     private boolean isShield;
     private boolean isDismiss;
+    private boolean isLoadUser;
 
-    @Generated(hash = 1250265142)
-    public GroupInfo() {
-    }
-
-    @Generated(hash = 139467964)
-    public GroupInfo(Long id, String groupGuid, String groupName, String groupImage,
-            int groupUserCount, long buildUserId, List<String> userImages, String groupNote,
-            Date buildTime, String updateTime, boolean isSystem, String myUserName,
-            String groupBackImage, boolean isShield, boolean isDismiss) {
+    @Generated(hash = 731591539)
+    public GroupInfo(Long id, String groupGuid, String groupName,
+                     int groupUserCount, long buildUserId, List<String> groupImages,
+                     String groupNote, Date buildTime, String updateTime, boolean isSystem,
+                     String myUserName, String groupBackImage, boolean isShield,
+                     boolean isDismiss, boolean isLoadUser) {
         this.id = id;
         this.groupGuid = groupGuid;
         this.groupName = groupName;
-        this.groupImage = groupImage;
         this.groupUserCount = groupUserCount;
         this.buildUserId = buildUserId;
-        this.userImages = userImages;
+        this.groupImages = groupImages;
         this.groupNote = groupNote;
         this.buildTime = buildTime;
         this.updateTime = updateTime;
@@ -66,6 +62,28 @@ public class GroupInfo extends BaseObservable {
         this.groupBackImage = groupBackImage;
         this.isShield = isShield;
         this.isDismiss = isDismiss;
+        this.isLoadUser = isLoadUser;
+    }
+
+    @Generated(hash = 1250265142)
+    public GroupInfo() {
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof GroupInfo) {
+            GroupInfo g = (GroupInfo) obj;
+            return this.getGroupGuid().equals(g.getGroupGuid());
+        }
+        return super.equals(obj);
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getGroupGuid() {
@@ -76,22 +94,12 @@ public class GroupInfo extends BaseObservable {
         this.groupGuid = groupGuid;
     }
 
-    @Bindable
     public String getGroupName() {
         return this.groupName;
     }
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
-        notifyPropertyChanged(BR.groupName);
-    }
-
-    public String getGroupImage() {
-        return this.groupImage;
-    }
-
-    public void setGroupImage(String groupImage) {
-        this.groupImage = groupImage;
     }
 
     public int getGroupUserCount() {
@@ -102,14 +110,28 @@ public class GroupInfo extends BaseObservable {
         this.groupUserCount = groupUserCount;
     }
 
-    @Bindable
+    public long getBuildUserId() {
+        return this.buildUserId;
+    }
+
+    public void setBuildUserId(long buildUserId) {
+        this.buildUserId = buildUserId;
+    }
+
+    public List<String> getGroupImages() {
+        return this.groupImages;
+    }
+
+    public void setGroupImages(List<String> groupImages) {
+        this.groupImages = groupImages;
+    }
+
     public String getGroupNote() {
         return this.groupNote;
     }
 
     public void setGroupNote(String groupNote) {
         this.groupNote = groupNote;
-        notifyPropertyChanged(BR.groupNote);
     }
 
     public Date getBuildTime() {
@@ -120,22 +142,28 @@ public class GroupInfo extends BaseObservable {
         this.buildTime = buildTime;
     }
 
-    public List<String> getUserImages() {
-        return this.userImages;
+    public String getUpdateTime() {
+        return this.updateTime;
     }
 
-    public void setUserImages(List<String> userImages) {
-        this.userImages = userImages;
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 
-    @Bindable
+    public boolean getIsSystem() {
+        return this.isSystem;
+    }
+
+    public void setIsSystem(boolean isSystem) {
+        this.isSystem = isSystem;
+    }
+
     public String getMyUserName() {
         return this.myUserName;
     }
 
     public void setMyUserName(String myUserName) {
         this.myUserName = myUserName;
-        notifyPropertyChanged(BR.myUserName);
     }
 
     public String getGroupBackImage() {
@@ -154,30 +182,6 @@ public class GroupInfo extends BaseObservable {
         this.isShield = isShield;
     }
 
-    public long getBuildUserId() {
-        return this.buildUserId;
-    }
-
-    public void setBuildUserId(long buildUserId) {
-        this.buildUserId = buildUserId;
-    }
-
-    public String getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public boolean getIsDismiss() {
         return this.isDismiss;
     }
@@ -186,20 +190,12 @@ public class GroupInfo extends BaseObservable {
         this.isDismiss = isDismiss;
     }
 
-    public boolean getIsSystem() {
-        return this.isSystem;
+    public boolean getIsLoadUser() {
+        return this.isLoadUser;
     }
 
-    public void setIsSystem(boolean isSystem) {
-        this.isSystem = isSystem;
+    public void setIsLoadUser(boolean isLoadUser) {
+        this.isLoadUser = isLoadUser;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof GroupInfo) {
-            GroupInfo g = (GroupInfo) obj;
-            return this.getGroupGuid().equals(g.getGroupGuid());
-        }
-        return super.equals(obj);
-    }
 }

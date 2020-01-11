@@ -154,7 +154,7 @@ public class ChatRecordMessageManager extends BaseDao<ChatRecordMessage> {
                     if (groupInfo != null) {
                         recordMessages.get(i).setTitle(groupInfo.getGroupName());
                         recordMessages.get(i).setShield(groupInfo.getIsShield());
-                        recordMessages.get(i).setGroupUserImages(groupInfo.getUserImages());
+                        recordMessages.get(i).setGroupUserImages(groupInfo.getGroupImages());
                     }
                 }
             }

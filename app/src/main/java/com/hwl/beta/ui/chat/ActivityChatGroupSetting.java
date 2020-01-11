@@ -32,6 +32,9 @@ import com.hwl.beta.ui.group.ActivityGroupAdd;
 
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+
 public class ActivityChatGroupSetting extends BaseActivity {
 
     FragmentActivity activity;
@@ -60,54 +63,6 @@ public class ActivityChatGroupSetting extends BaseActivity {
         initView();
     }
 
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void updateGroupUser(List<GroupUserInfo> userInfos) {
-//        if (userInfos == null || userInfos.size() <= 0) return;
-//
-//        int addCount = 0;
-//        for (int i = 0; i < userInfos.size(); i++) {
-//            if (!users.contains(userInfos.get(i))) {
-//                users.add(userInfos.get(i));
-//                addCount++;
-//            }
-//        }
-//        if (addCount > 0) {
-//            removeUserItem();
-//            addUserItem();
-//            userAdapter.notifyDataSetChanged();
-//        }
-//    }
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void updateRemark(EventUpdateFriendRemark remark) {
-//        if (remark == null || remark.getFriendId() <= 0)
-//            return;
-//        for (int i = 0; i < users.size(); i++) {
-//            if (remark.getFriendId() == users.get(i).getId()) {
-//                users.get(i).setUserName(remark.getFriendRemark());
-//                userAdapter.notifyDataSetChanged();
-//                break;
-//            }
-//        }
-//    }
-
-//    private void addUserItem() {
-//        if (group.getIsDismiss() || group.getGroupGuid().equals(UserPosSP.getGroupGuid())) return;
-//        GroupUserInfo groupUserInfo = new GroupUserInfo();
-//        groupUserInfo.setId((long) -1);
-//        users.add(users.size(), groupUserInfo);
-//    }
-//
-//    private void removeUserItem() {
-//        if (group.getIsDismiss() || group.getGroupGuid().equals(UserPosSP.getGroupGuid())) return;
-//        for (int i = 0; i < users.size(); i++) {
-//            if (users.get(i).getId() == -1) {
-//                users.remove(i);
-//                break;
-//            }
-//        }
-//    }
-
     private void initView() {
         binding.tbTitle.setTitle("群组设置")
                 .setImageRightHide()
@@ -115,11 +70,11 @@ public class ActivityChatGroupSetting extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         onBackPressed();
-                        finish();
                     }
                 });
-        userAdapter = new ChatGroupUserAdapter(activity, settingStandard.getGroupUsers(group
-                .getGroupGuid(), group.getIsDismiss()));
+        userAdapter = new ChatGroupUserAdapter(activity,
+                settingStandard.getGroupUsers(group.getGroupGuid(),
+                        group.getIsDismiss()));
         binding.gvUserContainer.setAdapter(userAdapter);
         binding.gvUserContainer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -147,6 +102,27 @@ public class ActivityChatGroupSetting extends BaseActivity {
         } else {
             binding.btnExit.setVisibility(View.VISIBLE);
         }
+
+        this.loadUsersFromServer();
+    }
+
+    private void loadUsersFromServer() {
+        if (userAdapter.getUserCount() > 0 && group.getIsLoadUser())
+            return;
+        settingStandard.loadGroupUsersFromServer(group.getGroupGuid())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<GroupUserInfo>>() {
+                    @Override
+                    public void accept(List<GroupUserInfo> users) {
+                        userAdapter.addUsers(users);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) {
+                        Toast.makeText(activity, throwable.getMessage(), Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
     }
 
     @Override

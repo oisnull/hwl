@@ -108,7 +108,7 @@ public class GroupAddLogic implements GroupAddStandard {
 
         final GroupInfo groupInfo = DBGroupAction.convertToGroupInfo("", buildGroupName
                 (selectUsers), "", UserSP.getUserId(), selectUsers.size(), getGroupUserImages
-                (selectUsers), null, false);
+                (selectUsers), null, false, true);
 
         GroupService.addGroup(groupInfo.getGroupName(), getGroupUserIds(selectUsers))
                 .subscribe(new RXDefaultObserver<AddGroupResponse>() {
