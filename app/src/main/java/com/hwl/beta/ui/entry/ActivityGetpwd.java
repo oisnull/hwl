@@ -85,7 +85,7 @@ public class ActivityGetpwd extends BaseActivity {
     }
 
     private void initTime() {
-        timeCount = new TimeCount(CODETIMESECONDS * 1000, 1000, binding.btnCodeSend, new TimeCount.TimeCountInterface() {
+        timeCount = new TimeCount(CODETIMESECONDS * 1000, 1000, binding.btnCodeSend, new TimeCount.TimeListener() {
             @Override
             public void onFinishViewChange(int resId) {
                 setSendViewStatus(NetConstant.SEND_STATUS_COMPLETE);

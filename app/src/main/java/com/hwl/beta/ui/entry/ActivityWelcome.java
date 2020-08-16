@@ -72,7 +72,7 @@ public class ActivityWelcome extends FragmentActivity {
             IMClientEntry.connectServer();
             UITransfer.toMainActivity(this);
         } else {
-            UITransfer.toLoginActivity(this);
+            UITransfer.toLoginActivityV2(this);
         }
         this.finish();
     }

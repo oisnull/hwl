@@ -6,6 +6,19 @@ package com.hwl.beta.net.general.body;
 
 public class SendEmailResponse {
     private int Status;
+    private String CurrentEmail;
+
+    public SendEmailResponse() {
+    }
+
+    public SendEmailResponse(int status, String currentEmail) {
+        Status = status;
+        CurrentEmail = currentEmail;
+    }
+
+    public String getCurrentEmail() {
+        return CurrentEmail;
+    }
 
     public int getStatus() {
         return Status;

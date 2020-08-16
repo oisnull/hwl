@@ -95,7 +95,7 @@ public class ActivityRegister extends BaseActivity {
         });
 
         timeCount = new TimeCount(CODETIMESECONDS * 1000, 1000, binding.btnCodeSend, new
-                TimeCount.TimeCountInterface() {
+                TimeCount.TimeListener() {
                     @Override
                     public void onFinishViewChange(int resId) {
                         setSendViewStatus(NetConstant.SEND_STATUS_COMPLETE);

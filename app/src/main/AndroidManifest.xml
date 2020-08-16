@@ -50,6 +50,7 @@
         <activity android:name=".ui.TestActivityIm" />
         <activity android:name=".ui.entry.ActivityQRCode" />
         <activity android:name=".ui.entry.ActivityLogin" />
+        <activity android:name=".ui.entry.ActivityLoginV2" />
         <activity android:name=".ui.entry.ActivityRegister" />
         <activity android:name=".ui.entry.ActivityGetpwd" />
         <activity android:name=".ui.user.ActivityUserSearch" />

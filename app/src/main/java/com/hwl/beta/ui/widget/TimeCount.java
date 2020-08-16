@@ -9,35 +9,35 @@ import android.widget.TextView;
 
 public class TimeCount extends CountDownTimer {
     private TextView tvChecking;
-    private TimeCountInterface timeCountInterface;
+    private TimeListener timeListener;
 
-    public TimeCount(long millisInFuture, long countDownInterval, TextView tvChecking, TimeCountInterface timeCountInterface) {
+    public TimeCount(long millisInFuture, long countDownInterval, TextView tvChecking, TimeListener timeListener) {
         super(millisInFuture, countDownInterval);
         this.tvChecking = tvChecking;
-        this.timeCountInterface = timeCountInterface;
+        this.timeListener = timeListener;
     }
 
     @Override
     public void onFinish() {
-        if (timeCountInterface != null) {
+        if (timeListener != null) {
             if (tvChecking != null)
-                timeCountInterface.onFinishViewChange(tvChecking.getId());
+                timeListener.onFinishViewChange(tvChecking.getId());
             else
-                timeCountInterface.onFinishViewChange(0);
+                timeListener.onFinishViewChange(0);
         }
     }
 
     @Override
     public void onTick(long millisUntilFinished) {
-        if (timeCountInterface != null) {
+        if (timeListener != null) {
             if (tvChecking != null)
-                timeCountInterface.onTickViewChange(millisUntilFinished, tvChecking.getId());
+                timeListener.onTickViewChange(millisUntilFinished, tvChecking.getId());
             else
-                timeCountInterface.onTickViewChange(millisUntilFinished, 0);
+                timeListener.onTickViewChange(millisUntilFinished, 0);
         }
     }
 
-    public interface TimeCountInterface {
+    public interface TimeListener {
         void onFinishViewChange(int resId);
 
         void onTickViewChange(long millisUntilFinished, int resId);

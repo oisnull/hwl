@@ -116,7 +116,7 @@ public class ActivityVideoPlay extends BaseActivity {
         TimeCount timeCount;
 
         public void hideTitle() {
-            timeCount = new TimeCount(5 * 1000, 1000, null, new TimeCount.TimeCountInterface() {
+            timeCount = new TimeCount(5 * 1000, 1000, null, new TimeCount.TimeListener() {
                 @Override
                 public void onFinishViewChange(int resId) {
                     binding.rlTitle.setVisibility(View.GONE);

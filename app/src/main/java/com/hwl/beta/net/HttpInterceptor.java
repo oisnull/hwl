@@ -27,14 +27,15 @@ public class HttpInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Response response = null;
-        String urlPath = chain.request().url().encodedPath();
-        String tag = AppConfig.NET_API_DEBUG_TAG + "-" + urlPath.substring(urlPath.lastIndexOf
-                ("/") + 1);
+        String url = chain.request().url().toString();
+//        String tag = AppConfig.NET_API_DEBUG_TAG + "-" + urlPath.substring(urlPath.lastIndexOf
+//        ("/") + 1);
 
         if (chain != null && chain.request().body() != null) {
             Buffer bufferedSink = new Buffer();
             chain.request().body().writeTo(bufferedSink);
-            Log.d(tag, bufferedSink.buffer().readUtf8());
+            if (AppConfig.ENABLE_DEBUG)
+                Log.d(url, bufferedSink.buffer().readUtf8());
         }
 
         //本地测试
@@ -77,9 +78,10 @@ public class HttpInterceptor implements Interceptor {
             if (contentType != null) {
                 charset = contentType.charset(UTF8);
             }
-            if (response.body().contentLength() != 0) {
-                Log.d(tag, buffer.clone().readString(charset));
-            }
+            if (AppConfig.ENABLE_DEBUG)
+                if (response.body().contentLength() != 0) {
+                    Log.d(url, buffer.clone().readString(charset));
+                }
         }
 
         return response;

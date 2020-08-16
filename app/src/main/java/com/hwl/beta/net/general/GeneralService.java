@@ -1,5 +1,6 @@
 package com.hwl.beta.net.general;
 
+import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.net.NetDefaultFunction;
 import com.hwl.beta.net.RequestBase;
 import com.hwl.beta.net.ResponseBase;
@@ -13,6 +14,8 @@ import com.hwl.beta.net.general.body.SendSMSResponse;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.utils.AppUtils;
 
+import java.util.concurrent.TimeUnit;
+
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -25,9 +28,19 @@ import retrofit2.http.POST;
 
 public class GeneralService {
 
+
+    public static Observable<SendEmailResponse> sendEmail_test(String email) {
+        SendEmailRequest requestBody = new SendEmailRequest();
+        requestBody.setEmail(email);
+
+        SendEmailResponse response = new SendEmailResponse(NetConstant.RESULT_SUCCESS, email);
+        return Observable.just(response).delay(3, TimeUnit.SECONDS);
+    }
+
     public static Observable<SendEmailResponse> sendEmail(String email) {
         SendEmailRequest requestBody = new SendEmailRequest();
         requestBody.setEmail(email);
+
         return RetrofitUtils.createApi(GeneralService.IGenericService.class)
                 .sendEmail(new RequestBase(requestBody))
                 .map(new NetDefaultFunction<ResponseBase<SendEmailResponse>>())

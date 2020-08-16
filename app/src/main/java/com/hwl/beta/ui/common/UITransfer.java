@@ -31,6 +31,7 @@ import com.hwl.beta.ui.emoji.ActivityEmojiSetting;
 import com.hwl.beta.ui.emoji.ActivityEmojiStore;
 import com.hwl.beta.ui.entry.ActivityGetpwd;
 import com.hwl.beta.ui.entry.ActivityLogin;
+import com.hwl.beta.ui.entry.ActivityLoginV2;
 import com.hwl.beta.ui.entry.ActivityMain;
 import com.hwl.beta.ui.entry.ActivityQRCode;
 import com.hwl.beta.ui.entry.ActivityRegister;
@@ -84,6 +85,11 @@ public class UITransfer {
 
     public static void toLoginActivity(Activity context) {
         Intent intent = new Intent(context, ActivityLogin.class);
+        context.startActivity(intent);
+    }
+
+    public static void toLoginActivityV2(Activity context) {
+        Intent intent = new Intent(context, ActivityLoginV2.class);
         context.startActivity(intent);
     }
 
