@@ -204,20 +204,20 @@ public class ActivityLoginV2 extends FragmentActivity {
 
         binding.btnLogin.setText("登 录 中...");
 
-        Observable<UserLoginResponse> observable = null;
+        Observable<UserLoginAndRegisterResponse> observable = null;
         if (isEmail) {
-            observable = UserService.userLogin(account, null, null);
+            observable = UserService.userLoginAndReg(account, null, code);
         } else if (isPhone) {
-            observable = UserService.userLogin(null, account, null);
+            observable = UserService.userLoginAndReg(null, account, code);
         } else {
             isRunning = false;
         }
 
         observable
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new RXDefaultObserver<UserLoginResponse>(true) {
+                .subscribe(new RXDefaultObserver<UserLoginAndRegisterResponse>(true) {
                     @Override
-                    protected void onSuccess(UserLoginResponse response) {
+                    protected void onSuccess(UserLoginAndRegisterResponse response) {
                         UserSP.setUserInfo(response.getUserInfo());
                         UITransfer.toWelcomeActivity(activity);
                         finish();

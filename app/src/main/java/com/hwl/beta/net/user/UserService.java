@@ -34,6 +34,8 @@ import com.hwl.beta.net.user.body.SetUserSexRequest;
 import com.hwl.beta.net.user.body.SetUserSymbolRequest;
 import com.hwl.beta.net.user.body.UserLoginRequest;
 import com.hwl.beta.net.user.body.UserLoginResponse;
+import com.hwl.beta.net.user.body.UserLoginAndRegisterRequest;
+import com.hwl.beta.net.user.body.UserLoginAndRegisterResponse;
 import com.hwl.beta.net.user.body.UserRegisterRequest;
 import com.hwl.beta.net.user.body.UserRegisterResponse;
 import com.hwl.beta.sp.UserSP;
@@ -49,6 +51,18 @@ import retrofit2.http.POST;
  */
 
 public class UserService {
+
+    public static Observable<UserLoginAndRegisterResponse> userLoginAndReg(String email, String mobile,
+                                                          String checkCode) {
+        UserLoginAndRegisterRequest requestBody = new UserLoginAndRegisterRequest();
+        requestBody.setEmail(email);
+        requestBody.setMobile(mobile);
+        requestBody.setCheckCode(checkCode);
+        return RetrofitUtils.createApi(IUserService.class)
+                .userLoginAndReg(new RequestBase(requestBody))
+                .map(new NetDefaultFunction<ResponseBase<UserLoginAndRegisterResponse>>())
+                .subscribeOn(Schedulers.io());
+    }
 
     public static Observable<UserLoginResponse> userLogin(String email, String mobile,
                                                           String password) {
@@ -269,6 +283,10 @@ public class UserService {
 
 
     private interface IUserService {
+        @POST("api/UserLoginAndRegister")
+        Observable<ResponseBase<UserLoginAndRegisterResponse>> userLoginAndReg(@Body RequestBase<UserLoginAndRegisterRequest>
+                                                                      request);
+
         @POST("api/UserLogin")
         Observable<ResponseBase<UserLoginResponse>> userLogin(@Body RequestBase<UserLoginRequest>
                                                                       request);
