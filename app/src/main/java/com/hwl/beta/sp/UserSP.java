@@ -210,7 +210,7 @@ public class UserSP {
     String areaInfo = prefs.getString(USER_REGISTER_AREA_INFO, null);
     if (StringUtils.isNotBlank(areaInfo)) {
       Gson gson = new Gson();
-      user.setRegAreaInfo(gson.fromJson(userJson,UserRegisterAreaInfo.class));
+      user.setRegAreaInfo(gson.fromJson(areaInfo,UserRegisterAreaInfo.class));
     }
     return user;
   }
