@@ -104,11 +104,7 @@ public class UserPosSP {
     }
 
     public static String getPosDesc() {
-        String addr = getSP().getString(ADDR, null);
-        if (StringUtils.isBlank(addr)) {
-            addr = "我的附近";
-        }
-        return addr;
+        return getSP().getString(ADDR, null);
     }
 
     public static String getPublishDesc() {

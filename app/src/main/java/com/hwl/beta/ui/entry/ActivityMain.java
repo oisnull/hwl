@@ -1,7 +1,5 @@
 package com.hwl.beta.ui.entry;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
@@ -10,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -401,7 +398,7 @@ public class ActivityMain extends BaseActivity {
 
         @Override
         public void onSuccess(LocationModel model) {
-            binding.tbTitle.setTitle(UserPosSP.getNearDesc());
+//            binding.tbTitle.setTitle(UserPosSP.getNearDesc());
 
 //            if (UserPosSP.getLongitude() == model.longitude &&
 //                    UserPosSP.getLatitude() == model.latitude) {

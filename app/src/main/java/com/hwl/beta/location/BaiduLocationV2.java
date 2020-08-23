@@ -4,6 +4,7 @@ import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.hwl.beta.AppConfig;
 import com.hwl.beta.HWLApp;
 
 public class BaiduLocationV2 {
@@ -49,26 +50,26 @@ public class BaiduLocationV2 {
                     errorMessage = null;
                     locationListener.onSuccess(model);
                 } else {
-
-                    //模拟器的时候使用
-                    LocationModel model = new LocationModel();
-                    model.radius = 40.0f;
-                    model.longitude = (float) 121.503349304199;
-                    model.latitude = (float) 31.0745754241943;
-                    model.country = "中国";
-                    model.province = "上海市";
-                    model.city = "上海市";
-                    model.district = "闵行区";
-                    model.street = "浦驰路(ERROR)";
-                    model.addr = "中国上海市闵行区浦驰路188弄1-109";
-                    model.describe = "在世博家园十一街坊附近";
-                    currentStatus = COMPLETE_SUCCESS;
-                    errorMessage = null;
-                    locationListener.onSuccess(model);
-
-//                    currentStatus = COMPLETE_FAILURE;
-//                    errorMessage = location.getLocTypeDescription();
-//                    locationListener.onFailure(errorMessage);
+                    if (AppConfig.ENABLE_DEBUG) {
+                        LocationModel model = new LocationModel();
+                        model.radius = 40.0f;
+                        model.longitude = (float) 121.503349304199;
+                        model.latitude = (float) 31.0745754241943;
+                        model.country = "中国";
+                        model.province = "上海市";
+                        model.city = "上海市";
+                        model.district = "闵行区";
+                        model.street = "浦驰路(ERROR)";
+                        model.addr = "中国上海市闵行区浦驰路188弄1-109";
+                        model.describe = "在世博家园十一街坊附近";
+                        currentStatus = COMPLETE_SUCCESS;
+                        errorMessage = null;
+                        locationListener.onSuccess(model);
+                    } else {
+                        currentStatus = COMPLETE_FAILURE;
+                        errorMessage = location.getLocTypeDescription();
+                        locationListener.onFailure(errorMessage);
+                    }
                 }
 
                 stop();
