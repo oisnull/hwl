@@ -97,6 +97,7 @@ public class MainLogic implements MainStandard {
                                 result.city,
                                 result.district,
                                 result.street,
+                                result.addr,
                                 result.describe);
 
                         return UserPosSP.getNearDesc();

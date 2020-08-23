@@ -18,7 +18,7 @@ public class AppConfig {
     public static String NET_API_HOST = "http://192.168.2.223:8030/";
     public static String NET_RESX_HOST = "http://192.168.2.223:8033/";
 
-    public final static String IM_DEBUG_TAG = "hwl-im";
+    public final static String IM_DEBUG_TAG = "zl-im";
     public final static String IM_HOST = "192.168.2.223";
     public final static int IM_PORT = 8081;
 

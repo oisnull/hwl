@@ -26,6 +26,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission
+        android:name="android.permission.READ_LOGS"
+        tools:ignore="ProtectedPermissions" />
 
     <application
         android:name="com.hwl.beta.HWLApp"
@@ -48,6 +51,7 @@
         <activity android:name=".ui.TestActivity" />
         <activity android:name=".ui.TestActivityLocation" />
         <activity android:name=".ui.TestActivityIm" />
+        <activity android:name=".ui.TestActivityLogs" />
         <activity android:name=".ui.entry.ActivityQRCode" />
         <activity android:name=".ui.entry.ActivityLogin" />
         <activity android:name=".ui.entry.ActivityLoginV2" />

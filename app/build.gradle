@@ -14,12 +14,13 @@ android {
     }
 
     buildTypes {
-		//https://www.jianshu.com/p/6dc4ba16cd5c
-		debug {
-			buildConfigField("boolean", "EnableLog", "true")
-		}
+        debug {
+            buildConfigField("boolean", "EnableFileLog", "true")
+            buildConfigField("String", "LogDir", '"/sdcard/zl-logs"')
+        }
         release {
-			buildConfigField("boolean", "EnableLog", "false")
+            buildConfigField("boolean", "EnableFileLog", "false")
+            buildConfigField("String", "LogDir", '"/sdcard/zl-logs"')
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -40,6 +41,10 @@ android {
 
     dataBinding {
         enabled = true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -76,4 +81,5 @@ dependencies {
     implementation project(':im')
     implementation project(path: ':photoview')
     implementation project(':emotion')
+    implementation 'com.tencent.bugly:crashreport:latest.release'
 }

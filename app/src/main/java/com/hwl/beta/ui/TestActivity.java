@@ -5,10 +5,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.hwl.beta.BuildConfig;
 import com.hwl.beta.R;
 import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.common.BaseActivity;
+import com.hwl.beta.ui.common.CustLog;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.ebus.EventBusUtil;
 
@@ -50,6 +53,11 @@ public class TestActivity extends BaseActivity {
             public void onClick(View v) {
                 UITransfer.toTestActivityIM(mActivity);
             }
+        });
+
+        Button btnViewLogs = findViewById(R.id.btn_view_logs);
+        btnViewLogs.setOnClickListener(v -> {
+            UITransfer.toTestActivityLogs(mActivity);
         });
 
 //        Button button = findViewById(R.id.btn_test);

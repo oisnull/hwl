@@ -13,6 +13,7 @@ import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
+import com.tencent.bugly.crashreport.CrashReport;
 
 /**
  * Created by Administrator on 2018/1/24.
@@ -28,6 +29,8 @@ public class HWLApp extends Application {
         application = this;
 
         AppInstallStatus.setFirst();
+        //https://bugly.qq.com/v2/product/apps/63c5f9c5a3?pid=1
+        CrashReport.initCrashReport(application, "63c5f9c5a3", false);
     }
 
     @Override
@@ -42,7 +45,7 @@ public class HWLApp extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        MultiDex.install(this) ;
+        MultiDex.install(this);
     }
 
     //static 代码段可以防止内存泄露
@@ -51,8 +54,10 @@ public class HWLApp extends Application {
         SmartRefreshLayout.setDefaultRefreshHeaderCreator(new DefaultRefreshHeaderCreator() {
             @Override
             public RefreshHeader createRefreshHeader(Context context, RefreshLayout layout) {
-//                layout.setPrimaryColorsId(R.color.main_background, android.R.color.white);//全局设置主题颜色
-                return new ClassicsHeader(context);//.setTimeFormat(new DynamicTimeFormat("更新于 %s"));//指定为经典Header，默认是 贝塞尔雷达Header
+//                layout.setPrimaryColorsId(R.color.main_background, android.R.color.white);
+// 全局设置主题颜色
+                return new ClassicsHeader(context);//.setTimeFormat(new DynamicTimeFormat("更新于
+                // %s"));//指定为经典Header，默认是 贝塞尔雷达Header
             }
         });
         //设置全局的Footer构建器

@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.hwl.beta.location.IHWLLoactionListener;
 import com.hwl.beta.location.LocationModel;
 import com.hwl.beta.net.NetExceptionCode;
@@ -25,6 +26,7 @@ import com.hwl.beta.databinding.EntryActivityMainBinding;
 import com.hwl.beta.location.BaiduLocationV2;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.ui.TabFragmentPagerAdapter;
+import com.hwl.beta.ui.common.CustLog;
 import com.hwl.beta.ui.common.PermissionsOperator;
 import com.hwl.beta.ui.dialog.DialogUtils;
 import com.hwl.beta.ui.ebus.EventBusConstant;
@@ -200,7 +202,7 @@ public class ActivityMain extends BaseActivity {
                 showLocationDialog("定位失败", location.getErrorMessage());
                 break;
             case BaiduLocationV2.COMPLETE_SUCCESS:
-                showLocationDialog("当前位置", UserPosSP.getPosDesc());
+                showLocationDialog("当前位置", UserPosSP.getAddr());
                 break;
         }
     }
@@ -388,6 +390,7 @@ public class ActivityMain extends BaseActivity {
     }
 
     private class HWLLocationListener implements IHWLLoactionListener {
+        Gson gson = new Gson();
 
         private double getMoveDistance(LocationModel model) {
 //            LatLng curr = new LatLng(model.latitude, model.longitude);
@@ -398,6 +401,7 @@ public class ActivityMain extends BaseActivity {
 
         @Override
         public void onSuccess(LocationModel model) {
+            CustLog.d("BaiduLocation", gson.toJson(model));
 //            binding.tbTitle.setTitle(UserPosSP.getNearDesc());
 
 //            if (UserPosSP.getLongitude() == model.longitude &&

@@ -14,6 +14,7 @@ import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.TestActivity;
+import com.hwl.beta.ui.TestActivityLogs;
 import com.hwl.beta.ui.chat.ActivityChatGroup;
 import com.hwl.beta.ui.chat.ActivityChatGroupSetting;
 import com.hwl.beta.ui.chat.ActivityChatGroupSettingEdit;
@@ -75,6 +76,11 @@ public class UITransfer {
 
     public static void toTestActivityIM(Activity context) {
         Intent intent = new Intent(context, TestActivityIm.class);
+        context.startActivity(intent);
+    }
+
+    public static void toTestActivityLogs(Activity context) {
+        Intent intent = new Intent(context, TestActivityLogs.class);
         context.startActivity(intent);
     }
 

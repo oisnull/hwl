@@ -6,38 +6,44 @@
 
     <Button
         android:id="@+id/btn_friend_request_add"
-        android:text="添加一条好友请求消息"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="添加一条好友请求消息" />
 
     <Button
         android:id="@+id/btn_location_test"
-        android:text="查看定位日志"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="查看定位日志" />
 
     <Button
         android:id="@+id/btn_im_test"
-        android:text="测试IM是否已连接"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="测试IM是否已连接" />
 
     <Button
         android:id="@+id/btn_test"
-        android:text="震动测试"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="震动测试" />
 
     <Button
         android:id="@+id/btn_package"
-        android:text="获取应用包名"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="获取应用包名" />
 
     <Button
         android:id="@+id/btn_share_test"
-        android:text="分享测试"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="分享测试" />
+
+    <Button
+        android:id="@+id/btn_view_logs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="查看日志文件" />
 
 </LinearLayout>
