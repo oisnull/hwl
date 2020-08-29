@@ -1,9 +1,7 @@
 package com.hwl.beta.db.entity;
 
-import android.databinding.BaseObservable;
-import android.databinding.Bindable;
+import androidx.databinding.BaseObservable;
 
-import com.hwl.beta.BR;
 import com.hwl.beta.db.ListStringConverter;
 
 import org.greenrobot.greendao.annotation.Convert;

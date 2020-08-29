@@ -1,8 +1,9 @@
 package com.hwl.beta.ui.entry;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.widget.TextView;
+
+import androidx.fragment.app.FragmentActivity;
 
 import com.hwl.beta.R;
 import com.hwl.beta.net.user.NetUserInfo;

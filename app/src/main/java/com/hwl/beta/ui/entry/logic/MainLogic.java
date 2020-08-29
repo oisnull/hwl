@@ -28,9 +28,11 @@ public class MainLogic implements MainStandard {
 
     @Override
     public MainBean getMainBean() {
-        return new MainBean(MessageCountSP.getChatMessageCount(), MessageCountSP
-                .getNearCircleMessageCount(), MessageCountSP.getFriendRequestCount(),
-                MessageCountSP.getCircleMessageCount(), 0);
+        return new MainBean(MessageCountSP.getChatMessageCount(),
+                MessageCountSP.getNearCircleMessageCount(),
+                MessageCountSP.getFriendRequestCount(),
+                MessageCountSP.getCircleMessageCount(),
+                MessageCountSP.getAppVersionCount());
     }
 
     @Override

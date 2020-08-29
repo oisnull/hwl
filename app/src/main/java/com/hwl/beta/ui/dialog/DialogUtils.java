@@ -1,13 +1,14 @@
 package com.hwl.beta.ui.dialog;
 
 import android.app.Dialog;
-import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+
+import androidx.fragment.app.FragmentActivity;
 
 import com.hwl.beta.R;
 

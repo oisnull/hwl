@@ -17,16 +17,17 @@
 package com.hwl.beta.swipeback;
 
 import android.content.Context;
-import android.support.v4.view.MotionEventCompat;
-import android.support.v4.view.VelocityTrackerCompat;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.widget.ScrollerCompat;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
+
+import androidx.core.view.MotionEventCompat;
+import androidx.core.view.VelocityTrackerCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.widget.ScrollerCompat;
 
 import java.util.Arrays;
 
@@ -1064,9 +1065,9 @@ public class ViewDragHelper {
                 // Catch a settling view if possible.
                 tryCaptureViewForDrag(toCapture, pointerId);
 
-                if (mDragState == STATE_SETTLING){
+                if (mDragState == STATE_SETTLING) {
                     setDragState(STATE_DRAGGING);
-                }else if (mDragState == STATE_IDLE){
+                } else if (mDragState == STATE_IDLE) {
                     final int edgesTouched = mInitialEdgeTouched[pointerId];
                     if ((edgesTouched & mTrackingEdges) != 0) {
                         mCallback.onEdgeTouched(edgesTouched & mTrackingEdges, pointerId);
@@ -1087,7 +1088,7 @@ public class ViewDragHelper {
                     if (mVelocityTracker == null) {
                         mVelocityTracker = VelocityTracker.obtain();
                     }
-                    if(mDragState == STATE_DRAGGING)
+                    if (mDragState == STATE_DRAGGING)
                         mVelocityTracker.addMovement(ev);
                     final int i = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
 
@@ -1102,9 +1103,9 @@ public class ViewDragHelper {
                     int slop = checkTouchSlop(toCapture, dx, dy);
 
                     if (slop == -1) cancel();
-                        else if (slop > 0 && tryCaptureViewForDrag(toCapture, mActivePointerId)) {
-                            break;
-                        }
+                    else if (slop > 0 && tryCaptureViewForDrag(toCapture, mActivePointerId)) {
+                        break;
+                    }
                     saveLastMotion(ev);
                 }
                 break;
@@ -1150,7 +1151,6 @@ public class ViewDragHelper {
         }
 
 
-
         switch (action) {
             case MotionEvent.ACTION_DOWN: {
                 final float x = ev.getX();
@@ -1163,9 +1163,9 @@ public class ViewDragHelper {
                 // Catch a settling view if possible.
                 tryCaptureViewForDrag(toCapture, pointerId);
 
-                if (mDragState == STATE_SETTLING){
+                if (mDragState == STATE_SETTLING) {
                     setDragState(STATE_DRAGGING);
-                }else if (mDragState == STATE_IDLE){
+                } else if (mDragState == STATE_IDLE) {
                     final int edgesTouched = mInitialEdgeTouched[pointerId];
                     if ((edgesTouched & mTrackingEdges) != 0) {
                         mCallback.onEdgeTouched(edgesTouched & mTrackingEdges, pointerId);
@@ -1213,12 +1213,12 @@ public class ViewDragHelper {
                     if (mVelocityTracker == null) {
                         mVelocityTracker = VelocityTracker.obtain();
                     }
-                    if(mDragState == STATE_DRAGGING)
+                    if (mDragState == STATE_DRAGGING)
                         mVelocityTracker.addMovement(ev);
 
                     final int index = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
                     //如果触发手势已经结束，不做处理。等待所有手势结束再关闭
-                    if (index == -1)break;
+                    if (index == -1) break;
 
                     final float x = MotionEventCompat.getX(ev, index);
                     final float y = MotionEventCompat.getY(ev, index);
@@ -1237,13 +1237,13 @@ public class ViewDragHelper {
             }
 
             case MotionEvent.ACTION_UP: {
-                    releaseViewForPointerUp();
+                releaseViewForPointerUp();
                 cancel();
                 break;
             }
 
             case MotionEvent.ACTION_CANCEL: {
-                    dispatchViewReleased(0, 0);
+                dispatchViewReleased(0, 0);
                 cancel();
                 break;
             }
@@ -1297,22 +1297,20 @@ public class ViewDragHelper {
      * @param dx    Motion since initial position along X axis
      * @param dy    Motion since initial position along Y axis
      * @return 1 if the touch slop has been crossed on horizontal
-     *          0 if the touch slop has not cross
-     *          -1 if the touch slop has been crossed on vertical
-     *          2 if the touch slop has been crossed on both
+     * 0 if the touch slop has not cross
+     * -1 if the touch slop has been crossed on vertical
+     * 2 if the touch slop has been crossed on both
      */
     private int checkTouchSlop(View child, float dx, float dy) {
         if (child == null) {
             return 0;
         }
-        if (dx<=mTouchSlop&& Math.abs(dy) <= mTouchSlop){
+        if (dx <= mTouchSlop && Math.abs(dy) <= mTouchSlop) {
             return 0;
-        }
-        else if (dx>mTouchSlop&& Math.abs(dy) <= mTouchSlop){
+        } else if (dx > mTouchSlop && Math.abs(dy) <= mTouchSlop) {
             mDragState = STATE_DRAGGING;
             return 1;
-        }
-        else if (dx<=mTouchSlop&& Math.abs(dy) > mTouchSlop){
+        } else if (dx <= mTouchSlop && Math.abs(dy) > mTouchSlop) {
             mDragState = STATE_IDLE;
             cancel();
             return -1;

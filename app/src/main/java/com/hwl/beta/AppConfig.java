@@ -15,11 +15,11 @@ public class AppConfig {
 //    public final static int IM_PORT = 8081;
 
     //local env
-    public static String NET_API_HOST = "http://192.168.2.223:8030/";
-    public static String NET_RESX_HOST = "http://192.168.2.223:8033/";
+    public static String NET_API_HOST = "http://192.168.2.210:8030/";
+    public static String NET_RESX_HOST = "http://192.168.2.210:8033/";
 
     public final static String IM_DEBUG_TAG = "zl-im";
-    public final static String IM_HOST = "192.168.2.223";
+    public final static String IM_HOST = "192.168.2.210";
     public final static int IM_PORT = 8081;
 
     //im release env

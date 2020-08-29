@@ -180,4 +180,8 @@ public class EventBusUtil {
     public static void sendCircleMessageUpdateEvent() {
         sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_CIRCLE_MESSAGE_UPDATE));
     }
+
+    public static void sendAppVersionUpdateEvent() {
+        sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_APP_VERSION_UPDATE));
+    }
 }

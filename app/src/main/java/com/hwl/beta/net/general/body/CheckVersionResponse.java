@@ -1,10 +1,19 @@
 package com.hwl.beta.net.general.body;
 
+import com.hwl.beta.net.general.NetAppVersionInfo;
+
 public class CheckVersionResponse {
 
     private boolean IsNewVersion;
-    private String NewVersion;
-    private String DownLoadUrl;
+    private NetAppVersionInfo AppVersionInfo;
+
+    public NetAppVersionInfo getAppVersionInfo() {
+        return AppVersionInfo;
+    }
+
+    public void setAppVersionInfo(NetAppVersionInfo appVersionInfo) {
+        AppVersionInfo = appVersionInfo;
+    }
 
     public boolean isNewVersion() {
         return IsNewVersion;
@@ -14,19 +23,4 @@ public class CheckVersionResponse {
         IsNewVersion = newVersion;
     }
 
-    public String getNewVersion() {
-        return NewVersion;
-    }
-
-    public void setNewVersion(String newVersion) {
-        NewVersion = newVersion;
-    }
-
-    public String getDownLoadUrl() {
-        return DownLoadUrl;
-    }
-
-    public void setDownLoadUrl(String downLoadUrl) {
-        DownLoadUrl = downLoadUrl;
-    }
 }

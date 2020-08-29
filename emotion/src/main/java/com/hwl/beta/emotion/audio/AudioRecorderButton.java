@@ -10,6 +10,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.AppCompatButton;
+
 import com.hwl.beta.emotion.utils.PermissionsUtils;
 
 import java.io.File;
@@ -17,7 +19,7 @@ import java.io.File;
 /**
  * Created by Administrator on 2018/2/28.
  */
-public class AudioRecorderButton extends android.support.v7.widget.AppCompatButton implements
+public class AudioRecorderButton extends AppCompatButton implements
         AudioRecorderManager.RecordListener {
 
     //手指滑动 距离

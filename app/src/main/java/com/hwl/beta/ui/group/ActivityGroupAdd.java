@@ -1,9 +1,12 @@
 package com.hwl.beta.ui.group;
 
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
+
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
@@ -15,7 +18,6 @@ import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.DefaultCallback;
-import com.hwl.beta.ui.common.FriendComparator;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.group.adp.GroupAddAdapter;
@@ -132,7 +134,7 @@ public class ActivityGroupAdd extends BaseActivity {
 
     private void addUserToGroup() {
         LoadingDialog.show(activity);
-        standard.addUserToGroup(selectUsers,groupGuid, new DefaultCallback<Boolean, String>() {
+        standard.addUserToGroup(selectUsers, groupGuid, new DefaultCallback<Boolean, String>() {
             @Override
             public void success(Boolean successMessage) {
                 LoadingDialog.hide();

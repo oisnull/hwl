@@ -1,9 +1,12 @@
 package com.hwl.beta.ui.entry;
 
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
+
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+
 import android.view.View;
 import android.widget.Toast;
 
@@ -44,19 +47,19 @@ public class ActivityLogin extends FragmentActivity {
     }
 
     private void initView() {
-        binding.tbTitle.setTitle(getResources().getString(R.string.login_activity_title))
-                .setImageLeftHide().setImageRightHide();
-        binding.etAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                binding.etAccount.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        KeyBoardAction.getLocalSoftInputHeight(activity);
-                    }
-                }, 800L);
-            }
-        });
+//        binding.tbTitle.setTitle(getResources().getString(R.string.login_activity_title))
+//                .setImageLeftHide().setImageRightHide();
+//        binding.etAccount.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                binding.etAccount.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        KeyBoardAction.getLocalSoftInputHeight(activity);
+//                    }
+//                }, 800L);
+//            }
+//        });
     }
 
     private class LoginListener implements ILoginListener {

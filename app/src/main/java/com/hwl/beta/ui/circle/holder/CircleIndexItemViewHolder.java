@@ -1,28 +1,22 @@
 package com.hwl.beta.ui.circle.holder;
 
 import android.content.Context;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
 
-import com.google.android.flexbox.FlexboxLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.hwl.beta.databinding.CircleIndexItemBinding;
 import com.hwl.beta.db.entity.Circle;
 import com.hwl.beta.db.entity.CircleComment;
-import com.hwl.beta.db.entity.CircleImage;
 import com.hwl.beta.db.entity.CircleLike;
-import com.hwl.beta.ui.circle.action.ICircleCommentItemListener;
 import com.hwl.beta.ui.circle.action.ICircleItemListener;
 import com.hwl.beta.ui.circle.action.ICircleLikeItemListener;
 import com.hwl.beta.ui.circle.adp.CircleCommentAdapter;
 import com.hwl.beta.ui.common.NineImagesAdapter;
 import com.hwl.beta.ui.convert.DBCircleAction;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
-import com.hwl.beta.utils.DisplayUtils;
-
-import java.util.List;
 
 public class CircleIndexItemViewHolder extends RecyclerView.ViewHolder {
 
@@ -100,7 +94,8 @@ public class CircleIndexItemViewHolder extends RecyclerView.ViewHolder {
 
     public void cancelLikeInfo(CircleLike likeInfo) {
         if (likeInfo == null) return;
-        CircleUserLikeOperate.cancelLikeInfo(itemBinding.fblLikeContainer, likeInfo.getLikeUserId());
+        CircleUserLikeOperate.cancelLikeInfo(itemBinding.fblLikeContainer,
+                likeInfo.getLikeUserId());
         if (itemBinding.fblLikeContainer.getChildCount() <= 0) {
             itemBinding.rlLikeContainer.setVisibility(View.GONE);
         }

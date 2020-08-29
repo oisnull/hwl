@@ -1,7 +1,7 @@
 package com.hwl.beta.ui.circle.holder;
 
-import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.View;
 
 import com.hwl.beta.databinding.CircleItemNullBinding;

@@ -4,10 +4,12 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.hwl.beta.badge.BuildConfig;
 import com.hwl.beta.db.dao.DaoMaster;
 import com.hwl.beta.db.dao.DaoSession;
 import com.hwl.beta.sp.UserSP;
 
+import org.greenrobot.greendao.DaoLog;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 /**
@@ -22,7 +24,7 @@ public class DaoManager {
     private static final String TAG = DaoManager.class.getSimpleName();
     //private static final String DB_NAME = "hwl.db";//数据库名称
     private static DaoManager mDaoManager;//多线程访问
-    private static DaoMaster.DevOpenHelper mHelper;
+    private static DaoMaster.OpenHelper mHelper;
     private static DaoMaster mDaoMaster;
     private static DaoSession mDaoSession;
     private static SQLiteDatabase db;
@@ -64,7 +66,12 @@ public class DaoManager {
     public DaoMaster getDaoMaster() {
         if (null == mDaoMaster) {
             Log.d(TAG, "getDaoMaster=" + getDBName());
-            mHelper = new DaoMaster.DevOpenHelper(context, getDBName(), null);
+//            if (BuildConfig.DEBUG) {
+//                mHelper = new DaoMaster.DevOpenHelper(context, getDBName(), null);
+//            } else {
+            DaoLog.isLoggable(DaoLog.ERROR);
+            mHelper = new DaoMaster.DevOpenHelper(context, getDBName());
+//            }
             db = mHelper.getWritableDatabase();
             mDaoMaster = new DaoMaster(db);
         }

@@ -2,12 +2,16 @@ package com.hwl.beta.ui.entry;
 
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.databinding.DataBindingUtil;
+
+import androidx.databinding.DataBindingUtil;
+
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager.widget.ViewPager;
+
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,7 +62,7 @@ public class ActivityMain extends BaseActivity {
     NetworkBroadcastReceiver networkBroadcastReceiver;
     BaiduLocationV2 location;
     long exitTime = 0;
-    boolean permissionRuning = false;
+    boolean permissionRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,9 +109,9 @@ public class ActivityMain extends BaseActivity {
     }
 
     private void locationStart() {
-        if (permissionRuning)
+        if (permissionRunning)
             return;
-        permissionRuning = true;
+        permissionRunning = true;
 
         UserPosSP.clearPosInfo();
         DialogUtils.closeLocationDialog();
@@ -121,7 +125,7 @@ public class ActivityMain extends BaseActivity {
     private void locationStop() {
         DialogUtils.closeLocationLoadingDialog();
         location.stop();
-        permissionRuning = false;
+        permissionRunning = false;
     }
 
     @Override
@@ -131,7 +135,7 @@ public class ActivityMain extends BaseActivity {
                 grantResults != null && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
         switch (requestCode) {
             case PermissionsOperator.REQUEST_PERMISSION_LOCATION:
-                permissionRuning = false;
+                permissionRunning = false;
                 if (grant) {
                     locationStart();
                 } else {
@@ -167,6 +171,9 @@ public class ActivityMain extends BaseActivity {
             case EventBusConstant.EB_TYPE_NEAR_CIRCLE_MESSAGE_UPDATE:
                 mainBean.setNearMessageCount(MessageCountSP
                         .getNearCircleMessageCount());
+                break;
+            case EventBusConstant.EB_TYPE_APP_VERSION_UPDATE:
+                mainBean.setMeMessageCount(MessageCountSP.getAppVersionCount());
                 break;
             case EventBusConstant.EB_TYPE_NETWORK_CONNECT_UPDATE:
                 locationStart();

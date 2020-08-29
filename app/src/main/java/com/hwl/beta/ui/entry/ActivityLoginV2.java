@@ -1,9 +1,10 @@
 package com.hwl.beta.ui.entry;
 
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+
 import android.view.View;
 import android.widget.Toast;
 
@@ -16,7 +17,6 @@ import com.hwl.beta.net.general.body.SendEmailResponse;
 import com.hwl.beta.net.general.body.SendSMSResponse;
 import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.UserLoginAndRegisterResponse;
-import com.hwl.beta.net.user.body.UserLoginResponse;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.KeyBoardAction;
 import com.hwl.beta.ui.common.UITransfer;

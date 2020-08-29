@@ -1,6 +1,6 @@
 package com.hwl.beta.ui.circle.holder;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.hwl.beta.databinding.CircleCommentItemBinding;
 import com.hwl.beta.db.entity.CircleComment;

@@ -2,22 +2,20 @@ package com.hwl.beta.ui.user;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+
 import android.view.View;
 import android.widget.Toast;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.UserActivityInfoEditBinding;
 import com.hwl.beta.net.NetConstant;
-import com.hwl.beta.net.ResponseBase;
 import com.hwl.beta.net.resx.ResxService;
 import com.hwl.beta.net.resx.ResxType;
-import com.hwl.beta.net.resx.UploadService;
 import com.hwl.beta.net.resx.body.ImageUploadResponse;
-import com.hwl.beta.net.resx.body.UpResxResponse;
 import com.hwl.beta.net.user.NetUserInfo;
 import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.SetUserInfoResponse;

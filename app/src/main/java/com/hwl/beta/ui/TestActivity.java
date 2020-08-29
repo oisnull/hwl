@@ -2,16 +2,13 @@ package com.hwl.beta.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.hwl.beta.BuildConfig;
 import com.hwl.beta.R;
 import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.common.BaseActivity;
-import com.hwl.beta.ui.common.CustLog;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.ebus.EventBusUtil;
 

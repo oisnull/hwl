@@ -2,17 +2,16 @@ package com.hwl.beta.ui.circle;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.CircleActivityPulishBinding;
-import com.hwl.beta.sp.AppInstallStatus;
 import com.hwl.beta.ui.circle.logic.CirclePublishLogic;
 import com.hwl.beta.ui.circle.standard.CirclePublishStandard;
 import com.hwl.beta.ui.common.BaseActivity;

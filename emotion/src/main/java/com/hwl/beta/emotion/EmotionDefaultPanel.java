@@ -1,8 +1,6 @@
 package com.hwl.beta.emotion;
 
 import android.content.Context;
-import android.opengl.Visibility;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -10,6 +8,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import androidx.viewpager.widget.ViewPager;
 
 import com.hwl.beta.emotion.adapter.EmotionPagerAdapter;
 import com.hwl.beta.emotion.data.EmotionLocal;

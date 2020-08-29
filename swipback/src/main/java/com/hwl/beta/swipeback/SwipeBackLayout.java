@@ -6,12 +6,13 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
+import androidx.core.view.ViewCompat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -201,7 +202,6 @@ public class SwipeBackLayout extends FrameLayout {
     }
 
 
-
     /**
      * Set scroll threshold, we will close the activity, when scrollPercent over
      * this value
@@ -239,7 +239,7 @@ public class SwipeBackLayout extends FrameLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        if (!mEnable||mDisallowIntercept) {
+        if (!mEnable || mDisallowIntercept) {
             return false;
         }
         try {
@@ -317,7 +317,7 @@ public class SwipeBackLayout extends FrameLayout {
     }
 
     public void attachToActivity(Activity activity) {
-        if (getParent()!=null){
+        if (getParent() != null) {
             return;
         }
         mActivity = activity;
@@ -328,8 +328,8 @@ public class SwipeBackLayout extends FrameLayout {
         a.recycle();
 
         ViewGroup decor = (ViewGroup) activity.getWindow().getDecorView();
-        View decorChild  = decor.findViewById(android.R.id.content);
-        while (decorChild.getParent() != decor){
+        View decorChild = decor.findViewById(android.R.id.content);
+        while (decorChild.getParent() != decor) {
             decorChild = (View) decorChild.getParent();
         }
         decorChild.setBackgroundResource(background);
@@ -339,8 +339,8 @@ public class SwipeBackLayout extends FrameLayout {
         decor.addView(this);
     }
 
-    public void removeFromActivity(Activity activity){
-        if (getParent()==null)return;
+    public void removeFromActivity(Activity activity) {
+        if (getParent() == null) return;
         ViewGroup decorChild = (ViewGroup) getChildAt(0);
         ViewGroup decor = (ViewGroup) activity.getWindow().getDecorView();
         decor.removeView(this);
@@ -386,7 +386,8 @@ public class SwipeBackLayout extends FrameLayout {
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
             super.onViewPositionChanged(changedView, left, top, dx, dy);
-            mScrollPercent = Math.abs((float) left / (mContentView.getWidth() /*+ mShadowLeft.getIntrinsicWidth()*/));
+            mScrollPercent = Math.abs((float) left / (mContentView.getWidth() /*+ mShadowLeft
+            .getIntrinsicWidth()*/));
             mContentLeft = left;
             invalidate();
             if (mScrollPercent < mScrollThreshold && !mIsScrollOverValid) {
@@ -399,7 +400,7 @@ public class SwipeBackLayout extends FrameLayout {
                 }
             }
             if (mScrollPercent >= 1) {
-                if (!mActivity.isFinishing()){
+                if (!mActivity.isFinishing()) {
                     if (mListeners != null && !mListeners.isEmpty()
                             && mScrollPercent >= mScrollThreshold && mIsScrollOverValid) {
                         mIsScrollOverValid = false;

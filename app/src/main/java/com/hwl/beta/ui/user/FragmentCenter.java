@@ -1,20 +1,33 @@
 package com.hwl.beta.ui.user;
 
 import android.app.Activity;
-import android.databinding.DataBindingUtil;
+
+import androidx.databinding.DataBindingUtil;
+
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.allenliu.versionchecklib.v2.AllenVersionChecker;
+import com.allenliu.versionchecklib.v2.builder.UIData;
 import com.bumptech.glide.Glide;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.UserFragmentCenterBinding;
+import com.hwl.beta.net.general.GeneralService;
+import com.hwl.beta.net.general.NetAppVersionInfo;
+import com.hwl.beta.net.general.body.CheckVersionResponse;
 import com.hwl.beta.net.user.NetUserInfo;
+import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.sp.UserSP;
+import com.hwl.beta.ui.common.rxext.RXDefaultObserver;
+import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.ebus.EventBusConstant;
+import com.hwl.beta.ui.ebus.EventBusUtil;
 import com.hwl.beta.ui.ebus.EventMessageModel;
 import com.hwl.beta.ui.common.BaseFragment;
 import com.hwl.beta.ui.common.UITransfer;
@@ -23,6 +36,9 @@ import com.hwl.beta.ui.user.bean.CenterBean;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
 import com.hwl.beta.utils.AppUtils;
 import com.hwl.beta.utils.StringUtils;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2017/12/27.
@@ -64,6 +80,9 @@ public class FragmentCenter extends BaseFragment {
         } else {
             binding.llSymbolContainer.setVisibility(View.VISIBLE);
         }
+
+        if (MessageCountSP.getAppVersionCount() > 0)
+            binding.ivAppVersionNum.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -85,6 +104,12 @@ public class FragmentCenter extends BaseFragment {
                 break;
             case EventBusConstant.EB_TYPE_USER_NAME_UPDATE:
                 binding.tvName.setText(UserSP.getUserName());
+                break;
+            case EventBusConstant.EB_TYPE_APP_VERSION_UPDATE:
+                if (MessageCountSP.getAppVersionCount() > 0)
+                    binding.ivAppVersionNum.setVisibility(View.VISIBLE);
+                else
+                    binding.ivAppVersionNum.setVisibility(View.GONE);
                 break;
         }
     }
@@ -117,42 +142,53 @@ public class FragmentCenter extends BaseFragment {
             UITransfer.toCircleMessagesActivity(activity);
         }
 
+        private void VersionTip(boolean isUpgrade, NetAppVersionInfo versionInfo) {
+            MessageCountSP.setAppVersionInfo(null);
+            EventBusUtil.sendAppVersionUpdateEvent();
+
+            if (isUpgrade) {
+                if (versionInfo == null) {
+                    Toast.makeText(activity, "没有找到新的版本", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                UIData data = UIData.create()
+                        .setTitle("有新版本 " + versionInfo.getAppVersion())
+                        .setContent(versionInfo.getUpgradeLog())
+                        .setDownloadUrl(versionInfo.getDownloadUrl());
+                AllenVersionChecker
+                        .getInstance()
+                        .downloadOnly(data)
+                        .executeMission(activity);
+            } else {
+                Toast.makeText(activity, "当前已经是最新的版本", Toast.LENGTH_SHORT).show();
+            }
+        }
+
         @Override
         public void onCheckUpdateClick() {
-//            LoadingDialog.show(activity, "版本检测中,请稍后...");
-//            GeneralService.checkVersion()
-//                    .subscribe(new NetDefaultObserver<CheckVersionResponse>() {
-//                        @Override
-//                        protected void onSuccess(final CheckVersionResponse response) {
-//                            LoadingDialog.hide();
-//                            if (response.isNewVersion()) {
-//                                new AlertDialog.Builder(activity)
-//                                        .setMessage("检测到最新版本 " + response.getNewVersion() +
-// "，是否更新?")
-//                                        .setPositiveButton("确定", new DialogInterface
-// .OnClickListener() {
-//                                            @Override
-//                                            public void onClick(DialogInterface dialog, int
-// which) {
-//                                                UITransfer.toBrowser(activity, response
-// .getDownLoadUrl());
-//                                                dialog.dismiss();
-//                                            }
-//                                        })
-//                                        .setNegativeButton("取消", null)
-//                                        .show();
-//                            } else {
-//                                Toast.makeText(activity, "当前已经是最新的版本,不需要更新", Toast
-// .LENGTH_SHORT).show();
-//                            }
-//                        }
-//
-//                        @Override
-//                        protected void onError(String resultMessage) {
-//                            super.onError(resultMessage);
-//                            LoadingDialog.hide();
-//                        }
-//                    });
+            if (MessageCountSP.getAppVersionCount() > 0) {
+                NetAppVersionInfo versionInfo = MessageCountSP.getAppVersionInfo();
+                boolean isUp = AppUtils.isUpgrade(versionInfo.getAppVersion(),
+                        AppUtils.getAppVersionName());
+                VersionTip(isUp, versionInfo);
+            } else {
+                LoadingDialog.show(activity, "版本检测中,请稍后...");
+                GeneralService.checkVersion()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new RXDefaultObserver<CheckVersionResponse>() {
+                            @Override
+                            protected void onSuccess(CheckVersionResponse response) {
+                                LoadingDialog.hide();
+                                VersionTip(response.isNewVersion(), response.getAppVersionInfo());
+                            }
+
+                            @Override
+                            protected void onError(String message) {
+                                super.onError(message);
+                                LoadingDialog.hide();
+                            }
+                        });
+            }
         }
 
         @Override

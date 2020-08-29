@@ -72,7 +72,7 @@
             android:textSize="15dp"
             android:visibility="@{android.text.TextUtils.isEmpty(info.content)?android.view.View.GONE:android.view.View.VISIBLE}" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_images"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -182,7 +182,7 @@
                     android:layout_alignParentLeft="true"
                     android:src="@drawable/ic_uncomment" />
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_comments"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

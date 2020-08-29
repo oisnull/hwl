@@ -3,7 +3,10 @@ package com.hwl.beta.sp;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
 import com.hwl.beta.HWLApp;
+import com.hwl.beta.net.general.NetAppVersionInfo;
+import com.hwl.beta.utils.StringUtils;
 
 /**
  * Created by Administrator on 2018/2/5.
@@ -15,10 +18,40 @@ public class MessageCountSP {
     private static final String CHATMESSAGECOUNT = "chatmessagecount";
     private static final String NEARCIRCLEMESSAGECOUNT = "nearcirclemessagecount";
     private static final String CIRCLEMESSAGECOUNT = "circlemessagecount";
+    private static final String APP_VERSION_COUNT = "app_version_count";
+    private static final String APP_VERSION_INFO = "app_version_info";
 
     private static SharedPreferences getSP() {
         return HWLApp.getContext().getSharedPreferences(MESSAGECOUNTPREFERENCE, Context
                 .MODE_PRIVATE);
+    }
+
+    public static int getAppVersionCount() {
+        return getSP().getInt(APP_VERSION_COUNT, 0);
+    }
+
+    public static NetAppVersionInfo getAppVersionInfo() {
+        String jsonString = getSP().getString(APP_VERSION_INFO, null);
+        if (StringUtils.isBlank(jsonString)) {
+            return null;
+        } else {
+            Gson gson = new Gson();
+            return gson.fromJson(jsonString, NetAppVersionInfo.class);
+        }
+    }
+
+    public static void setAppVersionInfo(NetAppVersionInfo appVersion) {
+        final SharedPreferences.Editor editor = getSP().edit();
+        if (appVersion != null) {
+            Gson gson = new Gson();
+            String jsonString = gson.toJson(appVersion);
+            editor.putString(APP_VERSION_INFO, jsonString);
+            editor.putInt(APP_VERSION_COUNT, 1);
+        } else {
+            editor.putInt(APP_VERSION_COUNT, 0);
+            editor.putString(APP_VERSION_INFO, "");
+        }
+        editor.commit();
     }
 
     public static int getFriendRequestCount() {
