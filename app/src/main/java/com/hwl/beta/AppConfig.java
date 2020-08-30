@@ -21,18 +21,4 @@ public class AppConfig {
     public final static String IM_DEBUG_TAG = "zl-im";
     public final static String IM_HOST = "192.168.2.210";
     public final static int IM_PORT = 8081;
-
-    //im release env
-    //net api
-    public final static String NET_API_DEBUG_TAG = "zl-api";
-
-    /**
-     * chat group setting
-     * chat group setting edit
-     * add chat group user
-     * chat user setting
-     *
-     * add im server disconncet message send
-     *
-     * */
 }
