@@ -50,8 +50,7 @@ public class ActivityLoginV2 extends FragmentActivity {
                 .setImageLeftHide()
                 .setImageRightHide();
 
-//        binding.etAccount.setText(UserSP.getAccount());
-        binding.etAccount.setText("253621965@qq.com");
+        binding.etAccount.setText(UserSP.getAccount());
         binding.etCode.setText("888888");
         binding.btnCodeSend.setOnClickListener(new View.OnClickListener() {
             @Override

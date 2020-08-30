@@ -1,10 +1,9 @@
 package com.hwl.beta.ui.immsg.listen;
 
-import android.util.Log;
-
 import com.hwl.beta.net.general.NetAppVersionInfo;
 import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.ui.ebus.EventBusUtil;
+import com.hwl.beta.utils.AppUtils;
 import com.hwl.im.imaction.AbstractMessageListenExecutor;
 import com.hwl.imcore.improto.ImAppVersionContent;
 import com.hwl.imcore.improto.ImAppVersionResponse;
@@ -19,7 +18,11 @@ public class AppVersionListen extends AbstractMessageListenExecutor<ImAppVersion
     public void executeCore(ImMessageType messageType, ImAppVersionResponse response) {
         super.executeCore(messageType, response);
         this.messageContent = response.getAppVersionContent();
-        Log.d("AppVersionListen", messageContent.toString());
+
+        //检测是否需要升级
+        boolean isUp = AppUtils.isUpgrade(messageContent.getAppVersion(),
+                AppUtils.getAppVersionName());
+        if (!isUp) return;
 
         NetAppVersionInfo info = new NetAppVersionInfo();
         info.setAppName(messageContent.getAppName());

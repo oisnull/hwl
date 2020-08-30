@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">HWLChat1.0</string>
+    <string name="app_name">ZiChat1.0</string>
 
     <!--Login-->
     <string name="login_activity_title">HWL Login</string>

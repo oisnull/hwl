@@ -6,6 +6,7 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.hwl.beta.AppConfig;
 import com.hwl.beta.HWLApp;
+import com.hwl.beta.ui.common.CustLog;
 
 public class BaiduLocationV2 {
     public final static int NOT_START = 0;
@@ -70,6 +71,8 @@ public class BaiduLocationV2 {
                         errorMessage = location.getLocTypeDescription();
                         locationListener.onFailure(errorMessage);
                     }
+
+                    CustLog.e("BaiduLocationV2", location.getLocTypeDescription());
                 }
 
                 stop();

@@ -101,7 +101,10 @@ public class CustLog {
     public static List<String> getLogFiles() {
         List<String> list = new ArrayList();
         File file = new File(BuildConfig.LogDir);
+        if (file == null) return list;
+
         String[] filelist = file.list();
+        if (filelist == null) return list;
         for (int i = 0; i < filelist.length; i++) {
             list.add(BuildConfig.LogDir + "/" + filelist[i]);
         }

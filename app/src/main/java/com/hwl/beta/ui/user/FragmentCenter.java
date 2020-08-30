@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.allenliu.versionchecklib.v2.AllenVersionChecker;
 import com.allenliu.versionchecklib.v2.builder.UIData;
 import com.bumptech.glide.Glide;
+import com.hwl.beta.BuildConfig;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.UserFragmentCenterBinding;
 import com.hwl.beta.net.general.GeneralService;
@@ -69,7 +70,11 @@ public class FragmentCenter extends BaseFragment {
 
     private void setCenterBean() {
         NetUserInfo netUser = UserSP.getUserInfo();
-        centerBean.setName(netUser.getName() + " - " + netUser.getId());
+        if (BuildConfig.DEBUG) {
+            centerBean.setName(netUser.getName() + " - " + netUser.getId());
+        } else {
+            centerBean.setName(netUser.getName());
+        }
         centerBean.setHeadImage(netUser.getHeadImage());
         centerBean.setSymbol(netUser.getSymbol());
     }

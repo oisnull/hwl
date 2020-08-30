@@ -66,7 +66,7 @@ public class TestActivityLogs extends BaseActivity {
             reader = new BufferedReader(new FileReader(file));
             String tempStr;
             while ((tempStr = reader.readLine()) != null) {
-                sbf.append(tempStr);
+                sbf.append(tempStr + "\n");
             }
             reader.close();
             return sbf.toString();
