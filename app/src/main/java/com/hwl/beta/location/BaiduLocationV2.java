@@ -48,7 +48,6 @@ public class BaiduLocationV2 {
                     model.province = location.getProvince();
                     model.city = location.getCity();
                     model.district = location.getDistrict();
-                    model.town = location.getTown();
                     model.street = location.getStreet();
                     model.addr = location.getAddrStr();
                     model.describe = location.getLocationDescribe();

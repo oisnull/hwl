@@ -15,6 +15,42 @@ public class SetUserPosRequest {
     private String Details;
     private double Latitude;
     private double Longitude;
+    private String CoorType;
+    private int LocationWhere;
+    private String LocationType;
+    private float Radius;
+
+    public String getCoorType() {
+        return CoorType;
+    }
+
+    public void setCoorType(String coorType) {
+        CoorType = coorType;
+    }
+
+    public int getLocationWhere() {
+        return LocationWhere;
+    }
+
+    public void setLocationWhere(int locationWhere) {
+        LocationWhere = locationWhere;
+    }
+
+    public String getLocationType() {
+        return LocationType;
+    }
+
+    public void setLocationType(String locationType) {
+        LocationType = locationType;
+    }
+
+    public float getRadius() {
+        return Radius;
+    }
+
+    public void setRadius(float radius) {
+        Radius = radius;
+    }
 
     public long getUserId() {
         return UserId;

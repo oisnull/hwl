@@ -11,7 +11,6 @@ public class LocationModel {
     public String province;
     public String city;
     public String district;
-    public String town;
     public String street;
     public String addr;
     public String describe;
