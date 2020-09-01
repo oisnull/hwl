@@ -24,6 +24,7 @@ public class BaiduLocationV2 {
         client.setLocOption(getDefaultLocationClientOption());
         client.registerLocationListener(new BDAbstractLocationListener() {
 
+            //DBLocation params:http://wiki.lbsyun.baidu.com/cms/androidloc/v9_0_0/doc/index.html
             private boolean isSuccess(BDLocation location) {
                 return location != null &&
                         location.getLatitude() > 0 &&
@@ -38,12 +39,16 @@ public class BaiduLocationV2 {
                 if (isSuccess(location)) {
                     LocationModel model = new LocationModel();
                     model.radius = location.getRadius();
+                    model.coorType = location.getCoorType();
+                    model.locationWhere = location.getLocationWhere();
+                    model.locationType = location.getNetworkLocationType();
                     model.latitude = (float) location.getLatitude();
                     model.longitude = (float) location.getLongitude();
                     model.country = location.getCountry();
                     model.province = location.getProvince();
                     model.city = location.getCity();
                     model.district = location.getDistrict();
+                    model.town = location.getTown();
                     model.street = location.getStreet();
                     model.addr = location.getAddrStr();
                     model.describe = location.getLocationDescribe();
@@ -101,6 +106,7 @@ public class BaiduLocationV2 {
             mOption = new LocationClientOption();
             mOption.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
             //可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
+            //在线坐标转换：https://tool.lu/coordinate/
             //https://lbsyun.baidu.com/index.php?title=androidsdk/guide/coordtrans
             mOption.setCoorType("WGS84");//可选，默认gcj02，设置返回的定位结果坐标系，如果配合百度地图使用，建议设置为bd09ll;
             //mOption.setScanSpan(3000);//可选，默认0，即仅定位一次，设置发起连续定位请求的间隔需要大于等于1000ms才是有效的
