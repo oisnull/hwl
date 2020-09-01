@@ -1,6 +1,5 @@
 package com.hwl.beta.ui.entry.logic;
 
-import com.google.gson.Gson;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.GroupInfo;
 import com.hwl.beta.db.entity.GroupUserInfo;
@@ -13,7 +12,6 @@ import com.hwl.beta.net.user.body.SetUserPosResponse;
 import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.sp.UserSP;
-import com.hwl.beta.ui.common.CustLog;
 import com.hwl.beta.ui.convert.DBFriendAction;
 import com.hwl.beta.ui.convert.DBGroupAction;
 import com.hwl.beta.ui.entry.bean.MainBean;
@@ -53,13 +51,12 @@ public class MainLogic implements MainStandard {
         request.setCity(result.city);
         request.setDistrict(result.district);
         request.setStreet(result.street);
+        request.setTown(result.town);
         request.setDetails(result.addr);
         request.setCoorType(result.coorType);
         request.setLocationType(result.locationType);
         request.setLocationWhere(result.locationWhere);
         request.setRadius(result.radius);
-
-        CustLog.d("SetUserPos",new Gson().toJson(request));
 
         return UserService.setUserPos(request)
                 .doOnNext(new Consumer<SetUserPosResponse>() {

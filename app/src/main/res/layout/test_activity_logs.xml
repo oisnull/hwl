@@ -18,11 +18,14 @@
         android:layout_height="wrap_content"
         android:text="删除所有日志" />
 
-
-    <TextView
-        android:id="@+id/tv_log_content"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20" />
+        android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/tv_log_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20" />
+    </ScrollView>
 </LinearLayout>

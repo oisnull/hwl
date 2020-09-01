@@ -50,6 +50,7 @@ public class BaiduLocationV2 {
                     model.district = location.getDistrict();
                     model.street = location.getStreet();
                     model.addr = location.getAddrStr();
+                    model.town = location.getTown();
                     model.describe = location.getLocationDescribe();
                     currentStatus = COMPLETE_SUCCESS;
                     errorMessage = null;
@@ -58,6 +59,9 @@ public class BaiduLocationV2 {
                     if (AppConfig.ENABLE_DEBUG) {
                         LocationModel model = new LocationModel();
                         model.radius = 40.0f;
+                        model.coorType = "";
+                        model.locationType = "";
+                        model.locationWhere = 1;
                         model.longitude = (float) 121.503349304199;
                         model.latitude = (float) 31.0745754241943;
                         model.country = "中国";
@@ -65,6 +69,7 @@ public class BaiduLocationV2 {
                         model.city = "上海市";
                         model.district = "闵行区";
                         model.street = "浦驰路(ERROR)";
+                        model.town = "";
                         model.addr = "中国上海市闵行区浦驰路188弄1-109";
                         model.describe = "在世博家园十一街坊附近";
                         currentStatus = COMPLETE_SUCCESS;

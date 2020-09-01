@@ -11,6 +11,7 @@ public class SetUserPosRequest {
     private String Province;
     private String City;
     private String District;
+    private String Town;
     private String Street;
     private String Details;
     private double Latitude;
@@ -19,6 +20,14 @@ public class SetUserPosRequest {
     private int LocationWhere;
     private String LocationType;
     private float Radius;
+
+    public String getTown() {
+        return Town;
+    }
+
+    public void setTown(String town) {
+        Town = town;
+    }
 
     public String getCoorType() {
         return CoorType;
