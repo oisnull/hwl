@@ -45,9 +45,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.entry.ActivityMain"
-            android:theme="@style/SwipeTheme" />
+        <activity android:name=".ui.entry.ActivityMain" />
         <activity android:name=".ui.TestActivity" />
         <activity android:name=".ui.TestActivityLocation" />
         <activity android:name=".ui.TestActivityIm" />
