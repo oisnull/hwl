@@ -112,7 +112,12 @@ public class BaiduLocationV2 {
             //可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
             //在线坐标转换：https://tool.lu/coordinate/
             //https://lbsyun.baidu.com/index.php?title=androidsdk/guide/coordtrans
-            mOption.setCoorType("WGS84");//可选，默认gcj02，设置返回的定位结果坐标系，如果配合百度地图使用，建议设置为bd09ll;
+            //可选，设置返回经纬度坐标类型，默认GCJ02
+            //GCJ02：国测局坐标；
+            //BD09ll：百度经纬度坐标；
+            //BD09：百度墨卡托坐标；
+            //海外地区定位，无需设置坐标类型，统一返回WGS84类型坐标
+            mOption.setCoorType("gcj02");
             //mOption.setScanSpan(3000);//可选，默认0，即仅定位一次，设置发起连续定位请求的间隔需要大于等于1000ms才是有效的
             mOption.setIsNeedAddress(true);//可选，设置是否需要地址信息，默认不需要
             mOption.setIsNeedLocationDescribe(true);//可选，设置是否需要地址描述
