@@ -1,7 +1,5 @@
 package com.hwl.beta.db.manage;
 
-import android.content.Context;
-
 import com.hwl.beta.db.BaseDao;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.dao.GroupInfoDao;
@@ -17,9 +15,6 @@ import io.reactivex.functions.Consumer;
  */
 
 public class GroupInfoManager extends BaseDao<GroupInfo> {
-    public GroupInfoManager(Context context) {
-        super(context);
-    }
 
     public void add(GroupInfo groupInfo) {
         if (groupInfo == null || StringUtils.isBlank(groupInfo.getGroupGuid()))

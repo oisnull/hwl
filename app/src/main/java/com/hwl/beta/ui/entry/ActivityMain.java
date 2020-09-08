@@ -253,23 +253,6 @@ public class ActivityMain extends BaseActivity {
                         break;
                     case R.id.pop_share_app:
                         UITransfer.toQRCodeActivity(activity);
-//                        new AlertDialog.Builder(activity)
-//                                .setMessage("如果别人就在你的旁边，你可以通过二维码来分享给TA...")
-//                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        UITransfer.toQRCodeActivity(activity);
-//                                        dialog.dismiss();
-//                                    }
-//                                })
-//                                .setNegativeButton("用其它方式", new DialogInterface.OnClickListener
-//                                () {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        ShareTransfer.shareApp();
-//                                    }
-//                                })
-//                                .show();
                         break;
                     case R.id.pop_open_test:
                         UITransfer.toTestActivity(activity);

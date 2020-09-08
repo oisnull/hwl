@@ -1,6 +1,5 @@
 package com.hwl.beta.db.manage;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.text.TextUtils;
 
@@ -24,9 +23,6 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
-    public GroupUserInfoManager(Context context) {
-        super(context);
-    }
 
     public List<Long> getUserIdList(String groupGuid) {
         String sql = "select " + GroupUserInfoDao.Properties.UserId.columnName + " from " +

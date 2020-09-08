@@ -66,28 +66,33 @@ public class MainLogic implements MainStandard {
                             throw new Exception("Set user position failed.");
                         }
 
-                        if (res.getGroupUserInfos() == null || res.getGroupUserInfos().size() <= 0) {
-                            //add current user info
-                            List<NetSecretUserInfo> userInfos = new ArrayList<>(1);
-                            NetSecretUserInfo userInfo = new NetSecretUserInfo();
-                            userInfo.setUserId(UserSP.getUserId());
-                            userInfo.setUserName(UserSP.getUserName());
-                            userInfo.setUserImage(UserSP.getUserHeadImage());
-                            userInfos.add(userInfo);
-                            res.setGroupUserInfos(userInfos);
-                        }
+                        //if (res.getGroupUserInfos() == null || res.getGroupUserInfos().size() <= 0) {
+                        //    //add current user info
+                        //    List<NetSecretUserInfo> userInfos = new ArrayList<>(1);
+                        //    NetSecretUserInfo userInfo = new NetSecretUserInfo();
+                        //    userInfo.setUserId(UserSP.getUserId());
+                        //    userInfo.setUserName(UserSP.getUserName());
+                        //    userInfo.setUserImage(UserSP.getUserHeadImage());
+                        //    userInfos.add(userInfo);
+                        //    res.setGroupUserInfos(userInfos);
+                        //}
 
+						List<String> userImages= DBGroupAction.getGroupUserImages(res.getGroupUserInfos());
                         GroupInfo groupInfo = DBGroupAction.convertToNearGroupInfo(
-                                res.getUserGroupGuid(),
-                                res.getGroupUserInfos().size(),
-                                DBGroupAction.getGroupUserImages(res.getGroupUserInfos()), true);
+												res.getUserGroupGuid(),
+												UserPosSP.getNearDesc(),
+												res.getGroupUserInfos().size(),
+												userImages, 
+												true);
+                        DaoUtils.getGroupInfoManagerInstance().add(groupInfo);
+
                         List<GroupUserInfo> groupUserInfos =
                                 DBGroupAction.convertToGroupUserInfos2(res.getUserGroupGuid(),
                                         res.getGroupUserInfos());
-                        DaoUtils.getGroupInfoManagerInstance().add(groupInfo);
                         DaoUtils.getGroupUserInfoManagerInstance().addList(groupUserInfos);
-                        DaoUtils.getFriendManagerInstance().addListAsync(DBFriendAction
-                                .convertSecretUserToFriendInfos(res.getGroupUserInfos()));
+
+                        List<Friend> friends =DBFriendAction.convertSecretUserToFriendInfos(res.getGroupUserInfos());
+                        DaoUtils.getFriendManagerInstance().addListAsync(friends);
                     }
                 })
                 .map(new Function<SetUserPosResponse, String>() {

@@ -47,11 +47,12 @@ public class DBGroupAction {
     }
 
     public static GroupInfo convertToNearGroupInfo(String groupGuid,
+                                                   String groupName,
                                                    int groupUserCount,
                                                    List<String> groupUserImages,
                                                    boolean isLoadUsers) {
         return convertToGroupInfo(groupGuid,
-                UserPosSP.getNearDesc(),
+                groupName,
                 null,
                 0,
                 groupUserCount,

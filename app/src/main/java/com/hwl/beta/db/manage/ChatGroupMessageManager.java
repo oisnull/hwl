@@ -1,7 +1,5 @@
 package com.hwl.beta.db.manage;
 
-import android.content.Context;
-
 import com.hwl.beta.db.BaseDao;
 import com.hwl.beta.db.dao.ChatGroupMessageDao;
 import com.hwl.beta.db.entity.ChatGroupMessage;
@@ -14,9 +12,6 @@ import java.util.List;
  */
 
 public class ChatGroupMessageManager extends BaseDao<ChatGroupMessage> {
-    public ChatGroupMessageManager(Context context) {
-        super(context);
-    }
 
     public long save(ChatGroupMessage request) {
         if (request == null) return 0;

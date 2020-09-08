@@ -1,7 +1,5 @@
 package com.hwl.beta.db.manage;
 
-import android.content.Context;
-
 import com.hwl.beta.db.BaseDao;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.dao.ChatRecordMessageDao;
@@ -21,9 +19,6 @@ import java.util.List;
  */
 
 public class ChatRecordMessageManager extends BaseDao<ChatRecordMessage> {
-    public ChatRecordMessageManager(Context context) {
-        super(context);
-    }
 
     public ChatRecordMessage getGroupRecord(String groupGuid) {
         if (StringUtils.isBlank(groupGuid)) return null;

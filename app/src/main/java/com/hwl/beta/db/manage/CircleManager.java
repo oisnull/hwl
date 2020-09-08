@@ -1,7 +1,5 @@
 package com.hwl.beta.db.manage;
 
-import android.content.Context;
-
 import com.hwl.beta.db.BaseDao;
 import com.hwl.beta.db.DBConstant;
 import com.hwl.beta.db.dao.CircleCommentDao;
@@ -18,9 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CircleManager extends BaseDao<Circle> {
-    public CircleManager(Context context) {
-        super(context);
-    }
 
     public Circle getCircle(long circleId) {
         if (circleId <= 0) return null;

@@ -1,6 +1,5 @@
 package com.hwl.beta.db.manage;
 
-import android.content.Context;
 import android.database.Cursor;
 
 import com.hwl.beta.db.BaseDao;
@@ -27,10 +26,6 @@ import io.reactivex.functions.Function;
  */
 
 public class NearCircleManager extends BaseDao<NearCircle> {
-
-    public NearCircleManager(Context context) {
-        super(context);
-    }
 
     public long save(NearCircle info) {
         if (info == null || info.getNearCircleId() <= 0) return 0;

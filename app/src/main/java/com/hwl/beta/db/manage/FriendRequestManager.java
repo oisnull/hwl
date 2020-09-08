@@ -1,7 +1,5 @@
 package com.hwl.beta.db.manage;
 
-import android.content.Context;
-
 import com.hwl.beta.db.BaseDao;
 import com.hwl.beta.db.entity.FriendRequest;
 
@@ -12,9 +10,6 @@ import java.util.List;
  */
 
 public class FriendRequestManager extends BaseDao<FriendRequest> {
-    public FriendRequestManager(Context context) {
-        super(context);
-    }
 
     public void save(FriendRequest request) {
         if (request == null || request.getFriendId() <= 0) return;

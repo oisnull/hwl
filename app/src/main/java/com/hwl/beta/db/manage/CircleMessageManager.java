@@ -1,7 +1,5 @@
 package com.hwl.beta.db.manage;
 
-import android.content.Context;
-
 import com.hwl.beta.db.BaseDao;
 import com.hwl.beta.db.DBConstant;
 import com.hwl.beta.db.DaoUtils;
@@ -15,9 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CircleMessageManager extends BaseDao<CircleMessage> {
-    public CircleMessageManager(Context context) {
-        super(context);
-    }
 
     public List<CircleMessage> getAll() {
         List<CircleMessage> messages = daoSession.getCircleMessageDao()

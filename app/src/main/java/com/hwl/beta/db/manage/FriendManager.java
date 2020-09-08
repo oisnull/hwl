@@ -1,7 +1,5 @@
 package com.hwl.beta.db.manage;
 
-import android.content.Context;
-
 import com.hwl.beta.db.BaseDao;
 import com.hwl.beta.db.dao.FriendDao;
 import com.hwl.beta.db.entity.Friend;
@@ -20,9 +18,6 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class FriendManager extends BaseDao<Friend> {
-    public FriendManager(Context context) {
-        super(context);
-    }
 
     public String getFriendName(Friend friend) {
         if (friend == null) return null;
