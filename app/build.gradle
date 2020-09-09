@@ -82,4 +82,5 @@ dependencies {
     implementation project(':emotion')
     implementation 'com.tencent.bugly:crashreport:latest.release'
     implementation 'com.github.AlexLiuSheng:CheckVersionLib:2.4_androidx'
+    implementation 'com.annimon:stream:1.2.1'
 }

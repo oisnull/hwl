@@ -3,6 +3,7 @@ package com.hwl.beta.db.manage;
 import android.database.Cursor;
 import android.text.TextUtils;
 
+import com.annimon.stream.Stream;
 import com.hwl.beta.db.BaseDao;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.dao.GroupUserInfoDao;
@@ -65,6 +66,27 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
             return 0;
         }
         return daoSession.getGroupUserInfoDao().insert(userInfo);
+    }
+
+    public void addGroupUsers(String groupGuid, List<GroupUserInfo> users) {
+        if (StringUtils.isBlank(groupGuid)) return;
+        if (users == null || users.size() <= 0) return;
+
+        List<Long> userIds = Stream.of(users).map(u -> u.getUserId()).distinct().toList();
+        List<GroupUserInfo> oldUsers = daoSession.getGroupUserInfoDao().queryBuilder()
+                .where(GroupUserInfoDao.Properties.UserId.in(userIds))
+                .where(GroupUserInfoDao.Properties.GroupGuid.eq(groupGuid))
+                .list();
+        if (oldUsers == null || oldUsers.size() <= 0) {
+            daoSession.getGroupUserInfoDao().insertInTx(users);
+            return;
+        }
+
+        List<GroupUserInfo> newUsers = Stream.of(users).filter(u -> !oldUsers.contains(u)).toList();
+        if (newUsers != null && newUsers.size() > 0) {
+            daoSession.getGroupUserInfoDao().insertInTx(newUsers);
+        }
+
     }
 
     public void addList(List<GroupUserInfo> users) {

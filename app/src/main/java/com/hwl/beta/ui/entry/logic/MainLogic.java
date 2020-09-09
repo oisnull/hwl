@@ -1,11 +1,11 @@
 package com.hwl.beta.ui.entry.logic;
 
 import com.hwl.beta.db.DaoUtils;
+import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.db.entity.GroupInfo;
 import com.hwl.beta.db.entity.GroupUserInfo;
 import com.hwl.beta.location.LocationModel;
 import com.hwl.beta.net.NetConstant;
-import com.hwl.beta.net.user.NetSecretUserInfo;
 import com.hwl.beta.net.user.UserService;
 import com.hwl.beta.net.user.body.SetUserPosRequest;
 import com.hwl.beta.net.user.body.SetUserPosResponse;
@@ -17,11 +17,9 @@ import com.hwl.beta.ui.convert.DBGroupAction;
 import com.hwl.beta.ui.entry.bean.MainBean;
 import com.hwl.beta.ui.entry.standard.MainStandard;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
 public class MainLogic implements MainStandard {
@@ -33,6 +31,26 @@ public class MainLogic implements MainStandard {
                 MessageCountSP.getFriendRequestCount(),
                 MessageCountSP.getCircleMessageCount(),
                 MessageCountSP.getAppVersionCount());
+    }
+
+    private void setUsersToDB(SetUserPosResponse response) {
+        List<String> userImages = DBGroupAction.getGroupUserImages(response.getGroupUserInfos());
+        GroupInfo groupInfo = DBGroupAction.convertToNearGroupInfo(
+                response.getUserGroupGuid(),
+                UserPosSP.getNearDesc(),
+                response.getGroupUserInfos().size(),
+                userImages,
+                true);
+        DaoUtils.getGroupInfoManagerInstance().add(groupInfo);
+
+        List<GroupUserInfo> groupUsers = DBGroupAction.convertToGroupUserInfos2(
+                response.getUserGroupGuid(),
+                response.getGroupUserInfos());
+        DaoUtils.getGroupUserInfoManagerInstance().addGroupUsers(response.getUserGroupGuid(),
+                groupUsers);
+
+        List<Friend> friends = DBFriendAction.convertToFriends(response.getGroupUserInfos(), false);
+        DaoUtils.getFriendManagerInstance().addFriends(friends);
     }
 
     @Override
@@ -59,45 +77,12 @@ public class MainLogic implements MainStandard {
         request.setRadius(result.radius);
 
         return UserService.setUserPos(request)
-                .doOnNext(new Consumer<SetUserPosResponse>() {
+                .map(new Function<SetUserPosResponse, String>() {
                     @Override
-                    public void accept(SetUserPosResponse res) throws Exception {
+                    public String apply(SetUserPosResponse res) throws Exception {
                         if (res.getStatus() != NetConstant.RESULT_SUCCESS) {
                             throw new Exception("Set user position failed.");
                         }
-
-                        //if (res.getGroupUserInfos() == null || res.getGroupUserInfos().size() <= 0) {
-                        //    //add current user info
-                        //    List<NetSecretUserInfo> userInfos = new ArrayList<>(1);
-                        //    NetSecretUserInfo userInfo = new NetSecretUserInfo();
-                        //    userInfo.setUserId(UserSP.getUserId());
-                        //    userInfo.setUserName(UserSP.getUserName());
-                        //    userInfo.setUserImage(UserSP.getUserHeadImage());
-                        //    userInfos.add(userInfo);
-                        //    res.setGroupUserInfos(userInfos);
-                        //}
-
-						List<String> userImages= DBGroupAction.getGroupUserImages(res.getGroupUserInfos());
-                        GroupInfo groupInfo = DBGroupAction.convertToNearGroupInfo(
-												res.getUserGroupGuid(),
-												UserPosSP.getNearDesc(),
-												res.getGroupUserInfos().size(),
-												userImages, 
-												true);
-                        DaoUtils.getGroupInfoManagerInstance().add(groupInfo);
-
-                        List<GroupUserInfo> groupUserInfos =
-                                DBGroupAction.convertToGroupUserInfos2(res.getUserGroupGuid(),
-                                        res.getGroupUserInfos());
-                        DaoUtils.getGroupUserInfoManagerInstance().addList(groupUserInfos);
-
-                        List<Friend> friends =DBFriendAction.convertSecretUserToFriendInfos(res.getGroupUserInfos());
-                        DaoUtils.getFriendManagerInstance().addListAsync(friends);
-                    }
-                })
-                .map(new Function<SetUserPosResponse, String>() {
-                    @Override
-                    public String apply(SetUserPosResponse res) {
 
                         UserPosSP.setUserPos(
                                 res.getUserPosId(),
@@ -111,6 +96,8 @@ public class MainLogic implements MainStandard {
                                 result.street,
                                 result.addr,
                                 result.describe);
+
+                        setUsersToDB(res);
 
                         return UserPosSP.getNearDesc();
                     }

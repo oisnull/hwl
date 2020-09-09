@@ -1,19 +1,17 @@
 package com.hwl.beta.db;
 
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
+import com.hwl.beta.HWLApp;
 import com.hwl.beta.badge.BuildConfig;
 import com.hwl.beta.db.dao.DaoMaster;
 import com.hwl.beta.db.dao.DaoSession;
 import com.hwl.beta.sp.UserSP;
 
-import org.greenrobot.greendao.DaoLog;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 /**
- * Created by adminstrator on 2018/6/16.
+ * Created by Administrator on 2018/6/16.
  */
 public class DaoManager {
     private static DaoManager mDaoManager;
@@ -32,7 +30,7 @@ public class DaoManager {
             synchronized (DaoManager.class) {
                 //Log.d(TAG, "create dao manager instance ..." + getDBName());
                 mDaoManager = new DaoManager();
-				mDaoManager.setDBDebug(BuildConfig.DEBUG);
+                mDaoManager.setDBDebug(BuildConfig.DEBUG);
             }
         }
         return mDaoManager;
@@ -45,7 +43,7 @@ public class DaoManager {
 //                mHelper = new DaoMaster.DevOpenHelper(context, getDBName(), null);
 //            } else {
 //           DaoLog.isLoggable(DaoLog.ERROR);
-           mHelper = new DaoMaster.DevOpenHelper(HWLApp.getContext(), getDBName());
+            mHelper = new DaoMaster.DevOpenHelper(HWLApp.getContext(), getDBName());
 //            }
             db = mHelper.getWritableDatabase();
             mDaoMaster = new DaoMaster(db);
