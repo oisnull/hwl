@@ -5,7 +5,7 @@ import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.db.entity.FriendRequest;
 import com.hwl.beta.net.user.NetGroupUserInfo;
-import com.hwl.beta.net.user.NetSecretUserInfo;
+import com.hwl.beta.net.user.NetNearUserInfo;
 import com.hwl.beta.net.user.NetUserFriendInfo;
 import com.hwl.beta.net.user.NetUserInfo;
 import com.hwl.beta.net.user.UserDetailsInfo;
@@ -133,7 +133,7 @@ public class DBFriendAction {
         return friend;
     }
 
-    public static List<Friend> convertToFriends(List<NetSecretUserInfo> users,
+    public static List<Friend> convertToFriends(List<NetNearUserInfo> users,
                                                 boolean isFriend) {
         if (users == null || users.size() <= 0) return null;
 

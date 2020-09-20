@@ -86,7 +86,7 @@
         <item name="isFull">false</item>
     </style>
 
-    <style name="SwipeTheme" parent="AppTheme">
-        <item name="android:windowIsTranslucent">false</item>
-    </style>
+    <!--    <style name="SwipeTheme" parent="AppTheme">-->
+    <!--        <item name="android:windowIsTranslucent">false</item>-->
+    <!--    </style>-->
 </resources>

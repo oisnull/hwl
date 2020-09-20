@@ -160,6 +160,11 @@ public class ActivityChatGroupSetting extends BaseActivity {
     public class ChatGroupSettingListener implements IChatGroupSettingListener {
 
         @Override
+        public void onGroupUsersClick() {
+            UITransfer.toGroupAllUsersActivity(activity, group.getGroupGuid());
+        }
+
+        @Override
         public void onGroupNoteClick() {
             UITransfer.toChatGroupSettingEditActivity(activity, group.getGroupGuid(), 1, group
                     .getGroupNote());

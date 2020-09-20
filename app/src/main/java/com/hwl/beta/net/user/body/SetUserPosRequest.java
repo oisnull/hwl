@@ -5,6 +5,8 @@ package com.hwl.beta.net.user.body;
  */
 
 public class SetUserPosRequest {
+
+    private boolean IsDistance;
     private long UserId;
     private String LastGroupGuid;
     private String Country;
@@ -20,6 +22,14 @@ public class SetUserPosRequest {
     private int LocationWhere;
     private String LocationType;
     private float Radius;
+
+    public boolean isDistance() {
+        return IsDistance;
+    }
+
+    public void setDistance(boolean distance) {
+        IsDistance = distance;
+    }
 
     public String getTown() {
         return Town;

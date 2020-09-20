@@ -1,5 +1,6 @@
 package com.hwl.beta.ui.entry.logic;
 
+import com.hwl.beta.BuildConfig;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.db.entity.GroupInfo;
@@ -43,7 +44,7 @@ public class MainLogic implements MainStandard {
                 true);
         DaoUtils.getGroupInfoManagerInstance().add(groupInfo);
 
-        List<GroupUserInfo> groupUsers = DBGroupAction.convertToGroupUserInfos2(
+        List<GroupUserInfo> groupUsers = DBGroupAction.convertToNearGroupUsers(
                 response.getUserGroupGuid(),
                 response.getGroupUserInfos());
         DaoUtils.getGroupUserInfoManagerInstance().addGroupUsers(response.getUserGroupGuid(),
@@ -60,6 +61,7 @@ public class MainLogic implements MainStandard {
         }
 
         SetUserPosRequest request = new SetUserPosRequest();
+        request.setDistance(BuildConfig.DEBUG);
         request.setUserId(UserSP.getUserId());
         request.setLastGroupGuid(UserPosSP.getGroupGuid());
         request.setLatitude(result.latitude);
@@ -77,30 +79,27 @@ public class MainLogic implements MainStandard {
         request.setRadius(result.radius);
 
         return UserService.setUserPos(request)
-                .map(new Function<SetUserPosResponse, String>() {
-                    @Override
-                    public String apply(SetUserPosResponse res) throws Exception {
-                        if (res.getStatus() != NetConstant.RESULT_SUCCESS) {
-                            throw new Exception("Set user position failed.");
-                        }
-
-                        UserPosSP.setUserPos(
-                                res.getUserPosId(),
-                                res.getUserGroupGuid(),
-                                result.latitude,
-                                result.longitude,
-                                result.country,
-                                result.province,
-                                result.city,
-                                result.district,
-                                result.street,
-                                result.addr,
-                                result.describe);
-
-                        setUsersToDB(res);
-
-                        return UserPosSP.getNearDesc();
+                .map(res -> {
+                    if (res.getStatus() != NetConstant.RESULT_SUCCESS) {
+                        throw new Exception(res.getErrorMessage());
                     }
+
+                    UserPosSP.setUserPos(
+                            res.getUserPosId(),
+                            res.getUserGroupGuid(),
+                            result.latitude,
+                            result.longitude,
+                            result.country,
+                            result.province,
+                            result.city,
+                            result.district,
+                            result.street,
+                            result.addr,
+                            result.describe);
+
+                    setUsersToDB(res);
+
+                    return UserPosSP.getNearDesc();
                 });
     }
 }

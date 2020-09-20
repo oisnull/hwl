@@ -3,6 +3,8 @@ package com.hwl.beta.ui.chat.action;
 import android.widget.CompoundButton;
 
 public interface IChatGroupSettingListener {
+    void onGroupUsersClick();
+
     void onGroupNoteClick();
 
     void onGroupNameClick();

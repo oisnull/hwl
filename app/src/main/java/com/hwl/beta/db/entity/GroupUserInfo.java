@@ -19,6 +19,7 @@ public class GroupUserInfo {
     private long userId;
     @OrderBy("addTime desc")
     private Date addTime;
+    private double distance;
 
     @Transient
     private String userName;
@@ -41,12 +42,14 @@ public class GroupUserInfo {
         this.userImage = userImage;
     }
 
-    @Generated(hash = 2110531183)
-    public GroupUserInfo(Long id, String groupGuid, long userId, Date addTime) {
+    @Generated(hash = 1933873684)
+    public GroupUserInfo(Long id, String groupGuid, long userId, Date addTime,
+            double distance) {
         this.id = id;
         this.groupGuid = groupGuid;
         this.userId = userId;
         this.addTime = addTime;
+        this.distance = distance;
     }
 
     @Generated(hash = 397523636)
@@ -98,5 +101,13 @@ public class GroupUserInfo {
 
     public void setAddTime(Date addTime) {
         this.addTime = addTime;
+    }
+
+    public double getDistance() {
+        return this.distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 }

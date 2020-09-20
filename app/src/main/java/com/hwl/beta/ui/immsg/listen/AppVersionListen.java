@@ -24,6 +24,10 @@ public class AppVersionListen extends AbstractMessageListenExecutor<ImAppVersion
                 AppUtils.getAppVersionName());
         if (!isUp) return;
 
+//        isUp = AppUtils.isUpgrade(messageContent.getAppVersion(),
+//                MessageCountSP.getAppVersionInfo().getAppVersion());
+//        if (!isUp) return;
+
         NetAppVersionInfo info = new NetAppVersionInfo();
         info.setAppName(messageContent.getAppName());
         info.setAppSize(messageContent.getAppSize());

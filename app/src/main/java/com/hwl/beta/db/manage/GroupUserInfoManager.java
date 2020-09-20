@@ -3,6 +3,7 @@ package com.hwl.beta.db.manage;
 import android.database.Cursor;
 import android.text.TextUtils;
 
+import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 import com.hwl.beta.db.BaseDao;
 import com.hwl.beta.db.DaoUtils;
@@ -10,6 +11,8 @@ import com.hwl.beta.db.dao.GroupUserInfoDao;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.db.entity.GroupUserInfo;
 import com.hwl.beta.utils.StringUtils;
+
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,27 +123,35 @@ public class GroupUserInfoManager extends BaseDao<GroupUserInfo> {
     }
 
     public List<GroupUserInfo> getUsers(String groupGuid) {
+        return getUsers(groupGuid, 0);
+    }
+
+    public List<GroupUserInfo> getUsers(String groupGuid, int count) {
         if (StringUtils.isBlank(groupGuid)) return null;
-        List<GroupUserInfo> groupUserInfos = daoSession.getGroupUserInfoDao().queryBuilder()
-                .where(GroupUserInfoDao.Properties.GroupGuid.eq(groupGuid))
-                .list();
-
-        List<Long> userIds = new ArrayList<>(groupUserInfos.size());
-        for (int i = 0; i < groupUserInfos.size(); i++) {
-            userIds.add(groupUserInfos.get(i).getUserId());
+        QueryBuilder<GroupUserInfo> query = daoSession.getGroupUserInfoDao().queryBuilder()
+                .where(GroupUserInfoDao.Properties.GroupGuid.eq(groupGuid));
+        if (count > 0) {
+            query = query.limit(count);
         }
+        List<GroupUserInfo> groupUserInfos = query.list();
+        if (groupUserInfos == null || groupUserInfos.size() <= 0)
+            return null;
 
+        List<Long> userIds = Stream.of(groupUserInfos).map(u -> u.getUserId()).toList();
         List<Friend> friends = DaoUtils.getFriendManagerInstance().getList(userIds);
-        if (friends != null && friends.size() > 0) {
-            for (int i = 0; i < friends.size(); i++) {
-                for (int j = 0; j < groupUserInfos.size(); j++) {
-                    if (friends.get(i).getId() == groupUserInfos.get(j).getUserId()) {
-                        groupUserInfos.get(j).setUserName(friends.get(i).getShowName());
-                        groupUserInfos.get(j).setUserImage(friends.get(i).getHeadImage());
+        if (friends == null || friends.size() <= 0)
+            return groupUserInfos;
+
+        Stream<Friend> friendStream = Stream.of(friends);
+        Stream.of(groupUserInfos)
+                .forEach(g -> {
+                    Optional<Friend> friend =
+                            friendStream.filter(f -> f.getId() == g.getUserId()).findFirst();
+                    if (friend.isPresent()) {
+                        g.setUserName(friend.get().getShowName());
+                        g.setUserImage(friend.get().getHeadImage());
                     }
-                }
-            }
-        }
+                });
 
         return groupUserInfos;
     }
