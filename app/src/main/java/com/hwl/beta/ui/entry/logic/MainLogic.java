@@ -47,6 +47,7 @@ public class MainLogic implements MainStandard {
         List<GroupUserInfo> groupUsers = DBGroupAction.convertToNearGroupUsers(
                 response.getUserGroupGuid(),
                 response.getGroupUserInfos());
+        DaoUtils.getGroupUserInfoManagerInstance().deleteGroupUserInfo(response.getUserGroupGuid());
         DaoUtils.getGroupUserInfoManagerInstance().addGroupUsers(response.getUserGroupGuid(),
                 groupUsers);
 
@@ -97,7 +98,7 @@ public class MainLogic implements MainStandard {
                             result.addr,
                             result.describe);
 
-                    setUsersToDB(res);
+					new Thread(()->setUsersToDB(res)).start()
 
                     return UserPosSP.getNearDesc();
                 });
