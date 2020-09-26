@@ -1,8 +1,9 @@
 package com.hwl.beta.ui.chat.imp;
 
 import android.app.Activity;
-import android.content.DialogInterface;
+
 import androidx.appcompat.app.AlertDialog;
+
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import com.hwl.beta.net.resx.ResxType;
 import com.hwl.beta.net.resx.UpVideoChunk;
 import com.hwl.beta.net.resx.UploadService;
 import com.hwl.beta.net.resx.body.UpResxResponse;
+import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.chat.bean.ChatImageViewBean;
 import com.hwl.beta.ui.common.UITransfer;
@@ -128,15 +130,16 @@ public class ChatGroupEmotionPanelListener extends ChatEmotionPanelListener {
     }
 
     private boolean checkGroupDismiss() {
-        if (groupInfo == null || groupInfo.getIsDismiss()) {
+        String showMsg = "已经被解散群组不能发送消息!";
+        boolean isNearGroup =
+                groupInfo.getIsSystem() && groupInfo.getGroupGuid() != UserPosSP.getGroupGuid();
+        if (isNearGroup) {
+            showMsg = "你当前在 " + UserPosSP.getNearDesc() + ", 不能往其它位置发送消息。";
+        }
+        if (groupInfo == null || groupInfo.getIsDismiss() || isNearGroup) {
             new AlertDialog.Builder(context)
-                    .setMessage("已经被解散群组不能发送消息!")
-                    .setPositiveButton("返回", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
+                    .setMessage(showMsg)
+                    .setPositiveButton("返回", (dialog, which) -> dialog.dismiss())
                     .show();
             return true;
         }

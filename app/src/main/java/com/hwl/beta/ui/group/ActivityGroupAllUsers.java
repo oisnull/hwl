@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.GroupActivityAllUsersBinding;
 import com.hwl.beta.db.DaoUtils;
+import com.hwl.beta.db.entity.GroupInfo;
 import com.hwl.beta.db.entity.GroupUserInfo;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.UITransfer;
@@ -34,7 +35,8 @@ public class ActivityGroupAllUsers extends BaseActivity {
     }
 
     private void initView() {
-        binding.tbTitle.setTitle("我的群组")
+        GroupInfo group = DaoUtils.getGroupInfoManagerInstance().get(groupGuid);
+        binding.tbTitle.setTitle(group.getGroupName())
                 .setImageLeftClick(v -> onBackPressed())
                 .setImageRightClick(v -> UITransfer.toGroupAddActivity(activity));
 

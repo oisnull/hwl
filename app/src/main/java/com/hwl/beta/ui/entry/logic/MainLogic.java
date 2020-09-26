@@ -21,7 +21,6 @@ import com.hwl.beta.ui.entry.standard.MainStandard;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.functions.Function;
 
 public class MainLogic implements MainStandard {
 
@@ -98,7 +97,7 @@ public class MainLogic implements MainStandard {
                             result.addr,
                             result.describe);
 
-					new Thread(()->setUsersToDB(res)).start()
+                    new Thread(() -> setUsersToDB(res)).start();
 
                     return UserPosSP.getNearDesc();
                 });

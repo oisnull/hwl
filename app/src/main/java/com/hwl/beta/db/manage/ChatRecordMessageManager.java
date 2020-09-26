@@ -132,7 +132,9 @@ public class ChatRecordMessageManager extends BaseDao<ChatRecordMessage> {
 
     public List<ChatRecordMessage> getRecords() {
         List<ChatRecordMessage> recordMessages = daoSession.getChatRecordMessageDao()
-                .queryBuilder().orderDesc(ChatRecordMessageDao.Properties.SendTime).list();
+                .queryBuilder()
+                .orderDesc(ChatRecordMessageDao.Properties.SendTime)
+                .list();
         if (recordMessages != null && recordMessages.size() > 0) {
             for (int i = 0; i < recordMessages.size(); i++) {
                 if (recordMessages.get(i).getRecordType() == IMConstant.CHAT_RECORD_TYPE_USER) {

@@ -57,21 +57,7 @@ public class BaiduLocationV2 {
                     locationListener.onSuccess(model);
                 } else {
                     if (AppConfig.ENABLE_DEBUG) {
-                        LocationModel model = new LocationModel();
-                        model.radius = 40.0f;
-                        model.coorType = "";
-                        model.locationType = "";
-                        model.locationWhere = 1;
-                        model.longitude = (float) 121.503349304199;
-                        model.latitude = (float) 31.0745754241943;
-                        model.country = "中国";
-                        model.province = "上海市";
-                        model.city = "上海市";
-                        model.district = "闵行区";
-                        model.street = "浦驰路(ERROR)";
-                        model.town = "";
-                        model.addr = "中国上海市闵行区浦驰路188弄1-109";
-                        model.describe = "在世博家园十一街坊附近";
+                        LocationModel model = getTestModel();
                         currentStatus = COMPLETE_SUCCESS;
                         errorMessage = null;
                         locationListener.onSuccess(model);
@@ -87,6 +73,44 @@ public class BaiduLocationV2 {
                 stop();
             }
         });
+    }
+
+    private LocationModel getTestModel2() {
+        LocationModel model = new LocationModel();
+        model.radius = 40.0f;
+        model.coorType = "";
+        model.locationType = "";
+        model.locationWhere = 1;
+        model.longitude = (float) 121.453559875488;
+        model.latitude = (float) 31.0233573913574;
+        model.country = "中国";
+        model.province = "上海市";
+        model.city = "上海市";
+        model.district = "闵行区";
+        model.street = "广场路(ERROR)";
+        model.town = "";
+        model.addr = "中国上海市闵行区吴泾镇广场路";
+        model.describe = "在广场路附近";
+        return model;
+    }
+
+    private LocationModel getTestModel() {
+        LocationModel model = new LocationModel();
+        model.radius = 40.0f;
+        model.coorType = "";
+        model.locationType = "";
+        model.locationWhere = 1;
+        model.longitude = (float) 121.503349304199;
+        model.latitude = (float) 31.0745754241943;
+        model.country = "中国";
+        model.province = "上海市";
+        model.city = "上海市";
+        model.district = "闵行区";
+        model.street = "浦驰路(ERROR)";
+        model.town = "";
+        model.addr = "中国上海市闵行区浦驰路188弄1-109";
+        model.describe = "在世博家园十一街坊附近";
+        return model;
     }
 
     /***
