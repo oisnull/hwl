@@ -83,6 +83,7 @@ public class MainLogic implements MainStandard {
                     if (res.getStatus() != NetConstant.RESULT_SUCCESS) {
                         throw new Exception(res.getErrorMessage());
                     }
+					CustLog.d("MainLogic", new com.google.gson.Gson().toJson(res));
 
                     UserPosSP.setUserPos(
                             res.getUserPosId(),

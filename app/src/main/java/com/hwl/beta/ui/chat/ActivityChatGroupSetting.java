@@ -76,9 +76,7 @@ public class ActivityChatGroupSetting extends BaseActivity {
                         onBackPressed();
                     }
                 });
-        userAdapter = new ChatGroupUserAdapter(activity,
-                settingStandard.getGroupUsers(group.getGroupGuid(),
-                        group.getIsDismiss()));
+        userAdapter = new ChatGroupUserAdapter(activity, settingStandard.getGroupUsers(group));
         binding.gvUserContainer.setAdapter(userAdapter);
         binding.gvUserContainer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

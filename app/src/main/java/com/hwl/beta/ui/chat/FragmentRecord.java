@@ -214,6 +214,10 @@ public class FragmentRecord extends BaseFragment {
             case EventBusConstant.EB_TYPE_GROUP_ACTION_DELETE:
                 recordAdapter.removeRecord((String) messageModel.getMessageModel());
                 break;
+            case EventBusConstant.EB_TYPE_CHAT_RECORD_GROUP_LOCATION:
+				String currentGroupGuid = (String) messageModel.getMessageModel();
+				//Set chat group record style
+                break;
         }
     }
 }

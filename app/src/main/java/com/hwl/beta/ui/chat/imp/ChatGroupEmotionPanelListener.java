@@ -133,18 +133,33 @@ public class ChatGroupEmotionPanelListener extends ChatEmotionPanelListener {
         String showMsg = "已经被解散群组不能发送消息!";
         boolean isNearGroup =
                 groupInfo.getIsSystem() && groupInfo.getGroupGuid() != UserPosSP.getGroupGuid();
-        if (isNearGroup) {
-            showMsg = "你当前在 " + UserPosSP.getNearDesc() + ", 不能往其它位置发送消息。";
-        }
         if (groupInfo == null || groupInfo.getIsDismiss() || isNearGroup) {
-            new AlertDialog.Builder(context)
+             AlertDialog builder = new AlertDialog.Builder(context)
                     .setMessage(showMsg)
                     .setPositiveButton("返回", (dialog, which) -> dialog.dismiss())
                     .show();
+			if (isNearGroup) {
+                CustLog.d("ChatGroupEmotionPanelListener", "GroupInfoDB="+groupInfo.getGroupGuid()+" UserPosSP="+UserPosSP.getGroupGuid());
+				setNearAlertStyle(builder);
+			}
             return true;
         }
         return false;
     }
+
+	//https://blog.csdn.net/yechaoa/article/details/83539437
+	private void setNearAlertStyle(AlertDialog builder) {
+		Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
+        mAlert.setAccessible(true);
+        Object mAlertController = mAlert.get(builder);
+
+		Field mMessage = mAlertController.getClass().getDeclaredField("mMessageView");
+		mMessage.setAccessible(true);
+		TextView mMessageView = (TextView) mMessage.get(mAlertController);
+		//mMessageView.setTextColor(Color.RED);
+		//mMessageView.setTextSize(30);
+		mMessageView.setText(Html.fromHtml("你当前在 <font color='#03bdbd'>" + UserPosSP.getNearDesc() + "</font>, 不能往其它位置发送消息。"));
+	}
 
     private ChatGroupMessage getChatMessage(int contentType, String content, String localPath, int
             size, int playTime) {

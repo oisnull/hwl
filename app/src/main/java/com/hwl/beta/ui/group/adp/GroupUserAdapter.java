@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.GroupUserItemHBinding;
 import com.hwl.beta.db.entity.GroupUserInfo;
+import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.group.holder.GroupUserItemHViewHolder;
 
@@ -35,6 +36,10 @@ public class GroupUserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         final GroupUserInfo user = users.get(position);
+		if (user.getUserId() == UserSP.getUserId()) {
+			user.setUserName(UserSP.getUserName());
+			user.setUserImage(UserSP.getUserHeadImage());
+		}
         View.OnClickListener clickListener = v -> {
             UITransfer.toUserIndexV2Activity(v.getContext(),
                     user.getUserId(),

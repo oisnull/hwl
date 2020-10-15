@@ -15,6 +15,7 @@ public class EventBusConstant {
     public static final int EB_TYPE_CHAT_RECORD_MESSAGE_UPDATE_SORT = 201;
     public static final int EB_TYPE_CHAT_RECORD_MESSAGE_UPDATE_NOSORT = 202;
     public static final int EB_TYPE_CHAT_RECORD_MESSAGE_CLEAR = 203;
+	public static final int EB_TYPE_CHAT_RECORD_GROUP_LOCATION = 204;
 
     public static final int EB_TYPE_USER_UPDATE = 300;
     public static final int EB_TYPE_USER_HEAD_UPDATE = 301;

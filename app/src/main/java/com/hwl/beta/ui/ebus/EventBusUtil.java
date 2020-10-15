@@ -157,6 +157,10 @@ public class EventBusUtil {
                 (EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_CLEAR, recordId));
     }
 
+    public static void sendChatRecordGroupLocationEvent(String groupGuid) {
+        sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_CHAT_RECORD_GROUP_LOCATION, groupGuid));
+    }
+
     public static void sendGroupAddEvent(GroupInfo groupInfo) {
         sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_GROUP_ACTION_ADD, groupInfo));
     }

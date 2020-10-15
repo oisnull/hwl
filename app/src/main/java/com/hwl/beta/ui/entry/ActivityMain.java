@@ -19,7 +19,6 @@ import android.view.WindowManager;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.hwl.beta.location.IHWLLoactionListener;
 import com.hwl.beta.location.LocationModel;
 import com.hwl.beta.net.NetExceptionCode;
@@ -380,7 +379,6 @@ public class ActivityMain extends BaseActivity {
     }
 
     private class HWLLocationListener implements IHWLLoactionListener {
-        Gson gson = new Gson();
 
         private double getMoveDistance(LocationModel model) {
 //            LatLng curr = new LatLng(model.latitude, model.longitude);
@@ -391,7 +389,6 @@ public class ActivityMain extends BaseActivity {
 
         @Override
         public void onSuccess(LocationModel model) {
-            CustLog.d("BaiduLocation", gson.toJson(model));
 //            binding.tbTitle.setTitle(UserPosSP.getNearDesc());
 
 //            if (UserPosSP.getLongitude() == model.longitude &&
@@ -404,14 +401,13 @@ public class ActivityMain extends BaseActivity {
 //                return;
 //            }
 
-//            Log.d("HWLLocationListener", "当前移动的距离为：" + getMoveDistance(model));
-
             mainStandard.setLocation(model)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<String>() {
                         @Override
                         public void accept(String desc) {
                             binding.tbTitle.setTitle(desc);
+							EventBusUtil.sendChatRecordGroupLocationEvent(UserPosSP.getGroupGuid());
                             locationStop();
                         }
                     }, new Consumer<Throwable>() {
