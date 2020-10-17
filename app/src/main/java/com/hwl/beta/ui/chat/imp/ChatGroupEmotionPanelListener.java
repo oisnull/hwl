@@ -4,7 +4,9 @@ import android.app.Activity;
 
 import androidx.appcompat.app.AlertDialog;
 
+import android.text.Html;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hwl.beta.db.DaoUtils;
@@ -21,6 +23,7 @@ import com.hwl.beta.net.resx.body.UpResxResponse;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.chat.bean.ChatImageViewBean;
+import com.hwl.beta.ui.common.CustLog;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.common.exception.CustomException;
 import com.hwl.beta.ui.common.exception.ExceptionCode;
@@ -36,6 +39,7 @@ import com.hwl.beta.utils.StringUtils;
 
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.Date;
 
 import io.reactivex.Observable;
@@ -134,32 +138,37 @@ public class ChatGroupEmotionPanelListener extends ChatEmotionPanelListener {
         boolean isNearGroup =
                 groupInfo.getIsSystem() && groupInfo.getGroupGuid() != UserPosSP.getGroupGuid();
         if (groupInfo == null || groupInfo.getIsDismiss() || isNearGroup) {
-             AlertDialog builder = new AlertDialog.Builder(context)
+            AlertDialog builder = new AlertDialog.Builder(context)
                     .setMessage(showMsg)
                     .setPositiveButton("返回", (dialog, which) -> dialog.dismiss())
                     .show();
-			if (isNearGroup) {
-                CustLog.d("ChatGroupEmotionPanelListener", "GroupInfoDB="+groupInfo.getGroupGuid()+" UserPosSP="+UserPosSP.getGroupGuid());
-				setNearAlertStyle(builder);
-			}
+            if (isNearGroup) {
+                CustLog.d("ChatGroupEmotionPanelListener",
+                        "GroupInfoDB=" + groupInfo.getGroupGuid() + " UserPosSP=" + UserPosSP.getGroupGuid());
+                setNearAlertStyle(builder);
+            }
             return true;
         }
         return false;
     }
 
-	//https://blog.csdn.net/yechaoa/article/details/83539437
-	private void setNearAlertStyle(AlertDialog builder) {
-		Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
-        mAlert.setAccessible(true);
-        Object mAlertController = mAlert.get(builder);
+    //https://blog.csdn.net/yechaoa/article/details/83539437
+    private void setNearAlertStyle(AlertDialog builder) {
+        try {
+            Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
+            mAlert.setAccessible(true);
+            Object mAlertController = mAlert.get(builder);
 
-		Field mMessage = mAlertController.getClass().getDeclaredField("mMessageView");
-		mMessage.setAccessible(true);
-		TextView mMessageView = (TextView) mMessage.get(mAlertController);
-		//mMessageView.setTextColor(Color.RED);
-		//mMessageView.setTextSize(30);
-		mMessageView.setText(Html.fromHtml("你当前在 <font color='#03bdbd'>" + UserPosSP.getNearDesc() + "</font>, 不能往其它位置发送消息。"));
-	}
+            Field mMessage = mAlertController.getClass().getDeclaredField("mMessageView");
+            mMessage.setAccessible(true);
+            TextView mMessageView = (TextView) mMessage.get(mAlertController);
+            //mMessageView.setTextColor(Color.RED);
+            //mMessageView.setTextSize(30);
+            mMessageView.setText(Html.fromHtml("你当前在 <font color='#03bdbd'>" + UserPosSP.getNearDesc() + "</font>, 不能往其它位置发送消息。"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private ChatGroupMessage getChatMessage(int contentType, String content, String localPath, int
             size, int playTime) {

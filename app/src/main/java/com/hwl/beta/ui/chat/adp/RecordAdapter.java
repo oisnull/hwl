@@ -210,6 +210,19 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
         }
     }
 
+    public void updateGroupLocation(String locationGroupGuid) {
+        if (StringUtils.isBlank(locationGroupGuid)) return;
+
+        for (int i = 0; i < records.size(); i++) {
+            if (records.get(i).getRecordType() == IMConstant.CHAT_RECORD_TYPE_GROUP &&
+                    records.get(i).getGroupGuid().equals(locationGroupGuid)) {
+                records.get(i).setCurrentLocation(true);
+                notifyItemChanged(i);
+                break;
+            }
+        }
+    }
+
     public interface IAdapterListener {
         void onLoadComplete(int messageTotalCount);
 

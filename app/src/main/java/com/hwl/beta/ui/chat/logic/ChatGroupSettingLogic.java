@@ -37,8 +37,8 @@ public class ChatGroupSettingLogic implements ChatGroupSettingStandard {
 
     @Override
     public List<GroupUserInfo> getGroupUsers(GroupInfo group) {
-        List<GroupUserInfo> users = DaoUtils.getGroupUserInfoManagerInstance().getUsers(groupGuid
-                , 10);
+        List<GroupUserInfo> users =
+                DaoUtils.getGroupUserInfoManagerInstance().getUsers(group.getGroupGuid(), 10);
 
         if (group.getIsDismiss() || group.getIsSystem()) return users;
 

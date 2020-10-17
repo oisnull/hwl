@@ -13,6 +13,7 @@ import com.hwl.beta.net.user.body.SetUserPosResponse;
 import com.hwl.beta.sp.MessageCountSP;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.sp.UserSP;
+import com.hwl.beta.ui.common.CustLog;
 import com.hwl.beta.ui.convert.DBFriendAction;
 import com.hwl.beta.ui.convert.DBGroupAction;
 import com.hwl.beta.ui.entry.bean.MainBean;
@@ -83,7 +84,7 @@ public class MainLogic implements MainStandard {
                     if (res.getStatus() != NetConstant.RESULT_SUCCESS) {
                         throw new Exception(res.getErrorMessage());
                     }
-					CustLog.d("MainLogic", new com.google.gson.Gson().toJson(res));
+                    CustLog.d("MainLogic", new com.google.gson.Gson().toJson(res));
 
                     UserPosSP.setUserPos(
                             res.getUserPosId(),

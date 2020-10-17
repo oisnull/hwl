@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import com.hwl.beta.AppConfig;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.ChatActivityGroupSettingBinding;
 import com.hwl.beta.db.entity.GroupInfo;
@@ -70,12 +71,7 @@ public class ActivityChatGroupSetting extends BaseActivity {
     private void initView() {
         binding.tbTitle.setTitle("群组设置")
                 .setImageRightHide()
-                .setImageLeftClick(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onBackPressed();
-                    }
-                });
+                .setImageLeftClick(v -> onBackPressed());
         userAdapter = new ChatGroupUserAdapter(activity, settingStandard.getGroupUsers(group));
         binding.gvUserContainer.setAdapter(userAdapter);
         binding.gvUserContainer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -104,7 +100,10 @@ public class ActivityChatGroupSetting extends BaseActivity {
         } else {
             binding.btnExit.setVisibility(View.VISIBLE);
         }
-
+        if (AppConfig.ENABLE_DEBUG) {
+            binding.rlGroupGuid.setVisibility(View.VISIBLE);
+            binding.tvGroupGuid.setText(group.getGroupGuid());
+        }
         this.loadUsersFromServer();
     }
 

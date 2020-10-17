@@ -217,6 +217,7 @@ public class FragmentRecord extends BaseFragment {
             case EventBusConstant.EB_TYPE_CHAT_RECORD_GROUP_LOCATION:
 				String currentGroupGuid = (String) messageModel.getMessageModel();
 				//Set chat group record style
+                recordAdapter.updateGroupLocation(currentGroupGuid);
                 break;
         }
     }

@@ -33,6 +33,22 @@
                 android:orientation="vertical">
 
                 <RelativeLayout
+                    android:id="@+id/rl_group_guid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/item_selector"
+                    android:padding="15dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tv_group_guid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"

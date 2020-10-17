@@ -33,6 +33,7 @@ import com.hwl.beta.ui.common.CustLog;
 import com.hwl.beta.ui.common.PermissionsOperator;
 import com.hwl.beta.ui.dialog.DialogUtils;
 import com.hwl.beta.ui.ebus.EventBusConstant;
+import com.hwl.beta.ui.ebus.EventBusUtil;
 import com.hwl.beta.ui.ebus.EventMessageModel;
 import com.hwl.beta.ui.chat.FragmentRecord;
 import com.hwl.beta.ui.common.BaseActivity;
@@ -407,7 +408,7 @@ public class ActivityMain extends BaseActivity {
                         @Override
                         public void accept(String desc) {
                             binding.tbTitle.setTitle(desc);
-							EventBusUtil.sendChatRecordGroupLocationEvent(UserPosSP.getGroupGuid());
+                            EventBusUtil.sendChatRecordGroupLocationEvent(UserPosSP.getGroupGuid());
                             locationStop();
                         }
                     }, new Consumer<Throwable>() {
