@@ -136,7 +136,7 @@ public class ChatGroupEmotionPanelListener extends ChatEmotionPanelListener {
     private boolean checkGroupDismiss() {
         String showMsg = "已经被解散群组不能发送消息!";
         boolean isNearGroup =
-                groupInfo.getIsSystem() && groupInfo.getGroupGuid() != UserPosSP.getGroupGuid();
+                groupInfo.getIsSystem() && !groupInfo.getGroupGuid().equals(UserPosSP.getGroupGuid());
         if (groupInfo == null || groupInfo.getIsDismiss() || isNearGroup) {
             AlertDialog builder = new AlertDialog.Builder(context)
                     .setMessage(showMsg)
@@ -145,6 +145,8 @@ public class ChatGroupEmotionPanelListener extends ChatEmotionPanelListener {
             if (isNearGroup) {
                 CustLog.d("ChatGroupEmotionPanelListener",
                         "GroupInfoDB=" + groupInfo.getGroupGuid() + " UserPosSP=" + UserPosSP.getGroupGuid());
+                CustLog.d("ChatGroupEmotionPanelListener",
+                        (groupInfo.getGroupGuid().equals(UserPosSP.getGroupGuid())));
                 setNearAlertStyle(builder);
             }
             return true;

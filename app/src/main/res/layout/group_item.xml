@@ -7,6 +7,10 @@
         <variable
             name="name"
             type="String" />
+
+        <variable
+            name="isCurrentLocation"
+            type="Boolean" />
     </data>
 
     <LinearLayout
@@ -35,6 +39,14 @@
             android:layout_toRightOf="@+id/iv_header"
             android:text="@{name}"
             android:textSize="16dp" />
+
+        <ImageView
+            android:id="@+id/iv_current_location"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginLeft="2dp"
+            android:src="@drawable/ic_location3"
+            android:visibility="@{isCurrentLocation?android.view.View.VISIBLE:android.view.View.GONE}" />
 
     </LinearLayout>
 </layout>
