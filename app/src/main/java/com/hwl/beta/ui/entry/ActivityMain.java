@@ -408,7 +408,7 @@ public class ActivityMain extends BaseActivity {
                         @Override
                         public void accept(String desc) {
                             binding.tbTitle.setTitle(desc);
-                            EventBusUtil.sendChatRecordGroupLocationEvent(UserPosSP.getGroupGuid());
+                            EventBusUtil.sendChatRecordGroupLocationEvent();
                             locationStop();
                         }
                     }, new Consumer<Throwable>() {

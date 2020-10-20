@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.hwl.beta.R;
 import com.hwl.beta.db.entity.GroupUserInfo;
+import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.user.bean.ImageViewBean;
 import com.hwl.beta.utils.StringUtils;
 
@@ -62,6 +63,10 @@ public class ChatGroupUserAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         GroupUserInfo user = users.get(position);
+		if (user.getUserId() == UserSP.getUserId()) {
+			user.setUserName(UserSP.getUserName());
+			user.setUserImage(UserSP.getUserHeadImage());
+		}
         ViewHolder viewHolder;
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.group_user_item, parent, false);
