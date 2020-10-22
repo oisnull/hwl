@@ -37,6 +37,7 @@ public class ChatImageViewBean {
         Glide.with(view.getContext()).load(imageUrl)
                 .placeholder(R.drawable.empty_photo)
                 .error(R.drawable.empty_photo)
+				.diskCacheStrategy(DiskCacheStrategy.RESOURCE);
                 .into(view);
     }
 
@@ -49,6 +50,7 @@ public class ChatImageViewBean {
                 .placeholder(R.drawable.empty_photo)
                 .error(R.drawable.empty_photo)
 //                .into(new GlideImageHandler(view));
+				.diskCacheStrategy(DiskCacheStrategy.RESOURCE);
                 .into(view);
     }
 

@@ -156,6 +156,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
                 Glide.with(context).load(record.getRecordImage(myUserId))
                         .placeholder(R.drawable.empty_photo)
                         .error(R.drawable.empty_photo)
+						.diskCacheStrategy(DiskCacheStrategy.RESOURCE);
                         .into(itemBinding.ivRecordImage);
                 break;
         }

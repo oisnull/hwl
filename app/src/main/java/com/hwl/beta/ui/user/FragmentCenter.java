@@ -102,6 +102,7 @@ public class FragmentCenter extends BaseFragment {
                 Glide.with(this).load(UserSP.getUserHeadImage())
                         .placeholder(R.drawable.empty_photo)
                         .error(R.drawable.empty_photo)
+						.diskCacheStrategy(DiskCacheStrategy.RESOURCE);
                         .into(binding.ivHeader);
                 break;
             case EventBusConstant.EB_TYPE_USER_SYMBOL_UPDATE:

@@ -67,7 +67,7 @@ public class GroupNineImageView extends ViewGroup {
                     .load(mImgDataList.get(i))
                     .placeholder(R.drawable.empty_photo)
                     .error(R.drawable.empty_photo)
-                    .dontAnimate()
+					.diskCacheStrategy(DiskCacheStrategy.RESOURCE);
                     .into(childrenView);
             int rowNum = i / mColumnCount;//当前行数
             int columnNum = i % mColumnCount;//当前列数

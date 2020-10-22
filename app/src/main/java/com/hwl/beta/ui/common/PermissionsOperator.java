@@ -8,6 +8,8 @@ import androidx.core.content.ContextCompat;
 
 public class PermissionsOperator {
 	//ex:https://www.cnblogs.com/Dorr/p/8979825.html
+	//doc:https://github.com/googlesamples/easypermissions
+	//doc:https://www.jianshu.com/p/6e306729bb0d
 
 	/*关于权限申请*/
     public static final int REQUEST_PERMISSION_CAMERA = 501;//相机权限申请

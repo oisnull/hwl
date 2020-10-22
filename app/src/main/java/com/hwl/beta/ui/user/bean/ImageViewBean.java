@@ -42,7 +42,7 @@ public class ImageViewBean {
                 .placeholder(R.drawable.empty_photo)
                 .error(R.drawable.empty_photo)
 				//.priority(Priority.HIGH)
-                .dontAnimate()
+				.diskCacheStrategy(DiskCacheStrategy.RESOURCE);
                 .into(view);
     }
 
@@ -54,7 +54,7 @@ public class ImageViewBean {
                 .placeholder(R.drawable.empty_photo)
                 .error(R.drawable.empty_photo)
 				//.priority(Priority.HIGH)
-                .dontAnimate()
+				.diskCacheStrategy(DiskCacheStrategy.RESOURCE);
                 .into(view);
     }
 
