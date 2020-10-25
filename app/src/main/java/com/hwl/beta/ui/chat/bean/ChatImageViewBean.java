@@ -4,6 +4,7 @@ import androidx.databinding.BindingAdapter;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hwl.beta.R;
 //import com.hwl.beta.ui.common.GlideImageHandler;
 import com.hwl.beta.utils.FileUtils;
@@ -37,6 +38,7 @@ public class ChatImageViewBean {
         Glide.with(view.getContext()).load(imageUrl)
                 .placeholder(R.drawable.empty_photo)
                 .error(R.drawable.empty_photo)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(view);
     }
 
@@ -48,7 +50,7 @@ public class ChatImageViewBean {
 //                .asBitmap()
                 .placeholder(R.drawable.empty_photo)
                 .error(R.drawable.empty_photo)
-//                .into(new GlideImageHandler(view));
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(view);
     }
 

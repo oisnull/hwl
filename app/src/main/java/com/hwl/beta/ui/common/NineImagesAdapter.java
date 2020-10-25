@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hwl.beta.R;
 import com.hwl.beta.utils.ScreenUtils;
 
@@ -63,6 +64,7 @@ public class NineImagesAdapter extends RecyclerView.Adapter<NineImagesAdapter.Im
             Glide.with(context).load(images.get(position).imageUrl)
                     .placeholder(R.drawable.empty_photo)
                     .error(R.drawable.empty_photo)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(holder.iv);
 
             this.setLayoutParams(position, holder.iv);
