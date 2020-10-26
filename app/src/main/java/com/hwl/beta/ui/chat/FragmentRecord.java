@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.ChatFragmentRecordBinding;
 import com.hwl.beta.db.entity.ChatRecordMessage;
+import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.chat.adp.RecordAdapter;
 import com.hwl.beta.ui.chat.logic.RecordLogic;

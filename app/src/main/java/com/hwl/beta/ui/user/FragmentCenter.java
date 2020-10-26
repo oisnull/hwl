@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.allenliu.versionchecklib.v2.AllenVersionChecker;
 import com.allenliu.versionchecklib.v2.builder.UIData;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hwl.beta.BuildConfig;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.UserFragmentCenterBinding;
@@ -102,7 +103,7 @@ public class FragmentCenter extends BaseFragment {
                 Glide.with(this).load(UserSP.getUserHeadImage())
                         .placeholder(R.drawable.empty_photo)
                         .error(R.drawable.empty_photo)
-						.diskCacheStrategy(DiskCacheStrategy.RESOURCE);
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                         .into(binding.ivHeader);
                 break;
             case EventBusConstant.EB_TYPE_USER_SYMBOL_UPDATE:
