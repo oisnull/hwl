@@ -40,10 +40,10 @@ public class DaoManager {
         if (null == mDaoMaster) {
 //           Log.d(TAG, "getDaoMaster=" + getDBName());
 //            if (BuildConfig.DEBUG) {
-//                mHelper = new DaoMaster.DevOpenHelper(context, getDBName(), null);
+			mHelper = new DaoMaster.DevOpenHelper(HWLApp.getContext(), getDBName());
 //            } else {
 //           DaoLog.isLoggable(DaoLog.ERROR);
-            mHelper = new DaoMaster.DevOpenHelper(HWLApp.getContext(), getDBName());
+//              mHelper = new DaoMaster.ProdOpenHelper(context, getDBName(), null);
 //            }
             db = mHelper.getWritableDatabase();
             mDaoMaster = new DaoMaster(db);
