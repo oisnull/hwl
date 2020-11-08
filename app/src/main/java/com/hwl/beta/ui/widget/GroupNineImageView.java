@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hwl.beta.R;
 
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ public class GroupNineImageView extends ViewGroup {
                     .load(mImgDataList.get(i))
                     .placeholder(R.drawable.empty_photo)
                     .error(R.drawable.empty_photo)
-					.diskCacheStrategy(DiskCacheStrategy.RESOURCE);
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(childrenView);
             int rowNum = i / mColumnCount;//当前行数
             int columnNum = i % mColumnCount;//当前列数

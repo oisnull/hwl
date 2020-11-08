@@ -3,9 +3,10 @@ package com.hwl.beta.db;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import org.greenrobot.greendao.AbstractDao;
 import org.greenrobot.greendao.database.Database;
@@ -20,9 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 
  * please call {@link #migrate(SQLiteDatabase, Class[])} or {@link #migrate(Database, Class[])}
- * 
  */
 public final class MigrationHelper {
 
@@ -33,8 +32,9 @@ public final class MigrationHelper {
 
     private static WeakReference<ReCreateAllTableListener> weakListener;
 
-    public interface ReCreateAllTableListener{
+    public interface ReCreateAllTableListener {
         void onCreateAllTables(Database db, boolean ifNotExists);
+
         void onDropAllTables(Database db, boolean ifExists);
     }
 
@@ -98,7 +98,7 @@ public final class MigrationHelper {
                 insertTableStringBuilder.append("CREATE TEMPORARY TABLE ").append(tempTableName);
                 insertTableStringBuilder.append(" AS SELECT * FROM `").append(tableName).append("`;");
                 db.execSQL(insertTableStringBuilder.toString());
-                printLog("【Table】" + tableName +"\n ---Columns-->"+getColumnsStr(daoConfig));
+                printLog("【Table】" + tableName + "\n ---Columns-->" + getColumnsStr(daoConfig));
                 printLog("【Generate temp table】" + tempTableName);
             } catch (SQLException e) {
                 Log.e(TAG, "【Failed to generate temp table】" + tempTableName, e);
@@ -112,7 +112,7 @@ public final class MigrationHelper {
         }
         String dbName = isTemp ? SQLITE_TEMP_MASTER : SQLITE_MASTER;
         String sql = "SELECT COUNT(*) FROM `" + dbName + "` WHERE type = ? AND name = ?";
-        Cursor cursor=null;
+        Cursor cursor = null;
         int count = 0;
         try {
             cursor = db.rawQuery(sql, new String[]{"table", tableName});
@@ -255,8 +255,8 @@ public final class MigrationHelper {
         return columns;
     }
 
-    private static void printLog(String info){
-        if(DEBUG){
+    private static void printLog(String info) {
+        if (DEBUG) {
             Log.d(TAG, info);
         }
     }

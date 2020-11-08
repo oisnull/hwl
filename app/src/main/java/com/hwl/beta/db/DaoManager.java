@@ -8,6 +8,7 @@ import com.hwl.beta.db.dao.DaoMaster;
 import com.hwl.beta.db.dao.DaoSession;
 import com.hwl.beta.sp.UserSP;
 
+import org.greenrobot.greendao.DaoLog;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 /**
@@ -38,13 +39,12 @@ public class DaoManager {
 
     public DaoMaster getDaoMaster() {
         if (null == mDaoMaster) {
-//           Log.d(TAG, "getDaoMaster=" + getDBName());
-//            if (BuildConfig.DEBUG) {
-			mHelper = new DaoMaster.DevOpenHelper(HWLApp.getContext(), getDBName());
-//            } else {
-//           DaoLog.isLoggable(DaoLog.ERROR);
-//              mHelper = new DaoMaster.ProdOpenHelper(context, getDBName(), null);
-//            }
+            if (BuildConfig.DEBUG) {
+                mHelper = new DaoMaster.DevOpenHelper(HWLApp.getContext(), getDBName());
+            } else {
+//                DaoLog.isLoggable(DaoLog.ERROR);
+                mHelper = new ProdOpenHelper(HWLApp.getContext(), getDBName(), null);
+            }
             db = mHelper.getWritableDatabase();
             mDaoMaster = new DaoMaster(db);
         }
