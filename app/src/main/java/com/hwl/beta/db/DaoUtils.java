@@ -1,7 +1,5 @@
 package com.hwl.beta.db;
 
-
-import com.hwl.beta.HWLApp;
 import com.hwl.beta.db.manage.ChatGroupMessageManager;
 import com.hwl.beta.db.manage.ChatRecordMessageManager;
 import com.hwl.beta.db.manage.ChatUserMessageManager;
@@ -15,7 +13,7 @@ import com.hwl.beta.db.manage.NearCircleManager;
 import com.hwl.beta.db.manage.NearCircleMessageManager;
 
 /**
- * Created by adminstrator on 2016/6/16.
+ * Created by adminstrator on 2018/6/16.
  */
 public class DaoUtils {
     private static FriendManager friendManager;
@@ -47,77 +45,77 @@ public class DaoUtils {
 
     public static synchronized CircleMessageManager getCircleMessageManagerInstance() {
         if (circleMessageManager == null) {
-            circleMessageManager = new CircleMessageManager(HWLApp.getContext());
+            circleMessageManager = new CircleMessageManager();
         }
         return circleMessageManager;
     }
 
     public static synchronized CircleManager getCircleManagerInstance() {
         if (circleManager == null) {
-            circleManager = new CircleManager(HWLApp.getContext());
+            circleManager = new CircleManager();
         }
         return circleManager;
     }
 
     public static synchronized NearCircleMessageManager getNearCircleMessageManagerInstance() {
         if (nearCircleMessageManager == null) {
-            nearCircleMessageManager = new NearCircleMessageManager(HWLApp.getContext());
+            nearCircleMessageManager = new NearCircleMessageManager();
         }
         return nearCircleMessageManager;
     }
 
     public static synchronized NearCircleManager getNearCircleManagerInstance() {
         if (nearCircleManager == null) {
-            nearCircleManager = new NearCircleManager(HWLApp.getContext());
+            nearCircleManager = new NearCircleManager();
         }
         return nearCircleManager;
     }
 
     public static synchronized ChatGroupMessageManager getChatGroupMessageManagerInstance() {
         if (chatGroupMessageManager == null) {
-            chatGroupMessageManager = new ChatGroupMessageManager(HWLApp.getContext());
+            chatGroupMessageManager = new ChatGroupMessageManager();
         }
         return chatGroupMessageManager;
     }
 
     public static synchronized FriendManager getFriendManagerInstance() {
         if (friendManager == null) {
-            friendManager = new FriendManager(HWLApp.getContext());
+            friendManager = new FriendManager();
         }
         return friendManager;
     }
 
     public static synchronized FriendRequestManager getFriendRequestManagerInstance() {
         if (friendRequestManager == null) {
-            friendRequestManager = new FriendRequestManager(HWLApp.getContext());
+            friendRequestManager = new FriendRequestManager();
         }
         return friendRequestManager;
     }
 
     public static synchronized ChatUserMessageManager getChatUserMessageManagerInstance() {
         if (chatUserMessageManager == null) {
-            chatUserMessageManager = new ChatUserMessageManager(HWLApp.getContext());
+            chatUserMessageManager = new ChatUserMessageManager();
         }
         return chatUserMessageManager;
     }
 
     public static synchronized ChatRecordMessageManager getChatRecordMessageManagerInstance() {
         if (chatRecordMessageManager == null) {
-            chatRecordMessageManager = new ChatRecordMessageManager(HWLApp.getContext());
+            chatRecordMessageManager = new ChatRecordMessageManager();
         }
         return chatRecordMessageManager;
     }
 
     public static synchronized GroupInfoManager getGroupInfoManagerInstance() {
         if (groupInfoManager == null) {
-            groupInfoManager = new GroupInfoManager(HWLApp.getContext());
+            groupInfoManager = new GroupInfoManager();
         }
         return groupInfoManager;
     }
 
     public static synchronized GroupUserInfoManager getGroupUserInfoManagerInstance() {
         if (groupUserInfoManager == null) {
-            groupUserInfoManager = new GroupUserInfoManager(HWLApp.getContext());
+            groupUserInfoManager = new GroupUserInfoManager();
         }
         return groupUserInfoManager;
     }

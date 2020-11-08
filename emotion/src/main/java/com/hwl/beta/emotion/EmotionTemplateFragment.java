@@ -2,14 +2,14 @@ package com.hwl.beta.emotion;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.hwl.beta.emotion.interfaces.IDefaultEmotionListener;
 import com.hwl.beta.emotion.utils.DisplayUtils;
@@ -38,9 +38,10 @@ public class EmotionTemplateFragment extends Fragment {
         this.context = context;
     }
 
-    @Nullable
+
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_emotion_template, container, false);
         initView(rootView);
         return rootView;
@@ -77,7 +78,8 @@ public class EmotionTemplateFragment extends Fragment {
             int currIndex = 0;
 
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            public void onPageScrolled(int position, float positionOffset,
+                                       int positionOffsetPixels) {
 
             }
 
@@ -109,7 +111,8 @@ public class EmotionTemplateFragment extends Fragment {
         for (String name : EmotionUtils.getDefaultEmotionMap().keySet()) {
             if (emotionNames.size() == 20) {
                 //创建表情容器对象
-                GridView gvContainer = createEmotionContainer(emotionNames, screenWidth, padding, itemWidth, gvHeight);
+                GridView gvContainer = createEmotionContainer(emotionNames, screenWidth, padding,
+                        itemWidth, gvHeight);
                 views.add(gvContainer);
                 //重新初始化表情列表
                 emotionNames = new ArrayList<>(20);
@@ -119,13 +122,15 @@ public class EmotionTemplateFragment extends Fragment {
         }
         if (emotionNames.size() > 0) {
             //创建表情容器对象
-            GridView gvContainer = createEmotionContainer(emotionNames, screenWidth, padding, itemWidth, gvHeight);
+            GridView gvContainer = createEmotionContainer(emotionNames, screenWidth, padding,
+                    itemWidth, gvHeight);
             views.add(gvContainer);
         }
         return views;
     }
 
-    private GridView createEmotionContainer(List<String> emotionNames, int gvWidth, int padding, int itemWidth, int gvHeight) {
+    private GridView createEmotionContainer(List<String> emotionNames, int gvWidth, int padding,
+                                            int itemWidth, int gvHeight) {
         GridView gvContainer = new GridView(context);
         gvContainer.setNumColumns(7);
         gvContainer.setPadding(padding, padding, padding, padding);
@@ -135,7 +140,8 @@ public class EmotionTemplateFragment extends Fragment {
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(gvWidth, gvHeight);
         gvContainer.setLayoutParams(params);
         // 给GridView设置表情图片
-        EmotionGridViewAdapter adapter = new EmotionGridViewAdapter(getActivity(), emotionNames, itemWidth);
+        EmotionGridViewAdapter adapter = new EmotionGridViewAdapter(getActivity(), emotionNames,
+                itemWidth);
         adapter.setDefaultEmotionListener(defaultEmotionListener);
         gvContainer.setAdapter(adapter);
 

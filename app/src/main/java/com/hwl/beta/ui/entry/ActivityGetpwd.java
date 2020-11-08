@@ -1,9 +1,9 @@
 package com.hwl.beta.ui.entry;
 
 import android.app.Activity;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.Toast;
 
@@ -85,7 +85,7 @@ public class ActivityGetpwd extends BaseActivity {
     }
 
     private void initTime() {
-        timeCount = new TimeCount(CODETIMESECONDS * 1000, 1000, binding.btnCodeSend, new TimeCount.TimeCountInterface() {
+        timeCount = new TimeCount(CODETIMESECONDS * 1000, 1000, binding.btnCodeSend, new TimeCount.TimeListener() {
             @Override
             public void onFinishViewChange(int resId) {
                 setSendViewStatus(NetConstant.SEND_STATUS_COMPLETE);

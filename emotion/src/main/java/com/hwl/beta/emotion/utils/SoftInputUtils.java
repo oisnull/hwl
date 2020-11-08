@@ -2,8 +2,9 @@ package com.hwl.beta.emotion.utils;
 
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
+
+import androidx.fragment.app.FragmentActivity;
 
 public class SoftInputUtils {
     public static int getCurrentHeight(FragmentActivity activity) {

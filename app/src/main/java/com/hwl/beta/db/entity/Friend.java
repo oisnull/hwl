@@ -1,7 +1,7 @@
 package com.hwl.beta.db.entity;
 
-import android.databinding.BaseObservable;
-import android.databinding.Bindable;
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
 
 import com.hwl.beta.BR;
 import com.hwl.beta.utils.StringUtils;

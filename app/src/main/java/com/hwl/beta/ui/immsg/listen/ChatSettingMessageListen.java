@@ -118,7 +118,7 @@ public class ChatSettingMessageListen extends
         ImUserContent userContent = messageContent.getSettingUser();
         Friend friend = DaoUtils.getFriendManagerInstance().get(userContent.getUserId());
         if (friend == null) {
-            friend = DBFriendAction.convertToFriendInfo(userContent.getUserId(),
+            friend = DBFriendAction.convertToFriend(userContent.getUserId(),
                     userContent.getUserName(),
                     userContent.getUserImage(),
                     userContent.getGroupUserRemark(),

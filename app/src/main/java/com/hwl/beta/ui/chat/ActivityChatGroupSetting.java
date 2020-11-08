@@ -1,16 +1,21 @@
 package com.hwl.beta.ui.chat;
 
 import android.content.DialogInterface;
-import android.databinding.DataBindingUtil;
+
+import androidx.databinding.DataBindingUtil;
+
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AlertDialog;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentActivity;
+
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import com.hwl.beta.AppConfig;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.ChatActivityGroupSettingBinding;
 import com.hwl.beta.db.entity.GroupInfo;
@@ -66,15 +71,8 @@ public class ActivityChatGroupSetting extends BaseActivity {
     private void initView() {
         binding.tbTitle.setTitle("群组设置")
                 .setImageRightHide()
-                .setImageLeftClick(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onBackPressed();
-                    }
-                });
-        userAdapter = new ChatGroupUserAdapter(activity,
-                settingStandard.getGroupUsers(group.getGroupGuid(),
-                        group.getIsDismiss()));
+                .setImageLeftClick(v -> onBackPressed());
+        userAdapter = new ChatGroupUserAdapter(activity, settingStandard.getGroupUsers(group));
         binding.gvUserContainer.setAdapter(userAdapter);
         binding.gvUserContainer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -102,7 +100,10 @@ public class ActivityChatGroupSetting extends BaseActivity {
         } else {
             binding.btnExit.setVisibility(View.VISIBLE);
         }
-
+        if (AppConfig.ENABLE_DEBUG) {
+            binding.rlGroupGuid.setVisibility(View.VISIBLE);
+            binding.tvGroupGuid.setText(group.getGroupGuid());
+        }
         this.loadUsersFromServer();
     }
 
@@ -154,6 +155,11 @@ public class ActivityChatGroupSetting extends BaseActivity {
     }
 
     public class ChatGroupSettingListener implements IChatGroupSettingListener {
+
+        @Override
+        public void onGroupUsersClick() {
+            UITransfer.toGroupAllUsersActivity(activity, group.getGroupGuid());
+        }
 
         @Override
         public void onGroupNoteClick() {

@@ -23,6 +23,7 @@ public class UserPosSP {
     private static final String DISTRICT = "district";
     private static final String STREET = "street";
     private static final String ADDR = "addr";
+    private static final String DESC = "describe";
 //    private static final String LASTNEARCIRCLEID = "lastNearCircleId";
 
     private static SharedPreferences getSP() {
@@ -37,8 +38,9 @@ public class UserPosSP {
     }
 
     public static void setUserPos(float latitude, float longitude, String country, String
-            province, String city, String district, String street, String addr) {
-        setUserPos(0, "", latitude, longitude, country, province, city, district, street, addr);
+            province, String city, String district, String street, String addr, String desc) {
+        setUserPos(0, "", latitude, longitude, country, province, city, district, street, addr,
+                desc);
     }
 
     public static void setUserPos(int userPosId, String groupGuid) {
@@ -57,7 +59,8 @@ public class UserPosSP {
                                   String city,
                                   String district,
                                   String street,
-                                  String addr) {
+                                  String addr,
+                                  String desc) {
         final SharedPreferences.Editor editor = getSP().edit();
         editor.putInt(USERPOSID, userPosId);
         editor.putString(GROUPGUID, groupGuid);
@@ -71,6 +74,7 @@ public class UserPosSP {
         editor.putString(DISTRICT, district);
         editor.putString(STREET, street);
         editor.putString(ADDR, addr);
+        editor.putString(DESC, desc);
         editor.commit();
     }
 
@@ -103,12 +107,8 @@ public class UserPosSP {
         return getSP().getFloat(LONGITUDE, -1);
     }
 
-    public static String getPosDesc() {
-        String addr = getSP().getString(ADDR, null);
-        if (StringUtils.isBlank(addr)) {
-            addr = "我的附近";
-        }
-        return addr;
+    public static String getAddr() {
+        return getSP().getString(ADDR, null);
     }
 
     public static String getPublishDesc() {

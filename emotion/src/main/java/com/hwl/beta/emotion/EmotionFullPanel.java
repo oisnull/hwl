@@ -1,7 +1,6 @@
 package com.hwl.beta.emotion;
 
 import android.content.Context;
-import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -14,6 +13,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+
+import androidx.viewpager.widget.ViewPager;
 
 import com.hwl.beta.emotion.adapter.ChatExtendAdapter;
 import com.hwl.beta.emotion.adapter.EmotionPagerAdapter;

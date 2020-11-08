@@ -1,6 +1,6 @@
 package com.hwl.beta.db.entity;
 
-import android.databinding.BaseObservable;
+import androidx.databinding.BaseObservable;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
@@ -40,7 +40,17 @@ public class ChatRecordMessage extends BaseObservable implements Serializable {
     @Transient
     private boolean isShield;
     @Transient
+    private boolean isCurrentLocation;
+    @Transient
     private List<String> groupUserImages;
+
+    public boolean isCurrentLocation() {
+        return isCurrentLocation;
+    }
+
+    public void setCurrentLocation(boolean currentLocation) {
+        isCurrentLocation = currentLocation;
+    }
 
     @Generated(hash = 292329467)
     public ChatRecordMessage(Long recordId, int recordType, long fromUserId,

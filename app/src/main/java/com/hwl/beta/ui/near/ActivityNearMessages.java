@@ -2,11 +2,12 @@ package com.hwl.beta.ui.near;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import android.view.View;
 
 import com.hwl.beta.R;

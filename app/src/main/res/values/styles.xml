@@ -11,7 +11,7 @@
 
     <style name="ThemeActivity" parent="AppTheme">
         <item name="android:windowAnimationStyle">@style/AnimationActivity</item>
-        <!--<item name="android:windowBackground">@color/white</item>   这里可以将所有的Activity的背景设置为白色-->
+        <item name="android:windowBackground">@color/white</item>
     </style>
 
     <style name="AnimationActivity" parent="@android:style/Animation.Activity">
@@ -86,7 +86,7 @@
         <item name="isFull">false</item>
     </style>
 
-    <style name="SwipeTheme" parent="AppTheme">
-        <item name="android:windowIsTranslucent">false</item>
-    </style>
+    <!--    <style name="SwipeTheme" parent="AppTheme">-->
+    <!--        <item name="android:windowIsTranslucent">false</item>-->
+    <!--    </style>-->
 </resources>

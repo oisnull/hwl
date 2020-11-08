@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import com.hwl.beta.AppConfig;
 import com.hwl.beta.ui.immsg.listen.AddFriendMessageListen;
+import com.hwl.beta.ui.immsg.listen.AppVersionListen;
 import com.hwl.beta.ui.immsg.listen.ChatSettingMessageListen;
 import com.hwl.beta.ui.immsg.listen.CircleOperateMessageListen;
 import com.hwl.beta.ui.immsg.listen.GroupOperateMessageListen;
@@ -82,6 +83,7 @@ public class IMClientEntry {
                 CircleOperateMessageListen());
         messageOperate.registerListenExecutor(ImMessageType.SystemMessage,
                 new SystemMessageListen());
+        messageOperate.registerListenExecutor(ImMessageType.AppVersion, new AppVersionListen());
     }
 
     public static void connectServer() {

@@ -1,10 +1,11 @@
 package com.hwl.beta.ui.convert;
 
+import com.annimon.stream.Stream;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.db.entity.FriendRequest;
 import com.hwl.beta.net.user.NetGroupUserInfo;
-import com.hwl.beta.net.user.NetSecretUserInfo;
+import com.hwl.beta.net.user.NetNearUserInfo;
 import com.hwl.beta.net.user.NetUserFriendInfo;
 import com.hwl.beta.net.user.NetUserInfo;
 import com.hwl.beta.net.user.UserDetailsInfo;
@@ -69,17 +70,6 @@ public class DBFriendAction {
         return friends;
     }
 
-    public static List<Friend> convertSecretUserToFriendInfos(List<NetSecretUserInfo> users) {
-        if (users == null) return null;
-        List<Friend> friends = new ArrayList<>(users.size());
-        for (int i = 0; i < users.size(); i++) {
-            friends.add(convertToFriendInfo(users.get(i).getUserId(),
-                    users.get(i).getUserName(),
-                    users.get(i).getUserImage()));
-        }
-        return friends;
-    }
-
     public static Friend convertToFriendInfo(UserDetailsInfo userDetailsInfo) {
         Friend friend = new Friend();
         friend.setId(userDetailsInfo.getId());
@@ -103,12 +93,12 @@ public class DBFriendAction {
 
     public static Friend convertToFriendInfo(long userId, String userName, String userHeadImage,
                                              String groupUserRemark) {
-        return convertToFriendInfo(userId, userName, userHeadImage, groupUserRemark, false);
+        return convertToFriend(userId, userName, userHeadImage, groupUserRemark, false);
     }
 
     public static Friend convertToFriendInfo(long userId, String userName, String userHeadImage,
                                              boolean isFriend) {
-        return convertToFriendInfo(userId, userName, userHeadImage, null, isFriend);
+        return convertToFriend(userId, userName, userHeadImage, userName, isFriend);
     }
 
     public static Friend convertToFriendInfo(NetUserInfo netUserInfo) {
@@ -125,9 +115,11 @@ public class DBFriendAction {
         return friend;
     }
 
-    public static Friend convertToFriendInfo(long userId, String userName, String userHeadImage,
-                                             String groupUserRemark,
-                                             boolean isFriend) {
+    public static Friend convertToFriend(long userId,
+                                         String userName,
+                                         String userHeadImage,
+                                         String groupUserRemark,
+                                         boolean isFriend) {
         Friend friend = new Friend();
         friend.setId(userId);
         friend.setSymbol("");
@@ -139,6 +131,19 @@ public class DBFriendAction {
         friend.setIsFriend(isFriend);
         friend.setGroupRemark(groupUserRemark);
         return friend;
+    }
+
+    public static List<Friend> convertToFriends(List<NetNearUserInfo> users,
+                                                boolean isFriend) {
+        if (users == null || users.size() <= 0) return null;
+
+        return Stream.of(users)
+                .map(u -> convertToFriend(u.getUserId(),
+                        u.getUserName(),
+                        u.getUserImage(),
+                        u.getUserName(),
+                        isFriend))
+                .toList();
     }
 
     public static boolean updateFriendNameAndImage(Friend friend, String newName, String

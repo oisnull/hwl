@@ -1,10 +1,11 @@
 package com.hwl.beta.ui.circle;
 
 import android.app.Activity;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import android.view.View;
 import android.widget.Toast;
 
@@ -19,7 +20,6 @@ import com.hwl.beta.ui.circle.logic.CircleUserLogic;
 import com.hwl.beta.ui.circle.standard.CircleUserStandard;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.UITransfer;
-import com.hwl.beta.ui.widget.TitleBar;
 import com.hwl.beta.utils.NetworkUtils;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;

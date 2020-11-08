@@ -1,8 +1,10 @@
 package com.hwl.beta.ui.entry;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.widget.TextView;
+
+import androidx.fragment.app.FragmentActivity;
 
 import com.hwl.beta.R;
 import com.hwl.beta.net.user.NetUserInfo;
@@ -25,6 +27,11 @@ public class ActivityWelcome extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
+            finish();
+            return;
+        }
+
         setContentView(R.layout.entry_activity_welcome);
         tvCountdown = findViewById(R.id.tv_countdown);
         tvCountdown.setText(tmrCount + " s");
@@ -72,7 +79,7 @@ public class ActivityWelcome extends FragmentActivity {
             IMClientEntry.connectServer();
             UITransfer.toMainActivity(this);
         } else {
-            UITransfer.toLoginActivity(this);
+            UITransfer.toLoginActivityV2(this);
         }
         this.finish();
     }

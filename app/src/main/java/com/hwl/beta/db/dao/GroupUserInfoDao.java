@@ -28,6 +28,7 @@ public class GroupUserInfoDao extends AbstractDao<GroupUserInfo, Long> {
         public final static Property GroupGuid = new Property(1, String.class, "groupGuid", false, "GROUP_GUID");
         public final static Property UserId = new Property(2, long.class, "userId", false, "USER_ID");
         public final static Property AddTime = new Property(3, java.util.Date.class, "addTime", false, "ADD_TIME");
+        public final static Property Distance = new Property(4, double.class, "distance", false, "DISTANCE");
     }
 
 
@@ -46,7 +47,8 @@ public class GroupUserInfoDao extends AbstractDao<GroupUserInfo, Long> {
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"GROUP_GUID\" TEXT," + // 1: groupGuid
                 "\"USER_ID\" INTEGER NOT NULL ," + // 2: userId
-                "\"ADD_TIME\" INTEGER);"); // 3: addTime
+                "\"ADD_TIME\" INTEGER," + // 3: addTime
+                "\"DISTANCE\" REAL NOT NULL );"); // 4: distance
     }
 
     /** Drops the underlying database table. */
@@ -74,6 +76,7 @@ public class GroupUserInfoDao extends AbstractDao<GroupUserInfo, Long> {
         if (addTime != null) {
             stmt.bindLong(4, addTime.getTime());
         }
+        stmt.bindDouble(5, entity.getDistance());
     }
 
     @Override
@@ -95,6 +98,7 @@ public class GroupUserInfoDao extends AbstractDao<GroupUserInfo, Long> {
         if (addTime != null) {
             stmt.bindLong(4, addTime.getTime());
         }
+        stmt.bindDouble(5, entity.getDistance());
     }
 
     @Override
@@ -108,7 +112,8 @@ public class GroupUserInfoDao extends AbstractDao<GroupUserInfo, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // groupGuid
             cursor.getLong(offset + 2), // userId
-            cursor.isNull(offset + 3) ? null : new java.util.Date(cursor.getLong(offset + 3)) // addTime
+            cursor.isNull(offset + 3) ? null : new java.util.Date(cursor.getLong(offset + 3)), // addTime
+            cursor.getDouble(offset + 4) // distance
         );
         return entity;
     }
@@ -119,6 +124,7 @@ public class GroupUserInfoDao extends AbstractDao<GroupUserInfo, Long> {
         entity.setGroupGuid(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setUserId(cursor.getLong(offset + 2));
         entity.setAddTime(cursor.isNull(offset + 3) ? null : new java.util.Date(cursor.getLong(offset + 3)));
+        entity.setDistance(cursor.getDouble(offset + 4));
      }
     
     @Override

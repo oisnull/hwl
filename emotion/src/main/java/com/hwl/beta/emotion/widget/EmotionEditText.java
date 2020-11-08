@@ -8,13 +8,15 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
 
+import androidx.appcompat.widget.AppCompatEditText;
+
 import com.hwl.beta.emotion.utils.EmotionUtils;
 
 /**
  * Created by Administrator on 2018/2/22.
  */
 
-public class EmotionEditText extends android.support.v7.widget.AppCompatEditText {
+public class EmotionEditText extends AppCompatEditText {
     private OnKeyListener keyListener;
 
     public EmotionEditText(Context context) {

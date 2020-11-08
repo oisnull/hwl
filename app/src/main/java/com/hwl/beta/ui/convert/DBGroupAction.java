@@ -1,12 +1,12 @@
 package com.hwl.beta.ui.convert;
 
+import com.annimon.stream.Stream;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.db.entity.GroupInfo;
 import com.hwl.beta.db.entity.GroupUserInfo;
 import com.hwl.beta.net.group.NetGroupInfo;
 import com.hwl.beta.net.user.NetGroupUserInfo;
-import com.hwl.beta.net.user.NetSecretUserInfo;
-import com.hwl.beta.sp.UserPosSP;
+import com.hwl.beta.net.user.NetNearUserInfo;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.utils.StringUtils;
 
@@ -47,11 +47,12 @@ public class DBGroupAction {
     }
 
     public static GroupInfo convertToNearGroupInfo(String groupGuid,
+                                                   String groupName,
                                                    int groupUserCount,
                                                    List<String> groupUserImages,
                                                    boolean isLoadUsers) {
         return convertToGroupInfo(groupGuid,
-                UserPosSP.getNearDesc(),
+                groupName,
                 null,
                 0,
                 groupUserCount,
@@ -98,9 +99,16 @@ public class DBGroupAction {
     }
 
     public static GroupUserInfo convertToGroupUserInfo(String groupGuid, long userId) {
+        return convertToGroupUserInfo(groupGuid, userId, 0);
+    }
+
+    public static GroupUserInfo convertToGroupUserInfo(String groupGuid,
+                                                       long userId,
+                                                       double distance) {
         GroupUserInfo userInfo = new GroupUserInfo();
         userInfo.setGroupGuid(groupGuid);
         userInfo.setUserId(userId);
+        userInfo.setDistance(distance);
         userInfo.setAddTime(new Date());
         return userInfo;
     }
@@ -158,7 +166,7 @@ public class DBGroupAction {
         return groupUserImages;
     }
 
-    public static List<String> getGroupUserImages(List<NetSecretUserInfo> userInfos) {
+    public static List<String> getGroupUserImages(List<NetNearUserInfo> userInfos) {
         if (userInfos == null || userInfos.size() <= 0) return null;
         List<String> groupUserImages = new ArrayList<>();
         for (int i = 0; i < userInfos.size(); i++) {
@@ -170,13 +178,13 @@ public class DBGroupAction {
         return groupUserImages;
     }
 
-    public static List<GroupUserInfo> convertToGroupUserInfos2(String groupGuid,
-                                                               List<NetSecretUserInfo> userInfos) {
+    public static List<GroupUserInfo> convertToNearGroupUsers(String groupGuid,
+                                                              List<NetNearUserInfo> userInfos) {
+        if (StringUtils.isBlank(groupGuid)) return null;
         if (userInfos == null || userInfos.size() <= 0) return null;
-        List<GroupUserInfo> groupUserInfos = new ArrayList<>(userInfos.size());
-        for (int i = 0; i < userInfos.size(); i++) {
-            groupUserInfos.add(convertToGroupUserInfo(groupGuid, userInfos.get(i).getUserId()));
-        }
-        return groupUserInfos;
+
+        return Stream.of(userInfos)
+                .map(u -> convertToGroupUserInfo(groupGuid, u.getUserId(), u.getDistance()))
+                .toList();
     }
 }

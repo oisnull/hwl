@@ -2,21 +2,23 @@ package com.hwl.beta.ui.chat;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.ChatFragmentRecordBinding;
 import com.hwl.beta.db.entity.ChatRecordMessage;
+import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.chat.adp.RecordAdapter;
 import com.hwl.beta.ui.chat.logic.RecordLogic;
@@ -212,6 +214,9 @@ public class FragmentRecord extends BaseFragment {
                 break;
             case EventBusConstant.EB_TYPE_GROUP_ACTION_DELETE:
                 recordAdapter.removeRecord((String) messageModel.getMessageModel());
+                break;
+            case EventBusConstant.EB_TYPE_CHAT_RECORD_GROUP_LOCATION:
+                recordAdapter.updateGroupLocation(UserPosSP.getGroupGuid(), UserPosSP.getNearDesc());
                 break;
         }
     }

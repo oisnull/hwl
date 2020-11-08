@@ -1,17 +1,19 @@
 package com.hwl.beta.ui.group.adp;
 
 import android.content.Context;
-import android.databinding.DataBindingUtil;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.databinding.DataBindingUtil;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.GroupHeadItemBinding;
 import com.hwl.beta.databinding.GroupItemBinding;
 import com.hwl.beta.db.entity.GroupInfo;
+import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.group.holder.GroupHeadItemViewHolder;
 import com.hwl.beta.ui.group.holder.GroupItemViewHolder;
@@ -48,12 +50,10 @@ public class GroupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (holder instanceof GroupHeadItemViewHolder) {
             ((GroupHeadItemViewHolder) holder).setItemBinding((groups.size() - 1) + " 个群组");
         } else if (holder instanceof GroupItemViewHolder) {
-            ((GroupItemViewHolder) holder).setItemBinding(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    UITransfer.toChatGroupActivity(v.getContext(), groupInfo.getGroupGuid());
-                }
-            }, groupInfo.getGroupImages(), groupInfo.getGroupName());
+            ((GroupItemViewHolder) holder).setItemBinding(v -> UITransfer.toChatGroupActivity(v.getContext(), groupInfo.getGroupGuid()),
+                    groupInfo.getGroupImages(),
+                    groupInfo.getGroupName(),
+                    groupInfo.getGroupGuid().equals(UserPosSP.getGroupGuid()));
         }
     }
 

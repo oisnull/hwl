@@ -1,7 +1,5 @@
 package com.hwl.beta.db.manage;
 
-import android.content.Context;
-
 import com.hwl.beta.db.BaseDao;
 import com.hwl.beta.db.dao.ChatUserMessageDao;
 import com.hwl.beta.db.entity.ChatUserMessage;
@@ -14,9 +12,6 @@ import java.util.List;
  */
 
 public class ChatUserMessageManager extends BaseDao<ChatUserMessage> {
-    public ChatUserMessageManager(Context context) {
-        super(context);
-    }
 
     public long save(ChatUserMessage request) {
         if (request == null) return 0;

@@ -1,9 +1,12 @@
 package com.hwl.beta.ui.chat.imp;
 
 import android.app.Activity;
-import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
+
+import androidx.appcompat.app.AlertDialog;
+
+import android.text.Html;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hwl.beta.db.DaoUtils;
@@ -17,8 +20,10 @@ import com.hwl.beta.net.resx.ResxType;
 import com.hwl.beta.net.resx.UpVideoChunk;
 import com.hwl.beta.net.resx.UploadService;
 import com.hwl.beta.net.resx.body.UpResxResponse;
+import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.chat.bean.ChatImageViewBean;
+import com.hwl.beta.ui.common.CustLog;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.common.exception.CustomException;
 import com.hwl.beta.ui.common.exception.ExceptionCode;
@@ -34,6 +39,7 @@ import com.hwl.beta.utils.StringUtils;
 
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.Date;
 
 import io.reactivex.Observable;
@@ -128,19 +134,42 @@ public class ChatGroupEmotionPanelListener extends ChatEmotionPanelListener {
     }
 
     private boolean checkGroupDismiss() {
-        if (groupInfo == null || groupInfo.getIsDismiss()) {
-            new AlertDialog.Builder(context)
-                    .setMessage("已经被解散群组不能发送消息!")
-                    .setPositiveButton("返回", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
+        String showMsg = "已经被解散群组不能发送消息!";
+        boolean isNearGroup =
+                groupInfo.getIsSystem() && !groupInfo.getGroupGuid().equals(UserPosSP.getGroupGuid());
+        if (groupInfo == null || groupInfo.getIsDismiss() || isNearGroup) {
+            AlertDialog builder = new AlertDialog.Builder(context)
+                    .setMessage(showMsg)
+                    .setPositiveButton("返回", (dialog, which) -> dialog.dismiss())
                     .show();
+            if (isNearGroup) {
+                CustLog.d("ChatGroupEmotionPanelListener",
+                        "GroupInfoDB=" + groupInfo.getGroupGuid() + " UserPosSP=" + UserPosSP.getGroupGuid());
+                CustLog.d("ChatGroupEmotionPanelListener",
+                        (groupInfo.getGroupGuid().equals(UserPosSP.getGroupGuid())));
+                setNearAlertStyle(builder);
+            }
             return true;
         }
         return false;
+    }
+
+    //https://blog.csdn.net/yechaoa/article/details/83539437
+    private void setNearAlertStyle(AlertDialog builder) {
+        try {
+            Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
+            mAlert.setAccessible(true);
+            Object mAlertController = mAlert.get(builder);
+
+            Field mMessage = mAlertController.getClass().getDeclaredField("mMessageView");
+            mMessage.setAccessible(true);
+            TextView mMessageView = (TextView) mMessage.get(mAlertController);
+            //mMessageView.setTextColor(Color.RED);
+            //mMessageView.setTextSize(30);
+            mMessageView.setText(Html.fromHtml("你当前在 <font color='#03bdbd'>" + UserPosSP.getNearDesc() + "</font>, 不能往其它位置发送消息。"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private ChatGroupMessage getChatMessage(int contentType, String content, String localPath, int

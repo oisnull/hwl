@@ -1,7 +1,7 @@
 package com.hwl.beta.net.user.body;
 
 
-import com.hwl.beta.net.user.NetSecretUserInfo;
+import com.hwl.beta.net.user.NetNearUserInfo;
 
 import java.util.List;
 
@@ -12,9 +12,14 @@ import java.util.List;
 public class SetUserPosResponse {
 
     private int Status;
+    private String ErrorMessage;
     private int UserPosId;
     private String UserGroupGuid;
-    private List<NetSecretUserInfo> GroupUserInfos;
+    private List<NetNearUserInfo> GroupUserInfos;
+
+    public String getErrorMessage() {
+        return ErrorMessage;
+    }
 
     public int getStatus() {
         return Status;
@@ -40,11 +45,11 @@ public class SetUserPosResponse {
         UserGroupGuid = userGroupGuid;
     }
 
-    public List<NetSecretUserInfo> getGroupUserInfos() {
+    public List<NetNearUserInfo> getGroupUserInfos() {
         return GroupUserInfos;
     }
 
-    public void setGroupUserInfos(List<NetSecretUserInfo> groupUserInfos) {
+    public void setGroupUserInfos(List<NetNearUserInfo> groupUserInfos) {
         GroupUserInfos = groupUserInfos;
     }
 }

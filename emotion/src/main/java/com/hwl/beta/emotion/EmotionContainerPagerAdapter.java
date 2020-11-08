@@ -1,9 +1,10 @@
 package com.hwl.beta.emotion;
 
-import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+
+import androidx.viewpager.widget.PagerAdapter;
 
 import java.util.List;
 

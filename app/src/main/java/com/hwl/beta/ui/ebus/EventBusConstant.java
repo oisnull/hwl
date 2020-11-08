@@ -15,6 +15,7 @@ public class EventBusConstant {
     public static final int EB_TYPE_CHAT_RECORD_MESSAGE_UPDATE_SORT = 201;
     public static final int EB_TYPE_CHAT_RECORD_MESSAGE_UPDATE_NOSORT = 202;
     public static final int EB_TYPE_CHAT_RECORD_MESSAGE_CLEAR = 203;
+	public static final int EB_TYPE_CHAT_RECORD_GROUP_LOCATION = 204;
 
     public static final int EB_TYPE_USER_UPDATE = 300;
     public static final int EB_TYPE_USER_HEAD_UPDATE = 301;
@@ -38,14 +39,16 @@ public class EventBusConstant {
     public static final int EB_TYPE_TOKEN_INVALID_RELOGIN = 800;
 
     public static final int EB_TYPE_CHAT_GROUP_MESSAGE_UPDATE = 900;
-    public static final int EB_TYPE_CHAT_GROUP_NOTE_SETTING= 901;
-    public static final int EB_TYPE_CHAT_GROUP_NAME_SETTING= 902;
-    public static final int EB_TYPE_CHAT_GROUP_USER_REMARK_SETTING= 903;
+    public static final int EB_TYPE_CHAT_GROUP_NOTE_SETTING = 901;
+    public static final int EB_TYPE_CHAT_GROUP_NAME_SETTING = 902;
+    public static final int EB_TYPE_CHAT_GROUP_USER_REMARK_SETTING = 903;
 
-    public static final int EB_TYPE_GROUP_ACTION_ADD= 1000;
-    public static final int EB_TYPE_GROUP_ACTION_DELETE= 1001;
-    public static final int EB_TYPE_GROUP_ACTION_DISMISS= 1002;
-    public static final int EB_TYPE_GROUP_USERS_ADD= 1003;
+    public static final int EB_TYPE_GROUP_ACTION_ADD = 1000;
+    public static final int EB_TYPE_GROUP_ACTION_DELETE = 1001;
+    public static final int EB_TYPE_GROUP_ACTION_DISMISS = 1002;
+    public static final int EB_TYPE_GROUP_USERS_ADD = 1003;
+
+    public static final int EB_TYPE_APP_VERSION_UPDATE = 1100;
 
     public static final int EB_TYPE_ACTINO_ADD = 20000;
     public static final int EB_TYPE_ACTINO_REMOVE = 20001;

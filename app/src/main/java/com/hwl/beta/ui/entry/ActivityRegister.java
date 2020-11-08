@@ -1,9 +1,12 @@
 package com.hwl.beta.ui.entry;
 
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
+
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+
 import android.view.View;
 import android.widget.Toast;
 
@@ -95,7 +98,7 @@ public class ActivityRegister extends BaseActivity {
         });
 
         timeCount = new TimeCount(CODETIMESECONDS * 1000, 1000, binding.btnCodeSend, new
-                TimeCount.TimeCountInterface() {
+                TimeCount.TimeListener() {
                     @Override
                     public void onFinishViewChange(int resId) {
                         setSendViewStatus(NetConstant.SEND_STATUS_COMPLETE);

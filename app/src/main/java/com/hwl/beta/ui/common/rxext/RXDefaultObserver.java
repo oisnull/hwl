@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.hwl.beta.HWLApp;
 import com.hwl.beta.net.NetExceptionCode;
+import com.hwl.beta.utils.StringUtils;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -39,7 +40,7 @@ public class RXDefaultObserver<T> implements Observer<T> {
         if (NetExceptionCode.isTokenInvalid(e)) {
             onRelogin();
         } else {
-            onError(e.getMessage());
+            onError(StringUtils.isBlank(e.getMessage()) ? "获取API数据失败" : e.getMessage());
         }
     }
 

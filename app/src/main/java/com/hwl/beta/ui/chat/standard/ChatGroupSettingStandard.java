@@ -11,7 +11,7 @@ import io.reactivex.Observable;
 public interface ChatGroupSettingStandard {
     GroupInfo getGroupInfo(String groupGuid);
 
-    List<GroupUserInfo> getGroupUsers(String groupGuid, boolean isDismiss);
+    List<GroupUserInfo> getGroupUsers(GroupInfo group);
 
     Observable<List<GroupUserInfo>> loadGroupUsersFromServer(String groupGuid);
 

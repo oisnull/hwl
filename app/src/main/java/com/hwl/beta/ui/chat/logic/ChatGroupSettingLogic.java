@@ -36,10 +36,12 @@ public class ChatGroupSettingLogic implements ChatGroupSettingStandard {
     }
 
     @Override
-    public List<GroupUserInfo> getGroupUsers(String groupGuid, boolean isDismiss) {
-        List<GroupUserInfo> users = DaoUtils.getGroupUserInfoManagerInstance().getUsers(groupGuid);
+    public List<GroupUserInfo> getGroupUsers(GroupInfo group) {
+        List<GroupUserInfo> users =
+                DaoUtils.getGroupUserInfoManagerInstance().getUsers(group.getGroupGuid(), 10);
 
-        if (isDismiss || groupGuid.equals(UserPosSP.getGroupGuid())) return users;
+        if (group.getIsDismiss() || group.getIsSystem()) return users;
+
         GroupUserInfo groupUserInfo = new GroupUserInfo();
         groupUserInfo.setId(-1L);
         users.add(users.size(), groupUserInfo);

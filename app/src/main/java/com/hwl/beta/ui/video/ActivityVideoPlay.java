@@ -2,12 +2,11 @@ package com.hwl.beta.ui.video;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.MediaController;
@@ -116,7 +115,7 @@ public class ActivityVideoPlay extends BaseActivity {
         TimeCount timeCount;
 
         public void hideTitle() {
-            timeCount = new TimeCount(5 * 1000, 1000, null, new TimeCount.TimeCountInterface() {
+            timeCount = new TimeCount(5 * 1000, 1000, null, new TimeCount.TimeListener() {
                 @Override
                 public void onFinishViewChange(int resId) {
                     binding.rlTitle.setVisibility(View.GONE);

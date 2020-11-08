@@ -1,16 +1,17 @@
 package com.hwl.beta.ui.entry;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.databinding.DataBindingUtil;
+
+import androidx.databinding.DataBindingUtil;
+
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager.widget.ViewPager;
+
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,9 +29,11 @@ import com.hwl.beta.databinding.EntryActivityMainBinding;
 import com.hwl.beta.location.BaiduLocationV2;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.ui.TabFragmentPagerAdapter;
+import com.hwl.beta.ui.common.CustLog;
 import com.hwl.beta.ui.common.PermissionsOperator;
 import com.hwl.beta.ui.dialog.DialogUtils;
 import com.hwl.beta.ui.ebus.EventBusConstant;
+import com.hwl.beta.ui.ebus.EventBusUtil;
 import com.hwl.beta.ui.ebus.EventMessageModel;
 import com.hwl.beta.ui.chat.FragmentRecord;
 import com.hwl.beta.ui.common.BaseActivity;
@@ -59,7 +62,7 @@ public class ActivityMain extends BaseActivity {
     NetworkBroadcastReceiver networkBroadcastReceiver;
     BaiduLocationV2 location;
     long exitTime = 0;
-    boolean permissionRuning = false;
+    boolean permissionRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,9 +109,9 @@ public class ActivityMain extends BaseActivity {
     }
 
     private void locationStart() {
-        if (permissionRuning)
+        if (permissionRunning)
             return;
-        permissionRuning = true;
+        permissionRunning = true;
 
         UserPosSP.clearPosInfo();
         DialogUtils.closeLocationDialog();
@@ -122,7 +125,7 @@ public class ActivityMain extends BaseActivity {
     private void locationStop() {
         DialogUtils.closeLocationLoadingDialog();
         location.stop();
-        permissionRuning = false;
+        permissionRunning = false;
     }
 
     @Override
@@ -132,7 +135,7 @@ public class ActivityMain extends BaseActivity {
                 grantResults != null && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
         switch (requestCode) {
             case PermissionsOperator.REQUEST_PERMISSION_LOCATION:
-                permissionRuning = false;
+                permissionRunning = false;
                 if (grant) {
                     locationStart();
                 } else {
@@ -169,6 +172,9 @@ public class ActivityMain extends BaseActivity {
                 mainBean.setNearMessageCount(MessageCountSP
                         .getNearCircleMessageCount());
                 break;
+            case EventBusConstant.EB_TYPE_APP_VERSION_UPDATE:
+                mainBean.setMeMessageCount(MessageCountSP.getAppVersionCount());
+                break;
             case EventBusConstant.EB_TYPE_NETWORK_CONNECT_UPDATE:
                 locationStart();
                 break;
@@ -203,7 +209,7 @@ public class ActivityMain extends BaseActivity {
                 showLocationDialog("定位失败", location.getErrorMessage());
                 break;
             case BaiduLocationV2.COMPLETE_SUCCESS:
-                showLocationDialog("当前位置", UserPosSP.getPosDesc());
+                showLocationDialog("当前位置", UserPosSP.getAddr());
                 break;
         }
     }
@@ -247,23 +253,6 @@ public class ActivityMain extends BaseActivity {
                         break;
                     case R.id.pop_share_app:
                         UITransfer.toQRCodeActivity(activity);
-//                        new AlertDialog.Builder(activity)
-//                                .setMessage("如果别人就在你的旁边，你可以通过二维码来分享给TA...")
-//                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        UITransfer.toQRCodeActivity(activity);
-//                                        dialog.dismiss();
-//                                    }
-//                                })
-//                                .setNegativeButton("用其它方式", new DialogInterface.OnClickListener
-//                                () {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        ShareTransfer.shareApp();
-//                                    }
-//                                })
-//                                .show();
                         break;
                     case R.id.pop_open_test:
                         UITransfer.toTestActivity(activity);
@@ -401,7 +390,7 @@ public class ActivityMain extends BaseActivity {
 
         @Override
         public void onSuccess(LocationModel model) {
-            binding.tbTitle.setTitle(UserPosSP.getNearDesc());
+//            binding.tbTitle.setTitle(UserPosSP.getNearDesc());
 
 //            if (UserPosSP.getLongitude() == model.longitude &&
 //                    UserPosSP.getLatitude() == model.latitude) {
@@ -413,14 +402,13 @@ public class ActivityMain extends BaseActivity {
 //                return;
 //            }
 
-//            Log.d("HWLLocationListener", "当前移动的距离为：" + getMoveDistance(model));
-
             mainStandard.setLocation(model)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<String>() {
                         @Override
                         public void accept(String desc) {
                             binding.tbTitle.setTitle(desc);
+                            EventBusUtil.sendChatRecordGroupLocationEvent();
                             locationStop();
                         }
                     }, new Consumer<Throwable>() {

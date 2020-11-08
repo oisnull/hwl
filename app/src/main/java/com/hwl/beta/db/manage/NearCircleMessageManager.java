@@ -1,7 +1,5 @@
 package com.hwl.beta.db.manage;
 
-import android.content.Context;
-
 import com.hwl.beta.db.BaseDao;
 import com.hwl.beta.db.DBConstant;
 import com.hwl.beta.db.DaoUtils;
@@ -15,10 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NearCircleMessageManager extends BaseDao<NearCircleMessage> {
-    public NearCircleMessageManager(Context context) {
-        super(context);
-    }
-
     public List<NearCircleMessage> getAll() {
         List<NearCircleMessage> messages = daoSession.getNearCircleMessageDao()
                 .queryBuilder()

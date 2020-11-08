@@ -1,7 +1,6 @@
 package com.hwl.beta.db.manage;
 
-import android.content.Context;
-
+import com.annimon.stream.Stream;
 import com.hwl.beta.db.BaseDao;
 import com.hwl.beta.db.dao.FriendDao;
 import com.hwl.beta.db.entity.Friend;
@@ -20,9 +19,6 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class FriendManager extends BaseDao<Friend> {
-    public FriendManager(Context context) {
-        super(context);
-    }
 
     public String getFriendName(Friend friend) {
         if (friend == null) return null;
@@ -141,6 +137,23 @@ public class FriendManager extends BaseDao<Friend> {
                 })
                 .subscribeOn(Schedulers.io())
                 .subscribe();
+    }
+
+    public void addFriends(List<Friend> friends) {
+        if (friends == null || friends.size() <= 0) return;
+        List<Long> fids = Stream.of(friends).map(f -> f.getId()).distinct().toList();
+        List<Friend> oldFriends = daoSession.getFriendDao().queryBuilder()
+                .where(FriendDao.Properties.Id.in(fids))
+                .list();
+        if (oldFriends == null || oldFriends.size() <= 0) {
+            daoSession.getFriendDao().insertInTx(friends);
+            return;
+        }
+
+        List<Friend> newFriends = Stream.of(friends).filter(u -> !oldFriends.contains(u)).toList();
+        if (newFriends != null && newFriends.size() > 0) {
+            daoSession.getFriendDao().insertInTx(newFriends);
+        }
     }
 
 }

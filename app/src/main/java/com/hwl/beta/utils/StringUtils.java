@@ -2,6 +2,9 @@ package com.hwl.beta.utils;
 
 import android.text.TextUtils;
 
+import com.hwl.beta.HWLApp;
+import com.hwl.beta.R;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -351,10 +354,22 @@ public class StringUtils {
     }
 
     /*----------------验证手机号码格式是否正确------------------*/
-    public static boolean isPhoneFormat(String phone) {
-        Pattern p = Pattern.compile("^(1)\\d{10}$");
-        Matcher m = p.matcher(phone);
-        return m.matches();
+    public static boolean isValidPhone(String phone) {
+        if (isBlank(phone)) return false;
+
+//        Pattern p = Pattern.compile("^(1)\\d{10}$");
+        Pattern p = Pattern.compile("^(0|86|17951)?(13[0-9]|15[0-9]|17[03678]|18[0-9]|14[579])" +
+                "[0-9]{8}$");
+        return p.matcher(phone).find();
+    }
+
+    public static boolean isValidEmail(String emailString) {
+        if (isBlank(emailString)) return false;
+
+        Pattern emailPattern = Pattern.compile("^[a-zA-Z0-9][\\w\\" +
+                ".-]*[a-zA-Z0-9]@[a-zA-Z0-9][\\w\\.-]*[a-zA-Z0-9]\\.[a-zA-Z][a-zA-Z\\" +
+                ".]*[a-zA-Z]$");
+        return emailPattern.matcher(emailString).find();
     }
 
     /**

@@ -1,7 +1,5 @@
 package com.hwl.beta.db.manage;
 
-import android.content.Context;
-
 import com.hwl.beta.db.BaseDao;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.dao.ChatRecordMessageDao;
@@ -21,9 +19,6 @@ import java.util.List;
  */
 
 public class ChatRecordMessageManager extends BaseDao<ChatRecordMessage> {
-    public ChatRecordMessageManager(Context context) {
-        super(context);
-    }
 
     public ChatRecordMessage getGroupRecord(String groupGuid) {
         if (StringUtils.isBlank(groupGuid)) return null;
@@ -137,7 +132,9 @@ public class ChatRecordMessageManager extends BaseDao<ChatRecordMessage> {
 
     public List<ChatRecordMessage> getRecords() {
         List<ChatRecordMessage> recordMessages = daoSession.getChatRecordMessageDao()
-                .queryBuilder().orderDesc(ChatRecordMessageDao.Properties.SendTime).list();
+                .queryBuilder()
+                .orderDesc(ChatRecordMessageDao.Properties.SendTime)
+                .list();
         if (recordMessages != null && recordMessages.size() > 0) {
             for (int i = 0; i < recordMessages.size(); i++) {
                 if (recordMessages.get(i).getRecordType() == IMConstant.CHAT_RECORD_TYPE_USER) {

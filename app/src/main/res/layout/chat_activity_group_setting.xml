@@ -33,9 +33,53 @@
                 android:orientation="vertical">
 
                 <RelativeLayout
+                    android:id="@+id/rl_group_guid"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:background="@drawable/item_selector"
+                    android:padding="15dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tv_group_guid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/item_selector"
+                    android:onClick="@{view->action.onGroupUsersClick()}"
+                    android:padding="15dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:text="@{`群组成员 (` + setting.getGroupUserCount()+`)`}" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:text=">" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:padding="15dp">
 
@@ -51,9 +95,9 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="1dp"
                     android:layout_marginTop="20dp"
-                    android:background="@color/white"
+                    android:layout_marginBottom="1dp"
+                    android:background="@drawable/item_selector"
                     android:onClick="@{view->action.onGroupNoteClick()}"
                     android:padding="15dp">
 
@@ -67,9 +111,9 @@
                         android:id="@+id/tv_note"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="30dp"
@@ -83,9 +127,9 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="1dp"
                     android:layout_marginTop="20dp"
-                    android:background="@color/white"
+                    android:layout_marginBottom="1dp"
+                    android:background="@drawable/item_selector"
                     android:onClick="@{view->action.onGroupNameClick()}"
                     android:padding="15dp">
 
@@ -100,9 +144,9 @@
                         android:id="@+id/tv_group_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"
@@ -115,7 +159,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="1dp"
-                    android:background="@color/white"
+                    android:background="@drawable/item_selector"
                     android:onClick="@{view->action.onMyNameClick()}"
                     android:padding="15dp">
 
@@ -130,9 +174,9 @@
                         android:id="@+id/tv_user_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"
@@ -176,7 +220,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
+                    android:background="@drawable/item_selector"
                     android:onClick="@{view->action.onSearchClick()}"
                     android:padding="15dp">
 
@@ -193,7 +237,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
+                    android:background="@drawable/item_selector"
                     android:onClick="@{view->action.onClearClick()}"
                     android:padding="15dp">
 
@@ -211,8 +255,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="40px"
-                    android:layout_marginRight="40px"
                     android:layout_marginTop="10dp"
+                    android:layout_marginRight="40px"
                     android:background="@color/main"
                     android:gravity="center"
                     android:onClick="@{view->action.onDismissClick()}"
@@ -220,15 +264,15 @@
                     android:text="解散群组"
                     android:textColor="@color/white"
                     android:textSize="15dp"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/btn_exit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="40px"
-                    android:layout_marginRight="40px"
                     android:layout_marginTop="20dp"
+                    android:layout_marginRight="40px"
                     android:background="@color/main"
                     android:gravity="center"
                     android:onClick="@{view->action.onExitClick()}"

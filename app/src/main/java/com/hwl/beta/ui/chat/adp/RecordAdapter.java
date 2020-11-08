@@ -1,14 +1,17 @@
 package com.hwl.beta.ui.chat.adp;
 
 import android.content.Context;
-import android.databinding.DataBindingUtil;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hwl.beta.R;
 import com.hwl.beta.badge.Badge;
 import com.hwl.beta.badge.QBadgeView;
@@ -154,6 +157,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
                 Glide.with(context).load(record.getRecordImage(myUserId))
                         .placeholder(R.drawable.empty_photo)
                         .error(R.drawable.empty_photo)
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                         .into(itemBinding.ivRecordImage);
                 break;
         }
@@ -202,6 +206,21 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
             if (records.get(i).getRecordType() == IMConstant.CHAT_RECORD_TYPE_GROUP && records
                     .get(i).getGroupGuid().equals(groupGuid)) {
 //                records.get(i).setGroupUserImages(groupUserImages);
+                notifyItemChanged(i);
+                break;
+            }
+        }
+    }
+
+    public void updateGroupLocation(String locationGroupGuid, String locationGroupName) {
+        if (StringUtils.isBlank(locationGroupGuid)) return;
+
+        for (int i = 0; i < records.size(); i++) {
+            if (records.get(i).getRecordType() == IMConstant.CHAT_RECORD_TYPE_GROUP &&
+                    records.get(i).getGroupGuid().equals(locationGroupGuid)) {
+                records.get(i).setCurrentLocation(true);
+                records.get(i).setTitle(locationGroupName);
+                records.get(i).setGroupName(locationGroupName);
                 notifyItemChanged(i);
                 break;
             }

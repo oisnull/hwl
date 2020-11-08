@@ -2,13 +2,13 @@ package com.hwl.beta.emotion.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v4.view.PagerAdapter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+
+import androidx.viewpager.widget.PagerAdapter;
 
 import com.hwl.beta.emotion.interfaces.IEmotionItemListener;
 import com.hwl.beta.emotion.model.EmojiPageContainer;
@@ -21,9 +21,9 @@ public class EmotionPagerAdapter extends PagerAdapter {
     private List<View> views = new ArrayList<>();
     private List<EmojiPageContainer> pageContainers = new ArrayList<>();
     private Activity context;
-	private IEmotionItemListener emotionListener;
+    private IEmotionItemListener emotionListener;
 
-    public EmotionPagerAdapter(Context context,IEmotionItemListener emotionListener) {
+    public EmotionPagerAdapter(Context context, IEmotionItemListener emotionListener) {
         this.context = (Activity) context;
         this.emotionListener = emotionListener;
     }
@@ -38,12 +38,12 @@ public class EmotionPagerAdapter extends PagerAdapter {
         views.clear();
     }
 
-	public String getPageTag(int position){
-		View view = views.get(position);
-		if(view==null) return null;
+    public String getPageTag(int position) {
+        View view = views.get(position);
+        if (view == null) return null;
 
-		return view.getTag().toString();
-	}
+        return view.getTag().toString();
+    }
 
     @Override
     public int getCount() {
@@ -54,9 +54,8 @@ public class EmotionPagerAdapter extends PagerAdapter {
         return count;
     }
 
-    @NonNull
     @Override
-    public Object instantiateItem(@NonNull ViewGroup container, int position) {
+    public Object instantiateItem(ViewGroup container, int position) {
         View view;
         if ((position + 1) <= views.size()) {
             view = views.get(position);
@@ -69,19 +68,19 @@ public class EmotionPagerAdapter extends PagerAdapter {
     }
 
     @Override
-    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+    public void destroyItem(ViewGroup container, int position, Object object) {
         container.removeView((View) object);
     }
 
-	public int getLastPageContainerPosition(){
-		int size = pageContainers.size();
-		if(size>0){
-			return getPageContainerStartPosition(pageContainers.get(size-1).getId());
-		}
-		return 0;
-	}
+    public int getLastPageContainerPosition() {
+        int size = pageContainers.size();
+        if (size > 0) {
+            return getPageContainerStartPosition(pageContainers.get(size - 1).getId());
+        }
+        return 0;
+    }
 
-	public int getPageContainerStartPosition(String id) {
+    public int getPageContainerStartPosition(String id) {
         if (TextUtils.isEmpty(id)) {
             return 0;
         }
@@ -137,7 +136,7 @@ public class EmotionPagerAdapter extends PagerAdapter {
     }
 
     @Override
-    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+    public boolean isViewFromObject(View view, Object object) {
         return view == object;
     }
 }

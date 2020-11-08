@@ -1,10 +1,10 @@
 package com.hwl.beta.ui.user.bean;
 
-import android.databinding.BindingAdapter;
+import androidx.databinding.BindingAdapter;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.hwl.beta.HWLApp;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hwl.beta.R;
 import com.hwl.beta.utils.StringUtils;
 
@@ -44,6 +44,7 @@ public class ImageViewBean {
                 .error(R.drawable.empty_photo)
 				//.priority(Priority.HIGH)
                 .dontAnimate()
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(view);
     }
 
@@ -56,6 +57,7 @@ public class ImageViewBean {
                 .error(R.drawable.empty_photo)
 				//.priority(Priority.HIGH)
                 .dontAnimate()
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(view);
     }
 

@@ -10,6 +10,8 @@ import io.reactivex.functions.Consumer;
 public class PermissionsAction {
 
 //Ex: https://www.cnblogs.com/dingxiansen/p/10670707.html
+//doc:https://github.com/googlesamples/easypermissions
+//doc:https://www.jianshu.com/p/6e306729bb0d
 
     private static boolean isHas = false;
 

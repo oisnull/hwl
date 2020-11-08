@@ -11,7 +11,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.Signature;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.hwl.beta.HWLApp;
 
@@ -409,6 +410,51 @@ public final class AppUtils {
         }
     }
 
+    /**
+     * 版本号比较
+     *
+     * @param newVersion
+     * @param oldVersion
+     * @return
+     */
+    public static boolean isUpgrade(String newVersion, String oldVersion) {
+        if (newVersion.equals(oldVersion)) {
+            return false;
+        }
+        String[] version1Array = newVersion.split("\\.");
+        String[] version2Array = oldVersion.split("\\.");
+//        Log.d("HomePageActivity", "version1Array=="+version1Array.length);
+//        Log.d("HomePageActivity", "version2Array=="+version2Array.length);
+        int index = 0;
+        // 获取最小长度值
+        int minLen = Math.min(version1Array.length, version2Array.length);
+        int diff = 0;
+        // 循环判断每位的大小
+//        Log.d("HomePageActivity", "verTag2=2222="+version1Array[index]);
+        while (index < minLen
+                && (diff = Integer.parseInt(version1Array[index])
+                - Integer.parseInt(version2Array[index])) == 0) {
+            index++;
+        }
+        if (diff == 0) {
+            // 如果位数不一致，比较多余位数
+            for (int i = index; i < version1Array.length; i++) {
+                if (Integer.parseInt(version1Array[i]) > 0) {
+                    return true;
+                }
+            }
+
+            for (int i = index; i < version2Array.length; i++) {
+                if (Integer.parseInt(version2Array[i]) > 0) {
+                    return false;
+                }
+            }
+            return false;
+        } else {
+            return diff > 0;
+        }
+    }
+
 //    /**
 //     * Return whether application is foreground.
 //     *
@@ -427,7 +473,8 @@ public final class AppUtils {
 //     * @return {@code true}: yes<br>{@code false}: no
 //     */
 //    public static boolean isAppForeground(@NonNull final String packageName) {
-//        return !isSpace(packageName) && packageName.equals(ProcessUtils.getForegroundProcessName());
+//        return !isSpace(packageName) && packageName.equals(ProcessUtils
+//        .getForegroundProcessName());
 //    }
 //
 //    /**
@@ -460,7 +507,8 @@ public final class AppUtils {
      */
     public static void relaunchApp() {
         PackageManager packageManager = HWLApp.getContext().getPackageManager();
-        Intent intent = packageManager.getLaunchIntentForPackage(HWLApp.getContext().getPackageName());
+        Intent intent =
+                packageManager.getLaunchIntentForPackage(HWLApp.getContext().getPackageName());
         if (intent == null) return;
         ComponentName componentName = intent.getComponent();
         Intent mainIntent = Intent.makeRestartActivityTask(componentName);
@@ -766,7 +814,8 @@ public final class AppUtils {
         String versionName = pi.versionName;
         int versionCode = pi.versionCode;
         boolean isSystem = (ApplicationInfo.FLAG_SYSTEM & ai.flags) != 0;
-        return new AppInfo(packageName, name, icon, packagePath, versionName, versionCode, isSystem);
+        return new AppInfo(packageName, name, icon, packagePath, versionName, versionCode,
+                isSystem);
     }
 
     private static boolean isFileExists(final File file) {
@@ -832,8 +881,10 @@ public final class AppUtils {
 
     public static boolean isMainProcess() {
         int pid = android.os.Process.myPid();
-        ActivityManager activityManager = (ActivityManager) HWLApp.getContext().getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningAppProcessInfo appProcess : activityManager.getRunningAppProcesses()) {
+        ActivityManager activityManager =
+                (ActivityManager) HWLApp.getContext().getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningAppProcessInfo appProcess :
+                activityManager.getRunningAppProcesses()) {
             if (appProcess.pid == pid) {
                 return HWLApp.getContext().getApplicationInfo().packageName.equals(appProcess.processName);
             }
@@ -846,13 +897,13 @@ public final class AppUtils {
      */
     public static class AppInfo {
 
-        private String   packageName;
-        private String   name;
+        private String packageName;
+        private String name;
         private Drawable icon;
-        private String   packagePath;
-        private String   versionName;
-        private int      versionCode;
-        private boolean  isSystem;
+        private String packagePath;
+        private String versionName;
+        private int versionCode;
+        private boolean isSystem;
 
         public Drawable getIcon() {
             return icon;

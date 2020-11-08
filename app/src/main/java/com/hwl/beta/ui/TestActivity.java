@@ -2,7 +2,7 @@ package com.hwl.beta.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
 
@@ -50,6 +50,11 @@ public class TestActivity extends BaseActivity {
             public void onClick(View v) {
                 UITransfer.toTestActivityIM(mActivity);
             }
+        });
+
+        Button btnViewLogs = findViewById(R.id.btn_view_logs);
+        btnViewLogs.setOnClickListener(v -> {
+            UITransfer.toTestActivityLogs(mActivity);
         });
 
 //        Button button = findViewById(R.id.btn_test);

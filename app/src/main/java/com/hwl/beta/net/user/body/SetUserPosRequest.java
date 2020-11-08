@@ -5,16 +5,71 @@ package com.hwl.beta.net.user.body;
  */
 
 public class SetUserPosRequest {
+
+    private boolean IsDistance;
     private long UserId;
     private String LastGroupGuid;
     private String Country;
     private String Province;
     private String City;
     private String District;
+    private String Town;
     private String Street;
     private String Details;
     private double Latitude;
     private double Longitude;
+    private String CoorType;
+    private int LocationWhere;
+    private String LocationType;
+    private float Radius;
+
+    public boolean isDistance() {
+        return IsDistance;
+    }
+
+    public void setDistance(boolean distance) {
+        IsDistance = distance;
+    }
+
+    public String getTown() {
+        return Town;
+    }
+
+    public void setTown(String town) {
+        Town = town;
+    }
+
+    public String getCoorType() {
+        return CoorType;
+    }
+
+    public void setCoorType(String coorType) {
+        CoorType = coorType;
+    }
+
+    public int getLocationWhere() {
+        return LocationWhere;
+    }
+
+    public void setLocationWhere(int locationWhere) {
+        LocationWhere = locationWhere;
+    }
+
+    public String getLocationType() {
+        return LocationType;
+    }
+
+    public void setLocationType(String locationType) {
+        LocationType = locationType;
+    }
+
+    public float getRadius() {
+        return Radius;
+    }
+
+    public void setRadius(float radius) {
+        Radius = radius;
+    }
 
     public long getUserId() {
         return UserId;

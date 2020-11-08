@@ -34,8 +34,17 @@ public class NetUserInfo {
     private String LifeNotes;
     private int[] RegisterPosIdList;
     private String[] RegisterPosList;
+	private UserRegisterAreaInfo RegAreaInfo;
     private int FriendCount;
     private int GroupCount;
+
+    public UserRegisterAreaInfo getRegAreaInfo() {
+        return RegAreaInfo;
+    }
+
+    public void setRegAreaInfo(UserRegisterAreaInfo regAreaInfo) {
+        RegAreaInfo = regAreaInfo;
+    }
 
     public int getGroupCount() {
         return GroupCount;

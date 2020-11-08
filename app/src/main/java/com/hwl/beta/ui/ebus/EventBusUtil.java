@@ -157,6 +157,10 @@ public class EventBusUtil {
                 (EventBusConstant.EB_TYPE_CHAT_RECORD_MESSAGE_CLEAR, recordId));
     }
 
+    public static void sendChatRecordGroupLocationEvent() {
+        sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_CHAT_RECORD_GROUP_LOCATION));
+    }
+
     public static void sendGroupAddEvent(GroupInfo groupInfo) {
         sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_GROUP_ACTION_ADD, groupInfo));
     }
@@ -179,5 +183,9 @@ public class EventBusUtil {
 
     public static void sendCircleMessageUpdateEvent() {
         sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_CIRCLE_MESSAGE_UPDATE));
+    }
+
+    public static void sendAppVersionUpdateEvent() {
+        sendEvent(new EventMessageModel(EventBusConstant.EB_TYPE_APP_VERSION_UPDATE));
     }
 }

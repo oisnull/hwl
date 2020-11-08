@@ -4,7 +4,9 @@ import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.hwl.beta.AppConfig;
 import com.hwl.beta.HWLApp;
+import com.hwl.beta.ui.common.CustLog;
 
 public class BaiduLocationV2 {
     public final static int NOT_START = 0;
@@ -22,6 +24,7 @@ public class BaiduLocationV2 {
         client.setLocOption(getDefaultLocationClientOption());
         client.registerLocationListener(new BDAbstractLocationListener() {
 
+            //DBLocation params:http://wiki.lbsyun.baidu.com/cms/androidloc/v9_0_0/doc/index.html
             private boolean isSuccess(BDLocation location) {
                 return location != null &&
                         location.getLatitude() > 0 &&
@@ -36,6 +39,9 @@ public class BaiduLocationV2 {
                 if (isSuccess(location)) {
                     LocationModel model = new LocationModel();
                     model.radius = location.getRadius();
+                    model.coorType = location.getCoorType();
+                    model.locationWhere = location.getLocationWhere();
+                    model.locationType = location.getNetworkLocationType();
                     model.latitude = (float) location.getLatitude();
                     model.longitude = (float) location.getLongitude();
                     model.country = location.getCountry();
@@ -44,36 +50,67 @@ public class BaiduLocationV2 {
                     model.district = location.getDistrict();
                     model.street = location.getStreet();
                     model.addr = location.getAddrStr();
+                    model.town = location.getTown();
                     model.describe = location.getLocationDescribe();
                     currentStatus = COMPLETE_SUCCESS;
                     errorMessage = null;
                     locationListener.onSuccess(model);
                 } else {
+                    if (AppConfig.ENABLE_DEBUG) {
+                        LocationModel model = getTestModel();
+                        currentStatus = COMPLETE_SUCCESS;
+                        errorMessage = null;
+                        locationListener.onSuccess(model);
+                    } else {
+                        currentStatus = COMPLETE_FAILURE;
+                        errorMessage = location.getLocTypeDescription();
+                        locationListener.onFailure(errorMessage);
+                    }
 
-                    //模拟器的时候使用
-                    LocationModel model = new LocationModel();
-                    model.radius = 40.0f;
-                    model.longitude = (float) 121.503349304199;
-                    model.latitude = (float) 31.0745754241943;
-                    model.country = "中国";
-                    model.province = "上海市";
-                    model.city = "上海市";
-                    model.district = "闵行区";
-                    model.street = "浦驰路(ERROR)";
-                    model.addr = "中国上海市闵行区浦驰路188弄1-109";
-                    model.describe = "在世博家园十一街坊附近";
-                    currentStatus = COMPLETE_SUCCESS;
-                    errorMessage = null;
-                    locationListener.onSuccess(model);
-
-//                    currentStatus = COMPLETE_FAILURE;
-//                    errorMessage = location.getLocTypeDescription();
-//                    locationListener.onFailure(errorMessage);
+                    CustLog.e("BaiduLocationV2", location.getLocTypeDescription());
                 }
 
                 stop();
             }
         });
+    }
+
+    private LocationModel getTestModel2() {
+        LocationModel model = new LocationModel();
+        model.radius = 40.0f;
+        model.coorType = "";
+        model.locationType = "";
+        model.locationWhere = 1;
+        model.longitude = (float) 121.453559875488;
+        model.latitude = (float) 31.0233573913574;
+        model.country = "中国";
+        model.province = "上海市";
+        model.city = "上海市";
+        model.district = "闵行区";
+        model.street = "广场路(ERROR)";
+        model.town = "";
+        model.addr = "中国上海市闵行区吴泾镇广场路";
+        model.describe = "在广场路附近";
+        return model;
+    }
+
+    private LocationModel getTestModel() {
+        LocationModel model = new LocationModel();
+        model.radius = 40.0f;
+        model.coorType = "";
+        model.locationType = "";
+        model.locationWhere = 1;
+        model.longitude = (float) 121.503349304199;
+        model.latitude = (float) 31.0745754241943;
+        model.country = "中国";
+        model.province = "上海市";
+        model.city = "上海市";
+        model.district = "闵行区";
+        model.street = "浦驰路(ERROR)";
+        model.town = "";
+        model.addr = "中国上海市闵行区浦驰路188弄1-109";
+        model.describe = "在世博家园十一街坊附近";
+        return model;
     }
 
     /***
@@ -97,7 +134,14 @@ public class BaiduLocationV2 {
             mOption = new LocationClientOption();
             mOption.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
             //可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
-            //mOption.setCoorType("bd09ll");//可选，默认gcj02，设置返回的定位结果坐标系，如果配合百度地图使用，建议设置为bd09ll;
+            //在线坐标转换：https://tool.lu/coordinate/
+            //https://lbsyun.baidu.com/index.php?title=androidsdk/guide/coordtrans
+            //可选，设置返回经纬度坐标类型，默认GCJ02
+            //GCJ02：国测局坐标；
+            //BD09ll：百度经纬度坐标；
+            //BD09：百度墨卡托坐标；
+            //海外地区定位，无需设置坐标类型，统一返回WGS84类型坐标
+            mOption.setCoorType("gcj02");
             //mOption.setScanSpan(3000);//可选，默认0，即仅定位一次，设置发起连续定位请求的间隔需要大于等于1000ms才是有效的
             mOption.setIsNeedAddress(true);//可选，设置是否需要地址信息，默认不需要
             mOption.setIsNeedLocationDescribe(true);//可选，设置是否需要地址描述
@@ -110,8 +154,8 @@ public class BaiduLocationV2 {
             mOption.setIsNeedLocationPoiList(true);//可选，默认false，设置是否需要POI结果，可以在BDLocation
             // .getPoiList里得到
             mOption.SetIgnoreCacheException(false);//可选，默认false，设置是否收集CRASH信息，默认收集
-            mOption.setOpenGps(true);//可选，默认false，设置是否开启Gps定位
-            mOption.setIsNeedAltitude(false);//可选，默认false，设置定位时是否需要海拔信息，默认不需要，除基础定位版本都可用
+            //mOption.setOpenGps(true);//可选，默认false，设置是否开启Gps定位
+            //mOption.setIsNeedAltitude(false);//可选，默认false，设置定位时是否需要海拔信息，默认不需要，除基础定位版本都可用
             //设置打开自动回调位置模式，该开关打开后，期间只要定位SDK检测到位置变化就会主动回调给开发者，该模式下开发者无需再关心定位间隔是多少，定位SDK
             // 本身发现位置变化就会及时回调给开发者
             //mOption.setOpenAutoNotifyMode();

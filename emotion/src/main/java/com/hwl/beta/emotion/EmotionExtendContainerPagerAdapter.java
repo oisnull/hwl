@@ -1,9 +1,10 @@
 package com.hwl.beta.emotion;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 import java.util.List;
 
@@ -13,11 +14,11 @@ import java.util.List;
 
 public class EmotionExtendContainerPagerAdapter extends FragmentPagerAdapter {
 
-    List<Fragment> datas=null;
+    List<Fragment> datas = null;
 
     public EmotionExtendContainerPagerAdapter(FragmentManager fm, List<Fragment> datas) {
         super(fm);
-        this.datas=datas;
+        this.datas = datas;
     }
 
     @Override

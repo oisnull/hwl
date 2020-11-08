@@ -7,13 +7,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
-import android.support.v4.app.FragmentActivity;
 import android.view.View;
+
+import androidx.fragment.app.FragmentActivity;
 
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.sp.UserPosSP;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.TestActivity;
+import com.hwl.beta.ui.TestActivityLogs;
 import com.hwl.beta.ui.chat.ActivityChatGroup;
 import com.hwl.beta.ui.chat.ActivityChatGroupSetting;
 import com.hwl.beta.ui.chat.ActivityChatGroupSettingEdit;
@@ -31,11 +33,13 @@ import com.hwl.beta.ui.emoji.ActivityEmojiSetting;
 import com.hwl.beta.ui.emoji.ActivityEmojiStore;
 import com.hwl.beta.ui.entry.ActivityGetpwd;
 import com.hwl.beta.ui.entry.ActivityLogin;
+import com.hwl.beta.ui.entry.ActivityLoginV2;
 import com.hwl.beta.ui.entry.ActivityMain;
 import com.hwl.beta.ui.entry.ActivityQRCode;
 import com.hwl.beta.ui.entry.ActivityRegister;
 import com.hwl.beta.ui.group.ActivityGroup;
 import com.hwl.beta.ui.group.ActivityGroupAdd;
+import com.hwl.beta.ui.group.ActivityGroupAllUsers;
 import com.hwl.beta.ui.imgselect.ActivityImageBrowse;
 import com.hwl.beta.ui.imgselect.ActivityImageSelect;
 import com.hwl.beta.ui.near.ActivityNearDetail;
@@ -77,6 +81,11 @@ public class UITransfer {
         context.startActivity(intent);
     }
 
+    public static void toTestActivityLogs(Activity context) {
+        Intent intent = new Intent(context, TestActivityLogs.class);
+        context.startActivity(intent);
+    }
+
     public static void toQRCodeActivity(Activity context) {
         Intent intent = new Intent(context, ActivityQRCode.class);
         context.startActivity(intent);
@@ -84,6 +93,11 @@ public class UITransfer {
 
     public static void toLoginActivity(Activity context) {
         Intent intent = new Intent(context, ActivityLogin.class);
+        context.startActivity(intent);
+    }
+
+    public static void toLoginActivityV2(Activity context) {
+        Intent intent = new Intent(context, ActivityLoginV2.class);
         context.startActivity(intent);
     }
 
@@ -137,7 +151,7 @@ public class UITransfer {
 //        context.startActivity(intent);
 //    }
 
-    public static void toUserIndexActivity(Activity context, long userId, String userName, String
+    public static void toUserIndexActivity(Context context, long userId, String userName, String
             userImage) {
         Intent intent = new Intent(context, ActivityUserIndexV2.class);
         intent.putExtra("userid", userId);
@@ -146,7 +160,7 @@ public class UITransfer {
         context.startActivity(intent);
     }
 
-    public static void toUserIndexV2Activity(Activity context, long userId, String userName, String
+    public static void toUserIndexV2Activity(Context context, long userId, String userName, String
             userImage) {
         toUserIndexActivity(context, userId, userName, userImage);
     }
@@ -324,6 +338,12 @@ public class UITransfer {
 
     public static void toGroupActivity(Activity context) {
         Intent intent = new Intent(context, ActivityGroup.class);
+        context.startActivity(intent);
+    }
+
+    public static void toGroupAllUsersActivity(Activity context, String groupGuid) {
+        Intent intent = new Intent(context, ActivityGroupAllUsers.class);
+        intent.putExtra("groupguid", groupGuid);
         context.startActivity(intent);
     }
 

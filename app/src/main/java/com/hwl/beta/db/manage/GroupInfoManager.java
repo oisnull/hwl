@@ -1,7 +1,5 @@
 package com.hwl.beta.db.manage;
 
-import android.content.Context;
-
 import com.hwl.beta.db.BaseDao;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.dao.GroupInfoDao;
@@ -17,9 +15,6 @@ import io.reactivex.functions.Consumer;
  */
 
 public class GroupInfoManager extends BaseDao<GroupInfo> {
-    public GroupInfoManager(Context context) {
-        super(context);
-    }
 
     public void add(GroupInfo groupInfo) {
         if (groupInfo == null || StringUtils.isBlank(groupInfo.getGroupGuid()))
@@ -27,8 +22,17 @@ public class GroupInfoManager extends BaseDao<GroupInfo> {
 
         if (groupInfo.getId() != null && groupInfo.getId() > 0) {
             daoSession.getGroupInfoDao().insertOrReplace(groupInfo);
-        } else if (get(groupInfo.getGroupGuid()) == null)
-            daoSession.getGroupInfoDao().insert(groupInfo);
+        } else {
+            GroupInfo ginfo = daoSession.getGroupInfoDao().queryBuilder()
+                    .where(GroupInfoDao.Properties.GroupGuid.eq(groupInfo.getGroupGuid()))
+                    .unique();
+            if (ginfo == null) {
+                daoSession.getGroupInfoDao().insert(groupInfo);
+            } else {
+                groupInfo.setId(ginfo.getId());
+                daoSession.getGroupInfoDao().insertOrReplace(groupInfo);
+            }
+        }
     }
 
     public void addList(List<GroupInfo> groupInfos) {
