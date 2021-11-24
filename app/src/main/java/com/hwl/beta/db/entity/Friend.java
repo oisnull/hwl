@@ -3,7 +3,6 @@ package com.hwl.beta.db.entity;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 
-import com.hwl.beta.BR;
 import com.hwl.beta.utils.StringUtils;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -60,7 +59,7 @@ public class Friend extends BaseObservable implements Serializable {
 
     public void setMessageCount(String messageCount) {
         this.messageCount = messageCount;
-        notifyPropertyChanged(BR.messageCount);
+//        notifyPropertyChanged(BR.messageCount);
     }
 
     public int getImageRes() {

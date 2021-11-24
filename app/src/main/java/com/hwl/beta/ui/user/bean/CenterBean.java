@@ -3,8 +3,6 @@ package com.hwl.beta.ui.user.bean;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 
-import com.hwl.beta.BR;
-
 /**
  * Created by Administrator on 2018/4/1.
  */
@@ -38,7 +36,7 @@ public class CenterBean extends BaseObservable {
 
     public void setName(String name) {
         this.name = name;
-        notifyPropertyChanged(BR.name);
+//        notifyPropertyChanged(BR.name);
     }
 
     @Bindable
@@ -48,6 +46,6 @@ public class CenterBean extends BaseObservable {
 
     public void setSymbol(String symbol) {
         this.symbol = symbol;
-        notifyPropertyChanged(BR.symbol);
+//        notifyPropertyChanged(BR.symbol);
     }
 }

@@ -3,7 +3,6 @@ package com.hwl.beta.ui.user.bean;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 
-import com.hwl.beta.BR;
 
 /**
  * Created by Administrator on 2018/4/3.
@@ -42,7 +41,7 @@ public class UserEditBean extends BaseObservable {
 
     public void setSymbol(String symbol) {
         this.symbol = symbol;
-        notifyPropertyChanged(BR.symbol);
+//        notifyPropertyChanged(BR.symbol);
     }
 
     @Bindable
@@ -52,7 +51,7 @@ public class UserEditBean extends BaseObservable {
 
     public void setName(String name) {
         this.name = name;
-        notifyPropertyChanged(BR.name);
+//        notifyPropertyChanged(BR.name);
     }
 
     @Bindable
@@ -62,7 +61,7 @@ public class UserEditBean extends BaseObservable {
 
     public void setSex(String sex) {
         this.sex = sex;
-        notifyPropertyChanged(BR.sex);
+//        notifyPropertyChanged(BR.sex);
     }
 
     @Bindable
@@ -72,6 +71,6 @@ public class UserEditBean extends BaseObservable {
 
     public void setLifeNotes(String lifeNotes) {
         this.lifeNotes = lifeNotes;
-        notifyPropertyChanged(BR.lifeNotes);
+//        notifyPropertyChanged(BR.lifeNotes);
     }
 }

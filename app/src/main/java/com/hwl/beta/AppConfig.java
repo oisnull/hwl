@@ -6,12 +6,20 @@ public class AppConfig {
     public static final Boolean ENABLE_DEBUG = true;
     public final static String EMOTION_ENTRANCE_URL = "http://111.229.252.205:8082/emotion/index";
 
-    //release env
-    public static String NET_API_HOST = "http://111.229.252.205:8083/";
+//    //release env
+//    public static String NET_API_HOST = "http://111.229.252.205:8083/";
+//    public static String NET_RESX_HOST = "http://111.229.252.205:8085/";
+//
+//    public final static String IM_DEBUG_TAG = "zl-im";
+//    public final static String IM_HOST = "111.229.252.205";
+//    public final static int IM_PORT = 8081;
+
+    //company env
+    public static String NET_API_HOST = "http://10.61.8.63:8012/";
     public static String NET_RESX_HOST = "http://111.229.252.205:8085/";
 
     public final static String IM_DEBUG_TAG = "zl-im";
-    public final static String IM_HOST = "111.229.252.205";
+    public final static String IM_HOST = "10.61.8.63";
     public final static int IM_PORT = 8081;
 
     //local env
