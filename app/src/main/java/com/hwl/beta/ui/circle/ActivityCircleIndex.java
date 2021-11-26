@@ -5,8 +5,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 
-import androidx.databinding.DataBindingUtil;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -69,7 +67,8 @@ public class ActivityCircleIndex extends BaseActivity {
         super.onCreate(savedInstanceState);
         activity = this;
         circleStandard = new CircleLogic();
-        binding = DataBindingUtil.setContentView(activity, R.layout.circle_activity_index);
+        binding = CircleActivityIndexBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         initView();
     }
 

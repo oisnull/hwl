@@ -1,218 +1,188 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="1dp"
+    android:background="@color/white"
+    android:orientation="horizontal"
+    android:padding="10dp">
 
-    <data>
-
-        <variable
-            name="info"
-            type="com.hwl.beta.db.entity.NearCircle" />
-
-        <variable
-            name="position"
-            type="int" />
-
-        <variable
-            name="image"
-            type="com.hwl.beta.ui.user.bean.ImageViewBean"></variable>
-
-        <variable
-            name="action"
-            type="com.hwl.beta.ui.near.action.INearCircleItemListener" />
-    </data>
+    <ImageView
+        android:id="@+id/iv_header"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:src="@drawable/empty_photo" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="1dp"
-        android:background="@color/white"
-        android:orientation="horizontal"
-        android:padding="10dp">
-
-        <ImageView
-            android:id="@+id/iv_header"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:onClick="@{(view)->action.onUserHeadClick(info)}"
-            android:src="@drawable/empty_photo"
-            app:imageUrl="@{image.imageUrl}" />
+        android:layout_marginLeft="10dp"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tv_username"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_weight="1"
+                android:text='@{info.publishUserName}'
+                android:textColor="@color/color_424242"
+                android:textSize="15sp" />
 
-                <TextView
-                    android:id="@+id/tv_username"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text='@{info.publishUserName}'
-                    android:textColor="@color/color_424242"
-                    android:textSize="15dp" />
+            <ImageView
+                android:id="@+id/iv_delete"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/ic_delete"
+                android:visibility="visible" />
+        </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/iv_delete"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="5dp"
-                    android:background="@drawable/ic_delete"
-                    android:onClick="@{(view)->action.onDeleteClick(position,info)}"
-                    android:visibility="visible" />
-            </LinearLayout>
+        <com.hwl.beta.emotion.widget.EmotionTextView
+            android:id="@+id/tv_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_20"
+            android:paddingBottom="@dimen/dp_5"
+            android:text="@{info.content}"
+            android:textColor="@color/color_727270"
+            android:textSize="15sp" />
 
-            <com.hwl.beta.emotion.widget.EmotionTextView
-                android:id="@+id/tv_content"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_images"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:paddingTop="@dimen/dp_10" />
+
+        <RelativeLayout
+            android:id="@+id/rl_circle_action"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/tv_pos_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{(view)->action.onContentClick(info)}"
-                android:paddingTop="@dimen/dp_5"
-                android:paddingRight="@dimen/dp_20"
-                android:paddingBottom="@dimen/dp_5"
-                android:text="@{info.content}"
-                android:textColor="@color/color_727270"
-                android:textSize="15dp"
-                android:visibility="@{android.text.TextUtils.isEmpty(info.content)?android.view.View.GONE:android.view.View.VISIBLE}" />
+                android:layout_centerVertical="true"
+                android:paddingRight="10dp"
+                android:text="@{info.fromPosDesc}"
+                android:textColor="@color/color_b2b2b2"
+                android:textSize="12sp" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_images"
+            <TextView
+                android:id="@+id/tv_dgy_circle_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:paddingTop="@dimen/dp_10" />
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/tv_pos_desc"
+                android:text="getShowTime"
+                android:textColor="@color/color_b2b2b2"
+                android:textSize="12sp" />
+
+            <ImageView
+                android:id="@+id/iv_action_more"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/circle_action" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_action_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/comment_praise"
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <RelativeLayout
-                android:id="@+id/rl_circle_action"
+                android:id="@+id/rl_like_container"
                 android:layout_width="match_parent"
-                android:layout_height="25dp"
-                android:layout_marginTop="10dp">
-
-                <TextView
-                    android:id="@+id/tv_pos_desc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:paddingRight="10dp"
-                    android:text="@{info.fromPosDesc}"
-                    android:textColor="@color/color_b2b2b2"
-                    android:textSize="@dimen/dp_12"
-                    android:visibility="@{android.text.TextUtils.isEmpty(info.fromPosDesc)?android.view.View.GONE:android.view.View.VISIBLE}" />
-
-                <TextView
-                    android:id="@+id/tv_dgy_circle_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/tv_pos_desc"
-                    android:text="@{info.getShowTime()}"
-                    android:textColor="@color/color_b2b2b2"
-                    android:textSize="12dp" />
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:visibility="visible">
 
                 <ImageView
-                    android:id="@+id/iv_action_more"
+                    android:id="@+id/iv_like"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/circle_action"
-                    android:onClick="@{(view)->action.onMoreActionClick(view,position,info)}" />
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:src="@drawable/ic_unlike" />
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/fbl_like_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/iv_like"
+                    app:alignContent="stretch"
+                    app:alignItems="stretch"
+                    app:flexWrap="wrap">
+                    <!--动态加载点赞图片-->
+                </com.google.android.flexbox.FlexboxLayout>
 
             </RelativeLayout>
 
-            <LinearLayout
-                android:id="@+id/ll_action_container"
+            <RelativeLayout
+                android:id="@+id/rl_comment_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/comment_praise"
-                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:padding="10dp"
                 android:visibility="visible">
 
-                <RelativeLayout
-                    android:id="@+id/rl_like_container"
+                <ImageView
+                    android:id="@+id/iv_comment"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:src="@drawable/ic_uncomment" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_comments"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:visibility="visible">
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/iv_comment" />
 
-                    <ImageView
-                        android:id="@+id/iv_like"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentLeft="true"
-                        android:src="@drawable/ic_unlike" />
-
-                    <com.google.android.flexbox.FlexboxLayout
-                        android:id="@+id/fbl_like_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_toRightOf="@+id/iv_like"
-                        app:alignContent="stretch"
-                        app:alignItems="stretch"
-                        app:flexWrap="wrap">
-                        <!--动态加载点赞图片-->
-                    </com.google.android.flexbox.FlexboxLayout>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/rl_comment_container"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/tv_more"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/rv_comments"
+                    android:layout_centerInParent="true"
+                    android:layout_toRightOf="@+id/pb_loading"
+                    android:text="查看更多 >"
+                    android:textColor="@color/color_b2b2b2"
+                    android:visibility="gone" />
+
+                <ProgressBar
+                    android:id="@+id/pb_loading"
+                    style="?android:attr/progressBarStyleSmallInverse"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_below="@+id/rv_comments"
+                    android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:padding="10dp"
-                    android:visibility="visible">
+                    android:visibility="gone" />
 
-                    <ImageView
-                        android:id="@+id/iv_comment"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentLeft="true"
-                        android:src="@drawable/ic_uncomment" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_comments"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_toRightOf="@+id/iv_comment" />
-
-                    <TextView
-                        android:id="@+id/tv_more"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/rv_comments"
-                        android:layout_centerInParent="true"
-                        android:layout_toRightOf="@+id/pb_loading"
-                        android:onClick="@{(view)->action.onMoreCommentClick(info)}"
-                        android:text="查看更多 >"
-                        android:textColor="@color/color_b2b2b2"
-                        android:visibility="gone" />
-
-                    <ProgressBar
-                        android:id="@+id/pb_loading"
-                        style="?android:attr/progressBarStyleSmallInverse"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_below="@+id/rv_comments"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:visibility="gone" />
-
-                </RelativeLayout>
-
-            </LinearLayout>
+            </RelativeLayout>
 
         </LinearLayout>
 
     </LinearLayout>
-</layout>
+
+</LinearLayout>

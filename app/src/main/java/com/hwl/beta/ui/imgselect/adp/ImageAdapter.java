@@ -1,8 +1,9 @@
 package com.hwl.beta.ui.imgselect.adp;
 
 import android.app.Activity;
-import androidx.databinding.DataBindingUtil;
+
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,12 +57,10 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == 0) {
-            ImgselectCameraItemBinding itemBinding = DataBindingUtil.inflate(inflater, R.layout
-                    .imgselect_camera_item, parent, false);
+            ImgselectCameraItemBinding itemBinding = ImgselectCameraItemBinding.inflate(inflater, parent, false);
             return new CameraItemViewHolder(itemBinding);
         } else {
-            ImgselectImageItemBinding itemBinding = DataBindingUtil.inflate(inflater, R.layout.imgselect_image_item,
-                    parent, false);
+            ImgselectImageItemBinding itemBinding = ImgselectImageItemBinding.inflate(inflater, parent, false);
             return new ImageItemViewHolder(itemBinding);
         }
     }
@@ -79,12 +78,12 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof CameraItemViewHolder) {
             ImgselectCameraItemBinding itemBinding = ((CameraItemViewHolder) holder).getItemBinding();
-            itemBinding.setAction(itemListener);
+//            itemBinding.setAction(itemListener);
         } else if (holder instanceof ImageItemViewHolder) {
             ImageBean img = images.get(position);
             ImgselectImageItemBinding itemBinding = ((ImageItemViewHolder) holder).getItemBinding();
-            itemBinding.setImage(img);
-            itemBinding.setAction(itemListener);
+//            itemBinding.setImage(img);
+//            itemBinding.setAction(itemListener);
 
             Glide.with(context).load(img.getPath())
                     .skipMemoryCache(true)

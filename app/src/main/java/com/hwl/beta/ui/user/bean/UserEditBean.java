@@ -1,14 +1,10 @@
 package com.hwl.beta.ui.user.bean;
 
-import androidx.databinding.BaseObservable;
-import androidx.databinding.Bindable;
-
-
 /**
  * Created by Administrator on 2018/4/3.
  */
 
-public class UserEditBean extends BaseObservable {
+public class UserEditBean {
 
     private long userId;
     private String symbol;
@@ -34,7 +30,6 @@ public class UserEditBean extends BaseObservable {
         this.userId = userId;
     }
 
-    @Bindable
     public String getSymbol() {
         return symbol;
     }
@@ -44,7 +39,6 @@ public class UserEditBean extends BaseObservable {
 //        notifyPropertyChanged(BR.symbol);
     }
 
-    @Bindable
     public String getName() {
         return name;
     }
@@ -54,7 +48,6 @@ public class UserEditBean extends BaseObservable {
 //        notifyPropertyChanged(BR.name);
     }
 
-    @Bindable
     public String getSex() {
         return sex;
     }
@@ -64,7 +57,6 @@ public class UserEditBean extends BaseObservable {
 //        notifyPropertyChanged(BR.sex);
     }
 
-    @Bindable
     public String getLifeNotes() {
         return lifeNotes;
     }

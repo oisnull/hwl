@@ -22,20 +22,19 @@ public class ChatMessageReceivedVideoViewHolder extends RecyclerView.ViewHolder 
     }
 
     public void setItemBinding(IChatMessageItemListener itemListener,
-                               ChatImageViewBean image,
                                int position,
                                String userName,
                                String showTime) {
-        this.itemBinding.setAction(itemListener);
-        this.itemBinding.setPosition(position);
-        this.itemBinding.setShowTime(showTime);
-        this.itemBinding.setImage(image);
-        if (StringUtils.isBlank(userName)) {
-            this.itemBinding.tvUsername.setVisibility(View.GONE);
-        } else {
-            this.itemBinding.tvUsername.setVisibility(View.VISIBLE);
-            this.itemBinding.setUserName(userName);
-        }
+//        this.itemBinding.setAction(itemListener);
+//        this.itemBinding.setPosition(position);
+//        this.itemBinding.setShowTime(showTime);
+//        this.itemBinding.setImage(image);
+//        if (StringUtils.isBlank(userName)) {
+//            this.itemBinding.tvUsername.setVisibility(View.GONE);
+//        } else {
+//            this.itemBinding.tvUsername.setVisibility(View.VISIBLE);
+//            this.itemBinding.setUserName(userName);
+//        }
     }
 
     public ChatReceivedVideoItemBinding getItemBinding() {

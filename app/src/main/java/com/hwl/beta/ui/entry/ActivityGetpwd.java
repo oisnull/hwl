@@ -1,13 +1,13 @@
 package com.hwl.beta.ui.entry;
 
 import android.app.Activity;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.Toast;
 
 import com.hwl.beta.R;
+import com.hwl.beta.databinding.EntryActivityCodeLoginBinding;
 import com.hwl.beta.databinding.EntryActivityGetpwdBinding;
 import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.net.general.GeneralService;
@@ -40,14 +40,15 @@ public class ActivityGetpwd extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = this;
-        binding = DataBindingUtil.setContentView(activity, R.layout.entry_activity_getpwd);
+        binding = EntryActivityGetpwdBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         registerBean = new RegisterBean();
         registerBean.setAccount("253621965@qq.com");
         registerBean.setCheckCode("888888");
         registerBean.setPassword("123456");
         registerBean.setPasswordOK("123456");
-        binding.setBean(registerBean);
-        binding.setAction(new RegisterListener());
+//        binding.setBean(registerBean);
+//        binding.setAction(new RegisterListener());
 
         initView();
     }

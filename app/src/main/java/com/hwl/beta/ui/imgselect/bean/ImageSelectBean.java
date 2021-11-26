@@ -1,13 +1,11 @@
 package com.hwl.beta.ui.imgselect.bean;
 
-import androidx.databinding.BaseObservable;
-import androidx.databinding.Bindable;
 
 /**
  * Created by Administrator on 2018/4/4.
  */
 
-public class ImageSelectBean extends BaseObservable {
+public class ImageSelectBean {
     private int selectType;
     private String dirName;
     public String dirFullName;
@@ -32,7 +30,6 @@ public class ImageSelectBean extends BaseObservable {
         this.selectType = selectType;
     }
 
-    @Bindable
     public String getDirName() {
         return dirName;
     }
@@ -42,7 +39,6 @@ public class ImageSelectBean extends BaseObservable {
 //        notifyPropertyChanged(BR.dirName);
     }
 
-    @Bindable
     public String getImageCount() {
         return imageCount;
     }

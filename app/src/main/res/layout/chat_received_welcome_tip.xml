@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <data>
-
-        <variable
-            name="content"
-            type="String"></variable>
-    </data>
-
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="80dp"
@@ -23,8 +14,7 @@
             android:background="@drawable/bg_message_time"
             android:gravity="center"
             android:padding="5dp"
-            android:text="@{content}"
+            android:text="content"
             android:textColor="@color/white"
-            android:textSize="@dimen/dp_12" />
+            android:textSize="12sp" />
     </LinearLayout>
-</layout>

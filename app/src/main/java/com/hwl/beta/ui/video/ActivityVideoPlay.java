@@ -2,7 +2,6 @@ package com.hwl.beta.ui.video;
 
 import android.app.Activity;
 import android.content.Intent;
-import androidx.databinding.DataBindingUtil;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -48,10 +47,12 @@ public class ActivityVideoPlay extends BaseActivity {
             return;
         }
 
-        binding = DataBindingUtil.setContentView(activity, R.layout.video_activity_play);
+//        binding = DataBindingUtil.setContentView(activity, R.layout.video_activity_play);
+        binding = VideoActivityPlayBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         videoPlayListener = new VideoPlayListener();
         videoPlayListener.onInit();
-        binding.setAction(videoPlayListener);
+//        binding.setAction(videoPlayListener);
 
         playVideo(videoPath);
     }

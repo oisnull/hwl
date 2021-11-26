@@ -1,8 +1,5 @@
 package com.hwl.beta.db.entity;
 
-import androidx.databinding.BaseObservable;
-import androidx.databinding.Bindable;
-
 import com.hwl.beta.utils.StringUtils;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -16,7 +13,7 @@ import java.io.Serializable;
  * Created by Administrator on 2018/1/28.
  */
 @Entity
-public class Friend extends BaseObservable implements Serializable {
+public class Friend implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     private long id;
@@ -50,7 +47,6 @@ public class Friend extends BaseObservable implements Serializable {
         return showName;
     }
 
-    @Bindable
     public String getMessageCount() {
         if (StringUtils.isBlank(messageCount))
             return "0";
@@ -59,7 +55,6 @@ public class Friend extends BaseObservable implements Serializable {
 
     public void setMessageCount(String messageCount) {
         this.messageCount = messageCount;
-//        notifyPropertyChanged(BR.messageCount);
     }
 
     public int getImageRes() {

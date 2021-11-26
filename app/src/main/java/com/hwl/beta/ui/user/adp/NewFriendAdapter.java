@@ -1,7 +1,6 @@
 package com.hwl.beta.ui.user.adp;
 
 import android.content.Context;
-import androidx.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import com.hwl.beta.R;
 import com.hwl.beta.databinding.UserNewFriendItemBinding;
 import com.hwl.beta.db.entity.FriendRequest;
 import com.hwl.beta.ui.user.action.INewFriendItemListener;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
 
 import java.util.List;
 
@@ -59,17 +57,16 @@ public class NewFriendAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            itemBinding = DataBindingUtil.inflate(inflater, R.layout.user_new_friend_item,
-                    parent, false);
+            itemBinding = UserNewFriendItemBinding.inflate(inflater, parent, false);
             convertView = itemBinding.getRoot();
             convertView.setTag(itemBinding);
         } else {
             itemBinding = (UserNewFriendItemBinding) convertView.getTag();
         }
         FriendRequest user = users.get(position);
-        itemBinding.setUser(user);
-        itemBinding.setAction(itemListener);
-        itemBinding.setImage(new ImageViewBean(user.getFriendHeadImage()));
+//        itemBinding.setUser(user);
+//        itemBinding.setAction(itemListener);
+//        itemBinding.setImage(new ImageViewBean(user.getFriendHeadImage()));
         return convertView;
     }
 }

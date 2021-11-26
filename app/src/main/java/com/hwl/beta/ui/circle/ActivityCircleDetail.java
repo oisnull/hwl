@@ -2,8 +2,6 @@ package com.hwl.beta.ui.circle;
 
 import android.content.DialogInterface;
 
-import androidx.databinding.DataBindingUtil;
-
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -37,7 +35,6 @@ import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.convert.DBCircleAction;
 import com.hwl.beta.ui.dialog.LoadingDialog;
 import com.hwl.beta.ui.imgselect.ActivityImageBrowse;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
 import com.hwl.beta.ui.widget.CircleActionMorePop;
 import com.hwl.beta.utils.NetworkUtils;
 import com.hwl.beta.utils.StringUtils;
@@ -63,8 +60,10 @@ public class ActivityCircleDetail extends BaseActivity {
         activity = this;
         circleStandard = new CircleLogic();
         itemListener = new CircleDetailListener();
-        binding = DataBindingUtil.setContentView(activity, R.layout.circle_activity_detail);
-        binding.setAction(itemListener);
+//        binding = DataBindingUtil.setContentView(activity, R.layout.circle_activity_detail);
+//        binding.setAction(itemListener);
+        binding = CircleActivityDetailBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         initView();
     }
@@ -164,7 +163,7 @@ public class ActivityCircleDetail extends BaseActivity {
     private void bindInfo() {
         if (currentInfo == null) return;
 
-        ImageViewBean.loadImage(binding.ivHeader, currentInfo.getPublishUserImage());
+//        ImageViewBean.loadImage(binding.ivHeader, currentInfo.getPublishUserImage());
         binding.tvUsername.setText(currentInfo.getPublishUserName());
         binding.tvPosDesc.setText(currentInfo.getFromPosDesc());
         binding.tvPublicTime.setText(currentInfo.getShowTime());

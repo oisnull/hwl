@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hwl.beta.R;
@@ -29,8 +28,7 @@ public class GroupUserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new GroupUserItemHViewHolder((GroupUserItemHBinding) DataBindingUtil.inflate
-                (inflater, R.layout.group_user_item_h, parent, false));
+        return new GroupUserItemHViewHolder(GroupUserItemHBinding.inflate(inflater, parent, false));
     }
 
     @Override

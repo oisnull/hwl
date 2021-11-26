@@ -1,9 +1,10 @@
 package com.hwl.beta.ui.near.adp;
 
 import android.content.Context;
-import androidx.databinding.DataBindingUtil;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,11 +49,9 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == 0) {
-            return new NearCircleNullViewHolder((NearItemNullBinding) DataBindingUtil.inflate(inflater, R.layout.near_item_null, parent, false));
+            return new NearCircleNullViewHolder(NearItemNullBinding.inflate(inflater, parent, false));
         } else {
-            return new NearCircleViewHolder(context,
-                    (NearItemBinding) DataBindingUtil.inflate(inflater,
-                            R.layout.near_item, parent, false));
+            return new NearCircleViewHolder(context, NearItemBinding.inflate(inflater, parent, false));
         }
     }
 
@@ -104,25 +103,25 @@ public class NearCircleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public NearCircle getInfo(long nearCircleId) {
-		if(nearCircleId<=0) return null;
-        
-        for (int i = 0; i < nearCircles.size(); i++){
-			if(nearCircles.get(i).getNearCircleId()==nearCircleId){
-				return nearCircles.get(i); 
-			}
-		}
-		return null;
+        if (nearCircleId <= 0) return null;
+
+        for (int i = 0; i < nearCircles.size(); i++) {
+            if (nearCircles.get(i).getNearCircleId() == nearCircleId) {
+                return nearCircles.get(i);
+            }
+        }
+        return null;
     }
 
     public int getInfoPosition(long nearCircleId) {
-		if(nearCircleId<=0) return -1;
-        
-        for (int i = 0; i < nearCircles.size(); i++){
-			if(nearCircles.get(i).getNearCircleId()==nearCircleId){
-				return i; 
-			}
-		}
-		return -1;
+        if (nearCircleId <= 0) return -1;
+
+        for (int i = 0; i < nearCircles.size(); i++) {
+            if (nearCircles.get(i).getNearCircleId() == nearCircleId) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public void updateInfos(List<NearCircle> infos) {

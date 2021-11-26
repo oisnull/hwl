@@ -1,7 +1,5 @@
 package com.hwl.beta.ui.entry;
 
-import androidx.databinding.DataBindingUtil;
-
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -45,9 +43,8 @@ public class ActivityRegister extends BaseActivity {
         activity = this;
         registerStandard = new RegisterLogic();
         registerBean = registerStandard.getRegisterBean();
-        binding = DataBindingUtil.setContentView(this, R.layout.entry_activity_register);
-        binding.setRegisterBean(registerBean);
-        binding.setAction(new RegisterListener());
+        binding = EntryActivityRegisterBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         initView();
     }

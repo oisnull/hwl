@@ -1,6 +1,5 @@
 package com.hwl.beta.ui.user;
 
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -25,7 +24,6 @@ import com.hwl.beta.ui.ebus.EventMessageModel;
 import com.hwl.beta.ui.ebus.bean.EventUpdateFriendRemark;
 import com.hwl.beta.ui.immsg.IMClientEntry;
 import com.hwl.beta.ui.immsg.IMDefaultSendOperateListener;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
 import com.hwl.beta.ui.user.bean.UserEditItemBean;
 import com.hwl.beta.ui.user.bean.UserIndexBean;
 import com.hwl.beta.ui.user.logic.UserIndexLogic;
@@ -61,7 +59,8 @@ public class ActivityUserIndexV2 extends BaseActivity {
             finish();
         }
 
-        binding = DataBindingUtil.setContentView(activity, R.layout.user_activity_index_v2);
+        binding = UserActivityIndexV2Binding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         initView();
     }
@@ -213,8 +212,8 @@ public class ActivityUserIndexV2 extends BaseActivity {
     }
 
     private void bindInfo(boolean isReloadHeader) {
-        if (isReloadHeader)
-            ImageViewBean.loadImage(binding.ivHeader, currentUser.getUserImage());
+//        if (isReloadHeader)
+//            ImageViewBean.loadImage(binding.ivHeader, currentUser.getUserImage());
 
         if (StringUtils.isNotBlank(currentUser.getRemark())) {
             binding.tvRemark.setText(currentUser.getRemark());

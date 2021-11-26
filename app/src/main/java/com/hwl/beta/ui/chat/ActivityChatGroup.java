@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 
-import androidx.databinding.DataBindingUtil;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,6 +21,7 @@ import android.widget.Toast;
 
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.ChatActivityGroupBinding;
+import com.hwl.beta.databinding.VideoActivitySelectBinding;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.ChatGroupMessage;
 import com.hwl.beta.db.entity.GroupInfo;
@@ -79,7 +78,9 @@ public class ActivityChatGroup extends BaseActivity {
             Toast.makeText(activity, "已经被解散群组不能发送消息", Toast.LENGTH_SHORT).show();
         }
 
-        binding = DataBindingUtil.setContentView(this, R.layout.chat_activity_group);
+        binding = ChatActivityGroupBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+//        binding = DataBindingUtil.setContentView(this, R.layout.chat_activity_group);
 
         initView();
         initEmotionPanel();

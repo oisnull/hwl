@@ -1,8 +1,9 @@
 package com.hwl.beta.ui.chat.adp;
 
 import android.content.Context;
-import androidx.databinding.DataBindingUtil;
+
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,6 @@ import com.hwl.beta.db.entity.ChatUserMessage;
 import com.hwl.beta.net.NetConstant;
 import com.hwl.beta.sp.UserSP;
 import com.hwl.beta.ui.chat.action.IChatMessageItemListener;
-import com.hwl.beta.ui.chat.bean.ChatImageViewBean;
 import com.hwl.beta.ui.chat.holder.ChatMessageReceivedVoiceViewHolder;
 import com.hwl.beta.ui.chat.holder.ChatMessageReceivedImageViewHolder;
 import com.hwl.beta.ui.chat.holder.ChatMessageReceivedMessageViewHolder;
@@ -63,41 +63,31 @@ public class ChatUserMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case 100:
-                return new ChatMessageSendMessageViewHolder((ChatSendMessageItemBinding)
-                        DataBindingUtil.inflate(inflater, R.layout.chat_send_message_item,
-                                parent, false));
+                return new ChatMessageSendMessageViewHolder(ChatSendMessageItemBinding.inflate(inflater,
+                        parent, false));
             case 101:
-                return new ChatMessageSendImageViewHolder((ChatSendImageItemBinding)
-                        DataBindingUtil.inflate(inflater, R.layout.chat_send_image_item, parent,
-                                false));
+                return new ChatMessageSendImageViewHolder(ChatSendImageItemBinding.inflate(inflater,
+                        parent, false));
             case 102:
-                return new ChatMessageSendVoiceViewHolder((ChatSendVoiceItemBinding)
-                        DataBindingUtil.inflate(inflater, R.layout.chat_send_voice_item, parent,
-                                false));
+                return new ChatMessageSendVoiceViewHolder(ChatSendVoiceItemBinding.inflate(inflater,
+                        parent, false));
             case 103:
-                return new ChatMessageSendVideoViewHolder((ChatSendVideoItemBinding)
-                        DataBindingUtil.inflate(inflater, R.layout.chat_send_video_item, parent,
-                                false));
+                return new ChatMessageSendVideoViewHolder(ChatSendVideoItemBinding.inflate(inflater,
+                        parent, false));
             case 200:
-                return new ChatMessageReceivedMessageViewHolder((ChatReceivedMessageItemBinding)
-                        DataBindingUtil.inflate(inflater, R.layout.chat_received_message_item,
-                                parent, false));
+                return new ChatMessageReceivedMessageViewHolder(ChatReceivedMessageItemBinding.inflate(inflater,
+                        parent, false));
             case 201:
-                return new ChatMessageReceivedImageViewHolder((ChatReceivedImageItemBinding)
-                        DataBindingUtil.inflate(inflater, R.layout.chat_received_image_item,
-                                parent, false));
+                return new ChatMessageReceivedImageViewHolder(ChatReceivedImageItemBinding.inflate(inflater,
+                        parent, false));
             case 202:
-                return new ChatMessageReceivedVoiceViewHolder((ChatReceivedVoiceItemBinding)
-                        DataBindingUtil.inflate(inflater, R.layout.chat_received_voice_item,
-                                parent, false));
+                return new ChatMessageReceivedVoiceViewHolder(ChatReceivedVoiceItemBinding.inflate(inflater,
+                        parent, false));
             case 203:
-                return new ChatMessageReceivedVideoViewHolder((ChatReceivedVideoItemBinding)
-                        DataBindingUtil.inflate(inflater, R.layout.chat_received_video_item,
-                                parent, false));
+                return new ChatMessageReceivedVideoViewHolder(ChatReceivedVideoItemBinding.inflate(inflater,
+                        parent, false));
             case 300:
-                return new ChatMessageReceivedWelcomeTipViewHolder(
-                        (ChatReceivedWelcomeTipBinding) DataBindingUtil.inflate(inflater, R
-                                .layout.chat_received_welcome_tip, parent, false));
+                return new ChatMessageReceivedWelcomeTipViewHolder(ChatReceivedWelcomeTipBinding.inflate(inflater, parent, false));
         }
         return null;
     }
@@ -127,63 +117,48 @@ public class ChatUserMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         if (holder instanceof ChatMessageSendMessageViewHolder) {
             ChatMessageSendMessageViewHolder viewHolder = (ChatMessageSendMessageViewHolder)
                     holder;
-            viewHolder.setItemBinding(itemListener, new ChatImageViewBean(message
-                    .getFromUserHeadImage()), position, null, message.getContent(), message
+            viewHolder.setItemBinding(itemListener, position, null, message.getContent(), message
                     .getStatusDesc());
             setSendStatus(message.getSendStatus(), viewHolder.getItemBinding().pbMessageStatus,
                     viewHolder.getItemBinding().ivMessageStatusFail);
         } else if (holder instanceof ChatMessageSendImageViewHolder) {
             ChatMessageSendImageViewHolder viewHolder = (ChatMessageSendImageViewHolder) holder;
-            String showUrl = ChatImageViewBean.getShowUrl(message.getLocalUrl(), message
-                    .getPreviewUrl(), message.getOriginalUrl());
-            viewHolder.setItemBinding(itemListener, new ChatImageViewBean(message
-                    .getFromUserHeadImage(), showUrl), null, position, message.getStatusDesc());
+            viewHolder.setItemBinding(itemListener, null, position, message.getStatusDesc());
             setSendStatus(message.getSendStatus(), viewHolder.getItemBinding().pbMessageStatus,
                     viewHolder.getItemBinding().ivMessageStatusFail);
         } else if (holder instanceof ChatMessageSendVoiceViewHolder) {
             ChatMessageSendVoiceViewHolder viewHolder = (ChatMessageSendVoiceViewHolder) holder;
-            viewHolder.setItemBinding(itemListener, new ChatImageViewBean(message
-                    .getFromUserHeadImage()), position, null, message.getPlayTime(), message
-                    .getStatusDesc());
+            viewHolder.setItemBinding(itemListener, position, null, message.getPlayTime(), message.getStatusDesc());
             setSendStatus(message.getSendStatus(), viewHolder.getItemBinding().pbMessageStatus,
                     viewHolder.getItemBinding().ivMessageStatusFail);
         } else if (holder instanceof ChatMessageSendVideoViewHolder) {
             ChatMessageSendVideoViewHolder viewHolder = (ChatMessageSendVideoViewHolder) holder;
-            viewHolder.setItemBinding(itemListener, new ChatImageViewBean(message
-                    .getFromUserHeadImage(), message.getPreviewUrl()), null, position, message
+            viewHolder.setItemBinding(itemListener, null, position, message
                     .getStatusDesc());
             setSendStatus(message.getSendStatus(), viewHolder.getItemBinding().pbMessageStatus,
                     viewHolder.getItemBinding().ivMessageStatusFail);
         } else if (holder instanceof ChatMessageReceivedMessageViewHolder) {
             ChatMessageReceivedMessageViewHolder viewHolder =
                     (ChatMessageReceivedMessageViewHolder) holder;
-            viewHolder.setItemBinding(itemListener, new ChatImageViewBean(message
-                    .getFromUserHeadImage()), position, message.getContent(), null, DateUtils
+            viewHolder.setItemBinding(itemListener, position, message.getContent(), null, DateUtils
                     .getChatShowTime
                             (message.getSendTime()));
         } else if (holder instanceof ChatMessageReceivedImageViewHolder) {
             ChatMessageReceivedImageViewHolder viewHolder =
                     (ChatMessageReceivedImageViewHolder) holder;
-            String showUrl = ChatImageViewBean.getShowUrl(message.getLocalUrl(), message
-                    .getPreviewUrl(), message.getOriginalUrl());
-            viewHolder.setItemBinding(itemListener, new ChatImageViewBean(message
-                    .getFromUserHeadImage(), showUrl), position, null, DateUtils.getChatShowTime
-                    (message
-                            .getSendTime()));
+//            String showUrl = ChatImageViewBean.getShowUrl(message.getLocalUrl(), message
+//                    .getPreviewUrl(), message.getOriginalUrl());
+            viewHolder.setItemBinding(itemListener, position, null, DateUtils.getChatShowTime
+                    (message.getSendTime()));
         } else if (holder instanceof ChatMessageReceivedVoiceViewHolder) {
             ChatMessageReceivedVoiceViewHolder viewHolder =
                     (ChatMessageReceivedVoiceViewHolder) holder;
-            viewHolder.setItemBinding(itemListener, new ChatImageViewBean(message
-                    .getFromUserHeadImage()), position, message.getPlayTime(), null, DateUtils
-                    .getChatShowTime
-                            (message.getSendTime()));
+            viewHolder.setItemBinding(itemListener, position, message.getPlayTime(), null, DateUtils.getChatShowTime(message.getSendTime()));
         } else if (holder instanceof ChatMessageReceivedVideoViewHolder) {
             ChatMessageReceivedVideoViewHolder viewHolder =
                     (ChatMessageReceivedVideoViewHolder) holder;
-            viewHolder.setItemBinding(itemListener, new ChatImageViewBean(message
-                    .getFromUserHeadImage(), message.getPreviewUrl()), position, null, DateUtils
-                    .getChatShowTime
-                            (message.getSendTime()));
+            viewHolder.setItemBinding(itemListener, position, null, DateUtils
+                    .getChatShowTime(message.getSendTime()));
         } else if (holder instanceof ChatMessageReceivedWelcomeTipViewHolder) {
             ChatMessageReceivedWelcomeTipViewHolder viewHolder =
                     (ChatMessageReceivedWelcomeTipViewHolder) holder;

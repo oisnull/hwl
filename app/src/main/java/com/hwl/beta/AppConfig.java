@@ -2,9 +2,7 @@ package com.hwl.beta;
 
 public class AppConfig {
     //Global config
-    public static final String APP_DEFAULT_NAME = "知了";
-    public static final Boolean ENABLE_DEBUG = true;
-    public final static String EMOTION_ENTRANCE_URL = "http://111.229.252.205:8082/emotion/index";
+//    public final static String EMOTION_ENTRANCE_URL = "http://111.229.252.205:8082/emotion/index";
 
 //    //release env
 //    public static String NET_API_HOST = "http://111.229.252.205:8083/";

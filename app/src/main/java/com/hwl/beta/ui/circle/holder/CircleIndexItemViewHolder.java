@@ -16,7 +16,6 @@ import com.hwl.beta.ui.circle.action.ICircleLikeItemListener;
 import com.hwl.beta.ui.circle.adp.CircleCommentAdapter;
 import com.hwl.beta.ui.common.NineImagesAdapter;
 import com.hwl.beta.ui.convert.DBCircleAction;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
 
 public class CircleIndexItemViewHolder extends RecyclerView.ViewHolder {
 
@@ -32,10 +31,10 @@ public class CircleIndexItemViewHolder extends RecyclerView.ViewHolder {
     public void setItemBinding(final ICircleItemListener itemListener,
                                int position,
                                final Circle info) {
-        this.itemBinding.setAction(itemListener);
-        this.itemBinding.setPosition(position);
-        this.itemBinding.setImage(new ImageViewBean(info.getPublishUserImage()));
-        this.itemBinding.setInfo(info);
+//        this.itemBinding.setAction(itemListener);
+//        this.itemBinding.setPosition(position);
+//        this.itemBinding.setImage(new ImageViewBean(info.getPublishUserImage()));
+//        this.itemBinding.setInfo(info);
         this.itemBinding.rvComments.setAdapter(new CircleCommentAdapter(context,
                 info.getComments(), itemListener));
         this.itemBinding.rvComments.setLayoutManager(new LinearLayoutManager(context));

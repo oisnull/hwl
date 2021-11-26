@@ -1,37 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
-    <data>
+    <ImageView
+        android:id="@+id/iv_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/empty_photo" />
 
-        <variable
-            name="image"
-            type="com.hwl.beta.ui.imgselect.bean.ImageBean"></variable>
-
-        <variable
-            name="action"
-            type="com.hwl.beta.ui.imgselect.action.IImageSelectItemListener"></variable>
-    </data>
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/iv_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:onClick="@{(view)->action.onImageClick(image)}"
-            android:scaleType="centerCrop"
-            android:src="@drawable/empty_photo" />
-
-        <CheckBox
-            android:id="@+id/cb_select"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/checkbox_style"
-            android:button="@null"
-            android:checked="@{image.select}"
-            android:onClick="@{(view)->action.onCheckBoxClick((android.widget.CheckBox)view,image)}" />
-    </RelativeLayout>
-</layout>
+    <CheckBox
+        android:id="@+id/cb_select"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/checkbox_style"
+        android:button="@null" />
+</RelativeLayout>

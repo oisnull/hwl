@@ -1,7 +1,7 @@
 package com.hwl.beta.ui.user;
 
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
@@ -49,9 +49,7 @@ public class FragmentFriends extends BaseFragment {
         friendsStandard = new FriendsLogic();
         friendAdapter = new FriendAdapter(activity);
 
-        binding = DataBindingUtil.inflate(inflater, R.layout.user_fragment_friends, container,
-                false);
-        binding.setFriendAdapter(friendAdapter);
+        binding = UserFragmentFriendsBinding.inflate(inflater, container, false);
 
         initView();
         return binding.getRoot();

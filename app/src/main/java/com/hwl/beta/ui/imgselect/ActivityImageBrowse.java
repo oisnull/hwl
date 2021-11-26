@@ -1,7 +1,6 @@
 package com.hwl.beta.ui.imgselect;
 
 import android.app.Activity;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
@@ -41,7 +40,8 @@ public class ActivityImageBrowse extends BaseActivity {
             return;
         }
 
-        binding = DataBindingUtil.setContentView(activity, R.layout.imgselect_activity_view);
+        binding = ImgselectActivityViewBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         initView();
     }

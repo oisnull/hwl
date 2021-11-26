@@ -1,8 +1,9 @@
 package com.hwl.beta.ui.circle.adp;
 
 import android.content.Context;
-import androidx.databinding.DataBindingUtil;
+
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -20,7 +21,6 @@ import com.hwl.beta.ui.circle.holder.CircleItemNullViewHolder;
 import com.hwl.beta.ui.circle.holder.CircleUserHeadItemViewHolder;
 import com.hwl.beta.ui.circle.holder.CircleUserIndexItemViewHolder;
 import com.hwl.beta.ui.circle.holder.CircleUserItemDefaultViewHolder;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -156,15 +156,13 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         switch (viewType) {
             case 0:
             default:
-                return new CircleUserItemDefaultViewHolder((CircleUserItemDefaultBinding) DataBindingUtil.inflate(inflater, R.layout.circle_user_item_default, parent, false));
+                return new CircleUserItemDefaultViewHolder(CircleUserItemDefaultBinding.inflate(inflater, parent, false));
             case 1:
-                return new CircleUserHeadItemViewHolder((CircleUserHeadItemBinding) DataBindingUtil.inflate(inflater, R.layout.circle_user_head_item, parent, false));
+                return new CircleUserHeadItemViewHolder(CircleUserHeadItemBinding.inflate(inflater, parent, false));
             case 2:
-                return new CircleUserIndexItemViewHolder(context,
-                        (CircleUserIndexItemBinding) DataBindingUtil.inflate(inflater,
-                                R.layout.circle_user_index_item, parent, false));
+                return new CircleUserIndexItemViewHolder(context, CircleUserIndexItemBinding.inflate(inflater, parent, false));
             case 3:
-                return new CircleItemNullViewHolder((CircleItemNullBinding) DataBindingUtil.inflate(inflater, R.layout.circle_item_null, parent, false));
+                return new CircleItemNullViewHolder(CircleItemNullBinding.inflate(inflater, parent, false));
         }
     }
 
@@ -178,8 +176,7 @@ public class CircleUserIndexAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "");
         } else if (holder instanceof CircleUserHeadItemViewHolder) {
             CircleUserHeadItemViewHolder viewHolder = (CircleUserHeadItemViewHolder) holder;
-            viewHolder.setItemBinding(itemListener, new ImageViewBean(info.getPublishUserImage(),
-                    info.getCircleBackImage()), info.getPublishUserName(), info.getLifeNotes());
+            viewHolder.setItemBinding(itemListener, info.getPublishUserName(), info.getLifeNotes());
         } else if (holder instanceof CircleUserIndexItemViewHolder) {
             CircleUserIndexItemViewHolder viewHolder = (CircleUserIndexItemViewHolder) holder;
             if (info.getShortPublishDate().equals(getPrevShortDate(position))) {

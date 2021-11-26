@@ -1,7 +1,6 @@
 package com.hwl.beta.ui.user;
 
 import android.content.DialogInterface;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -44,8 +43,8 @@ public class ActivityNewFriend extends BaseActivity {
 
         friendAdapter = new NewFriendAdapter(activity, friendStandard.getFriendRequestInfos(),
                 new NewFriendItemListener());
-        binding = DataBindingUtil.setContentView(this, R.layout.user_activity_new_friend);
-        binding.setFriendAdapter(friendAdapter);
+        binding = UserActivityNewFriendBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         initView();
     }

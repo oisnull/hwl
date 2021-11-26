@@ -8,7 +8,6 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.hwl.beta.R;
 import com.hwl.beta.db.entity.NearCircleLike;
 import com.hwl.beta.ui.near.action.INearCircleLikeItemListener;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
 import com.hwl.beta.utils.DisplayUtils;
 
 import java.util.List;
@@ -79,7 +78,7 @@ public class UserLikeOperate {
     private static ImageView createLikeView(Context context, final NearCircleLike like,
                                             final INearCircleLikeItemListener itemListener) {
         ImageView iv = new ImageView(context);
-        ImageViewBean.loadImage(iv, like.getLikeUserImage());
+//        ImageViewBean.loadImage(iv, like.getLikeUserImage());
         iv.setTag(R.id.id_tag_userlike, like.getLikeUserId());
         iv.setOnClickListener(new View.OnClickListener() {
             @Override

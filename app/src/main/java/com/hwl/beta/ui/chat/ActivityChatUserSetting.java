@@ -2,8 +2,6 @@ package com.hwl.beta.ui.chat;
 
 import android.content.DialogInterface;
 
-import androidx.databinding.DataBindingUtil;
-
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -15,6 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.hwl.beta.R;
+import com.hwl.beta.databinding.ChatActivityUserBinding;
 import com.hwl.beta.databinding.ChatActivityUserSettingBinding;
 import com.hwl.beta.db.entity.ChatUserSetting;
 import com.hwl.beta.db.entity.Friend;
@@ -22,7 +21,6 @@ import com.hwl.beta.ui.chat.logic.ChatUserSettingLogic;
 import com.hwl.beta.ui.chat.standard.ChatUserSettingStandard;
 import com.hwl.beta.ui.common.BaseActivity;
 import com.hwl.beta.ui.common.UITransfer;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
 
 public class ActivityChatUserSetting extends BaseActivity {
 
@@ -44,7 +42,10 @@ public class ActivityChatUserSetting extends BaseActivity {
         checkParam();
 
         userSetting = settingStandard.getChatUserSetting(user.getId());
-        binding = DataBindingUtil.setContentView(activity, R.layout.chat_activity_user_setting);
+//        binding = DataBindingUtil.setContentView(activity, R.layout.chat_activity_user_setting);
+
+        binding = ChatActivityUserSettingBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         initView();
     }
@@ -66,7 +67,7 @@ public class ActivityChatUserSetting extends BaseActivity {
                     }
                 });
 
-        ImageViewBean.loadImage(binding.ivHeader, user.getHeadImage());
+//        ImageViewBean.loadImage(binding.ivHeader, user.getHeadImage());
         binding.tvName.setText(user.getShowName());
         binding.switchShield.setChecked(userSetting.getIsShield());
         binding.switchShield.setOnCheckedChangeListener(new CompoundButton

@@ -1,288 +1,264 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_background"
+    android:orientation="vertical">
 
-    <data>
+    <com.hwl.beta.ui.widget.TitleBar
+        android:id="@+id/tb_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
-        <variable
-            name="action"
-            type="com.hwl.beta.ui.chat.action.IChatGroupSettingListener" />
-
-        <variable
-            name="setting"
-            type="com.hwl.beta.db.entity.GroupInfo" />
-    </data>
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/main_background"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <com.hwl.beta.ui.widget.TitleBar
-            android:id="@+id/tb_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <RelativeLayout
+                android:id="@+id/rl_group_guid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:background="@drawable/item_selector"
+                android:padding="15dp"
+                android:visibility="gone">
 
-                <RelativeLayout
-                    android:id="@+id/rl_group_guid"
+                <TextView
+                    android:id="@+id/tv_group_guid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/item_selector"
+                android:padding="15dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:text="群组成员0" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:text=">" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:padding="15dp">
+
+                <com.hwl.beta.ui.widget.NoScrollGridView
+                    android:id="@+id/gv_user_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/item_selector"
-                    android:padding="15dp"
-                    android:visibility="gone">
+                    android:gravity="center_horizontal"
+                    android:numColumns="5" />
 
-                    <TextView
-                        android:id="@+id/tv_group_guid"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="" />
+            </RelativeLayout>
 
-                </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="1dp"
+                android:background="@drawable/item_selector"
+                android:padding="15dp">
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/tv_note_title"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/item_selector"
-                    android:onClick="@{view->action.onGroupUsersClick()}"
-                    android:padding="15dp">
+                    android:text="群公告" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:text="@{`群组成员 (` + setting.getGroupUserCount()+`)`}" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:text=">" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/tv_note"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:padding="15dp">
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toRightOf="@+id/tv_note_title"
+                    android:gravity="right"
+                    android:text="groupNote" />
 
-                    <com.hwl.beta.ui.widget.NoScrollGridView
-                        android:id="@+id/gv_user_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:numColumns="5" />
+            </RelativeLayout>
 
-                </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="1dp"
+                android:background="@drawable/item_selector"
+                android:padding="15dp">
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="1dp"
-                    android:background="@drawable/item_selector"
-                    android:onClick="@{view->action.onGroupNoteClick()}"
-                    android:padding="15dp">
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:text="群组名称" />
 
-                    <TextView
-                        android:id="@+id/tv_note_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="群公告" />
-
-                    <TextView
-                        android:id="@+id/tv_note"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_toRightOf="@+id/tv_note_title"
-                        android:gravity="right"
-                        android:text="@{setting.groupNote}" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/tv_group_name"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="1dp"
-                    android:background="@drawable/item_selector"
-                    android:onClick="@{view->action.onGroupNameClick()}"
-                    android:padding="15dp">
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:text="groupName" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:text="群组名称" />
+            </RelativeLayout>
 
-                    <TextView
-                        android:id="@+id/tv_group_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:text="@{setting.groupName}" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                android:background="@drawable/item_selector"
+                android:padding="15dp">
 
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="1dp"
-                    android:background="@drawable/item_selector"
-                    android:onClick="@{view->action.onMyNameClick()}"
-                    android:padding="15dp">
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:text="我的昵称" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:text="我的昵称" />
-
-                    <TextView
-                        android:id="@+id/tv_user_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:text="@{setting.myUserName}" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/rl_symbol"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/tv_user_name"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="1dp"
-                    android:background="@color/white"
-                    android:padding="15dp">
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:text="myUserName" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:text="群消息屏蔽" />
+            </RelativeLayout>
 
-                    <Switch
-                        android:id="@+id/switch_shield"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:checked="@{setting.isShield}"
-                        android:onCheckedChanged="@{action::onShieldCheckedChanged}"
-                        android:switchMinWidth="50dp"
-                        android:textOff="  "
-                        android:textOn="  "
-                        android:thumb="@drawable/switch_thumb"
-                        android:track="@drawable/switch_track" />
+            <RelativeLayout
+                android:id="@+id/rl_symbol"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                android:background="@color/white"
+                android:padding="15dp">
 
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/item_selector"
-                    android:onClick="@{view->action.onSearchClick()}"
-                    android:padding="15dp">
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:text="群消息屏蔽" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:text="搜索记录" />
-
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
+                <Switch
+                    android:id="@+id/switch_shield"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/item_selector"
-                    android:onClick="@{view->action.onClearClick()}"
-                    android:padding="15dp">
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:switchMinWidth="50dp"
+                    android:textOff="  "
+                    android:textOn="  "
+                    android:thumb="@drawable/switch_thumb"
+                    android:track="@drawable/switch_track" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:text="清空记录" />
+            </RelativeLayout>
 
-                </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/item_selector"
+                android:padding="15dp">
 
-                <Button
-                    android:id="@+id/btn_dismiss"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="40px"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="40px"
-                    android:background="@color/main"
-                    android:gravity="center"
-                    android:onClick="@{view->action.onDismissClick()}"
-                    android:padding="10dp"
-                    android:text="解散群组"
-                    android:textColor="@color/white"
-                    android:textSize="15dp"
-                    android:visibility="gone" />
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:text="搜索记录" />
 
-                <Button
-                    android:id="@+id/btn_exit"
-                    android:layout_width="match_parent"
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/item_selector"
+                android:padding="15dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="40px"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginRight="40px"
-                    android:background="@color/main"
-                    android:gravity="center"
-                    android:onClick="@{view->action.onExitClick()}"
-                    android:padding="10dp"
-                    android:text="我要退出"
-                    android:textColor="@color/white"
-                    android:textSize="15dp" />
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:text="清空记录" />
 
-            </LinearLayout>
-        </ScrollView>
+            </RelativeLayout>
 
-    </LinearLayout>
-</layout>
+            <Button
+                android:id="@+id/btn_dismiss"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40px"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="40px"
+                android:background="@color/main"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="解散群组"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/btn_exit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40px"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="40px"
+                android:background="@color/main"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="我要退出"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

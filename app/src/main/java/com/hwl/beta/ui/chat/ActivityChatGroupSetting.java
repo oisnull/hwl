@@ -2,8 +2,6 @@ package com.hwl.beta.ui.chat;
 
 import android.content.DialogInterface;
 
-import androidx.databinding.DataBindingUtil;
-
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -16,6 +14,7 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.hwl.beta.AppConfig;
+import com.hwl.beta.BuildConfig;
 import com.hwl.beta.R;
 import com.hwl.beta.databinding.ChatActivityGroupSettingBinding;
 import com.hwl.beta.db.entity.GroupInfo;
@@ -61,9 +60,11 @@ public class ActivityChatGroupSetting extends BaseActivity {
             return;
         }
 
-        binding = DataBindingUtil.setContentView(activity, R.layout.chat_activity_group_setting);
-        binding.setAction(new ChatGroupSettingListener());
-        binding.setSetting(group);
+        binding = ChatActivityGroupSettingBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+//        binding = DataBindingUtil.setContentView(activity, R.layout.chat_activity_group_setting);
+//        binding.setAction(new ChatGroupSettingListener());
+//        binding.setSetting(group);
 
         initView();
     }
@@ -100,7 +101,7 @@ public class ActivityChatGroupSetting extends BaseActivity {
         } else {
             binding.btnExit.setVisibility(View.VISIBLE);
         }
-        if (AppConfig.ENABLE_DEBUG) {
+        if (BuildConfig.DEBUG) {
             binding.rlGroupGuid.setVisibility(View.VISIBLE);
             binding.tvGroupGuid.setText(group.getGroupGuid());
         }

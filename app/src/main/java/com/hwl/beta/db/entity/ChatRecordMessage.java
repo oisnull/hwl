@@ -1,7 +1,5 @@
 package com.hwl.beta.db.entity;
 
-import androidx.databinding.BaseObservable;
-
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
@@ -16,7 +14,7 @@ import java.util.List;
  * Created by Administrator on 2018/2/8.
  */
 @Entity
-public class ChatRecordMessage extends BaseObservable implements Serializable {
+public class ChatRecordMessage implements Serializable {
     private static final long serialVersionUID = 2L;
 
     @Id(autoincrement = true)

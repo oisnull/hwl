@@ -2,8 +2,6 @@ package com.hwl.beta.ui.near;
 
 import android.content.DialogInterface;
 
-import androidx.databinding.DataBindingUtil;
-
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -37,7 +35,6 @@ import com.hwl.beta.ui.common.NineImagesAdapter;
 import com.hwl.beta.ui.near.holder.UserLikeOperate;
 import com.hwl.beta.ui.near.logic.NearLogic;
 import com.hwl.beta.ui.near.standard.NearStandard;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
 import com.hwl.beta.ui.widget.CircleActionMorePop;
 import com.hwl.beta.utils.NetworkUtils;
 import com.hwl.beta.utils.StringUtils;
@@ -72,8 +69,8 @@ public class ActivityNearDetail extends BaseActivity {
         activity = this;
         nearStandard = new NearLogic();
         itemListener = new NearCircleDetailListener();
-        binding = DataBindingUtil.setContentView(activity, R.layout.near_activity_detail);
-        binding.setAction(itemListener);
+        binding = NearActivityDetailBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         initView();
     }
@@ -176,7 +173,7 @@ public class ActivityNearDetail extends BaseActivity {
     private void bindInfo() {
         if (currentInfo == null) return;
 
-        ImageViewBean.loadImage(binding.ivHeader, currentInfo.getPublishUserImage());
+//        ImageViewBean.loadImage(binding.ivHeader, currentInfo.getPublishUserImage());
         binding.tvUsername.setText(currentInfo.getPublishUserName());
         binding.tvPosDesc.setText(currentInfo.getFromPosDesc());
         binding.tvPublicTime.setText(currentInfo.getShowTime());

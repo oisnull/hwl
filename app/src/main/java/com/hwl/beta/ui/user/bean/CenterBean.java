@@ -1,13 +1,11 @@
 package com.hwl.beta.ui.user.bean;
 
-import androidx.databinding.BaseObservable;
-import androidx.databinding.Bindable;
 
 /**
  * Created by Administrator on 2018/4/1.
  */
 
-public class CenterBean extends BaseObservable {
+public class CenterBean {
     private String headImage;
     private String name;
     private String symbol;
@@ -29,7 +27,6 @@ public class CenterBean extends BaseObservable {
         this.headImage = headImage;
     }
 
-    @Bindable
     public String getName() {
         return name;
     }
@@ -39,7 +36,6 @@ public class CenterBean extends BaseObservable {
 //        notifyPropertyChanged(BR.name);
     }
 
-    @Bindable
     public String getSymbol() {
         return symbol;
     }

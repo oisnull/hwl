@@ -5,11 +5,11 @@ import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
-import androidx.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -46,7 +46,8 @@ public class ActivityVideoSelect extends BaseActivity {
         videos = new ArrayList<>();
         loadVideos(0);
 
-        binding = DataBindingUtil.setContentView(this, R.layout.video_activity_select);
+        binding = VideoActivitySelectBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         binding.tbTitle.setImageLeftClick(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,7 +114,7 @@ public class ActivityVideoSelect extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK){
+        if (resultCode == RESULT_OK) {
             Intent intent = new Intent();
             intent.putExtra("videopath", data.getStringExtra("videopath"));
             setResult(RESULT_OK, intent);
@@ -138,7 +139,7 @@ public class ActivityVideoSelect extends BaseActivity {
         root.findViewById(R.id.btn_play).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UITransfer.toVideoPlayActivity(activity, ActivityVideoPlay.MODE_ACTION, videoLocalPath,1);
+                UITransfer.toVideoPlayActivity(activity, ActivityVideoPlay.MODE_ACTION, videoLocalPath, 1);
             }
         });
         setUserDialog.setContentView(root);

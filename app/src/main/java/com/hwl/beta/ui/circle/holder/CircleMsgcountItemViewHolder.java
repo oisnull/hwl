@@ -20,8 +20,8 @@ public class CircleMsgcountItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setItemBinding(final ICircleItemListener itemListener, int msgCount) {
-        this.itemBinding.setAction(itemListener);
-        this.itemBinding.setMsgCount(msgCount + "");
+//        this.itemBinding.setAction(itemListener);
+//        this.itemBinding.setMsgCount(msgCount + "");
     }
 
     public void setMessageItemVisibility(int visibility) {

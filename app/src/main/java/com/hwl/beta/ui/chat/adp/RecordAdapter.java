@@ -1,8 +1,8 @@
 package com.hwl.beta.ui.chat.adp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
-import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Gravity;
@@ -126,16 +126,15 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
 
     @Override
     public RecordAdapter.RecordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new RecordViewHolder((ChatRecordItemBinding) DataBindingUtil.inflate(inflater, R
-                .layout.chat_record_item, parent, false));
+        return new RecordViewHolder(ChatRecordItemBinding.inflate(inflater, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(RecordAdapter.RecordViewHolder holder, final int position) {
+    public void onBindViewHolder(RecordAdapter.RecordViewHolder holder, @SuppressLint("RecyclerView") int position) {
         ChatRecordItemBinding itemBinding = holder.getItemBinding();
         ChatRecordMessage record = records.get(position);
-        itemBinding.setRecord(record);
-        itemBinding.setPosition(position);
+//        itemBinding.setRecord(record);
+//        itemBinding.setPosition(position);
         itemBinding.tvTime.setText(DateUtils.getChatShowTime(record.getSendTime()));
         itemBinding.ivNotify.setVisibility(record.isShield() ? View.VISIBLE : View.GONE);
         if (record.isShield()) {

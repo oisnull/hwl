@@ -3,8 +3,6 @@ package com.hwl.beta.ui.imgselect;
 import android.app.Activity;
 import android.content.Intent;
 
-import androidx.databinding.DataBindingUtil;
-
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -65,8 +63,8 @@ public class ActivityImageSelect extends BaseActivity {
 
         maxImageCount = getIntent().getIntExtra("selectcount", 1);
         selectBean = new ImageSelectBean(getIntent().getIntExtra("selecttype", 0));
-        binding = DataBindingUtil.setContentView(this, R.layout.imgselect_activity_index);
-        binding.setBean(selectBean);
+        binding = ImgselectActivityIndexBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         initView();
     }

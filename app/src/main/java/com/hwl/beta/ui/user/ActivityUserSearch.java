@@ -1,6 +1,5 @@
 package com.hwl.beta.ui.user;
 
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
@@ -47,9 +46,11 @@ public class ActivityUserSearch extends BaseActivity {
         searchStandard = new UserSearchLogic();
         userAdapter = new UserSearchAdapter(this, new UserSearchItemListener());
 
-        binding = DataBindingUtil.setContentView(this, R.layout.user_activity_search);
-        binding.setAction(new UserSearchListener());
-        binding.setSearchAdapter(userAdapter);
+//        binding = DataBindingUtil.setContentView(this, R.layout.user_activity_search);
+//        binding.setAction(new UserSearchListener());
+//        binding.setSearchAdapter(userAdapter);
+        binding = UserActivitySearchBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         initView();
     }

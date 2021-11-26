@@ -2,7 +2,6 @@ package com.hwl.beta.ui.near;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -34,7 +33,8 @@ public class ActivityNearMessages extends BaseActivity {
         super.onCreate(savedInstanceState);
         activity = this;
         messages = DaoUtils.getNearCircleMessageManagerInstance().getAll();
-        binding = DataBindingUtil.setContentView(activity, R.layout.near_activity_messages);
+        binding = NearActivityMessagesBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         initView();
     }

@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 
-import androidx.databinding.DataBindingUtil;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.hwl.beta.R;
+import com.hwl.beta.databinding.ChatActivityGroupSettingEditBinding;
 import com.hwl.beta.databinding.ChatActivityUserBinding;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.ChatUserMessage;
@@ -76,7 +75,8 @@ public class ActivityChatUser extends BaseActivity {
             finish();
         }
 
-        binding = DataBindingUtil.setContentView(this, R.layout.chat_activity_user);
+        binding = ChatActivityUserBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         initView();
         initEmotionPanel();

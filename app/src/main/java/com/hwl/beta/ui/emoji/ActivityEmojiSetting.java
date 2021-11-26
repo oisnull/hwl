@@ -1,7 +1,6 @@
 package com.hwl.beta.ui.emoji;
 
 import android.app.Activity;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.view.View;
 
@@ -18,7 +17,9 @@ public class ActivityEmojiSetting extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = this;
-        binding = DataBindingUtil.setContentView(activity, R.layout.emoji_activity_setting);
+        binding = EmojiActivitySettingBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         initView();
     }
 

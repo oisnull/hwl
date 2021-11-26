@@ -1,152 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_background"
+    android:clipToPadding="false"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
-    <data>
+    <com.hwl.beta.ui.widget.TitleBar
+        android:id="@+id/tb_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-        <variable
-            name="loginBean"
-            type="com.hwl.beta.ui.entry.bean.LoginBean" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/logo" />
 
-        <variable
-            name="action"
-            type="com.hwl.beta.ui.entry.action.ILoginListener" />
-    </data>
+    <EditText
+        android:id="@+id/et_account"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_centerInParent="true"
+        android:layout_margin="20dp"
+        android:background="@color/white"
+        android:ellipsize="end"
+        android:gravity="center_vertical|left"
+        android:maxLength="50"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:text="@={loginBean.account}"
+        android:textColor="@color/color_424242"
+        android:textColorHint="@color/color_b2b2b2"
+        android:textSize="15dp" />
+
+    <EditText
+        android:id="@+id/et_password"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/white"
+        android:ellipsize="end"
+        android:gravity="center_vertical|left"
+        android:hint="Password"
+        android:imeOptions="actionDone"
+        android:inputType="textPassword"
+        android:maxLength="20"
+        android:maxLines="1"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:text="@={loginBean.password}"
+        android:textColor="@color/color_424242"
+        android:textColorHint="@color/color_b2b2b2"
+        android:textSize="15sp" />
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/main"
+        android:gravity="center"
+        android:padding="12dp"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/btn_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:padding="10dp"
+            android:textColor="@color/color_727270"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/btn_getpwd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="30dp"
+            android:gravity="center"
+            android:padding="10dp"
+            android:textColor="@color/color_727270"
+            android:textSize="14sp" />
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/main_background"
-        android:clipToPadding="false"
-        android:fitsSystemWindows="true"
-        android:orientation="vertical">
-
-        <com.hwl.beta.ui.widget.TitleBar
-            android:id="@+id/tb_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <ImageView
+            android:id="@+id/iv_wx"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="30dp"
-            android:src="@drawable/logo" />
+            android:src="@drawable/ssdk_oks_classic_wechat" />
 
-        <EditText
-            android:id="@+id/et_account"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_centerInParent="true"
-            android:layout_margin="20dp"
-            android:background="@color/white"
-            android:ellipsize="end"
-            android:gravity="center_vertical|left"
-            android:maxLength="50"
-            android:padding="10dp"
-            android:singleLine="true"
-            android:text="@={loginBean.account}"
-            android:textColor="@color/color_424242"
-            android:textColorHint="@color/color_b2b2b2"
-            android:textSize="15dp" />
-
-        <EditText
-            android:id="@+id/et_password"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_centerInParent="true"
-            android:layout_marginBottom="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@color/white"
-            android:ellipsize="end"
-            android:gravity="center_vertical|left"
-            android:hint="Password"
-            android:imeOptions="actionDone"
-            android:inputType="textPassword"
-            android:maxLength="20"
-            android:maxLines="1"
-            android:padding="10dp"
-            android:singleLine="true"
-            android:text="@={loginBean.password}"
-            android:textColor="@color/color_424242"
-            android:textColorHint="@color/color_b2b2b2"
-            android:textSize="15dp" />
-
-        <Button
-            android:id="@+id/btn_login"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/iv_qq"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@color/main"
-            android:gravity="center"
-            android:onClick="@{(view)->action.onLoginClick()}"
-            android:padding="12dp"
-            android:textColor="@color/white"
-            android:textSize="18dp" />
+            android:layout_marginHorizontal="@dimen/dp_10"
+            android:src="@drawable/ssdk_oks_classic_qq" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/iv_sina"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ssdk_oks_classic_sinaweibo" />
 
-            <TextView
-                android:id="@+id/btn_register"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="15dp"
-                android:gravity="center"
-                android:onClick="@{(view)->action.onRegisterClick()}"
-                android:padding="10dp"
-                android:textColor="@color/color_727270"
-                android:textSize="14dp" />
-
-            <TextView
-                android:id="@+id/btn_getpwd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginTop="15dp"
-                android:gravity="center"
-                android:onClick="@{(view)->action.onGetpwdClick()}"
-                android:padding="10dp"
-                android:textColor="@color/color_727270"
-                android:textSize="14dp" />
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/iv_wx"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="@{(view)->action.onWechatClick()}"
-                android:src="@drawable/ssdk_oks_classic_wechat" />
-
-            <ImageView
-                android:id="@+id/iv_qq"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/dp_10"
-                android:onClick="@{(view)->action.onQQClick()}"
-                android:src="@drawable/ssdk_oks_classic_qq" />
-
-            <ImageView
-                android:id="@+id/iv_sina"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="@{(view)->action.onSinaClick()}"
-                android:src="@drawable/ssdk_oks_classic_sinaweibo" />
-
-
-        </LinearLayout>
 
     </LinearLayout>
-</layout>
+
+</LinearLayout>

@@ -3,11 +3,11 @@ package com.hwl.beta.ui.group;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.hwl.beta.R;
+import com.hwl.beta.databinding.GroupActivityAddBinding;
 import com.hwl.beta.databinding.GroupActivityAllUsersBinding;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.db.entity.GroupInfo;
@@ -29,7 +29,8 @@ public class ActivityGroupAllUsers extends BaseActivity {
         super.onCreate(savedInstanceState);
         activity = this;
         groupGuid = getIntent().getStringExtra("groupguid");
-        binding = DataBindingUtil.setContentView(activity, R.layout.group_activity_all_users);
+        binding = GroupActivityAllUsersBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         initView();
     }

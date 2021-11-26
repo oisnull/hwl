@@ -4,7 +4,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.hwl.beta.databinding.CircleUserHeadItemBinding;
 import com.hwl.beta.ui.circle.action.ICircleUserItemListener;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
 
 public class CircleUserHeadItemViewHolder extends RecyclerView.ViewHolder {
 
@@ -15,13 +14,13 @@ public class CircleUserHeadItemViewHolder extends RecyclerView.ViewHolder {
         this.itemBinding = itemBinding;
     }
 
-    public void setItemBinding(ICircleUserItemListener itemListener, ImageViewBean imageBean,
+    public void setItemBinding(ICircleUserItemListener itemListener,
                                String userName,
                                String lifeNotes) {
-        this.itemBinding.setAction(itemListener);
-        this.itemBinding.setImage(imageBean);
-        this.itemBinding.setUserName(userName);
-        this.itemBinding.setUserLifeNotes(lifeNotes);
+//        this.itemBinding.setAction(itemListener);
+//        this.itemBinding.setImage(imageBean);
+//        this.itemBinding.setUserName(userName);
+//        this.itemBinding.setUserLifeNotes(lifeNotes);
     }
 
     public CircleUserHeadItemBinding getItemBinding() {

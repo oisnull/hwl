@@ -1,8 +1,9 @@
 package com.hwl.beta.ui.circle.adp;
 
 import android.content.Context;
-import androidx.databinding.DataBindingUtil;
+
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,6 @@ import com.hwl.beta.ui.circle.holder.CircleHeadItemViewHolder;
 import com.hwl.beta.ui.circle.holder.CircleIndexItemViewHolder;
 import com.hwl.beta.ui.circle.holder.CircleItemNullViewHolder;
 import com.hwl.beta.ui.circle.holder.CircleMsgcountItemViewHolder;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -84,15 +84,13 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         switch (viewType) {
             case 0:
             default:
-                return new CircleItemNullViewHolder((CircleItemNullBinding) DataBindingUtil.inflate(inflater, R.layout.circle_item_null, parent, false));
+                return new CircleItemNullViewHolder(CircleItemNullBinding.inflate(inflater, parent, false));
             case 1:
-                return new CircleHeadItemViewHolder((CircleHeadItemBinding) DataBindingUtil.inflate(inflater, R.layout.circle_head_item, parent, false));
+                return new CircleHeadItemViewHolder(CircleHeadItemBinding.inflate(inflater, parent, false));
             case 2:
-                return new CircleIndexItemViewHolder(context,
-                        (CircleIndexItemBinding) DataBindingUtil.inflate(inflater,
-                                R.layout.circle_index_item, parent, false));
+                return new CircleIndexItemViewHolder(context, CircleIndexItemBinding.inflate(inflater, parent, false));
             case 3:
-                return new CircleMsgcountItemViewHolder((CircleMsgcountItemBinding) DataBindingUtil.inflate(inflater, R.layout.circle_msgcount_item, parent, false));
+                return new CircleMsgcountItemViewHolder(CircleMsgcountItemBinding.inflate(inflater, parent, false));
         }
     }
 
@@ -103,8 +101,7 @@ public class CircleIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             viewHolder.setItemBinding(true, itemListener);
         } else if (holder instanceof CircleHeadItemViewHolder) {
             CircleHeadItemViewHolder viewHolder = (CircleHeadItemViewHolder) holder;
-            viewHolder.setItemBinding(itemListener, UserSP.getUserName(),
-                    new ImageViewBean(UserSP.getUserHeadImage(), UserSP.getUserCirclebackimage()));
+            viewHolder.setItemBinding(itemListener, UserSP.getUserName());
         } else if (holder instanceof CircleMsgcountItemViewHolder) {
             CircleMsgcountItemViewHolder viewHolder = (CircleMsgcountItemViewHolder) holder;
             int messageCount = MessageCountSP.getCircleMessageCount();

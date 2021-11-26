@@ -30,8 +30,8 @@ public class CircleUserIndexItemViewHolder extends RecyclerView.ViewHolder {
                                String timeDay,
                                final Circle info,
                                final ICircleUserItemListener itemListener) {
-        this.itemBinding.setTimeMonth(timeMonth);
-        this.itemBinding.setTimeDay(timeDay);
+//        this.itemBinding.setTimeMonth(timeMonth);
+//        this.itemBinding.setTimeDay(timeDay);
 
         this.itemBinding.llContentContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,14 +43,14 @@ public class CircleUserIndexItemViewHolder extends RecyclerView.ViewHolder {
         if (TextUtils.isEmpty(timeYear)) {
             this.itemBinding.tvYear.setVisibility(View.GONE);
         } else {
-            this.itemBinding.setTimeYear(timeYear);
+//            this.itemBinding.setTimeYear(timeYear);
             this.itemBinding.tvYear.setVisibility(View.VISIBLE);
         }
 
         if (TextUtils.isEmpty(info.getContent())) {
             this.itemBinding.tvContent.setVisibility(View.GONE);
         } else {
-            this.itemBinding.setContent(info.getContent());
+//            this.itemBinding.setContent(info.getContent());
             this.itemBinding.tvContent.setVisibility(View.VISIBLE);
         }
 

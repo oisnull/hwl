@@ -5,6 +5,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.hwl.beta.AppConfig;
+import com.hwl.beta.BuildConfig;
 import com.hwl.beta.HWLApp;
 import com.hwl.beta.ui.common.CustLog;
 
@@ -56,7 +57,7 @@ public class BaiduLocationV2 {
                     errorMessage = null;
                     locationListener.onSuccess(model);
                 } else {
-                    if (AppConfig.ENABLE_DEBUG) {
+                    if (BuildConfig.DEBUG) {
                         LocationModel model = getTestModel();
                         currentStatus = COMPLETE_SUCCESS;
                         errorMessage = null;

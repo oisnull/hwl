@@ -1,1 +1,3 @@
 include ':app', ':autolayout', ':mobshare', ':swipback', ':badge', ':im', ':photoview', ':emotion'
+include ':emoji'
+include ':api'

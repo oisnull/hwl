@@ -1,7 +1,5 @@
 package com.hwl.beta.ui.group;
 
-import androidx.databinding.DataBindingUtil;
-
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -67,8 +65,8 @@ public class ActivityGroupAdd extends BaseActivity {
                     (groupGuid));
         }
 
-        binding = DataBindingUtil.setContentView(activity, R.layout.group_activity_add);
-        binding.setFriendAdapter(addAdapter);
+        binding = GroupActivityAddBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         initView();
     }

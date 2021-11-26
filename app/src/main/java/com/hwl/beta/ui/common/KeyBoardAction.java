@@ -17,14 +17,6 @@ import com.hwl.beta.sp.AppInstallStatus;
 
 import java.lang.reflect.Field;
 
-/**
- * <pre>
- *     author: Blankj
- *     blog  : http://blankj.com
- *     time  : 2016/08/02
- *     desc  : utils about keyboard
- * </pre>
- */
 public final class KeyBoardAction {
 
     private static int sContentViewInvisibleHeightPre;

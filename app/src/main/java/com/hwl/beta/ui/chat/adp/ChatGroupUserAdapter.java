@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.hwl.beta.R;
 import com.hwl.beta.db.entity.GroupUserInfo;
 import com.hwl.beta.sp.UserSP;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
 import com.hwl.beta.utils.StringUtils;
 
 import java.util.List;
@@ -83,7 +82,7 @@ public class ChatGroupUserAdapter extends BaseAdapter {
             viewHolder.tvName.setText("");
         } else {
             viewHolder.ivHeader.setBackgroundResource(0);
-            ImageViewBean.loadImage(viewHolder.ivHeader, user.getUserImage());
+//            ImageViewBean.loadImage(viewHolder.ivHeader, user.getUserImage());
             if (StringUtils.isBlank(user.getUserName())) {
                 viewHolder.tvName.setText("--");
             } else {

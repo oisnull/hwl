@@ -1,205 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_background"
+    android:orientation="vertical">
 
-    <data>
+    <com.hwl.beta.ui.widget.TitleBar
+        android:id="@+id/tb_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
-        <import type="android.view.View" />
-
-        <variable
-            name="mainBean"
-            type="com.hwl.beta.ui.entry.bean.MainBean"></variable>
-
-        <variable
-            name="action"
-            type="com.hwl.beta.ui.entry.action.IMainListener"></variable>
-    </data>
-
-    <LinearLayout
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/vp_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/main_background"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
-        <com.hwl.beta.ui.widget.TitleBar
-            android:id="@+id/tb_title"
+    <!--bottom popup_menu-->
+    <LinearLayout
+        android:id="@+id/ll_nav_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="@drawable/layout_border"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <RelativeLayout
+            android:id="@+id/rl_tab_message"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/vp_container"
-            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1">
 
-        <!--bottom popup_menu-->
-        <LinearLayout
-            android:id="@+id/ll_nav_bottom"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:background="@drawable/layout_border"
-            android:orientation="horizontal"
-            android:visibility="visible">
-
-            <RelativeLayout
-                android:id="@+id/rl_tab_message"
+            <LinearLayout
+                android:id="@+id/ll_tab_message"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:onClick="@{(view)->action.onTabMessageClick()}">
-
-                <LinearLayout
-                    android:id="@+id/ll_tab_message"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:src="@drawable/messages" />
-
-                    <TextView
-                        android:id="@+id/tv_message"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="消息"
-                        android:textColor="#727270"
-                        android:textSize="10dp" />
-
-                </LinearLayout>
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/tnv_msg_count"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_toRightOf="@+id/ll_tab_message"
-                    android:src="@drawable/num"
-                    android:visibility="@{mainBean.chatMessageCount>0?View.VISIBLE:View.GONE}" />
-            </RelativeLayout>
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/messages" />
 
-            <RelativeLayout
-                android:id="@+id/rl_tab_near"
+                <TextView
+                    android:id="@+id/tv_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="消息"
+                    android:textColor="#727270"
+                    android:textSize="10sp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/tnv_msg_count"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_toRightOf="@+id/ll_tab_message"
+                android:src="@drawable/num" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_tab_near"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/ll_tab_near"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:onClick="@{(view)->action.onTabNearClick()}">
-
-                <LinearLayout
-                    android:id="@+id/ll_tab_near"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:id="@+id/img_near"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:src="@drawable/near" />
-
-                    <TextView
-                        android:id="@+id/tv_near"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="附近"
-                        android:textSize="10dp" />
-
-                </LinearLayout>
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/tnv_near_count"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_toRightOf="@+id/ll_tab_near"
-                    android:src="@drawable/num"
-                    android:visibility="@{mainBean.nearMessageCount>0?View.VISIBLE:View.GONE}" />
-            </RelativeLayout>
+                    android:id="@+id/img_near"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/near" />
 
-            <RelativeLayout
-                android:id="@+id/rl_tab_friends"
+                <TextView
+                    android:id="@+id/tv_near"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="附近"
+                    android:textSize="10sp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/tnv_near_count"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_toEndOf="@+id/ll_tab_near"
+                android:src="@drawable/num"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_tab_friends"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/ll_tab_friends"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:onClick="@{(view)->action.onTabFriendClick()}">
-
-                <LinearLayout
-                    android:id="@+id/ll_tab_friends"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:id="@+id/img_friends"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:src="@drawable/friends" />
-
-                    <TextView
-                        android:id="@+id/tv_friend"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="好友"
-                        android:textSize="10dp" />
-
-                </LinearLayout>
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/iv_friend_count"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_toRightOf="@+id/ll_tab_friends"
-                    android:src="@drawable/num"
-                    android:visibility="@{mainBean.friendMessageCount>0?View.VISIBLE:View.GONE}" />
-            </RelativeLayout>
+                    android:id="@+id/img_friends"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/friends" />
 
-            <RelativeLayout
-                android:id="@+id/rl_tab_me"
+                <TextView
+                    android:id="@+id/tv_friend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="好友"
+                    android:textSize="10sp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_friend_count"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_toEndOf="@+id/ll_tab_friends"
+                android:src="@drawable/num" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_tab_me"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/ll_tab_me"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_centerInParent="true"
                 android:layout_weight="1"
-                android:onClick="@{(view)->action.onTabMeClick()}">
-
-                <LinearLayout
-                    android:id="@+id/ll_tab_me"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:id="@+id/img_me"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:src="@drawable/me" />
-
-                    <TextView
-                        android:id="@+id/tv_me"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="我"
-                        android:textSize="10dp" />
-
-                </LinearLayout>
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/iv_me_count"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_toRightOf="@+id/ll_tab_me"
-                    android:src="@drawable/num"
-                    android:visibility="@{mainBean.meMessageCount>0?View.VISIBLE:View.GONE}" />
-            </RelativeLayout>
-        </LinearLayout>
+                    android:id="@+id/img_me"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/me" />
+
+                <TextView
+                    android:id="@+id/tv_me"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="我"
+                    android:textSize="10sp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_me_count"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_toEndOf="@+id/ll_tab_me"
+                android:src="@drawable/num" />
+        </RelativeLayout>
     </LinearLayout>
-</layout>
+</LinearLayout>

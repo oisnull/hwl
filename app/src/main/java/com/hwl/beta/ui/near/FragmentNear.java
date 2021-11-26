@@ -2,8 +2,6 @@ package com.hwl.beta.ui.near;
 
 import android.content.DialogInterface;
 
-import androidx.databinding.DataBindingUtil;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -76,11 +74,17 @@ public class FragmentNear extends BaseFragment {
         parentActivity = (ActivityMain) getActivity();
         activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         nearStandard = new NearLogic();
-        binding = DataBindingUtil.inflate(inflater, R.layout.near_fragment_main, container, false);
+        binding = NearFragmentMainBinding.inflate(inflater, container, false);
 
         initView();
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     @Override

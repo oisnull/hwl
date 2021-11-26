@@ -26,7 +26,7 @@
             android:layout_marginLeft="5dp"
             android:text="评论"
             android:textColor="@color/white"
-            android:textSize="13dp" />
+            android:textSize="13sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -49,7 +49,7 @@
             android:layout_marginLeft="5dp"
             android:text="点赞"
             android:textColor="@color/white"
-            android:textSize="13dp" />
+            android:textSize="13sp" />
     </LinearLayout>
 
     <LinearLayout

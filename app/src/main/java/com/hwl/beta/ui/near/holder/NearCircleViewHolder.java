@@ -16,7 +16,6 @@ import com.hwl.beta.ui.near.action.INearCircleItemListener;
 import com.hwl.beta.ui.near.action.INearCircleLikeItemListener;
 import com.hwl.beta.ui.near.adp.NearCircleCommentAdapter;
 import com.hwl.beta.ui.common.NineImagesAdapter;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
 
 /**
  * Created by Administrator on 2018/2/16.
@@ -37,10 +36,10 @@ public class NearCircleViewHolder extends RecyclerView.ViewHolder {
                                int position,
                                final NearCircle info
     ) {
-        this.itemBinding.setAction(itemListener);
-        this.itemBinding.setPosition(position);
-        this.itemBinding.setInfo(info);
-        this.itemBinding.setImage(new ImageViewBean(info.getPublishUserImage()));
+//        this.itemBinding.setAction(itemListener);
+//        this.itemBinding.setPosition(position);
+//        this.itemBinding.setInfo(info);
+//        this.itemBinding.setImage(new ImageViewBean(info.getPublishUserImage()));
         this.itemBinding.rvComments.setAdapter(new NearCircleCommentAdapter(context,
                 info.getComments(), itemListener));
         this.itemBinding.rvComments.setLayoutManager(new LinearLayoutManager(context));

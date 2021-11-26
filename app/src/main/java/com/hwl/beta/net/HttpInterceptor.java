@@ -3,6 +3,7 @@ package com.hwl.beta.net;
 import android.util.Log;
 
 import com.hwl.beta.AppConfig;
+import com.hwl.beta.BuildConfig;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -33,7 +34,7 @@ public class HttpInterceptor implements Interceptor {
         if (chain != null && chain.request().body() != null) {
             Buffer bufferedSink = new Buffer();
             chain.request().body().writeTo(bufferedSink);
-            if (AppConfig.ENABLE_DEBUG)
+            if (BuildConfig.DEBUG)
                 Log.d(url, bufferedSink.buffer().readUtf8());
         }
 
@@ -59,7 +60,7 @@ public class HttpInterceptor implements Interceptor {
             if (contentType != null) {
                 charset = contentType.charset(UTF8);
             }
-            if (AppConfig.ENABLE_DEBUG)
+            if (BuildConfig.DEBUG)
                 Log.d(url, buffer.clone().readString(charset));
         }
 

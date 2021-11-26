@@ -3,8 +3,6 @@ package com.hwl.beta.ui.entry;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 
-import androidx.databinding.DataBindingUtil;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.hwl.beta.databinding.EntryActivityLoginBinding;
 import com.hwl.beta.location.IHWLLoactionListener;
 import com.hwl.beta.location.LocationModel;
 import com.hwl.beta.net.NetExceptionCode;
@@ -72,9 +71,9 @@ public class ActivityMain extends BaseActivity {
         mainListener = new MainListener();
         mainStandard = new MainLogic();
         mainBean = mainStandard.getMainBean();
-        binding = DataBindingUtil.setContentView(this, R.layout.entry_activity_main);
-        binding.setMainBean(mainBean);
-        binding.setAction(mainListener);
+        binding = EntryActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
 
         initView();
     }

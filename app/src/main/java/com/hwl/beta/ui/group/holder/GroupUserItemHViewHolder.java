@@ -5,7 +5,6 @@ import android.view.View;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hwl.beta.databinding.GroupUserItemHBinding;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
 
 public class GroupUserItemHViewHolder extends RecyclerView.ViewHolder {
     GroupUserItemHBinding itemBinding;
@@ -21,7 +20,7 @@ public class GroupUserItemHViewHolder extends RecyclerView.ViewHolder {
                                String userName,
                                String distance) {
         this.itemBinding.getRoot().setOnClickListener(itemListener);
-        ImageViewBean.loadImage(this.itemBinding.ivHeader, userImage);
+//        ImageViewBean.loadImage(this.itemBinding.ivHeader, userImage);
         this.itemBinding.tvName.setText(userName);
         this.itemBinding.tvDistance.setText(distance);
     }

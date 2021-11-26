@@ -1,7 +1,5 @@
 package com.hwl.beta.db.entity;
 
-import androidx.databinding.BaseObservable;
-
 import com.hwl.beta.db.ListStringConverter;
 
 import org.greenrobot.greendao.annotation.Convert;
@@ -18,7 +16,7 @@ import java.util.List;
  * Created by Administrator on 2018/2/10.
  */
 @Entity
-public class GroupInfo extends BaseObservable {
+public class GroupInfo {
     @Id(autoincrement = true)
     private Long id;
     @Unique

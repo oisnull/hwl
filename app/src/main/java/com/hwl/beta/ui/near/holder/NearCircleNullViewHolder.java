@@ -19,7 +19,7 @@ public class NearCircleNullViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setItemBinding(INearCircleItemListener itemListener) {
-        this.itemBinding.setAction(itemListener);
+//        this.itemBinding.setAction(itemListener);
     }
 
     public NearItemNullBinding getItemBinding() {

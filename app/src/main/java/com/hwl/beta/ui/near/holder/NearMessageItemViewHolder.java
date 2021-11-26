@@ -6,7 +6,6 @@ import android.view.View;
 import com.hwl.beta.databinding.NearMessageItemBinding;
 import com.hwl.beta.db.DBConstant;
 import com.hwl.beta.db.entity.NearCircleMessage;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
 import com.hwl.beta.utils.StringUtils;
 
 public class NearMessageItemViewHolder extends RecyclerView.ViewHolder {
@@ -23,8 +22,8 @@ public class NearMessageItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setItemBinding(NearCircleMessage message) {
-        this.itemBinding.setMessage(message);
-        this.itemBinding.setImage(new ImageViewBean(message.getUserImage()));
+//        this.itemBinding.setMessage(message);
+//        this.itemBinding.setImage(new ImageViewBean(message.getUserImage()));
         if (message.getStatus() == DBConstant.STAUTS_DELETE) {
             this.itemBinding.ivLike.setVisibility(View.GONE);
             this.itemBinding.tvComment.setVisibility(View.VISIBLE);

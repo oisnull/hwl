@@ -17,9 +17,9 @@ public class CircleUserItemDefaultViewHolder extends RecyclerView.ViewHolder {
     public void setItemBinding(ICircleUserItemListener itemListener,
                                String timeMonth,
                                String timeDay) {
-        this.itemBinding.setAction(itemListener);
-        this.itemBinding.setTimeMonth(timeMonth);
-        this.itemBinding.setTimeDay(timeDay);
+//        this.itemBinding.setAction(itemListener);
+//        this.itemBinding.setTimeMonth(timeMonth);
+//        this.itemBinding.setTimeDay(timeDay);
     }
 
     public CircleUserItemDefaultBinding getItemBinding() {

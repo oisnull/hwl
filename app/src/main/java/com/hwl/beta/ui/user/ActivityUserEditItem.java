@@ -1,7 +1,6 @@
 package com.hwl.beta.ui.user;
 
 import android.app.Activity;
-import androidx.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
@@ -47,9 +46,11 @@ public class ActivityUserEditItem extends BaseActivity {
                 getIntent().getStringExtra("editcontent"));
         itemBean.setFriendId(getIntent().getLongExtra("friendid", 0));
         itemListener = new UserEditItemListener();
-        binding = DataBindingUtil.setContentView(this, R.layout.user_activity_edit_item);
-        binding.setUser(itemBean);
-        binding.setAction(itemListener);
+//        binding = DataBindingUtil.setContentView(this, R.layout.user_activity_edit_item);
+//        binding.setUser(itemBean);
+//        binding.setAction(itemListener);
+        binding = UserActivityEditItemBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         binding.tbTitle.setTitle(getActionName())
                 .setTitleRightShow()

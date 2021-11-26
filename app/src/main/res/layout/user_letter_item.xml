@@ -1,78 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/item_selector"
+    android:orientation="vertical">
 
-    <data>
+    <TextView
+        android:id="@+id/tv_letter"
+        android:layout_width="match_parent"
+        android:layout_height="22dp"
+        android:background="@color/main_background"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:text="firstLetter"
+        android:textColor="@color/black" />
 
-        <import type="android.view.View" />
-
-        <variable
-            name="user"
-            type="com.hwl.beta.db.entity.Friend"></variable>
-
-        <variable
-            name="image"
-            type="com.hwl.beta.ui.user.bean.ImageViewBean"></variable>
-    </data>
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/item_selector"
-        android:orientation="vertical">
+        android:layout_below="@+id/rl_group_letter"
+        android:gravity="center_vertical"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <ImageView
+            android:id="@+id/iv_header"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/empty_photo" />
 
         <TextView
-            android:id="@+id/tv_letter"
-            android:layout_width="match_parent"
-            android:layout_height="22dp"
-            android:background="@color/main_background"
-            android:gravity="center_vertical"
-            android:paddingLeft="15dp"
-            android:text="@{user.firstLetter}"
-            android:textColor="@color/black" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/rl_group_letter"
-            android:gravity="center_vertical"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/iv_header"
+            android:layout_toRightOf="@+id/iv_header"
+            android:text="username"
+            android:textSize="15sp" />
 
-            <ImageView
-                android:id="@+id/iv_header"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginLeft="10dp"
-                android:src="@drawable/empty_photo"
-                app:imageRes="@{image.imageRes}"
-                app:imageUrl="@{image.imageUrl}" />
+        <com.hwl.beta.ui.widget.TipNumberView
+            android:id="@+id/tv_msg_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_toEndOf="@+id/tv_name"
+            android:layout_toRightOf="@+id/tv_name"
+            android:gravity="center"
+            android:text="messageCount"
+            android:textColor="@color/white"
+            android:textSize="13sp" />
+    </RelativeLayout>
 
-            <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_toEndOf="@+id/iv_header"
-                android:layout_toRightOf="@+id/iv_header"
-                android:text='@{user.showName??"--"}'
-                android:textSize="@dimen/dp_15" />
-
-            <com.hwl.beta.ui.widget.TipNumberView
-                android:id="@+id/tv_msg_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:layout_toEndOf="@+id/tv_name"
-                android:layout_toRightOf="@+id/tv_name"
-                android:gravity="center"
-                android:text="@{user.messageCount}"
-                android:textColor="@color/white"
-                android:textSize="@dimen/dp_13"
-                android:visibility="@{ Integer.parseInt(user.messageCount)>0?View.VISIBLE : View.GONE}" />
-        </RelativeLayout>
-
-    </LinearLayout>
-</layout>
+</LinearLayout>

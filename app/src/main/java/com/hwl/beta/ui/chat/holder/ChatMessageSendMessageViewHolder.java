@@ -22,22 +22,21 @@ public class ChatMessageSendMessageViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setItemBinding(IChatMessageItemListener itemListener,
-                               ChatImageViewBean image,
                                int position,
                                String userName,
                                String content,
                                String statusDesc) {
-        this.itemBinding.setAction(itemListener);
-        this.itemBinding.setImage(image);
-        this.itemBinding.setPosition(position);
-        this.itemBinding.setContent(content);
-        if (StringUtils.isBlank(userName)) {
-            this.itemBinding.tvUsername.setVisibility(View.GONE);
-        } else {
-            this.itemBinding.tvUsername.setVisibility(View.VISIBLE);
-            this.itemBinding.setUserName(userName);
-        }
-        this.itemBinding.setStatusDesc(statusDesc);
+//        this.itemBinding.setAction(itemListener);
+//        this.itemBinding.setImage(image);
+//        this.itemBinding.setPosition(position);
+//        this.itemBinding.setContent(content);
+//        if (StringUtils.isBlank(userName)) {
+//            this.itemBinding.tvUsername.setVisibility(View.GONE);
+//        } else {
+//            this.itemBinding.tvUsername.setVisibility(View.VISIBLE);
+//            this.itemBinding.setUserName(userName);
+//        }
+//        this.itemBinding.setStatusDesc(statusDesc);
     }
 
     public ChatSendMessageItemBinding getItemBinding() {

@@ -1,81 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
 
-    <data>
-
-        <variable
-            name="action"
-            type="com.hwl.beta.ui.circle.action.ICircleUserItemListener" />
-
-        <variable
-            name="image"
-            type="com.hwl.beta.ui.user.bean.ImageViewBean" />
-
-        <variable
-            name="userName"
-            type="String" />
-
-        <variable
-            name="userLifeNotes"
-            type="String" />
-    </data>
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical">
+        android:layout_height="300dp">
 
-        <RelativeLayout
+        <ImageView
+            android:id="@+id/iv_circle_back"
             android:layout_width="match_parent"
-            android:layout_height="300dp">
-
-            <ImageView
-                android:id="@+id/iv_circle_back"
-                android:layout_width="match_parent"
-                android:layout_height="260dp"
-                android:background="@color/user_circle_background"
-                android:onClick="@{view->action.onBackImageClick()}"
-                android:scaleType="centerCrop"
-                app:imageUrl="@{image.imageCircleUrl}" />
-
-            <TextView
-                android:id="@+id/tv_username"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="40dp"
-                android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@+id/iv_user_header"
-                android:text="@{userName}"
-                android:textColor="@color/white"
-                android:textSize="15dp" />
-
-            <ImageView
-                android:id="@+id/iv_user_header"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="30dp"
-                android:src="@drawable/empty_photo"
-                app:imageUrl="@{image.imageUrl}" />
-        </RelativeLayout>
+            android:layout_height="260dp"
+            android:background="@color/user_circle_background"
+            android:scaleType="centerCrop" />
 
         <TextView
-            android:id="@+id/tv_user_lifenote"
+            android:id="@+id/tv_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginRight="20dp"
-            android:paddingBottom="@dimen/dp_10"
-            android:paddingLeft="@dimen/dp_10"
-            android:paddingTop="@dimen/dp_10"
-            android:text="@{userLifeNotes}"
-            android:textColor="@color/black"
-            android:textSize="15dp"
-            android:visibility="@{android.text.TextUtils.isEmpty(userLifeNotes)?android.view.View.GONE:android.view.View.VISIBLE}" />
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="40dp"
+            android:layout_toLeftOf="@+id/iv_user_header"
+            android:text="@{userName}"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
 
-    </LinearLayout>
-</layout>
+        <ImageView
+            android:id="@+id/iv_user_header"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="30dp"
+            android:src="@drawable/empty_photo" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_user_lifenote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginRight="20dp"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
+        android:text="@{userLifeNotes}"
+        android:textColor="@color/black"
+        android:textSize="15sp" />
+
+</LinearLayout>

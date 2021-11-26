@@ -1,13 +1,10 @@
 package com.hwl.beta.ui.entry.bean;
 
-import androidx.databinding.BaseObservable;
-import androidx.databinding.Bindable;
-
 /**
  * Created by Administrator on 2018/3/30.
  */
 
-public class MainBean extends BaseObservable {
+public class MainBean {
     private int chatMessageCount;
     private int nearMessageCount;
     private int friendMessageCount;
@@ -23,7 +20,6 @@ public class MainBean extends BaseObservable {
         this.meMessageCount = meMessageCount;
     }
 
-    @Bindable
     public int getChatMessageCount() {
         return chatMessageCount;
     }
@@ -33,7 +29,6 @@ public class MainBean extends BaseObservable {
 //        notifyPropertyChanged(BR.chatMessageCount);
     }
 
-    @Bindable
     public int getNearMessageCount() {
         return nearMessageCount;
     }
@@ -43,7 +38,6 @@ public class MainBean extends BaseObservable {
 //        notifyPropertyChanged(BR.nearMessageCount);
     }
 
-    @Bindable
     public int getFriendMessageCount() {
         return friendMessageCount;
     }
@@ -53,7 +47,6 @@ public class MainBean extends BaseObservable {
 //        notifyPropertyChanged(BR.friendMessageCount);
     }
 
-    @Bindable
     public int getCircleMessageCount() {
         return circleMessageCount;
     }
@@ -63,7 +56,6 @@ public class MainBean extends BaseObservable {
 //        notifyPropertyChanged(BR.circleMessageCount);
     }
 
-    @Bindable
     public int getMeMessageCount() {
         return meMessageCount;
     }
@@ -81,7 +73,6 @@ public class MainBean extends BaseObservable {
         this.friendRequestCountDesc = friendRequestCountDesc;
     }
 
-    @Bindable
     public String getChatMessageCountDesc() {
         return chatMessageCountDesc;
     }
@@ -91,7 +82,6 @@ public class MainBean extends BaseObservable {
 //        notifyPropertyChanged(BR.chatMessageCountDesc);
     }
 
-    @Bindable
     public String getFriendRequestCountDesc() {
         return friendRequestCountDesc;
     }

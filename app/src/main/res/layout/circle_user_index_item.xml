@@ -1,88 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_circle_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="1dp"
+    android:background="@color/white"
+    android:orientation="vertical">
 
-    <data>
-
-        <variable
-            name="timeYear"
-            type="String" />
-
-        <variable
-            name="timeMonth"
-            type="String" />
-
-        <variable
-            name="timeDay"
-            type="String" />
-
-        <variable
-            name="content"
-            type="String" />
-    </data>
-
-    <LinearLayout
-        android:id="@+id/ll_circle_container"
+    <TextView
+        android:id="@+id/tv_year"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="1dp"
-        android:background="@color/white"
-        android:orientation="vertical">
+        android:gravity="center_vertical"
+        android:padding="10dp"
+        android:text="timeYear"
+        android:textColor="@color/main"
+        android:textSize="15sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
 
         <TextView
-            android:id="@+id/tv_year"
-            android:layout_width="match_parent"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:padding="10dp"
-            android:text="@{timeYear}"
-            android:textColor="@color/main"
-            android:textSize="15dp" />
+            android:gravity="center"
+            android:text="@{timeDay}"
+            android:textColor="@color/color_727270"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="timeMonth"
+            android:textColor="@color/color_727270"
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
         <LinearLayout
+            android:id="@+id/ll_content_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="10dp">
+            android:background="@drawable/item_selector"
+            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@{timeDay}"
-                android:textColor="@color/color_727270"
-                android:textSize="20dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="35dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@{timeMonth}"
-                android:textColor="@color/color_727270"
-                android:textSize="@dimen/dp_15"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:id="@+id/ll_content_container"
+            <com.hwl.beta.emotion.widget.EmotionTextView
+                android:id="@+id/tv_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/item_selector"
-                android:orientation="vertical">
+                android:text="content"
+                android:textColor="@color/color_727270"
+                android:textSize="15sp" />
 
-                <com.hwl.beta.emotion.widget.EmotionTextView
-                    android:id="@+id/tv_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{content}"
-                    android:textColor="@color/color_727270"
-                    android:textSize="@dimen/dp_15" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_images"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_images"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</layout>
+</LinearLayout>

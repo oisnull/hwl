@@ -2,7 +2,6 @@ package com.hwl.beta.ui.near;
 
 import android.app.Activity;
 import android.content.Intent;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
@@ -36,7 +35,8 @@ public class ActivityNearPublish extends BaseActivity {
         activity = this;
         publishStandard = new NearPublishLogic();
 
-        binding = DataBindingUtil.setContentView(activity, R.layout.near_activity_pulish);
+        binding = NearActivityPulishBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         initView();
     }
 

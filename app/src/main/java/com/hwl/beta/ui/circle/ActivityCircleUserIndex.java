@@ -1,7 +1,6 @@
 package com.hwl.beta.ui.circle;
 
 import android.app.Activity;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -51,7 +50,8 @@ public class ActivityCircleUserIndex extends BaseActivity {
         circleStandard = new CircleUserLogic(viewUserId, getIntent().getStringExtra("viewusername")
                 , getIntent().getStringExtra("viewuserimage"));
         currentUser = circleStandard.getLocalUserInfo();
-        binding = DataBindingUtil.setContentView(activity, R.layout.circle_activity_user_index);
+        binding = CircleActivityUserIndexBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         initView();
     }
 

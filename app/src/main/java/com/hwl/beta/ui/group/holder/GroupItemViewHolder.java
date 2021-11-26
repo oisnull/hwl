@@ -25,8 +25,8 @@ public class GroupItemViewHolder extends RecyclerView.ViewHolder {
         if (groupUserImages != null && groupUserImages.size() > 0) {
             this.itemBinding.ivGroupImage.setImagesData(groupUserImages);
         }
-        this.itemBinding.setName(groupName);
-        this.itemBinding.setIsCurrentLocation(isCurrentLocation);
+//        this.itemBinding.setName(groupName);
+//        this.itemBinding.setIsCurrentLocation(isCurrentLocation);
     }
 
     public GroupItemBinding getItemBinding() {

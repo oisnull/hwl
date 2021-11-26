@@ -2,7 +2,6 @@ package com.hwl.beta.ui.circle;
 
 import android.app.Activity;
 import android.content.Intent;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
@@ -32,7 +31,8 @@ public class ActivityCirclePublish extends BaseActivity {
         activity = this;
         publishStandard = new CirclePublishLogic();
 
-        binding = DataBindingUtil.setContentView(activity, R.layout.circle_activity_pulish);
+        binding = CircleActivityPulishBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         initView();
     }
 

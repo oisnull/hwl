@@ -1,13 +1,13 @@
 package com.hwl.beta.ui.chat;
 
 import android.app.Activity;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.Toast;
 
 import com.hwl.beta.R;
+import com.hwl.beta.databinding.ChatActivityGroupSettingBinding;
 import com.hwl.beta.databinding.ChatActivityGroupSettingEditBinding;
 import com.hwl.beta.db.DaoUtils;
 import com.hwl.beta.net.NetConstant;
@@ -35,8 +35,8 @@ public class ActivityChatGroupSettingEdit extends BaseActivity {
         super.onCreate(savedInstanceState);
         activity = this;
 
-        binding = DataBindingUtil.setContentView(activity, R.layout
-                .chat_activity_group_setting_edit);
+        binding = ChatActivityGroupSettingEditBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         initView();
     }

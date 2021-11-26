@@ -1,122 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="1dp"
+    android:background="@drawable/item_selector">
 
-    <data>
+    <LinearLayout
+        android:id="@+id/ll_image_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-        <variable
-            name="position"
-            type="int"></variable>
+        <com.hwl.beta.ui.widget.GroupNineImageView
+            android:id="@+id/iv_group_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="@dimen/dp_10"
+            android:background="@color/color_f3f3f3"
+            android:visibility="gone" />
 
-        <variable
-            name="record"
-            type="com.hwl.beta.db.entity.ChatRecordMessage"></variable>
-    </data>
+        <ImageView
+            android:id="@+id/iv_record_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="@dimen/dp_10"
+            android:src="@drawable/empty_photo"
+            android:visibility="visible" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_message_container"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="1dp"
-        android:background="@drawable/item_selector">
-
-        <LinearLayout
-            android:id="@+id/ll_image_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <com.hwl.beta.ui.widget.GroupNineImageView
-                android:id="@+id/iv_group_image"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="@dimen/dp_10"
-                android:background="@color/color_f3f3f3"
-                android:visibility="gone" />
-
-            <ImageView
-                android:id="@+id/iv_record_image"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="@dimen/dp_10"
-                android:src="@drawable/empty_photo"
-                android:visibility="visible" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_message_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/ll_image_container"
-            android:orientation="vertical"
-            android:paddingVertical="10dp">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tv_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text='@{record.title}'
-                    android:textColor="@color/color_424242"
-                    android:textSize="@dimen/dp_15" />
-
-                <ImageView
-                    android:id="@+id/iv_current_location"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_marginLeft="2dp"
-                    android:src="@drawable/ic_location3"
-                    android:visibility="@{record.isCurrentLocation?android.view.View.VISIBLE:android.view.View.GONE}" />
-            </LinearLayout>
-
-
-            <TextView
-                android:id="@+id/tv_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="@{record.content}"
-                android:textColor="@color/color_b2b2b2"
-                android:textSize="@dimen/dp_12" />
-
-        </LinearLayout>
+        android:layout_toRightOf="@+id/ll_image_container"
+        android:orientation="vertical"
+        android:paddingVertical="10dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:layout_marginTop="5dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tv_time"
+                android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1970-01-01 00:00"
-                android:textColor="@color/color_b2b2b2"
-                android:textSize="@dimen/dp_12" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textColor="@color/color_b2b2b2"
-                android:textSize="@dimen/dp_12" />
+                android:text="title"
+                android:textColor="@color/color_424242"
+                android:textSize="15sp" />
 
             <ImageView
-                android:id="@+id/iv_notify"
-                android:layout_width="@dimen/dp_15"
-                android:layout_height="@dimen/dp_15"
-                android:layout_gravity="right"
-                android:src="@drawable/ic_notify_off"
-                android:visibility="visible" />
+                android:id="@+id/iv_current_location"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginLeft="2dp"
+                android:src="@drawable/ic_location3" />
         </LinearLayout>
-    </RelativeLayout>
 
-</layout>
+
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@{record.content}"
+            android:textColor="@color/color_b2b2b2"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1970-01-01 00:00"
+            android:textColor="@color/color_b2b2b2"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/color_b2b2b2"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/iv_notify"
+            android:layout_width="15sp"
+            android:layout_height="15sp"
+            android:layout_gravity="right"
+            android:src="@drawable/ic_notify_off"
+            android:visibility="visible" />
+    </LinearLayout>
+</RelativeLayout>

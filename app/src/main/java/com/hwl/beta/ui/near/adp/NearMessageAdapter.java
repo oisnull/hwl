@@ -1,9 +1,11 @@
 package com.hwl.beta.ui.near.adp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import androidx.databinding.DataBindingUtil;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,23 +31,23 @@ public class NearMessageAdapter extends RecyclerView.Adapter<NearMessageItemView
     @NonNull
     @Override
     public NearMessageItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new NearMessageItemViewHolder((NearMessageItemBinding) DataBindingUtil.inflate(inflater, R.layout.near_message_item, parent, false));
+        return new NearMessageItemViewHolder(NearMessageItemBinding.inflate(inflater, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NearMessageItemViewHolder holder, final int position) {
-        final NearCircleMessage message= messages.get(position);
+    public void onBindViewHolder(@NonNull NearMessageItemViewHolder holder, @SuppressLint("RecyclerView") final int position) {
+        final NearCircleMessage message = messages.get(position);
         holder.setItemBinding(message);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemListener.onItemClick(v,message,position);
+                itemListener.onItemClick(v, message, position);
             }
         });
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                itemListener.onItemLongClick(v,message,position);
+                itemListener.onItemLongClick(v, message, position);
                 return true;
             }
         });
@@ -56,7 +58,7 @@ public class NearMessageAdapter extends RecyclerView.Adapter<NearMessageItemView
         return messages.size();
     }
 
-    public interface INearMessageItemListener{
+    public interface INearMessageItemListener {
         void onItemClick(View v, NearCircleMessage message, int position);
 
         void onItemLongClick(View v, NearCircleMessage message, int position);

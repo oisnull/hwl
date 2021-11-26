@@ -17,7 +17,7 @@ public class ChatMessageReceivedWelcomeTipViewHolder extends RecyclerView.ViewHo
     }
 
     public void setItemBinding(String content) {
-        this.itemBinding.setContent(content);
+//        this.itemBinding.setContent(content);
     }
 
     public ChatReceivedWelcomeTipBinding getItemBinding() {

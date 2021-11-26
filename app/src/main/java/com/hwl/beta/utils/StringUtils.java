@@ -354,7 +354,7 @@ public class StringUtils {
     }
 
     /*----------------验证手机号码格式是否正确------------------*/
-    public static boolean isValidPhone(String phone) {
+    public static boolean isPhone(String phone) {
         if (isBlank(phone)) return false;
 
 //        Pattern p = Pattern.compile("^(1)\\d{10}$");
@@ -363,13 +363,11 @@ public class StringUtils {
         return p.matcher(phone).find();
     }
 
-    public static boolean isValidEmail(String emailString) {
-        if (isBlank(emailString)) return false;
+    public static boolean isEmail(String email) {
+        if (isBlank(email)) return false;
 
-        Pattern emailPattern = Pattern.compile("^[a-zA-Z0-9][\\w\\" +
-                ".-]*[a-zA-Z0-9]@[a-zA-Z0-9][\\w\\.-]*[a-zA-Z0-9]\\.[a-zA-Z][a-zA-Z\\" +
-                ".]*[a-zA-Z]$");
-        return emailPattern.matcher(emailString).find();
+        Pattern emailPattern = Pattern.compile("^[a-zA-Z0-9][\\w\\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\\w\\.-]*[a-zA-Z0-9]\\.[a-zA-Z][a-zA-Z\\.]*[a-zA-Z]$");
+        return emailPattern.matcher(email).find();
     }
 
     /**

@@ -12,10 +12,10 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
-import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.hwl.beta.R;
+import com.hwl.beta.databinding.ChatActivityUserBinding;
 import com.hwl.beta.databinding.ChatFragmentRecordBinding;
 import com.hwl.beta.db.entity.ChatRecordMessage;
 import com.hwl.beta.sp.UserPosSP;
@@ -50,12 +50,17 @@ public class FragmentRecord extends BaseFragment {
         activity = getActivity();
 
         recordStandard = new RecordLogic();
-        binding = DataBindingUtil.inflate(inflater, R.layout.chat_fragment_record, container,
-                false);
+        binding = ChatFragmentRecordBinding.inflate(inflater, container, false);
 
         initView();
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     private void initView() {

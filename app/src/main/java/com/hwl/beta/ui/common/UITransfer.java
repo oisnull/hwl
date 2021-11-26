@@ -33,7 +33,7 @@ import com.hwl.beta.ui.emoji.ActivityEmojiSetting;
 import com.hwl.beta.ui.emoji.ActivityEmojiStore;
 import com.hwl.beta.ui.entry.ActivityGetpwd;
 import com.hwl.beta.ui.entry.ActivityLogin;
-import com.hwl.beta.ui.entry.ActivityLoginV2;
+import com.hwl.beta.ui.entry.ActivityCodeLogin;
 import com.hwl.beta.ui.entry.ActivityMain;
 import com.hwl.beta.ui.entry.ActivityQRCode;
 import com.hwl.beta.ui.entry.ActivityRegister;
@@ -97,7 +97,7 @@ public class UITransfer {
     }
 
     public static void toLoginActivityV2(Activity context) {
-        Intent intent = new Intent(context, ActivityLoginV2.class);
+        Intent intent = new Intent(context, ActivityCodeLogin.class);
         context.startActivity(intent);
     }
 
@@ -122,7 +122,7 @@ public class UITransfer {
         UserPosSP.clearPosInfo(true);
         DaoUtils.closeDB();
         toWelcomeActivity(context);
-        UserSP.setAccount(userAccount);
+//        UserSP.setAccount(userAccount);
         IMClientEntry.disconnectServer();
     }
 

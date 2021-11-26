@@ -1,7 +1,6 @@
 package com.hwl.beta.ui.group.adp;
 
 import android.content.Context;
-import androidx.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import com.hwl.beta.R;
 import com.hwl.beta.databinding.UserActionItemBinding;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.db.entity.GroupUserInfo;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
 
 import java.util.List;
 
@@ -58,16 +56,15 @@ public class GroupAddAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            itemBinding = DataBindingUtil.inflate(inflater, R.layout.user_action_item, parent,
-                    false);
+            itemBinding = UserActionItemBinding.inflate(inflater, parent, false);
             convertView = itemBinding.getRoot();
             convertView.setTag(itemBinding);
         } else {
             itemBinding = (UserActionItemBinding) convertView.getTag();
         }
         final Friend user = users.get(position);
-        itemBinding.setUser(user);
-        itemBinding.setImage(new ImageViewBean(user.getHeadImage()));
+//        itemBinding.setUser(user);
+//        itemBinding.setImage(new ImageViewBean(user.getHeadImage()));
 
         if (user.getId() <= 0) {
             itemBinding.tvLetter.setVisibility(View.GONE);

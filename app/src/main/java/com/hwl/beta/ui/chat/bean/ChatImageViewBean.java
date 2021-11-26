@@ -1,12 +1,10 @@
 package com.hwl.beta.ui.chat.bean;
 
-import androidx.databinding.BindingAdapter;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hwl.beta.R;
-//import com.hwl.beta.ui.common.GlideImageHandler;
 import com.hwl.beta.utils.FileUtils;
 import com.hwl.beta.utils.StringUtils;
 
@@ -31,7 +29,6 @@ public class ChatImageViewBean {
     public String imageUrl;
     public String chatImageUrl;
 
-    @BindingAdapter({"imageUrl"})
     public static void loadImage(ImageView view, String imageUrl) {
         if (StringUtils.isBlank(imageUrl))
             return;
@@ -42,7 +39,6 @@ public class ChatImageViewBean {
                 .into(view);
     }
 
-    @BindingAdapter({"chatImageUrl"})
     public static void loadChatImage(ImageView view, String imageUrl) {
         if (StringUtils.isBlank(imageUrl))
             return;

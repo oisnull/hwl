@@ -1,7 +1,5 @@
 package com.hwl.beta.ui.entry;
 
-import androidx.databinding.DataBindingUtil;
-
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -39,9 +37,11 @@ public class ActivityLogin extends FragmentActivity {
         activity = this;
         loginHandle = new LoginLogic();
         loginBean = loginHandle.getLoginBean();
-        binding = DataBindingUtil.setContentView(this, R.layout.entry_activity_login);
-        binding.setLoginBean(loginBean);
-        binding.setAction(new LoginListener());
+//        binding = DataBindingUtil.setContentView(this, R.layout.entry_activity_login);
+//        binding.setLoginBean(loginBean);
+//        binding.setAction(new LoginListener());
+        binding = EntryActivityLoginBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         initView();
     }

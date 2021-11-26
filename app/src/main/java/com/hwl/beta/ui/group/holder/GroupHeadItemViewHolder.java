@@ -14,7 +14,7 @@ public class GroupHeadItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setItemBinding(String desc){
-        this.itemBinding.setDesc(desc);
+//        this.itemBinding.setDesc(desc);
     }
 
     public GroupHeadItemBinding getItemBinding() {

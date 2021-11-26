@@ -1,7 +1,6 @@
 package com.hwl.beta.ui.user.adp;
 
 import android.content.Context;
-import androidx.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import com.hwl.beta.R;
 import com.hwl.beta.databinding.UserSearchItemBinding;
 import com.hwl.beta.net.user.UserSearchInfo;
 import com.hwl.beta.ui.user.action.IUserSearchItemListener;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,16 +62,15 @@ public class UserSearchAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            itemBinding = DataBindingUtil.inflate(inflater, R.layout.user_search_item, parent,
-                    false);
+            itemBinding = UserSearchItemBinding.inflate(inflater, parent, false);
             convertView = itemBinding.getRoot();
             convertView.setTag(itemBinding);
         } else {
             itemBinding = (UserSearchItemBinding) convertView.getTag();
         }
-        itemBinding.setUser(users.get(position));
-        itemBinding.setAction(itemListener);
-        itemBinding.setImage(new ImageViewBean(users.get(position).getHeadImage()));
+//        itemBinding.setUser(users.get(position));
+//        itemBinding.setAction(itemListener);
+//        itemBinding.setImage(new ImageViewBean(users.get(position).getHeadImage()));
         return convertView;
     }
 }

@@ -1,7 +1,7 @@
 package com.hwl.beta.ui.circle.adp;
 
 import android.content.Context;
-import androidx.databinding.DataBindingUtil;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -37,9 +37,9 @@ public class CircleCommentAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == 0) {
-            return new CircleCommentViewHolder((CircleCommentItemBinding) DataBindingUtil.inflate(inflater, R.layout.circle_comment_item, parent, false));
+            return new CircleCommentViewHolder(CircleCommentItemBinding.inflate(inflater, parent, false));
         } else {
-            return new CircleCommentReplyViewHolder((CircleCommentReplyItemBinding) DataBindingUtil.inflate(inflater, R.layout.circle_comment_reply_item, parent, false));
+            return new CircleCommentReplyViewHolder(CircleCommentReplyItemBinding.inflate(inflater, parent, false));
         }
     }
 
@@ -78,7 +78,7 @@ public class CircleCommentAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         int pos = comments.size();
         comments.addAll(infos);
-        notifyItemRangeChanged(pos,comments.size());
+        notifyItemRangeChanged(pos, comments.size());
     }
 
     public void deleteComment(CircleComment comment) {

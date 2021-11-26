@@ -1,7 +1,6 @@
 package com.hwl.beta.ui.user.adp;
 
 import android.content.Context;
-import androidx.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import com.hwl.beta.R;
 import com.hwl.beta.databinding.UserLetterItemBinding;
 import com.hwl.beta.db.entity.Friend;
 import com.hwl.beta.ui.common.FriendComparator;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -126,16 +124,15 @@ public class FriendAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            itemBinding = DataBindingUtil.inflate(inflater, R.layout.user_letter_item, parent,
-                    false);
+            itemBinding = UserLetterItemBinding.inflate(inflater, parent, false);
             convertView = itemBinding.getRoot();
             convertView.setTag(itemBinding);
         } else {
             itemBinding = (UserLetterItemBinding) convertView.getTag();
         }
         Friend user = users.get(position);
-        itemBinding.setUser(user);
-        itemBinding.setImage(new ImageViewBean(user.getHeadImage(), user.getImageRes()));
+//        itemBinding.setUser(user);
+//        itemBinding.setImage(new ImageViewBean(user.getHeadImage(), user.getImageRes()));
 
         if (user.getId() <= 0) {
             itemBinding.tvLetter.setVisibility(View.GONE);

@@ -2,7 +2,6 @@ package com.hwl.beta.ui.group.adp;
 
 import android.content.Context;
 
-import androidx.databinding.DataBindingUtil;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,11 +35,9 @@ public class GroupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         switch (viewType) {
             default:
             case 0:
-                return new GroupHeadItemViewHolder((GroupHeadItemBinding) DataBindingUtil.inflate
-                        (inflater, R.layout.group_head_item, parent, false));
+                return new GroupHeadItemViewHolder(GroupHeadItemBinding.inflate(inflater, parent, false));
             case 1:
-                return new GroupItemViewHolder((GroupItemBinding) DataBindingUtil.inflate
-                        (inflater, R.layout.group_item, parent, false));
+                return new GroupItemViewHolder(GroupItemBinding.inflate(inflater, parent, false));
         }
     }
 

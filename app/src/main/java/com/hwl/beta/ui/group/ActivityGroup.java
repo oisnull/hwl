@@ -1,7 +1,5 @@
 package com.hwl.beta.ui.group;
 
-import androidx.databinding.DataBindingUtil;
-
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -11,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.hwl.beta.R;
+import com.hwl.beta.databinding.EntryActivityRegisterBinding;
 import com.hwl.beta.databinding.GroupActivityListBinding;
 import com.hwl.beta.db.entity.GroupInfo;
 import com.hwl.beta.sp.UserSP;
@@ -38,7 +37,8 @@ public class ActivityGroup extends BaseActivity {
         activity = this;
         groupStandard = new GroupLogic();
 
-        binding = DataBindingUtil.setContentView(activity, R.layout.group_activity_list);
+        binding = GroupActivityListBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         initView();
     }

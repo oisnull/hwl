@@ -1,7 +1,6 @@
 package com.hwl.beta.ui.near.adp;
 
 import android.content.Context;
-import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -37,9 +36,9 @@ public class NearCircleCommentAdapter extends RecyclerView.Adapter<RecyclerView.
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == 0) {
-            return new NearCommentViewHolder((NearCommentItemBinding) DataBindingUtil.inflate(inflater, R.layout.near_comment_item, parent, false));
+            return new NearCommentViewHolder(NearCommentItemBinding.inflate(inflater, parent, false));
         } else {
-            return new NearCommentReplyViewHolder((NearCommentReplyItemBinding) DataBindingUtil.inflate(inflater, R.layout.near_comment_reply_item, parent, false));
+            return new NearCommentReplyViewHolder(NearCommentReplyItemBinding.inflate(inflater, parent, false));
         }
     }
 

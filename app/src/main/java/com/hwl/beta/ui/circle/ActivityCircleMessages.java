@@ -2,8 +2,6 @@ package com.hwl.beta.ui.circle;
 
 import android.content.DialogInterface;
 
-import androidx.databinding.DataBindingUtil;
-
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -37,7 +35,8 @@ public class ActivityCircleMessages extends BaseActivity {
         super.onCreate(savedInstanceState);
         activity = this;
         messages = DaoUtils.getCircleMessageManagerInstance().getAll();
-        binding = DataBindingUtil.setContentView(activity, R.layout.circle_activity_messages);
+        binding = CircleActivityMessagesBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         initView();
     }

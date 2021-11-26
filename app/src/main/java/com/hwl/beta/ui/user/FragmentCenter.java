@@ -2,8 +2,6 @@ package com.hwl.beta.ui.user;
 
 import android.app.Activity;
 
-import androidx.databinding.DataBindingUtil;
-
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -35,7 +33,6 @@ import com.hwl.beta.ui.common.BaseFragment;
 import com.hwl.beta.ui.common.UITransfer;
 import com.hwl.beta.ui.user.action.ICenterListener;
 import com.hwl.beta.ui.user.bean.CenterBean;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
 import com.hwl.beta.utils.AppUtils;
 import com.hwl.beta.utils.StringUtils;
 
@@ -59,14 +56,19 @@ public class FragmentCenter extends BaseFragment {
 
         centerBean = new CenterBean();
         setCenterBean();
-        binding = DataBindingUtil.inflate(inflater, R.layout.user_fragment_center, container,
-                false);
-        binding.setUser(centerBean);
-        binding.setAction(new CenterListener());
-        binding.setImage(new ImageViewBean(centerBean.getHeadImage()));
+        binding = UserFragmentCenterBinding.inflate(inflater, container, false);
+//        binding.setUser(centerBean);
+//        binding.setAction(new CenterListener());
+//        binding.setImage(new ImageViewBean(centerBean.getHeadImage()));
 
         setView();
         return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     private void setCenterBean() {

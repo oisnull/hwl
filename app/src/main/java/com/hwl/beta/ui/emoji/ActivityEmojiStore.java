@@ -1,7 +1,6 @@
 package com.hwl.beta.ui.emoji;
 
 import android.app.Activity;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebView;
@@ -22,7 +21,8 @@ public class ActivityEmojiStore extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = this;
-        binding = DataBindingUtil.setContentView(activity, R.layout.emoji_activity_store);
+        binding = EmojiActivityStoreBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         initView();
     }
@@ -50,6 +50,6 @@ public class ActivityEmojiStore extends BaseActivity {
                 return true;
             }
         });
-        binding.wvEmojiList.loadUrl(AppConfig.EMOTION_ENTRANCE_URL);
+//        binding.wvEmojiList.loadUrl(AppConfig.EMOTION_ENTRANCE_URL);
     }
 }

@@ -5,7 +5,7 @@
     android:textAlignment="center"
     android:textColor="#FFFFFF"
     android:text="手机视频"
-    android:textSize="15dp"
+    android:textSize="15sp"
     android:singleLine="true"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"/>

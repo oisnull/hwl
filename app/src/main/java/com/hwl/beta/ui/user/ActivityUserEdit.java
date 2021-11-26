@@ -2,7 +2,6 @@ package com.hwl.beta.ui.user;
 
 import android.app.Activity;
 import android.content.Intent;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
@@ -30,7 +29,6 @@ import com.hwl.beta.ui.ebus.EventBusUtil;
 import com.hwl.beta.ui.ebus.EventMessageModel;
 import com.hwl.beta.ui.imgselect.bean.ImageSelectType;
 import com.hwl.beta.ui.user.action.IUserEditListener;
-import com.hwl.beta.ui.user.bean.ImageViewBean;
 import com.hwl.beta.ui.user.bean.UserEditBean;
 import com.hwl.beta.ui.user.bean.UserEditItemBean;
 import com.hwl.beta.utils.StringUtils;
@@ -59,10 +57,11 @@ public class ActivityUserEdit extends BaseActivity {
         user = new UserEditBean();
         setUserEditBean();
 
-        binding = DataBindingUtil.setContentView(this, R.layout.user_activity_info_edit);
-        binding.setUser(user);
-        binding.setAction(new UserEditListener());
-        binding.setImage(new ImageViewBean(user.getHeadImage()));
+        binding = UserActivityInfoEditBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+//        binding.setUser(user);
+//        binding.setAction(new UserEditListener());
+//        binding.setImage(new ImageViewBean(user.getHeadImage()));
 
         binding.tbTitle
                 .setTitle("我的信息")
@@ -136,8 +135,8 @@ public class ActivityUserEdit extends BaseActivity {
                             LoadingDialog.hide();
                             if (response.getStatus() == NetConstant.RESULT_SUCCESS) {
                                 UserSP.setUserHeadImage(response.getHeadImage());
-                                ImageViewBean.loadImage(binding.ivHeaderLook, response
-                                        .getHeadImage());
+//                                ImageViewBean.loadImage(binding.ivHeaderLook, response
+//                                        .getHeadImage());
                                 EventBusUtil.sendUserHeadImageEditEvent(response.getHeadImage());
                                 Toast.makeText(activity, "头像上传成功", Toast.LENGTH_SHORT).show();
                             } else {

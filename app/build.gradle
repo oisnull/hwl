@@ -17,12 +17,16 @@ android {
         debug {
             buildConfigField("boolean", "EnableFileLog", "true")
             buildConfigField("String", "LogDir", '"/sdcard/zl-logs"')
+            buildConfigField("String", "LoginCode", '"888888"')
+            buildConfigField("String", "AppName", '"ZiChat"')
         }
         release {
-            buildConfigField("boolean", "EnableFileLog", "false")
-            buildConfigField("String", "LogDir", '"/sdcard/zl-logs"')
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField("boolean", "EnableFileLog", "false")
+            buildConfigField("String", "LogDir", '"/sdcard/zl-logs"')
+            buildConfigField("String", "LoginCode", "")
+            buildConfigField("String", "AppName", "知了")
         }
     }
 
@@ -40,9 +44,8 @@ android {
     }
 
     buildFeatures {
-        dataBinding = true
         // for view binding :
-        // viewBinding = true
+        viewBinding = true
     }
 
     compileOptions {
@@ -54,6 +57,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation project(path: ':api')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     implementation 'androidx.multidex:multidex:2.0.0'
